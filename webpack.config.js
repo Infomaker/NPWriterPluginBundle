@@ -30,11 +30,6 @@ module.exports = {
       compress: false,
       port: 5001
     },
-    postcss: [
-        autoprefixer({
-            browsers: ['last 2 versions']
-        })
-    ],
     module: {
         loaders: [
           {
@@ -43,10 +38,10 @@ module.exports = {
           },
           {
               test: /\.scss$/,
-              loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
+              loader: ExtractTextPlugin.extract('style', 'css!sass')
           },
           {
-              test: /\.jsx?$/,
+              test: /\.js?$/,
               exclude: /(node_modules)/,
               loaders: [
                   'babel?presets[]=stage-0,presets[]=es2015'
@@ -54,7 +49,7 @@ module.exports = {
           }
         ],
         preLoaders: [
-          { test: /\.jsx?$/, loader: 'eslint', exclude: /node_modules/ }
+            { test: /\.js?$/, loader: 'eslint', exclude: /node_modules/ },
         ]
     },
     cssLoader: {
@@ -66,7 +61,7 @@ module.exports = {
     },
     eslint: {
         failOnWarning: false,
-        failOnError: false
+        failOnError: true
     },
     plugins: [
         new ExtractTextPlugin("style.css"),

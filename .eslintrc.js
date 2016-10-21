@@ -25,7 +25,7 @@ module.exports = {
     "semi": [0, "never"],
     "comma-dangle": [2, "only-multiline"],
     "no-cond-assign": 2,
-    "no-console": [2, { allow: ["warn", "log", "info", "error", "assert"] }],
+    "no-console": [1, { allow: ["warn", "info", "error", "assert"] }],
     "no-constant-condition": 2,
     "no-control-regex": 2,
     "no-debugger": 2,
