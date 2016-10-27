@@ -9,7 +9,7 @@ export default () => {
     if (registerPlugin) {
         registerPlugin(PreamblePackage)
     } else {
-        console.log("Register method not yet available");
+        console.error("Could not register plugin");
     }
 
 }

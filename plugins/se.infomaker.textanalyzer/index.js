@@ -5,7 +5,7 @@ export default () => {
     if (registerPlugin) {
         registerPlugin(AnalyzerPackage)
     } else {
-        console.log("Register method not yet available");
+        console.info("Register method not yet available");
     }
 }
 

@@ -7,13 +7,19 @@ export default {
     id: 'se.infomaker.preamble',
     configure: function (config) {
 
+        PreambleNode.type = this.name
+        PreambleConverter.type = PreambleNode.type
+        PreambleConverter.element = PreambleNode.type
+
+
         config.addNode(PreambleNode)
         config.addComponent(PreambleNode.type, PreambleComponent)
+
         config.addConverter('newsml', PreambleConverter)
 
         config.addTextType({
-            name: 'preamble',
-            data: {type: 'preamble'}
+            name: this.name,
+            data: {type: PreambleNode.type}
         })
         config.addLabel('preamble.content', {
             en: 'Preamble',
