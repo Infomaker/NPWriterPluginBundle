@@ -1,0 +1,94 @@
+
+
+.socialembed__container {
+    margin-bottom: 20px;
+    display: inline-block;
+    text-decoration: none;
+    margin-right: -13px;
+
+    max-width: 800px;
+
+    &.Instagram {
+        display: block;
+    }
+
+    &>div {
+        display: inline-block;
+        width: 100%;
+        cursor: move;
+        padding: 4px 8px 8px 8px;
+        margin: -5px 9px -9px -9px;
+        border-radius: 3px;
+
+        &:hover {
+            box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
+
+            .header {
+                .remove-button {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &>div.socialembed__nocontent {
+            min-height: 250px;
+            width: 100%;
+            background: #fafafa;
+        }
+
+        &>div.socialembed__content {
+            cursor: default;
+
+            iframe {
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                box-shadow: none !important;
+
+                &.instagram-media {
+                    border: 1px solid #e8e8e8 !important;
+                }
+            }
+        }
+
+        .header {
+            padding: 0 2px 0 0;
+            margin: 0 0 0 2px;
+            border-radius: 5px 5px 0 0;
+            font-size: 0.9rem;
+            text-decoration: none !important;
+
+            &.fa-twitter::before,
+            &.fa-facebook::before,
+            &.fa-instagram::before {
+                font-family: FontAwesome;
+                width: 18px;
+                display: inline-block;
+            }
+
+            &.fa-twitter::before {
+                content: "\f099";
+            }
+
+            &.fa-facebook::before {
+                content: "\f09a";
+            }
+
+            &.fa-instagram::before {
+                content: "\f16d";
+            }
+
+            .remove-button {
+                display: inline-block;
+                float: right;
+                color: red; // FIXME: should be $red
+                cursor: pointer;
+                opacity: 0;
+            }
+
+            strong {
+                font-weight: 300;
+                color: #444;
+            }
+        }
+    }
+}
