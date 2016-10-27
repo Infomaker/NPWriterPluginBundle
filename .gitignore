@@ -1,0 +1,8 @@
+logs
+*.log
+*.log.*
+dist
+node_modules
+.lock-wscript
+clover.xml
+coverage
