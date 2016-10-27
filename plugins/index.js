@@ -7,4 +7,5 @@ import PublishFlow from './se.infomaker.publishflow/index'
     Skeleton()
     TextAnalyzer()
     Preamble()
+    PublishFlow()
 })()
