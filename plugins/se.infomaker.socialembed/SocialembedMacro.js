@@ -1,13 +1,14 @@
 export default {
 
     execute: function(params, context) {
-        // var match = /(https?:\/\/([^\s]+))/.exec(params.text)
-        let match = /abc/.exec(params.text)
         let editorSession = context.editorSession
-
+        let text = params.text
+        let match = /^\s*(https?:\/\/([^\s]+))\s*$/.exec(text)
         if (match) {
+            let url = match[1]
+            editorSession.selectNode(params.node.id)
             editorSession.executeCommand('socialembed', {
-                url: 'https://twitter.com/fraserspeirs/status/694515217666064385'
+                url: url
             })
             return true
         }
