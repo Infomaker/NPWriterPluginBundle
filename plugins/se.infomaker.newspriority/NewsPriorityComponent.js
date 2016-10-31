@@ -1,6 +1,6 @@
 const {Component} = substance
 const {api, moment, idGenerator} = writer
-
+const {isObject, isEmpty} = writer.lodash
 const pluginId = 'se.infomaker.newspriority'
 
 // var idGen = require('writer/utils/IdGenerator');
@@ -41,8 +41,8 @@ class NewsPriorityComponent extends Component {
         if (!newsPriority) {
             // No news prio found in document, create a default template
             var template = {
-                '@id': idGenerator(),
-                '@type': "x-im/newsvalue",
+                '$id': idGenerator(),
+                '$type': "x-im/newsvalue",
                 data: {
                     description: this.lifetimes[this.defaultLifetimeIndex].label,
                     end: "",
@@ -57,7 +57,7 @@ class NewsPriorityComponent extends Component {
             newsPriority = api.newsItem.getNewsPriority(pluginId);
 
             // For some reason when transforming an empty string in API it returns an empty object{}
-            if (typeof newsPriority.data[this.durationKey] === 'object') {
+            if (isObject(newsPriority.data[this.durationKey])) {
                 newsPriority.data[this.durationKey] = template.data[this.durationKey];
             }
 
@@ -67,7 +67,7 @@ class NewsPriorityComponent extends Component {
             }
         }
 
-        if (newsPriority.data.score === this.state.score) {
+        if (Number(newsPriority.data.score) === Number(this.state.score)) {
             return;
         }
 
@@ -104,27 +104,24 @@ class NewsPriorityComponent extends Component {
     }
 
     _renderPriority($$) {
-        var prio = $$('div').addClass('btn-group'),
-            btn;
+        var prio = $$('div').addClass('btn-group')
 
-        for (var n = 0; n < this.scores.length; n++) {
+        var buttons = this.scores.map(function (score) {
+            return $$('button')
+                .addClass('btn btn-secondary')
+                .text(String(score.value))
+                .attr('data-toggle', 'tooltip')
+                .attr('data-placement', 'bottom')
+                .attr('data-trigger', 'manual')
+                .attr('title', score.text)
+                .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
+                .on('click', function () {
+                    this.setNewsPriority(score.value);
+                }.bind(this));
 
-            btn = this._renderButton(
-                $$,
-                this.scores[n].value,
-                this.scores[n].text,
-                this.setNewsPriority
-            );
+        }.bind(this));
 
-            console.log("this.state.score", this.state.score, this.scores[n].value);
-            if (this.state.score === this.scores[n].value) {
-                btn.addClass('active');
-                btn.style('border', '1px solid red')
-            }
-
-            prio.append(btn);
-        }
-
+        prio.append(buttons)
         return prio;
     }
 
@@ -151,21 +148,7 @@ class NewsPriorityComponent extends Component {
         return lifetime;
     }
 
-    _renderButton($$, text, tooltip, onClickFunc) {
-
-        return $$('button')
-            .addClass('btn btn-secondary')
-            .text(String(text))
-            .attr('data-toggle', 'tooltip')
-            .attr('data-placement', 'bottom')
-            .attr('data-trigger', 'manual')
-            .attr('title', tooltip)
-            // .on('mouseenter', this.toggleTooltip)
-            // .on('mouseout', this.hideTooltip)
-            .on('click', onClickFunc);
-    }
-
-
+   
     _renderDatetimeInput($$) {
         var form = $$('form')
             .attr('id', 'npLifetimeForm');
@@ -173,10 +156,11 @@ class NewsPriorityComponent extends Component {
         var fieldset = $$('fieldset').addClass('form-group').ref('datePickerFieldset');
 
         var text = this.getLabel('enter-date-and-time')
-        // var endTime = api.getNewsPriority('newspriority').data.end;
-        // if (endTime !== "" && !_.isEmpty(endTime)) {
-        //     text = '\u2713 ' + text;
-        // }
+
+        var endTime = api.newsItem.getNewsPriority('newspriority').data.end;
+        if (endTime !== "" && !isEmpty(endTime)) {
+            text = '\u2713 ' + text;
+        }
 
         var small = $$('div').append($$('small')
             .addClass('text-muted')
@@ -190,11 +174,11 @@ class NewsPriorityComponent extends Component {
             .on('change', this.setLifetimeDatetime).ref('datePickerInput');
 
         input.on('focus', () => {
-            this.refs.datePickerInstructionText.$el.removeClass('hidden');
+            this.refs.datePickerInstructionText.el.removeClass('hidden');
         })
 
         input.on('blur', () => {
-            this.refs.datePickerInstructionText.$el.addClass('hidden');
+            this.refs.datePickerInstructionText.el.addClass('hidden');
         })
 
 
@@ -215,25 +199,25 @@ class NewsPriorityComponent extends Component {
     }
 
     /*
-    toggleTooltip(ev) {
-        $(ev.target).tooltip('toggle');
-        ev.target.timeout = window.setTimeout(function () {
-            this.hideTooltip(ev)
-        }.bind(this), 3000)
-    }
+     toggleTooltip(ev) {
+     $(ev.target).tooltip('toggle');
+     ev.target.timeout = window.setTimeout(function () {
+     this.hideTooltip(ev)
+     }.bind(this), 3000)
+     }
 
-    hideTooltip(ev) {
-        if (ev.target.timeout) {
-            window.clearTimeout(ev.target.timeout);
-            ev.target.timeout = undefined;
-        }
-        $(ev.target).tooltip('hide');
-    }*/
+     hideTooltip(ev) {
+     if (ev.target.timeout) {
+     window.clearTimeout(ev.target.timeout);
+     ev.target.timeout = undefined;
+     }
+     $(ev.target).tooltip('hide');
+     }*/
 
-    setNewsPriority(ev) {
+    setNewsPriority(score) {
         //$(ev.target).tooltip('hide');
         var newsPriority = api.newsItem.getNewsPriority(pluginId);
-        newsPriority.data.score = ev.target.textContent;
+        newsPriority.data.score = score;
 
         api.newsItem.setNewsPriority(pluginId, newsPriority);
 

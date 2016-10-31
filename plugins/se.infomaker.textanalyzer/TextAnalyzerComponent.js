@@ -1,15 +1,15 @@
 const {Component} = substance
-const {api, Event} = writer
+const {api, event} = writer
 
 class TextanalyzerComponent extends Component {
 
     dispose() {
-        api.events.off('textanalyzer', Event.DOCUMENT_CHANGED);
+        api.events.off('textanalyzer', event.DOCUMENT_CHANGED);
     }
 
     constructor(...args) {
         super(...args)
-        api.events.on('textanalyzer', Event.DOCUMENT_CHANGED, () => {
+        api.events.on('textanalyzer', event.DOCUMENT_CHANGED, () => {
             this.calculateText()
         })
     }
