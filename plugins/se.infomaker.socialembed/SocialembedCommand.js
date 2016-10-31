@@ -7,10 +7,19 @@ class SocialembedCommand extends Command {
         return { disabled: false }
     }
 
-    execute(params, context) {
+    get isAsync() {
+        return true
+    }
+
+    execute(params, context, cb) {
+        // setTimeout(()=>{
         this.fetchEmbed(params.url, function(err, node) {
-            return context.api.document.insertBlockNode(node.type, node)
+            if (err) return cb(err)
+            params.editorSession.selectNode(params.nodeId)
+            context.api.document.insertBlockNode(node.type, node)
+            cb(null)
         })
+        // }, 1000)
         return true
     }
 

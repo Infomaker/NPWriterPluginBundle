@@ -1,15 +1,19 @@
 export default {
 
     execute: function(params, context) {
-        // var match = /(https?:\/\/([^\s]+))/.exec(params.text)
-        let match = /abc/.exec(params.text)
         let editorSession = context.editorSession
-
-        if (match) {
-            editorSession.executeCommand('socialembed', {
-                url: 'https://twitter.com/fraserspeirs/status/694515217666064385'
-            })
-            return true
-        }
+        let text = params.text
+        // only react on 'break' (as medium does)
+        if (!params.action === 'break') return
+        // only react of we find a HTTP URL
+        let match = /^\s*(https?:\/\/([^\s]+))\s*$/.exec(text)
+        if (!match) return
+        // take the url, select the node, and run the social embed command
+        let url = match[1]
+        editorSession.executeCommand('socialembed', {
+            nodeId: params.node.id,
+            url: url
+        })
+        return true
     }
 }

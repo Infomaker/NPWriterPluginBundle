@@ -49,4 +49,6 @@ class SocialembedComponent extends Component {
     }
 }
 
+SocialembedComponent.noStyle = true
+
 export default SocialembedComponent
