@@ -24,6 +24,11 @@ module.exports = {
         filename: "index.js",
         path: "dist",
     },
+    externals: {
+        "substance": "substance",
+        "writer": "writer"
+    },
+
     devtool: 'source-map',
     devServer: {
       historyApiFallback: true,
