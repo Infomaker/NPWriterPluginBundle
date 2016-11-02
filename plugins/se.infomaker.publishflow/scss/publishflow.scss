@@ -26,6 +26,8 @@
 
         input:required:invalid,
         input:focus:invalid {
+            background: #FFF0F0;
+
             &::after {
                 font-family: FontAwesome;
                 content: "\f00d";
@@ -48,8 +50,10 @@
 
     .sc-np-publish-body {
 
-        p {
+        &>p {
             color: #777;
+            line-height: 1.4rem;
+            margin-top: 0.7rem;
         }
 
         .sc-np-publish-actions {
@@ -132,6 +136,13 @@
                 div.sc-np-publish-action-section-content {
                     display: none;
                     margin-top: -10px;
+
+                    div.sc-np-publish-action-section-content-actions {
+                        button {
+                            font-size: 90%;
+                            line-height: 90%;
+                        }
+                    }
                 }
 
                 &.active {

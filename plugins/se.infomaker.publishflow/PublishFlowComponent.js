@@ -95,6 +95,25 @@ class PublishFlowComponent extends Component {
                         moment(this.state.pubStart.value).fromNow()
                     )
                 ])
+
+                var specEl = $$('p').append([
+                    this.getLabel('From') + ': ',
+                    $$('strong').append(
+                        moment(this.state.pubStart.value).format('YYYY-MM-DD HH:mm')
+                    )
+                ])
+
+                var toObj = moment(this.state.pubStop)
+                if (toObj.isValid()) {
+                    specEl.append([
+                        this.getLabel('To') + ': ',
+                        $$('strong').append(
+                            moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
+                        )
+                    ])
+                }
+
+                el.append(specEl)
                 break
 
             case 'stat:usable':
@@ -116,7 +135,7 @@ class PublishFlowComponent extends Component {
                         this.getLabel('Publish article again?')
                     ),
                     $$('p').append(
-                        this.getLabel('Article was canceled and is no longer published')
+                        this.getLabel('Article has been canceled and is no longer published')
                     )
                 ])
                 break
@@ -241,7 +260,8 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-from',
                             type: 'datetime-local',
                             required: true
-                        }),
+                        })
+                        .ref('pfc-lbl-withheld-from'),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
@@ -252,6 +272,34 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-to',
                             type: 'datetime-local'
                         })
+                        .ref('pfc-lbl-withheld-to'),
+                    $$('div')
+                        .addClass('sc-np-publish-action-section-content-actions')
+                        .append(
+                            $$('button')
+                                .addClass('btn-secondary')
+                                .append(
+                                    this.getLabel('Save')
+                                )
+                            )
+                            .on('click', () => {
+                                // FIXME: Must be able to reset to previous state
+                                try {
+                                    this.publishFlowMgr.setToWithheld(
+                                        this.refs['pfc-lbl-withheld-from'].val(),
+                                        this.refs['pfc-lbl-withheld-to'].val()
+                                    )
+                                    this.defaultAction()
+                                }
+                                catch(ex) {
+                                    this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
+                                    window.setTimeout(() => {
+                                        this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+
                 ])
         )
 
