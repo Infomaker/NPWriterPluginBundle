@@ -4,12 +4,14 @@ import Preamble from './se.infomaker.preamble/Preamble'
 import PublishFlow from './se.infomaker.publishflow/index'
 import SocialEmbed from './se.infomaker.socialembed/index'
 import NewsPriority from './se.infomaker.newspriority/index'
+import XImteaser from './se.infomaker.ximteaser/index'
 
 (() => {
     Skeleton()
     TextAnalyzer()
     Preamble()
     SocialEmbed()
+    XImteaser()
     PublishFlow()
     NewsPriority()
 })()
