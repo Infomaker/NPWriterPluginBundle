@@ -1,5 +1,8 @@
+const {api, moment} = writer
 class PublishFlowConfiguration {
-    constructor() {
+    constructor(pluginId) {
+        this.api = pluginId
+
         this.status = {
             'imext:draft': {
                 'allowed': [
@@ -45,6 +48,56 @@ class PublishFlowConfiguration {
         }
 
         return []
+    }
+
+    setToDraft() {
+        this.setStatus('imext:draft', null, null)
+    }
+
+    setToDone() {
+        this.setStatus('imext:done', null, null)
+    }
+
+    setToWithheld() {
+
+    }
+
+    setToUsable() {
+        this.setStatus(
+            'stat:usable',
+            {value: moment().format('YYYY-MM-DDTHH:mm:ssZ')},
+            null
+        )
+    }
+
+    setToCanceled() {
+        this.setStatus('stat:canceled', null, null)
+    }
+
+    setStatus(qcode, pubStart, pubStop) {
+        if (qcode) {
+            api.newsItem.setPubstatus(
+                this.pluginId,
+                {
+                    qcode: qcode
+                }
+            )
+        }
+
+        if (pubStart === null) {
+            api.newsItem.removePubStart(this.pluginId)
+        }
+        else if (typeof pubStart !== 'undefined') {
+            api.newsItem.setPubStart(this.pluginId, pubStart)
+        }
+
+        if (pubStop === null) {
+            api.newsItem.removePubStop(this.pluginId)
+        }
+        else if (typeof pubStop !== 'undefined') {
+            api.newsItem.setPubStop(this.pluginId, pubStop)
+        }
+
     }
 }
 

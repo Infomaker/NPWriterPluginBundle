@@ -1,4 +1,4 @@
-import PublishFlowConfiguration from './PublishFlowConfiguration'
+import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
@@ -20,15 +20,20 @@ class PublishFlowComponent extends Component {
         })
     }
 
+    dispose() {
+        api.events.off(pluginId, 'document:changed')
+        api.events.off(pluginId, 'document:saved')
+    }
+
     getInitialState() {
         let status = api.newsItem.getPubStatus()
-        this.config = new PublishFlowConfiguration()
+        this.publishFlowMgr = new PublishFlowManager(pluginId, api)
 
         return {
             status: status,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.config.getAllowedActions(status.qcode)
+            allowed: this.publishFlowMgr.getAllowedActions(status.qcode)
         }
     }
 
@@ -87,7 +92,7 @@ class PublishFlowComponent extends Component {
                     $$('p').append(
                         this.getLabel('Article is currently schedule to be published') +
                         ' ' +
-                        moment(this.state.pubStart).fromNow()
+                        moment(this.state.pubStart.value).fromNow()
                     )
                 ])
                 break
@@ -100,7 +105,7 @@ class PublishFlowComponent extends Component {
                     $$('p').append(
                         this.getLabel('Article was published') +
                         ' ' +
-                        moment(this.state.pubStart).fromNow()
+                        moment(this.state.pubStart.value).fromNow()
                     )
                 ])
                 break
@@ -108,12 +113,10 @@ class PublishFlowComponent extends Component {
             case 'stat:canceled':
                 el.append([
                     $$('h2').append(
-                        this.getLabel('Republish article?')
+                        this.getLabel('Publish article again?')
                     ),
                     $$('p').append(
-                        this.getLabel('Article was canceled') +
-                        ' ' +
-                        moment(this.state.pubStop).fromNow()
+                        this.getLabel('Article was canceled and is no longer published')
                     )
                 ])
                 break
@@ -149,7 +152,7 @@ class PublishFlowComponent extends Component {
         let actionsEl = $$('div')
             .addClass('sc-np-publish-actions')
 
-        this.config.getAllowedActions(this.state.status.qcode).forEach(action => {
+        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(action => {
             switch(action) {
                 case 'imext:draft':
                     actionsEl.append(this.renderActionDraft($$))
@@ -180,16 +183,8 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Refactor this code to a separate function
             // FIXME: Must be able to reset to previous state
-            api.newsItem.removePubStart(pluginId)
-            api.newsItem.removePubStop(pluginId)
-            api.newsItem.setPubstatus(
-                pluginId,
-                {
-                    qcode: 'imext:draft'
-                }
-            )
+            this.publishFlowMgr.setToDraft()
             this.defaultAction()
         })
     }
@@ -202,41 +197,94 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Refactor this code to a separate function
             // FIXME: Must be able to reset to previous state
-            api.newsItem.removePubStart(pluginId)
-            api.newsItem.removePubStop(pluginId)
-            api.newsItem.setPubstatus(
-                pluginId,
-                {
-                    qcode: 'imext:done'
-                }
-            )
+            this.publishFlowMgr.setToDone()
             this.defaultAction()
         })
 
     }
 
     renderActionWithheld($$) {
-        return $$('a').append([
-            $$('i').addClass('fa fa-clock-o'),
-            $$('span').append(
-                this.getLabel('Schedule for publish...')
-            )
-        ])
+        let el = $$('div')
+            .addClass('sc-np-publish-action-section')
+            .ref('pfc-withheld')
+
+        el.append(
+            $$('a').append([
+                $$('i').addClass('fa fa-clock-o'),
+                $$('span').append(
+                    this.getLabel('Schedule for publish...')
+                )
+            ])
+            .addClass('more')
+            .on('click', () => {
+                if (this.refs['pfc-withheld'].hasClass('active')) {
+                    this.refs['pfc-withheld'].removeClass('active')
+                }
+                else {
+                    this.refs['pfc-withheld'].addClass('active')
+                }
+            })
+        )
+
+        el.append(
+            $$('div')
+                .addClass('sc-np-publish-action-section-content sc-np-date-time')
+                .append([
+                    $$('label')
+                        .attr('for', 'pfc-lbl-withheld-from')
+                        .append(
+                            this.getLabel('From')
+                        ),
+                    $$('input')
+                        .attr({
+                            id: 'pfc-lbl-withheld-from',
+                            type: 'datetime-local',
+                            required: true
+                        }),
+                    $$('label')
+                        .attr('for', 'pfc-lbl-withheld-to')
+                        .append(
+                            this.getLabel('To')
+                        ),
+                    $$('input')
+                        .attr({
+                            id: 'pfc-lbl-withheld-to',
+                            type: 'datetime-local'
+                        })
+                ])
+        )
+
+        return el
     }
 
     renderActionUsable($$) {
-        let label = this.getLabel('Publish article')
+        let el = $$('a')
 
         if (this.state.status.qcode === 'stat:usable') {
-            label = this.getLabel('Republish article')
+            el.append([
+                $$('i').addClass('fa fa-retweet'),
+                $$('span').append(
+                    this.getLabel('Republish article')
+                )
+            ])
+        }
+        else {
+            el.append([
+                $$('i').addClass('fa fa-send'),
+                $$('span').append(
+                    this.getLabel('Publish article')
+                )
+            ])
         }
 
-        return $$('a').append([
-            $$('i').addClass('fa fa-send'),
-            $$('span').append(label)
-        ])
+        el.on('click', () => {
+            // FIXME: Must be able to reset to previous state
+            this.publishFlowMgr.setToUsable()
+            this.defaultAction()
+        })
+
+        return el
     }
 
     renderActionCanceled($$) {
@@ -246,6 +294,10 @@ class PublishFlowComponent extends Component {
                 this.getLabel('Unpublish article')
             )
         ])
+        .on('click', () => {
+            this.publishFlowMgr.setToCanceled()
+            this.defaultAction()
+        })
     }
 
     defaultAction() {
@@ -277,14 +329,14 @@ class PublishFlowComponent extends Component {
             this.props.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
-                moment(this.state.pubStart).fromNow()
+                moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
             this.props.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
-                moment(this.state.pubStart).fromNow()
+                moment(this.state.pubStart.value).fromNow()
             )
         }
         else {

@@ -2,6 +2,50 @@
     width: 300px;
     margin: 15px;
 
+    .sc-np-date-time {
+        padding: 0 15px 0 45px;
+
+        label,
+        input {
+            clear: both;
+            font-size: 80%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: -14px;
+            line-height: 1.4rem;
+        }
+
+        input {
+            display: inline-block;
+            margin-bottom: 4px;
+            position: relative;
+            overflow: visible;
+        }
+
+        input:required:invalid,
+        input:focus:invalid {
+            &::after {
+                font-family: FontAwesome;
+                content: "\f00d";
+                position: absolute;
+                right: -25px;
+                color: #d9534f;
+            }
+        }
+
+        input:required:valid {
+            &::after {
+                font-family: FontAwesome;
+                content: "\f00c";
+                position: absolute;
+                right: -25px;
+                color: #5cb85c;
+            }
+        }
+    }
+
     .sc-np-publish-body {
 
         p {
@@ -11,11 +55,18 @@
         .sc-np-publish-actions {
             margin: 15px -15px 15px -15px;
 
+            &>* {
+                border-bottom: 1px solid #ddd;
+                &:first-child {
+                    border-top: 1px solid #ddd;
+                }
+            }
+
             a {
                 background: none;
                 border-radius: 0;
                 color: #666;
-                border-bottom: 1px solid #ddd;
+
                 display: flex;
                 width: 100%;
                 height: 46px;
@@ -24,8 +75,12 @@
                 cursor: pointer;
                 padding: 0 15px;
 
-                &:first-child {
-                    border-top: 1px solid #ddd;
+                &.more::after {
+                    font-family: FontAwesome;
+                    content: "\f0d7";
+                    position: absolute;
+                    right: 20px;
+                    color: #666;
                 }
 
                 i {
@@ -39,6 +94,10 @@
 
                     &.fa-send {
                         color: #5cb85c;
+                    }
+
+                    &.fa-retweet {
+                        color: #2e94b7;
                     }
 
                     &.fa-clock-o {
@@ -55,6 +114,10 @@
                 }
 
                 &:hover {
+                    &.more::after {
+                        color: #000;
+                    }
+
                     i {
                         opacity: 1;
                     }
@@ -64,6 +127,37 @@
                     }
                 }
             }
+
+            div.sc-np-publish-action-section {
+                div.sc-np-publish-action-section-content {
+                    display: none;
+                    margin-top: -10px;
+                }
+
+                &.active {
+                    display: block;
+                    background: #fafafa;
+                    padding-bottom: 15px;
+
+                    a {
+                        color: #000;
+                        &.more::after {
+                            content: "\f0d8";
+                            color: #000;
+                        }
+                    }
+
+                    i {
+                        opacity: 1;
+                    }
+
+                    div.sc-np-publish-action-section-content {
+                        display: block;
+                    }
+                }
+
+            }
+
         }
     }
 }
