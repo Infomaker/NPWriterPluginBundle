@@ -10,7 +10,7 @@ class PublishFlowComponent extends Component {
         super(...args)
 
         api.events.on(pluginId, 'document:changed', () => {
-            this.props.setButtonText(
+            this.props.popover.setButtonText(
                 this.getLabel('Save *')
             )
         })
@@ -38,14 +38,14 @@ class PublishFlowComponent extends Component {
     }
 
     didMount() {
-        this.props.setButtonText(
+        this.props.popover.setButtonText(
             this.getLabel('Save')
         )
 
         this._updateStatus()
 
         if (!api.browser.isSupported()) {
-            this.props.disable()
+            this.props.popover.disable()
         }
     }
 
@@ -87,10 +87,10 @@ class PublishFlowComponent extends Component {
             case 'stat:withheld':
                 el.append([
                     $$('h2').append(
-                        this.getLabel('Publish article?')
+                        this.getLabel('Scheduled')
                     ),
                     $$('p').append(
-                        this.getLabel('Article is currently schedule to be published') +
+                        this.getLabel('Article is scheduled to be published') +
                         ' ' +
                         moment(this.state.pubStart.value).fromNow()
                     )
@@ -162,6 +162,9 @@ class PublishFlowComponent extends Component {
                         .append(
                             this.getLabel('Cancel')
                         )
+                        .on('click', () => {
+                            this.props.popover.close()
+                        })
                 )
         )
         return el
@@ -349,19 +352,19 @@ class PublishFlowComponent extends Component {
     }
 
     defaultAction() {
-        this.props.disable()
-        this.props.setIcon('fa-refresh fa-spin fa-fw')
+        this.props.popover.disable()
+        this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
 
         api.newsItem.save()
     }
 
     _onDocumentSaved() {
-        this.props.setButtonText(
+        this.props.popover.setButtonText(
             this.getLabel('Save')
         )
 
-        this.props.setIcon('fa-ellipsis-h')
-        this.props.enable()
+        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.enable()
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
@@ -374,21 +377,21 @@ class PublishFlowComponent extends Component {
 
     _updateStatus() {
         if (this.state.status.qcode === 'stat:usable') {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode)
             )
         }
