@@ -1,7 +1,5 @@
 const { Component } = substance
 
-/* Drawbacks */
-
 class XimimageComponent extends Component {
 
     didMount() {
