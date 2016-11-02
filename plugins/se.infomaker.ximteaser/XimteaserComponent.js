@@ -257,7 +257,7 @@ class XimteaserComponent extends Component {
             })
     }
 
-    triggerFileUpload(ev) {
+    triggerFileUpload() {
         this.editorSession.startWorkflow('replace-image', {
             path: [this.props.node.id, 'url']
         })
