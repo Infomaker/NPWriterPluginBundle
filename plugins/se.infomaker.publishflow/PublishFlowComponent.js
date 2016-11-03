@@ -2,20 +2,20 @@ import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
-const {api, moment} = writer
+const {api, moment, event} = writer
 const pluginId = 'se.infomaker.publishflow'
 
 class PublishFlowComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on(pluginId, 'document:changed', () => {
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, () => {
             this.props.popover.setButtonText(
                 this.getLabel('Save *')
             )
         })
 
-        api.events.on(pluginId, 'document:saved', () => {
+        api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
             this._onDocumentSaved()
         })
     }
@@ -264,6 +264,7 @@ class PublishFlowComponent extends Component {
                             type: 'datetime-local',
                             required: true
                         })
+                        .addClass('form-control')
                         .ref('pfc-lbl-withheld-from'),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
@@ -275,6 +276,7 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-to',
                             type: 'datetime-local'
                         })
+                        .addClass('form-control')
                         .ref('pfc-lbl-withheld-to'),
                     $$('div')
                         .addClass('sc-np-publish-action-section-content-actions')

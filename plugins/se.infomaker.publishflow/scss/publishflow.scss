@@ -9,11 +9,12 @@
         input {
             clear: both;
             font-size: 80%;
+            width: auto;
         }
 
         label {
             display: block;
-            margin-bottom: -14px;
+            margin-bottom: -10px;
             line-height: 1.4rem;
         }
 
@@ -135,7 +136,7 @@
             div.sc-np-publish-action-section {
                 div.sc-np-publish-action-section-content {
                     display: none;
-                    margin-top: -10px;
+                    margin-top: -6px;
 
                     div.sc-np-publish-action-section-content-actions {
                         button {
