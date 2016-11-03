@@ -2,20 +2,20 @@ import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
-const {api, moment} = writer
+const {api, moment, event} = writer
 const pluginId = 'se.infomaker.publishflow'
 
 class PublishFlowComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on(pluginId, 'document:changed', () => {
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, () => {
             this.props.popover.setButtonText(
                 this.getLabel('Save *')
             )
         })
 
-        api.events.on(pluginId, 'document:saved', () => {
+        api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
             this._onDocumentSaved()
         })
     }
