@@ -33,13 +33,15 @@ npm install
 echo Running build for production
 npm run build
 
-AWS_ACCESS_KEY_ID=$awsaccesskey  AWS_SECRET_ACCESS_KEY=$awssecretkey AWS_S3_BUCKET_NAME=$awsbucketname node s3Upload.js
-
 
 if [[ $? -ne 0 ]]; then
   echo "Build failed"
   exit 1
 fi
+
+AWS_ACCESS_KEY_ID=$awsaccesskey  AWS_SECRET_ACCESS_KEY=$awssecretkey AWS_S3_BUCKET_NAME=$awsbucketname node s3Upload.js
+
+
 
 #echo "{\"Plugins\": \"#$(git rev-parse --short HEAD)\"}" > dist/versions.json
 
