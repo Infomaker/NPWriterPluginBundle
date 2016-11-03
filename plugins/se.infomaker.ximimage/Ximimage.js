@@ -23,11 +23,7 @@ Ximimage.define({
 
     // stores a blob/file object of the image, used only local but must survive undo/redo
     // must not be sent over the wire in realtime case (local: true)
-    // imageFile: { type: 'blob', optional: true },
-    // imageFile: { type: 'blob' },
-
-    // Resource url (available after upload is completed)
-    // url: { type: 'string', optional: true },
+    imageFile: { type: 'file' },
 
     knownData: { type: 'boolean', default: false },
     caption: { type: 'string', optional: true },
@@ -39,10 +35,6 @@ Ximimage.define({
     height: { type: 'number', optional: true },
     authors: { type: 'array', default: [] },
     crops: { type: 'object', default: [] }
-
-    // progress: { type: 'number', default: 100 },
-    // uuid: { type: 'string', optional: true },
-    // uri: { type: 'string', optional: true },
 })
 
 export default Ximimage

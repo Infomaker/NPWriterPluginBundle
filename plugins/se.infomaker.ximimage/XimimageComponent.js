@@ -16,18 +16,15 @@ class XimimageComponent extends Component {
     _onFileSelected(e) {
         let file = e.currentTarget.files[0]
         let nodeId = this.props.node.id
-        let fileId = this.props.node.imageFile
-
-        // We store the image file and remove the url, so on next
-        // save the resource gets uploaded and a new url gets set
+        let oldFileId = this.props.node.imageFile
         this.context.editorSession.transaction((tx) => {
-            // Replace blob
+            // create a new file node and replace the old one
             var newFile = tx.create({
                 type: 'file',
                 data: file
             })
             tx.set([nodeId, 'imageFile'], newFile.id)
-            tx.delete(fileId)
+            tx.delete(oldFileId)
         })
     }
 

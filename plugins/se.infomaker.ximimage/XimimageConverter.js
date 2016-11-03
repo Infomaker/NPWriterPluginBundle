@@ -1,4 +1,4 @@
-import { NilUUID } from 'writer'
+import { NilUUID, idGenerator } from 'writer'
 
 export default {
     type: 'ximimage',
@@ -9,21 +9,26 @@ export default {
     },
 
     import: function(el, node, converter) { // jshint ignore:line
-        if (el.attr('uuid')) {
-            node.uuid = el.attr('uuid')
-        }
 
         // Import link - base data
         var linkEl = el.find('links>link')
-        node.url = ''
 
+        let imageFile = {
+            id: idGenerator(),
+            type: 'file',
+            mimeType: 'x-im/image'
+        }
+        if (el.attr('uuid')) {
+            imageFile.uuid = el.attr('uuid')
+        }
         if (linkEl.attr('uri')) {
-            node.uri = linkEl.attr('uri')
+            imageFile.uri = linkEl.attr('uri')
         }
-
         if (linkEl.attr('url')) {
-            node.url = linkEl.attr('url')
+            imageFile.url = linkEl.attr('url')
         }
+        converter.createNode(imageFile)
+        node.imageFile = imageFile.id
 
         // Import data
         var dataEl = linkEl.find('data')
