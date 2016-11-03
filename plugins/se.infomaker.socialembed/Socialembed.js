@@ -1,6 +1,27 @@
 const { BlockNode } = substance
 
-class SocialembedNode extends BlockNode {}
+class SocialembedNode extends BlockNode {
+
+    /*
+        Attempts to upload the file which is stored temporarily in this._previewFile
+    */
+    fetchPayload(cb, context) {
+        context.fileClient.uploadFile(this.imageFiles, function(err, url) {
+            if (err) return cb(err)
+            // Contract with ResourceManager: result is used to set properties accordingly.
+            cb(null, {url: url})
+        })
+    }
+
+    /*
+        Determines the payload that must be present
+        in order to consider the resource resolved
+    */
+    hasPayload() {
+        return Boolean(this.url)
+    }
+
+}
 
 SocialembedNode.define({
     type: 'socialembed',

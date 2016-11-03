@@ -1,73 +1,77 @@
-const { NilUUID } = writer
+import { NilUUID } from 'writer'
 
 export default {
     type: 'ximimage',
     tagName: 'object',
 
     matchElement: function(el) {
-        return el.is('object') && el.attr('type') == 'x-im/image';
+        return el.is('object') && el.attr('type') === 'x-im/image'
     },
 
     import: function(el, node, converter) { // jshint ignore:line
         if (el.attr('uuid')) {
-            node.uuid = el.attr('uuid');
+            node.uuid = el.attr('uuid')
         }
 
         // Import link - base data
-        var linkEl = el.find('links>link');
-        node.url = '';
+        var linkEl = el.find('links>link')
+        node.url = ''
 
         if (linkEl.attr('uri')) {
-            node.uri = linkEl.attr('uri');
+            node.uri = linkEl.attr('uri')
+        }
+
+        if (linkEl.attr('url')) {
+            node.url = linkEl.attr('url')
         }
 
         // Import data
-        var dataEl = linkEl.find('data');
-        node.caption = '';
-        node.alttext = '';
-        node.credit = '';
-        node.alignment = '';
-        node.crops = {};
+        var dataEl = linkEl.find('data')
+        node.caption = ''
+        node.alttext = ''
+        node.credit = ''
+        node.alignment = ''
+        node.crops = {}
 
         if (dataEl) {
             dataEl.children.forEach(function(child) {
-                if (child.tagName == 'text') {
+                if (child.tagName === 'text') {
                     node.caption = converter.annotatedText(child, [node.id, 'caption']);
                 }
 
-                if (child.tagName == 'alttext') {
+                if (child.tagName === 'alttext') {
                     node.alttext = converter.annotatedText(child, [node.id, 'alttext']);
                 }
 
-                if (child.tagName == 'credit') {
+                if (child.tagName === 'credit') {
                     node.credit = converter.annotatedText(child, [node.id, 'credit']);
                 }
 
-                if (child.tagName == 'alignment') {
+                if (child.tagName === 'alignment') {
                     node.alignment = child.text();
                 }
 
-                if (child.tagName == 'width') {
-                    node.width = parseInt(child.text());
+                if (child.tagName === 'width') {
+                    node.width = parseInt(child.text(), 10)
                 }
 
-                if (child.tagName == 'height') {
-                    node.height = parseInt(child.text());
+                if (child.tagName === 'height') {
+                    node.height = parseInt(child.text(), 10)
                 }
 
-                if (child.tagName == 'crops' && child.children.length > 0) {
+                if (child.tagName === 'crops' && child.children.length > 0) {
                     var crops = {crops: []};
 
                     child.children.forEach(function(crop) {
-                        if (crop.children.length == 0) {
+                        if (crop.children.length === 0) {
                             // Sanity check
                             return;
                         }
 
-                        if (crop.tagName == 'width') {
+                        if (crop.tagName === 'width') {
                             crops.width = crop.text();
                         }
-                        else if (crop.tagName == 'height') {
+                        else if (crop.tagName === 'height') {
                             crops.height = crop.text();
                         }
                         else {
@@ -90,77 +94,81 @@ export default {
                         node.crops.original = crops;
                     }
                 }
-
-            });
+            })
         }
 
         // Import author links
-        node.authors = [];
-        var authorLinks = linkEl.find('links');
+        node.authors = []
+        var authorLinks = linkEl.find('links')
         if (authorLinks) {
             authorLinks.children.forEach(function(authorLinkEl) {
                 if ("author" === authorLinkEl.getAttribute('rel')) {
                     node.authors.push({
                         uuid: authorLinkEl.getAttribute('uuid'),
                         name: authorLinkEl.getAttribute('title')
-                    });
+                    })
                 }
                 else {
                     console.warn("Unhandled link in image object", authorLinkEl);
                 }
-            });
+            })
         }
     },
 
     export: function(node, el, converter) {
         var $$ = converter.$$;
 
-        el.removeAttr('data-id');
+        el.removeAttr('data-id')
         el.attr({
             id: node.id,
             uuid: node.uuid,
             type: 'x-im/image'
-        });
+        })
 
         var data = $$('data').append([
             $$('width').append(node.width),
             $$('height').append(node.height)
-        ]);
+        ])
 
-        var fields = converter.pluginManager.api.getConfigValue('ximimage', 'fields');
+        var fields = converter.pluginManager.api.getConfigValue('ximimage', 'fields')
         fields.forEach(obj => {
-            let name = (obj.name == 'caption' ? 'text' : obj.name)
+            let name = (obj.name === 'caption' ? 'text' : obj.name)
 
-            if (obj.type == 'option') {
+            if (obj.type === 'option') {
                 data.append(
                     $$(name).append(node[obj.name])
-                );
+                )
             }
             else {
                 data.append(
                     $$(name).append(
                         converter.annotatedText([node.id, obj.name])
                     )
-                );
+                )
             }
-        });
+        })
 
         // Add crops to data
-        var crops = [];
+        var crops = []
         if (node.crops && node.crops.original) {
-            var originalCrops = $$('crops');
+            var originalCrops = $$('crops')
 
             for (var x in node.crops.original.crops) {
-                var origCrop = node.crops.original.crops[x];
 
-                originalCrops.append(
-                    $$('crop').attr('name', origCrop.name).append([
-                        $$('x').append(origCrop.x),
-                        $$('y').append(origCrop.y),
-                        $$('width').append(origCrop.width),
-                        $$('height').append(origCrop.height)
-                    ])
-                );
+                if (node.crops.original.crops.hasOwnProperty(x)) {
+                    var origCrop = node.crops.original.crops[x];
+
+                    originalCrops.append(
+                        $$('crop').attr('name', origCrop.name).append([
+                            $$('x').append(origCrop.x),
+                            $$('y').append(origCrop.y),
+                            $$('width').append(origCrop.width),
+                            $$('height').append(origCrop.height)
+                        ])
+                    )
+                }
+
+
             }
 
             crops.push(originalCrops);
@@ -180,28 +188,27 @@ export default {
         if (node.authors.length) {
             var authorLinks = $$('links');
             for (var n in node.authors) {
-                var authorLink = $$('link').attr({
-                    rel: 'author',
-                    uuid: node.authors[n].uuid,
-                    title: node.authors[n].name
-                });
+                if (node.authors.hasOwnProperty(n)) {
+                    var authorLink = $$('link').attr({
+                        rel: 'author',
+                        uuid: node.authors[n].uuid,
+                        title: node.authors[n].name
+                    })
 
-                if (!NilUUID.isNilUUID(node.authors[n].uuid)) {
-                    authorLink.attr('type', 'x-im/author');
+                    if (!NilUUID.isNilUUID(node.authors[n].uuid)) {
+                        authorLink.attr('type', 'x-im/author')
+                    }
+                    authorLinks.append(authorLink);
                 }
-
-                authorLinks.append(authorLink);
             }
-
-            link.append(authorLinks);
+            link.append(authorLinks)
         }
 
         el.append(
             $$('links').append(
                 link
             )
-        );
+        )
     }
-};
+}
 
-module.exports = XimimageConverter;

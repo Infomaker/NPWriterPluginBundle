@@ -1,49 +1,57 @@
-const { Component } = substance
+import { Component } from 'substance'
+
 
 class XimimageComponent extends Component {
 
     didMount() {
         // Trigger upload dialog
         this.refs.fileInput.click()
-        this.props.node.on('upload:progress', this._onProgress, this)
+        this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
     }
 
-    _onProgress(progressValue) {
-        this.refs.progressbar.setProps({
-            progress: progressValue
+    dispose() {
+        this.props.node.off(this)
+        this.context.editorSession.off(this)
+    }
+
+    _onFileSelected(e) {
+        let file = e.currentTarget.files[0]
+        let nodeId = this.props.node.id
+        let fileId = this.props.node.imageFile
+
+        // We store the image file and remove the url, so on next
+        // save the resource gets uploaded and a new url gets set
+        this.context.editorSession.transaction((tx) => {
+            // Replace blob
+            var newFile = tx.create({
+                type: 'file',
+                data: file
+            })
+            tx.set([nodeId, 'imageFile'], newFile.id)
+            tx.delete(fileId)
         })
     }
 
-    render() {
-        let Button = this.getComponent('button')
-        let el = $$('div').addClass('sc-image')
-        let state = this.props.node.getState()
+    render($$) {
+        let node = this.props.node
+        let el = $$('div').addClass('sc-ximimage')
+        let imgSrc = node.getUrl()
 
-        el.append($$(Graphic, {
-            url: "",
-            preview: this.props.node.state === 'uploading'
-        }))
-
-        if (state === 'uploading') {
+        if (imgSrc) {
             el.append(
-                $$(Progressbar, { progress: 0 })
-                .ref('progressbar')
+                $$('img', {
+                    src: imgSrc
+                })
             )
         }
 
-        if (state === 'error') {
-            el.append(this.props.node.getErrorMessage())
-            // Render retry button?
-        }
-
-        // el.append(
-        //     $$('input')
-        //         .attr('type', 'file')
-        //         .ref('fileInput')
-        //         // .attr('multiple', 'multiple')
-        //         .on('change', this._onFileSelected)
-        // )
-
+        el.append(
+            $$('input')
+                .attr('type', 'file')
+                .ref('fileInput')
+                // .attr('multiple', 'multiple')
+                .on('change', this._onFileSelected)
+        )
         return el
     }
 }

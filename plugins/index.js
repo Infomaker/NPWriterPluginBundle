@@ -5,6 +5,7 @@ import PublishFlow from './se.infomaker.publishflow/index'
 import SocialEmbed from './se.infomaker.socialembed/index'
 import NewsPriority from './se.infomaker.newspriority/index'
 import XImteaser from './se.infomaker.ximteaser/index'
+import XImimage from './se.infomaker.ximimage/index'
 
 (() => {
     Skeleton()
@@ -12,6 +13,7 @@ import XImteaser from './se.infomaker.ximteaser/index'
     Preamble()
     SocialEmbed()
     XImteaser()
+    XImimage()
     PublishFlow()
     NewsPriority()
 })()

@@ -1,4 +1,4 @@
-const { Component, TextPropertyEditor } = substance
+import { Component, TextPropertyEditor } from 'substance'
 import XimteaserUpdater from './XimteaserUpdater'
 
 /*
