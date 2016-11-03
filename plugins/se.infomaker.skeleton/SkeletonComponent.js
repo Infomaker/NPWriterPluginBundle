@@ -91,9 +91,9 @@ class SkeletonComponent extends Component {
                 }
             ]
 
-            api.ui.showMessageDialog(messages, () => {}, () => {})
-            // api.ui.showDialog(Test, {}, {primary:"Go", secondary: "Cancel", tertiary: third})
-        }).append('Open new dialog!')
+            // api.ui.showMessageDialog(messages, () => {}, () => {})
+            api.ui.showDialog(Test, {}, {primary:"Go", secondary: "Cancel", tertiary: third})
+        }).append('Open dialog')
 
         el.append(button)
         el.append(openDialog)
