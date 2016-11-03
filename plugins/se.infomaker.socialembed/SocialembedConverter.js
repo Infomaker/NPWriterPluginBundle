@@ -15,13 +15,14 @@ export default {
           "links": [
               {
                 "rel": "self",
-                "type": ”x-im/tweet",
+                "type": "x-im/tweet",
                 "url": "https://twitter.com/fraserspeirs/status/694515217666064385",
                 "uri": "x-im://tweet/694515217666064385"
               }
             ]
           }
         */
+
         var linkEl = el.find('links>link');
         node.url = linkEl.attr('url');
         node.uri = linkEl.attr('uri');
