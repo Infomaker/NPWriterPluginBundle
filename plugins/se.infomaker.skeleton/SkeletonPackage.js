@@ -4,7 +4,12 @@ export default {
     name: "skeleton",
     id: 'se.infomaker.skeleton',
     configure: function (config) {
-        config.addComponentToSidebarTop(this.id, SkeletonComponent)
-        // config.addComponentToSidebarWithTabId(this.id, 'main', SkeletonComponent)
+
+        config.addComponentToSidebarWithTabId(this.id, 'main', SkeletonComponent)
+
+        config.addLabel('skeleton-title', {
+            en: "Skeleton plugin",
+            sv: "Skelettplugin"
+        })
     }
 }

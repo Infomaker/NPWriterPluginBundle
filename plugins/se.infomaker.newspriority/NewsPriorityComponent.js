@@ -148,7 +148,7 @@ class NewsPriorityComponent extends Component {
         return lifetime;
     }
 
-   
+
     _renderDatetimeInput($$) {
         var form = $$('form')
             .attr('id', 'npLifetimeForm');

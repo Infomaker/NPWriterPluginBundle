@@ -29,6 +29,10 @@ module.exports = {
             browsers: ['last 2 versions']
         })
     ],
+    externals: {
+        "substance": "substance",
+        "writer": "writer"
+    },
     module: {
         loaders: [
             {

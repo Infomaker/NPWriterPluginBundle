@@ -6,6 +6,9 @@ import SocialEmbed from './se.infomaker.socialembed/index'
 import NewsPriority from './se.infomaker.newspriority/index'
 
 (() => {
+
+    console.log("Hello")
+
     Skeleton()
     TextAnalyzer()
     Preamble()
