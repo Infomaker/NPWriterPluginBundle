@@ -5,12 +5,11 @@ class XimimageComponent extends Component {
 
     didMount() {
         // Trigger upload dialog
-        this.refs.fileInput.click()
+        // this.refs.fileInput.click()
         this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
     }
 
     dispose() {
-        this.props.node.off(this)
         this.context.editorSession.off(this)
     }
 

@@ -12,7 +12,6 @@ class SocialembedCommand extends Command {
             dataType: 'x-im/socialembed',
             url: params.url
         }
-        debugger
 
         params.editorSession.selectNode(params.nodeId)
         context.api.document.insertBlockNode(node.type, node)

@@ -18,9 +18,6 @@ class Ximimage extends BlockNode {
 }
 
 
-// Payload fetching will be managed by the resource manager
-Ximimage.isResource = true
-
 Ximimage.define({
     type: 'ximimage',
 

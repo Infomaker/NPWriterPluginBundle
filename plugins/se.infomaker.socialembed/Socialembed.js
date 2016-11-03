@@ -14,8 +14,8 @@ class SocialembedNode extends BlockNode {
     /*
         Fetches embed HTML and metadata
     */
-    fetchPayload(cb, context) {
-
+    fetchPayload(context, cb) {
+        console.log('fetching payload...')
         let url = this.url
 
         // Example urls:
@@ -81,6 +81,7 @@ class SocialembedNode extends BlockNode {
     }
 }
 
+// Payload fetching will be managed by the resource manager
 SocialembedNode.isResource = true
 
 SocialembedNode.define({
