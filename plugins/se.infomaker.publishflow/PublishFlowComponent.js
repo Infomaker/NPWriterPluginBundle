@@ -264,6 +264,7 @@ class PublishFlowComponent extends Component {
                             type: 'datetime-local',
                             required: true
                         })
+                        .addClass('form-control')
                         .ref('pfc-lbl-withheld-from'),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
@@ -275,6 +276,7 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-to',
                             type: 'datetime-local'
                         })
+                        .addClass('form-control')
                         .ref('pfc-lbl-withheld-to'),
                     $$('div')
                         .addClass('sc-np-publish-action-section-content-actions')
