@@ -1,8 +1,6 @@
 .sc-ximimage {
-
-}
-
-.sc-block-image {
-    width: 100%;
-    display: block;
+  &> img {
+      width: 100%;
+      display: block;
+  }
 }
