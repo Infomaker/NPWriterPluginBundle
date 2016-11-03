@@ -27,7 +27,6 @@ class SocialembedComponent extends Component {
 
         // Only when HTML has been resolved
         if (node.hasPayload()) {
-
             var innerEl = $$('div').append(
                 $$('div').append([
                     $$('strong').append(
@@ -49,10 +48,15 @@ class SocialembedComponent extends Component {
                 .html(node.html)
             innerEl.append(htmlContainer)
             el.append(innerEl)
+        } else if (node.errorMessage) {
+            el.append(
+                $$('div').addClass('se-error').append(
+                    node.errorMessage
+                )
+            )
         } else {
             el.append('Loading...')
         }
-
         return el
     }
 
