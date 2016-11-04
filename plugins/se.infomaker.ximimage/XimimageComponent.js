@@ -6,11 +6,18 @@ class XimimageComponent extends Component {
     didMount() {
         // Trigger upload dialog
         // this.refs.fileInput.click()
-        this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
     dispose() {
         this.context.editorSession.off(this)
+    }
+
+    _onDocumentChange(change) {
+        if (change.isAffected(this.props.node.id) ||
+            change.isAffected(this.props.node.imageFile)) {
+            this.rerender()
+        }
     }
 
     _onFileSelected(e) {
@@ -20,7 +27,8 @@ class XimimageComponent extends Component {
         this.context.editorSession.transaction((tx) => {
             // create a new file node and replace the old one
             var newFile = tx.create({
-                type: 'file',
+                type: 'npfile',
+                fileType: 'image',
                 data: file
             })
             tx.set([nodeId, 'imageFile'], newFile.id)
