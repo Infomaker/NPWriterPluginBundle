@@ -1,11 +1,9 @@
 import { Component } from 'substance'
-
+import ImageDisplay from './ImageDisplay'
 
 class XimimageComponent extends Component {
 
     didMount() {
-        // Trigger upload dialog
-        // this.refs.fileInput.click()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
@@ -39,15 +37,10 @@ class XimimageComponent extends Component {
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage')
-        let imgSrc = node.getUrl()
 
-        if (imgSrc) {
-            el.append(
-                $$('img', {
-                    src: imgSrc
-                })
-            )
-        }
+        el.append(
+            $$(ImageDisplay, {node: node})
+        )
 
         el.append(
             $$('input')

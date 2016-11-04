@@ -75,6 +75,7 @@ SocialembedNode.define({
     type: 'socialembed',
     dataType: 'string',
     url: 'string',
+    // errorMessage is part of the resource contract
     errorMessage: { type: 'string', optional: true },
     // Payload (after embed has been resolved)
     html: { type: 'string', optional: true },

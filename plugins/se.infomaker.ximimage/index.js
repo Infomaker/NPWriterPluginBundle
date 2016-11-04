@@ -1,3 +1,4 @@
+import './scss/image-display.scss'
 import './scss/ximimage.scss'
 
 import XimimagePackage from './XimimagePackage'
