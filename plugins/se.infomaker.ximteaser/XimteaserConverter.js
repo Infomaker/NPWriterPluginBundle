@@ -1,3 +1,4 @@
+import { idGenerator } from 'writer'
 
 
 export default {
@@ -5,7 +6,7 @@ export default {
     tagName: 'object',
 
     matchElement: function (el) {
-        return el.is('object') && el.attr('type') === 'x-im/teaser';
+        return el.is('object') && el.attr('type') === 'x-im/teaser'
     },
 
     import: function (el, node, converter) { // jshint ignore:line
@@ -15,15 +16,30 @@ export default {
 
         var linkEl = el.find('links>link');
         if (linkEl) {
-            node.uri = linkEl.attr('uri');
-            node.url = "";
-            node.uuid = linkEl.attr('uuid');
             node.imageType = linkEl.attr('type');
+
+            let imageFile = {
+                id: idGenerator(),
+                type: 'npfile',
+                fileType: 'image'
+            }
+            if (el.attr('uuid')) {
+                imageFile.uuid = el.attr('uuid')
+            }
+            if (linkEl.attr('uri')) {
+                imageFile.uri = linkEl.attr('uri')
+            }
+            if (linkEl.attr('url')) {
+                imageFile.url = linkEl.attr('url')
+            }
+            converter.createNode(imageFile)
+            node.imageFile = imageFile.id
+
         }
 
         // Import data
-        var dataEl = el.find('data');
-        node.crops = {};
+        var dataEl = el.find('data')
+        node.crops = {}
 
         if (dataEl) {
             dataEl.children.forEach(function(child) {

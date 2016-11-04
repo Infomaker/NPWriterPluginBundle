@@ -1,4 +1,4 @@
-import { Component } from 'substance'
+import { Component, TextPropertyEditor } from 'substance'
 import ImageDisplay from './ImageDisplay'
 
 class XimimageComponent extends Component {
@@ -18,36 +18,20 @@ class XimimageComponent extends Component {
         }
     }
 
-    _onFileSelected(e) {
-        let file = e.currentTarget.files[0]
-        let nodeId = this.props.node.id
-        let oldFileId = this.props.node.imageFile
-        this.context.editorSession.transaction((tx) => {
-            // create a new file node and replace the old one
-            var newFile = tx.create({
-                type: 'npfile',
-                fileType: 'image',
-                data: file
-            })
-            tx.set([nodeId, 'imageFile'], newFile.id)
-            tx.delete(oldFileId)
-        })
-    }
-
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage')
 
         el.append(
-            $$(ImageDisplay, {node: node})
+            $$(ImageDisplay, { node: node })
         )
 
         el.append(
-            $$('input')
-                .attr('type', 'file')
-                .ref('fileInput')
-                // .attr('multiple', 'multiple')
-                .on('change', this._onFileSelected)
+            $$(TextPropertyEditor, {
+                tagName: 'div',
+                path: [this.props.node.id, 'caption'],
+                doc: this.props.doc
+            }).ref('caption').addClass('se-caption')
         )
         return el
     }

@@ -16,15 +16,48 @@ class ImageDisplay extends Component {
             )
         }
 
+        /* Invisible file input element */
         el.append(
-            $$(Button, {
-                icon: 'image'
-            }).on('click', this._openMetaData),
-            $$(Button, {
-                icon: 'crop'
-            }).on('click', this._openCropper)
+            $$('input')
+                .attr('type', 'file')
+                .ref('fileInput')
+                .on('change', this._onFileSelected)
+        )
+
+        el.append(
+            $$('div').addClass('se-actions').append(
+                $$(Button, {
+                    icon: 'upload'
+                }).on('click', this._replaceImage),
+                $$(Button, {
+                    icon: 'image'
+                }).on('click', this._openMetaData),
+                $$(Button, {
+                    icon: 'crop'
+                }).on('click', this._openCropper)
+            )
         )
         return el
+    }
+
+    _replaceImage() {
+        this.refs.fileInput.click()
+    }
+
+    _onFileSelected(e) {
+        let file = e.currentTarget.files[0]
+        let nodeId = this.props.node.id
+        let oldFileId = this.props.node.imageFile
+        this.context.editorSession.transaction((tx) => {
+            // create a new file node and replace the old one
+            var newFile = tx.create({
+                type: 'npfile',
+                fileType: 'image',
+                data: file
+            })
+            tx.set([nodeId, 'imageFile'], newFile.id)
+            tx.delete(oldFileId)
+        })
     }
 
     _openMetaData() {

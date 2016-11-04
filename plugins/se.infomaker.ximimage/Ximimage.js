@@ -21,12 +21,10 @@ class Ximimage extends BlockNode {
 Ximimage.define({
     type: 'ximimage',
 
-    // stores a blob/file object of the image, used only local but must survive undo/redo
-    // must not be sent over the wire in realtime case (local: true)
     imageFile: { type: 'file' },
 
     knownData: { type: 'boolean', default: false },
-    caption: { type: 'string', optional: true },
+    caption: { type: 'string', default: '' },
     alttext: { type: 'string', optional: true },
     credit: { type: 'string', optional: true },
     alignment: { type: 'string', optional: true },

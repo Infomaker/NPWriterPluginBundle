@@ -39,7 +39,6 @@ class SocialembedNode extends BlockNode {
     }
 
     _loadFacebook(url, context, cb) {
-        console.log('loading facebook embed')
         cb(new Error('Facebook Embed: Not yet implemented'))
     }
 
