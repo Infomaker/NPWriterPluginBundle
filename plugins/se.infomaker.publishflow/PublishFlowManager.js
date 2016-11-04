@@ -1,7 +1,7 @@
 const {api, moment} = writer
 class PublishFlowConfiguration {
     constructor(pluginId) {
-        this.api = pluginId
+        this.pluginId = pluginId
 
         this.status = {
             'imext:draft': {
@@ -87,7 +87,7 @@ class PublishFlowConfiguration {
 
     setStatus(qcode, pubStart, pubStop) {
         if (qcode) {
-            api.newsItem.setPubstatus(
+            api.newsItem.setPubStatus(
                 this.pluginId,
                 {
                     qcode: qcode

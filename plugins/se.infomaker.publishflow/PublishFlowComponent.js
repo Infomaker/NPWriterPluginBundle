@@ -18,6 +18,10 @@ class PublishFlowComponent extends Component {
         api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
             this._onDocumentSaved()
         })
+
+        api.events.on(pluginId, event.DOCUMENT_SAVE_FAILED, () => {
+            this._onDocumentSaveFailed()
+        })
     }
 
     dispose() {
@@ -27,7 +31,7 @@ class PublishFlowComponent extends Component {
 
     getInitialState() {
         let status = api.newsItem.getPubStatus()
-        this.publishFlowMgr = new PublishFlowManager(pluginId, api)
+        this.publishFlowMgr = new PublishFlowManager(pluginId)
 
         return {
             status: status,
@@ -205,9 +209,9 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToDraft()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToDraft()
+            })
         })
     }
 
@@ -219,9 +223,9 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToDone()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToDone()
+            })
         })
 
     }
@@ -288,13 +292,15 @@ class PublishFlowComponent extends Component {
                                 )
                             )
                             .on('click', () => {
-                                // FIXME: Must be able to reset to previous state
                                 try {
-                                    this.publishFlowMgr.setToWithheld(
-                                        this.refs['pfc-lbl-withheld-from'].val(),
-                                        this.refs['pfc-lbl-withheld-to'].val()
-                                    )
-                                    this.defaultAction()
+                                    var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
+                                        toVal = this.refs['pfc-lbl-withheld-to'].val()
+                                    this._save(() => {
+                                        this.publishFlowMgr.setToWithheld(
+                                            fromVal,
+                                            toVal
+                                        )
+                                    })
                                 }
                                 catch(ex) {
                                     this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
@@ -332,9 +338,9 @@ class PublishFlowComponent extends Component {
         }
 
         el.on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToUsable()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToUsable()
+            })
         })
 
         return el
@@ -348,11 +354,15 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            this.publishFlowMgr.setToCanceled()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToCanceled()
+            })
         })
     }
 
+    /**
+     * Default action called by default action in toolbar/popover
+     */
     defaultAction() {
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
@@ -360,11 +370,68 @@ class PublishFlowComponent extends Component {
         api.newsItem.save()
     }
 
-    _onDocumentSaved() {
-        this.props.popover.setButtonText(
-            this.getLabel('Save')
-        )
+    /**
+     * Save current status and handle status change and save
+     */
+    _save(beforeSaveFunc) {
+        this._saveState()
 
+        if (beforeSaveFunc) {
+            beforeSaveFunc()
+        }
+
+        this.defaultAction()
+    }
+
+    /**
+     * Save the state so that we can restore it if a save fails
+     */
+    _saveState() {
+        this.extendState({
+            previousState: {
+                pubStatus: api.newsItem.getPubStatus(),
+                pubStart: api.newsItem.getPubStart(),
+                pubStop: api.newsItem.getPubStop()
+            }
+        })
+    }
+
+    /**
+     * When save fails, restore previous state and update UI
+     */
+    _onDocumentSaveFailed() {
+        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.enable()
+
+        api.newsItem.setPubStatus(pluginId, this.state.previousState.pubStatus)
+        if (this.state.previousState.pubStart) {
+            api.newsItem.setPubStart(pluginId, this.state.previousState.pubStart)
+        }
+        else {
+            api.newsItem.removePubStart(pluginId)
+        }
+
+        if (this.state.previousState.pubStop) {
+            api.newsItem.setPubStop(pluginId, this.state.previousState.pubStop)
+        }
+        else {
+            api.newsItem.removePubStop(pluginId)
+        }
+
+        this.extendState({
+            status: api.newsItem.getPubStatus(),
+            pubStart: api.newsItem.getPubStart(),
+            pubStop: api.newsItem.getPubStop(),
+            previousState: null
+        })
+
+        this._updateStatus(false)
+    }
+
+    /**
+     * When saved, update state and UI
+     */
+    _onDocumentSaved() {
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
@@ -374,10 +441,20 @@ class PublishFlowComponent extends Component {
             pubStop: api.newsItem.getPubStop()
         })
 
-        this._updateStatus()
+        this._updateStatus(true)
     }
 
-    _updateStatus() {
+    /**
+     * Update UI
+     */
+    _updateStatus(updateButtonSavedLabel) {
+
+        if (updateButtonSavedLabel) {
+            this.props.popover.setButtonText(
+                this.getLabel('Save')
+            )
+        }
+
         if (this.state.status.qcode === 'stat:usable') {
             this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode) +
