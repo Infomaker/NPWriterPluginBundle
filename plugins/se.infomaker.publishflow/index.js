@@ -6,6 +6,6 @@ export default () => {
         registerPlugin(PublishFlowPackage)
     }
     else {
-        console.log("Register method not yet available");
+        console.info("Register method not yet available");
     }
 }

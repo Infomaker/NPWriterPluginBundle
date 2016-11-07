@@ -7,6 +7,6 @@ export default () => {
     if (registerPlugin) {
         registerPlugin(SocialembedPackage)
     } else {
-        console.log("Register method not yet available");
+        console.info("Register method not yet available");
     }
 }
