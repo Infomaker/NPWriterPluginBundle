@@ -132,7 +132,7 @@ module.exports = {
     "no-undef": 2,
     "no-undef-init": 2,
     "no-undefined": 0,
-    "no-unused-vars": 2,
+    "no-unused-vars": 1,
     "no-use-before-define": [2, { "functions": false }]
   }
 };

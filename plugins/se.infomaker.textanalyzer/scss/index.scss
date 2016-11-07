@@ -1,0 +1,22 @@
+.textanalyzer {
+    width: 300px;
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem
+}
+.number__container {
+    display: flex;
+}
+
+.count-info {
+    line-height: 40px;
+    flex: 1;
+    text-align: center;
+    font-size:1.2rem;
+    span {
+        font-weight:700;
+
+    }
+    p {
+        line-height:0 !important;
+        margin: 0 !important;
+    }
+}

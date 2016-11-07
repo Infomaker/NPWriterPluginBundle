@@ -29,6 +29,10 @@ module.exports = {
             browsers: ['last 2 versions']
         })
     ],
+    externals: {
+        "substance": "substance",
+        "writer": "writer"
+    },
     module: {
         loaders: [
             {
@@ -64,6 +68,18 @@ module.exports = {
         failOnError: true
     },
     plugins: [
+        function()
+        {
+            this.plugin("done", function(stats)
+            {
+                if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1)
+                {
+                    console.log(stats.compilation.errors);
+                    process.exit(1); // or throw new Error('webpack build failed.');
+                }
+                // ...
+            });
+        },
         new ExtractTextPlugin("style.css"),
         new webpack.DefinePlugin({
             'process.env': {

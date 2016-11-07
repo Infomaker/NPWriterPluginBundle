@@ -1,28 +1,28 @@
 const {api, moment} = writer
 class PublishFlowConfiguration {
     constructor(pluginId) {
-        this.api = pluginId
+        this.pluginId = pluginId
 
         this.status = {
             'imext:draft': {
                 'allowed': [
                     'imext:done',
-                    'stat:withheld',
-                    'stat:usable'
+                    'stat:usable',
+                    'stat:withheld'
                 ]
             },
             'imext:done': {
                 'allowed': [
-                    'stat:withheld',
                     'stat:usable',
-                    'imext:draft'
+                    'imext:draft',
+                    'stat:withheld'
                 ]
             },
             'stat:withheld': {
                 'allowed': [
-                    'imext:draft',
                     'stat:usable',
-                    'stat:canceled'
+                    'stat:canceled',
+                    'imext:draft'
                 ]
             },
             'stat:usable': {
@@ -35,8 +35,8 @@ class PublishFlowConfiguration {
                 'allowed': [
                     'imext:draft',
                     'imext:done',
-                    'stat:withheld',
-                    'stat:usable'
+                    'stat:usable',
+                    'stat:withheld'
                 ]
             },
         }
@@ -58,8 +58,19 @@ class PublishFlowConfiguration {
         this.setStatus('imext:done', null, null)
     }
 
-    setToWithheld() {
+    setToWithheld(from, to) {
+        let fromObj = moment(from),
+            toObj = moment(to)
 
+        if (!fromObj.isValid()) {
+            throw new Error('Invalid from date and time')
+        }
+
+        this.setStatus(
+            'stat:withheld',
+            {value: fromObj.format('YYYY-MM-DDTHH:mm:ssZ')},
+            !toObj.isValid() ? null : {value: toObj.format('YYYY-MM-DDTHH:mm:ssZ')}
+        )
     }
 
     setToUsable() {
@@ -76,7 +87,7 @@ class PublishFlowConfiguration {
 
     setStatus(qcode, pubStart, pubStop) {
         if (qcode) {
-            api.newsItem.setPubstatus(
+            api.newsItem.setPubStatus(
                 this.pluginId,
                 {
                     qcode: qcode

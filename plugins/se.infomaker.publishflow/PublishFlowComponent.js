@@ -2,21 +2,25 @@ import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
-const {api, moment} = writer
+const {api, moment, event} = writer
 const pluginId = 'se.infomaker.publishflow'
 
 class PublishFlowComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on(pluginId, 'document:changed', () => {
-            this.props.setButtonText(
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, () => {
+            this.props.popover.setButtonText(
                 this.getLabel('Save *')
             )
         })
 
-        api.events.on(pluginId, 'document:saved', () => {
+        api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
             this._onDocumentSaved()
+        })
+
+        api.events.on(pluginId, event.DOCUMENT_SAVE_FAILED, () => {
+            this._onDocumentSaveFailed()
         })
     }
 
@@ -27,7 +31,7 @@ class PublishFlowComponent extends Component {
 
     getInitialState() {
         let status = api.newsItem.getPubStatus()
-        this.publishFlowMgr = new PublishFlowManager(pluginId, api)
+        this.publishFlowMgr = new PublishFlowManager(pluginId)
 
         return {
             status: status,
@@ -38,14 +42,14 @@ class PublishFlowComponent extends Component {
     }
 
     didMount() {
-        this.props.setButtonText(
+        this.props.popover.setButtonText(
             this.getLabel('Save')
         )
 
         this._updateStatus()
 
         if (!api.browser.isSupported()) {
-            this.props.disable()
+            this.props.popover.disable()
         }
     }
 
@@ -87,14 +91,33 @@ class PublishFlowComponent extends Component {
             case 'stat:withheld':
                 el.append([
                     $$('h2').append(
-                        this.getLabel('Publish article?')
+                        this.getLabel('Scheduled')
                     ),
                     $$('p').append(
-                        this.getLabel('Article is currently schedule to be published') +
+                        this.getLabel('Article is scheduled to be published') +
                         ' ' +
                         moment(this.state.pubStart.value).fromNow()
                     )
                 ])
+
+                var specEl = $$('p').append([
+                    this.getLabel('From') + ': ',
+                    $$('strong').append(
+                        moment(this.state.pubStart.value).format('YYYY-MM-DD HH:mm')
+                    )
+                ])
+
+                var toObj = moment(this.state.pubStop)
+                if (toObj.isValid()) {
+                    specEl.append([
+                        this.getLabel('To') + ': ',
+                        $$('strong').append(
+                            moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
+                        )
+                    ])
+                }
+
+                el.append(specEl)
                 break
 
             case 'stat:usable':
@@ -116,7 +139,7 @@ class PublishFlowComponent extends Component {
                         this.getLabel('Publish article again?')
                     ),
                     $$('p').append(
-                        this.getLabel('Article was canceled and is no longer published')
+                        this.getLabel('Article has been canceled and is no longer published')
                     )
                 ])
                 break
@@ -143,6 +166,9 @@ class PublishFlowComponent extends Component {
                         .append(
                             this.getLabel('Cancel')
                         )
+                        .on('click', () => {
+                            this.props.popover.close()
+                        })
                 )
         )
         return el
@@ -183,9 +209,9 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToDraft()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToDraft()
+            })
         })
     }
 
@@ -197,9 +223,9 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToDone()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToDone()
+            })
         })
 
     }
@@ -241,7 +267,9 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-from',
                             type: 'datetime-local',
                             required: true
-                        }),
+                        })
+                        .addClass('form-control')
+                        .ref('pfc-lbl-withheld-from'),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
@@ -252,6 +280,37 @@ class PublishFlowComponent extends Component {
                             id: 'pfc-lbl-withheld-to',
                             type: 'datetime-local'
                         })
+                        .addClass('form-control')
+                        .ref('pfc-lbl-withheld-to'),
+                    $$('div')
+                        .addClass('sc-np-publish-action-section-content-actions')
+                        .append(
+                            $$('button')
+                                .addClass('btn-secondary')
+                                .append(
+                                    this.getLabel('Save')
+                                )
+                            )
+                            .on('click', () => {
+                                try {
+                                    var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
+                                        toVal = this.refs['pfc-lbl-withheld-to'].val()
+                                    this._save(() => {
+                                        this.publishFlowMgr.setToWithheld(
+                                            fromVal,
+                                            toVal
+                                        )
+                                    })
+                                }
+                                catch(ex) {
+                                    this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
+                                    window.setTimeout(() => {
+                                        this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+
                 ])
         )
 
@@ -279,9 +338,9 @@ class PublishFlowComponent extends Component {
         }
 
         el.on('click', () => {
-            // FIXME: Must be able to reset to previous state
-            this.publishFlowMgr.setToUsable()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToUsable()
+            })
         })
 
         return el
@@ -295,25 +354,86 @@ class PublishFlowComponent extends Component {
             )
         ])
         .on('click', () => {
-            this.publishFlowMgr.setToCanceled()
-            this.defaultAction()
+            this._save(() => {
+                this.publishFlowMgr.setToCanceled()
+            })
         })
     }
 
+    /**
+     * Default action called by default action in toolbar/popover
+     */
     defaultAction() {
-        this.props.disable()
-        this.props.setIcon('fa-refresh fa-spin fa-fw')
+        this.props.popover.disable()
+        this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
 
         api.newsItem.save()
     }
 
-    _onDocumentSaved() {
-        this.props.setButtonText(
-            this.getLabel('Save')
-        )
+    /**
+     * Save current status and handle status change and save
+     */
+    _save(beforeSaveFunc) {
+        this._saveState()
 
-        this.props.setIcon('fa-ellipsis-h')
-        this.props.enable()
+        if (beforeSaveFunc) {
+            beforeSaveFunc()
+        }
+
+        this.defaultAction()
+    }
+
+    /**
+     * Save the state so that we can restore it if a save fails
+     */
+    _saveState() {
+        this.extendState({
+            previousState: {
+                pubStatus: api.newsItem.getPubStatus(),
+                pubStart: api.newsItem.getPubStart(),
+                pubStop: api.newsItem.getPubStop()
+            }
+        })
+    }
+
+    /**
+     * When save fails, restore previous state and update UI
+     */
+    _onDocumentSaveFailed() {
+        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.enable()
+
+        api.newsItem.setPubStatus(pluginId, this.state.previousState.pubStatus)
+        if (this.state.previousState.pubStart) {
+            api.newsItem.setPubStart(pluginId, this.state.previousState.pubStart)
+        }
+        else {
+            api.newsItem.removePubStart(pluginId)
+        }
+
+        if (this.state.previousState.pubStop) {
+            api.newsItem.setPubStop(pluginId, this.state.previousState.pubStop)
+        }
+        else {
+            api.newsItem.removePubStop(pluginId)
+        }
+
+        this.extendState({
+            status: api.newsItem.getPubStatus(),
+            pubStart: api.newsItem.getPubStart(),
+            pubStop: api.newsItem.getPubStop(),
+            previousState: null
+        })
+
+        this._updateStatus(false)
+    }
+
+    /**
+     * When saved, update state and UI
+     */
+    _onDocumentSaved() {
+        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.enable()
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
@@ -321,26 +441,36 @@ class PublishFlowComponent extends Component {
             pubStop: api.newsItem.getPubStop()
         })
 
-        this._updateStatus()
+        this._updateStatus(true)
     }
 
-    _updateStatus() {
+    /**
+     * Update UI
+     */
+    _updateStatus(updateButtonSavedLabel) {
+
+        if (updateButtonSavedLabel) {
+            this.props.popover.setButtonText(
+                this.getLabel('Save')
+            )
+        }
+
         if (this.state.status.qcode === 'stat:usable') {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode) +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else {
-            this.props.setStatusText(
+            this.props.popover.setStatusText(
                 this.getLabel(this.state.status.qcode)
             )
         }

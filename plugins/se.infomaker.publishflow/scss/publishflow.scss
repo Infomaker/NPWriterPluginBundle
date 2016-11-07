@@ -9,11 +9,12 @@
         input {
             clear: both;
             font-size: 80%;
+            width: auto;
         }
 
         label {
             display: block;
-            margin-bottom: -14px;
+            margin-bottom: -10px;
             line-height: 1.4rem;
         }
 
@@ -26,6 +27,8 @@
 
         input:required:invalid,
         input:focus:invalid {
+            background: #FFF0F0;
+
             &::after {
                 font-family: FontAwesome;
                 content: "\f00d";
@@ -48,8 +51,10 @@
 
     .sc-np-publish-body {
 
-        p {
+        &>p {
             color: #777;
+            line-height: 1.4rem;
+            margin-top: 0.7rem;
         }
 
         .sc-np-publish-actions {
@@ -131,7 +136,14 @@
             div.sc-np-publish-action-section {
                 div.sc-np-publish-action-section-content {
                     display: none;
-                    margin-top: -10px;
+                    margin-top: -6px;
+
+                    div.sc-np-publish-action-section-content-actions {
+                        button {
+                            font-size: 90%;
+                            line-height: 90%;
+                        }
+                    }
                 }
 
                 &.active {

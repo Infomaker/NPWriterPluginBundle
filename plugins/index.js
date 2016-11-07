@@ -8,6 +8,9 @@ import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
 
 (() => {
+
+    console.log("Hello")
+
     Skeleton()
     TextAnalyzer()
     Preamble()
