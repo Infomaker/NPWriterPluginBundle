@@ -1,30 +1,36 @@
 import { Component } from 'substance'
 
+import ImageCropper from './ImageCropper'
+import ImageMetadata from './ImageMetadata'
+
 /*
   Intended to be used in Ximimage and Ximteaser
 */
 class ImageDisplay extends Component {
+    didMount() {
+        this.handleActions({
+            closeModal: this._closeDialog
+        })
+    }
+
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-image-display')
         let imgSrc = node.getUrl()
         let Button = this.getComponent('button')
+        let Modal = this.getComponent('modal')
+        let DialogClass = this.state.DialogClass
+
+        let imgContainer = $$('div').addClass('se-image-container')
 
         if (imgSrc) {
-            el.append(
+            imgContainer.append(
                 $$('img', { src: imgSrc })
             )
         }
 
-        /* Invisible file input element */
-        el.append(
-            $$('input')
-                .attr('type', 'file')
-                .ref('fileInput')
-                .on('change', this._onFileSelected)
-        )
-
-        el.append(
+        // Actions
+        imgContainer.append(
             $$('div').addClass('se-actions').append(
                 $$(Button, {
                     icon: 'upload'
@@ -37,6 +43,30 @@ class ImageDisplay extends Component {
                 }).on('click', this._openCropper)
             )
         )
+
+        el.append(imgContainer)
+
+        /* Invisible file input element */
+        el.append(
+            $$('input')
+                .attr('type', 'file')
+                .ref('fileInput')
+                .on('change', this._onFileSelected)
+        )
+
+        // Render dialog if open
+        if (DialogClass) {
+            el.append(
+                $$(Modal, {
+                    width: 'medium',
+                    textAlign: 'center'
+                }).append(
+                    $$(DialogClass, {
+                        node: node
+                    })
+                )
+            )
+        }
         return el
     }
 
@@ -60,12 +90,22 @@ class ImageDisplay extends Component {
         })
     }
 
+    _closeDialog() {
+        this.setState({
+            DialogClass: null
+        })
+    }
+
     _openMetaData() {
-        this.context.editorSession.startWorkflow('edit-image-metadata', {node: this.props.node})
+        this.setState({
+            DialogClass: ImageMetadata
+        })
     }
 
     _openCropper() {
-        this.context.editorSession.startWorkflow('crop-image', {node: this.props.node})
+        this.setState({
+            DialogClass: ImageCropper
+        })
     }
 }
 
