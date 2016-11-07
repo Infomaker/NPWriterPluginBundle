@@ -26,7 +26,7 @@ class XimimageComponent extends Component {
             $$(ImageDisplay, {
                 node: node,
                 isolatedNodeState: this.props.isolatedNodeState
-            })
+            }).ref('image')
         )
 
         el.append(

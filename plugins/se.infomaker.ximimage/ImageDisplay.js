@@ -26,7 +26,7 @@ class ImageDisplay extends Component {
 
         if (imgSrc) {
             imgContainer.append(
-                $$('img', { src: imgSrc })
+                $$('img', { src: imgSrc }).ref('img')
             )
         }
 
