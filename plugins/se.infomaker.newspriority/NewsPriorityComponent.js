@@ -108,7 +108,7 @@ class NewsPriorityComponent extends Component {
 
         var buttons = this.scores.map(function (score) {
             return $$('button')
-                .addClass('btn btn-secondary')
+                .addClass('btn btn-secondary sc-np-btn')
                 .text(String(score.value))
                 .attr('data-toggle', 'tooltip')
                 .attr('data-placement', 'bottom')
@@ -131,7 +131,7 @@ class NewsPriorityComponent extends Component {
         var buttons = this.lifetimes.map(function (lifetime) {
 
             return $$('button')
-                .addClass('btn btn-secondary')
+                .addClass('btn btn-secondary sc-np-btn')
                 .text(lifetime.label)
                 .attr('data-toggle', 'tooltip')
                 .attr('data-placement', 'bottom')

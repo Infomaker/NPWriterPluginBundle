@@ -27,7 +27,7 @@ export default {
         node.url = linkEl.attr('url');
         node.uri = linkEl.attr('uri');
         node.linkType = linkEl.attr('type');
-        node.html = linkEl.innerHTML;
+        node.html = atob(linkEl.innerHTML);
     },
 
     export: function(node, el, converter) {
@@ -48,7 +48,7 @@ export default {
             url: node.url,
             uri: node.uri
         });
-        link.innerHTML = node.html
+        link.innerHTML = btoa(node.html)
 
         links.append(link);
         el.append(links);

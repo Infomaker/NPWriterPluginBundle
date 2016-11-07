@@ -8,7 +8,10 @@ class Test extends Component {
     }
 
     render($$) {
-        return $$('div').css('padding', '1rem 2rem').css('height', '200px').append("HELLO WORLD")
+        return $$('div').css('padding', '1rem 2rem').css('height', '200px').append("HELLO WORLD").on('click', () => {
+            console.log("Click");
+            this.send('close')
+        })
     }
 
     onClose(action) {
@@ -57,7 +60,7 @@ class SkeletonComponent extends Component {
      * @returns {*}
      */
     render($$) {
-        let el = $$('div')
+        let el = $$('div').addClass('col-xs-1')
 
         el.append($$('h2').append(this.getLabel('skeleton-title')))
         el.append($$('p').append(String(this.state.clickCount)))

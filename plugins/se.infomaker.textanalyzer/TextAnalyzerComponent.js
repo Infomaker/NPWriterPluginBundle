@@ -1,6 +1,6 @@
 const {Component} = substance
 const {api, event} = writer
-
+import './scss/index.scss'
 class TextanalyzerComponent extends Component {
 
     dispose() {
@@ -12,6 +12,8 @@ class TextanalyzerComponent extends Component {
         api.events.on('textanalyzer', event.DOCUMENT_CHANGED, () => {
             this.calculateText()
         })
+
+
     }
 
     calculateText() {
@@ -22,21 +24,24 @@ class TextanalyzerComponent extends Component {
         })
     }
 
+    didMount() {
+        // this.props.popover.setIcon('fa-line-chart')
+    }
+
     render($$) {
-        var el = $$('div').addClass('sc-information-panel plugin')
-            .append($$('h2').append('Text'))
+        var el = $$('div').addClass('textanalyzer plugin')
 
         var numberContainer = $$('div').addClass('number__container clearfix')
 
         var textlengthEl = $$('div').addClass('count-info')
             .append($$('span').append(this.state.textLength.toString()))
-            .append($$('p').append('Tecken'))
-            .attr('title', "Tecken")
+            .append($$('p').append(this.getLabel('Characters')))
+            .attr('title', this.getLabel('Characters'))
 
         var wordsEl = $$('div').addClass('count-info')
             .append($$('span').append(this.state.words.toString()))
-            .append($$('p').append('Ord'))
-            .attr('title', "Ord")
+            .append($$('p').append(this.getLabel('Words')))
+            .attr('title', this.getLabel('Words'))
 
         numberContainer.append([
             textlengthEl,

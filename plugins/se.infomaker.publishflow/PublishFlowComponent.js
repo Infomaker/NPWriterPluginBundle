@@ -109,7 +109,6 @@ class PublishFlowComponent extends Component {
                     )
                 ])
 
-                debugger
                 if (this.state.pubStop) {
                     let toObj = moment(this.state.pubStop.value)
                     if (toObj.isValid()) {
