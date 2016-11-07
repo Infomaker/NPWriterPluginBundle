@@ -1,6 +1,15 @@
-const { Component } = substance
+import { Component } from 'substance'
 
 class SocialembedComponent extends Component {
+
+    didMount() {
+        this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+    }
+
+    dispose() {
+        this.context.editorSession.off(this)
+    }
+
     render($$) {
         var node = this.props.node,
             htmlContainer;
@@ -10,37 +19,44 @@ class SocialembedComponent extends Component {
             .addClass(node.socialChannel)
                 .attr('contenteditable', false);
 
-        // TODO: activate
+        // TODO: activate drag+drop
         // this.context.api.handleDrag(
         //     el,
         //     this.props.node
         // );
 
-        var innerEl = $$('div').append(
-            $$('div').append([
-                $$('strong').append(
-                    node.socialChannel
+        // Only when HTML has been resolved
+        if (node.hasPayload()) {
+            var innerEl = $$('div').append(
+                $$('div').append([
+                    $$('strong').append(
+                        node.socialChannel
+                    )
+                    .attr('contenteditable', false),
+                    $$('span').addClass('remove-button').append(
+                        this.context.iconProvider.renderIcon($$, 'delete')
+                    )
+                    .on('click', this.removeEmbed)
+                    .attr('title', this.getLabel('Remove from article'))
+                ])
+                .addClass('header')
+                .addClass(node.socialChannelIcon)
+                .attr('contenteditable', false)
+            )
+            htmlContainer = $$('div')
+                .addClass('socialembed__content')
+                .html(node.html)
+            innerEl.append(htmlContainer)
+            el.append(innerEl)
+        } else if (node.errorMessage) {
+            el.append(
+                $$('div').addClass('se-error').append(
+                    node.errorMessage
                 )
-                .attr('contenteditable', false),
-                $$('span').addClass('remove-button').append(
-                    this.context.iconProvider.renderIcon($$, 'delete')
-                )
-                .on('click', this.removeEmbed)
-                .attr('title', this.getLabel('Remove from article'))
-            ])
-            .addClass('header')
-            .addClass(node.socialChannelIcon)
-            .attr('contenteditable', false)
-        )
-
-        var html = node.html
-
-        htmlContainer = $$('div')
-            .addClass('socialembed__content')
-            .html(html)
-
-        innerEl.append(htmlContainer)
-        el.append(innerEl)
+            )
+        } else {
+            el.append('Loading...')
+        }
         return el
     }
 

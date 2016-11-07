@@ -1,0 +1,25 @@
+.sc-image-display {
+    > img {
+        width: 100%;
+        display: block;
+    }
+
+    > .se-actions {
+        text-align: center;
+        margin-bottom: 20px;
+        .sc-button {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            border-radius: 20px;
+            margin-left: 5px;
+            color: #fff;
+        }
+    }
+
+    > input {
+        display: none;
+    }
+}
