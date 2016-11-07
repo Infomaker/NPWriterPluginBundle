@@ -55,6 +55,13 @@
             color: #777;
             line-height: 1.4rem;
             margin-top: 0.7rem;
+
+            &.dates {
+                span {
+                    display: inline-block;
+                    width: 50px;
+                }
+            }
         }
 
         .sc-np-publish-actions {
