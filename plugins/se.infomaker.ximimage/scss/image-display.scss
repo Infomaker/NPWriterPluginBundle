@@ -37,7 +37,10 @@
 
 
 /*
-    Show image actions only when
+    Show image actions only when parent isolated node is selected or focused
+
+    TODO: This code below is not modular, as it inspects the parent structure.
+          Is there a better way?
 */
 .sc-isolated-node.sm-selected .sc-image-display > .se-image-container > .se-actions,
 .sc-isolated-node.sm-focused .sc-image-display > .se-image-container > .se-actions {
