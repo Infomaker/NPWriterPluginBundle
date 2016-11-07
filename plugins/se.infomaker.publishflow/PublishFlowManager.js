@@ -20,6 +20,7 @@ class PublishFlowConfiguration {
             },
             'stat:withheld': {
                 'allowed': [
+                    'stat:withheld',
                     'stat:usable',
                     'stat:canceled',
                     'imext:draft'

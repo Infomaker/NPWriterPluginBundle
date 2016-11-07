@@ -109,20 +109,24 @@ class PublishFlowComponent extends Component {
                     )
                 ])
 
-                var toObj = moment(this.state.pubStop)
-                if (toObj.isValid()) {
-                    specEl.append([
-                        $$('br'),
-                        $$('span').append(
-                            this.getLabel('To') + ': '
-                        ),
-                        $$('strong').append(
-                            moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
-                        )
-                    ])
+                debugger
+                if (this.state.pubStop) {
+                    let toObj = moment(this.state.pubStop.value)
+                    if (toObj.isValid()) {
+                        specEl.append([
+                            $$('br'),
+                            $$('span').append(
+                                this.getLabel('To') + ': '
+                            ),
+                            $$('strong').append(
+                                moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
+                            )
+                        ])
+                    }
                 }
 
                 el.append(specEl)
+
                 break
 
             case 'stat:usable':
@@ -244,7 +248,7 @@ class PublishFlowComponent extends Component {
             $$('a').append([
                 $$('i').addClass('fa fa-clock-o'),
                 $$('span').append(
-                    this.getLabel('Schedule for publish...')
+                    this.getLabel('Schedule for publish')
                 )
             ])
             .addClass('more')
@@ -257,6 +261,17 @@ class PublishFlowComponent extends Component {
                 }
             })
         )
+
+        let fromVal = '',
+            toVal = '';
+
+        if (this.state.pubStart) {
+            fromVal = moment(this.state.pubStart.value).format('YYYY-MM-DDTHH:mm')
+        }
+
+        if (this.state.pubStop) {
+            toVal = moment(this.state.pubStop.value).format('YYYY-MM-DDTHH:mm')
+        }
 
         el.append(
             $$('div')
@@ -274,7 +289,8 @@ class PublishFlowComponent extends Component {
                             required: true
                         })
                         .addClass('form-control')
-                        .ref('pfc-lbl-withheld-from'),
+                        .ref('pfc-lbl-withheld-from')
+                        .val(fromVal),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
@@ -286,7 +302,8 @@ class PublishFlowComponent extends Component {
                             type: 'datetime-local'
                         })
                         .addClass('form-control')
-                        .ref('pfc-lbl-withheld-to'),
+                        .ref('pfc-lbl-withheld-to')
+                        .val(toVal),
                     $$('div')
                         .addClass('sc-np-publish-action-section-content-actions')
                         .append(
