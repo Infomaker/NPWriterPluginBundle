@@ -385,10 +385,9 @@ class PublishFlowComponent extends Component {
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
+        api.newsItem.save()
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
-
-        api.newsItem.save()
     }
 
     /**
