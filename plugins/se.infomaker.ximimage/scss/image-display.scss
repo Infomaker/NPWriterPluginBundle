@@ -1,25 +1,45 @@
 .sc-image-display {
-    > img {
-        width: 100%;
-        display: block;
-    }
 
-    > .se-actions {
-        text-align: center;
-        margin-bottom: 20px;
-        .sc-button {
-            display: inline-block;
-            width: 40px;
+    > .se-image-container {
+        position: relative;
+
+        > img {
+            width: 100%;
+            display: block;
+        }
+
+        > .se-actions {
+            display: none; // only visible when isolated node is 'selected'
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            left: 0px;
             height: 40px;
-            text-align: center;
-            background: rgba(0,0,0,0.8);
-            border-radius: 20px;
-            margin-left: 5px;
-            color: #fff;
+            text-align: right;
+
+            .sc-button {
+                display: inline-block;
+                width: 40px;
+                height: 40px;
+                text-align: center;
+                background: rgba(0,0,0,0.7);
+                border-radius: 20px;
+                margin-left: 5px;
+                color: #fff;
+            }
         }
     }
 
     > input {
         display: none;
     }
+}
+
+
+/*
+    Show image actions only when
+*/
+.sc-isolated-node.sm-selected .sc-image-display > .se-image-container > .se-actions,
+.sc-isolated-node.sm-focused .sc-image-display > .se-image-container > .se-actions {
+    display: block;
 }

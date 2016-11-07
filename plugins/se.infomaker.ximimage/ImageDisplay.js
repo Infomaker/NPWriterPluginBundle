@@ -21,21 +21,16 @@ class ImageDisplay extends Component {
         let Modal = this.getComponent('modal')
         let DialogClass = this.state.DialogClass
 
+        let imgContainer = $$('div').addClass('se-image-container')
+
         if (imgSrc) {
-            el.append(
+            imgContainer.append(
                 $$('img', { src: imgSrc })
             )
         }
 
-        /* Invisible file input element */
-        el.append(
-            $$('input')
-                .attr('type', 'file')
-                .ref('fileInput')
-                .on('change', this._onFileSelected)
-        )
-
-        el.append(
+        // Actions
+        imgContainer.append(
             $$('div').addClass('se-actions').append(
                 $$(Button, {
                     icon: 'upload'
@@ -47,6 +42,16 @@ class ImageDisplay extends Component {
                     icon: 'crop'
                 }).on('click', this._openCropper)
             )
+        )
+
+        el.append(imgContainer)
+
+        /* Invisible file input element */
+        el.append(
+            $$('input')
+                .attr('type', 'file')
+                .ref('fileInput')
+                .on('change', this._onFileSelected)
         )
 
         // Render dialog if open
