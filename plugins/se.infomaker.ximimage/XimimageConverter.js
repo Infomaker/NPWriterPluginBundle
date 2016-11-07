@@ -1,4 +1,4 @@
-import { NilUUID, idGenerator } from 'writer'
+import { niluuid, idGenerator } from 'writer'
 
 export default {
     type: 'ximimage',
@@ -135,10 +135,11 @@ export default {
             $$('height').append(node.height)
         ])
 
-        var fields = converter.pluginManager.api.getConfigValue('ximimage', 'fields')
+        let api = converter.context.api
+        // FIXME: there is no config right now
+        var fields = api.getConfigValue('ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
-
             if (obj.type === 'option') {
                 data.append(
                     $$(name).append(node[obj.name])
@@ -187,7 +188,7 @@ export default {
             rel: 'self',
             type: 'x-im/image',
             uri: node.uri ? node.uri : '',
-            uuid: node.uuid ? node.uuid : NilUUID.getNilUUID()
+            uuid: node.uuid ? node.uuid : niluuid.getNilUUID()
         }).append(data);
 
         if (node.authors.length) {
@@ -200,7 +201,7 @@ export default {
                         title: node.authors[n].name
                     })
 
-                    if (!NilUUID.isNilUUID(node.authors[n].uuid)) {
+                    if (!niluuid.isNilUUID(node.authors[n].uuid)) {
                         authorLink.attr('type', 'x-im/author')
                     }
                     authorLinks.append(authorLink);
