@@ -100,8 +100,10 @@ class PublishFlowComponent extends Component {
                     )
                 ])
 
-                var specEl = $$('p').append([
-                    this.getLabel('From') + ': ',
+                var specEl = $$('p').addClass('dates').append([
+                    $$('span').append(
+                        this.getLabel('From') + ': '
+                    ),
                     $$('strong').append(
                         moment(this.state.pubStart.value).format('YYYY-MM-DD HH:mm')
                     )
@@ -110,7 +112,10 @@ class PublishFlowComponent extends Component {
                 var toObj = moment(this.state.pubStop)
                 if (toObj.isValid()) {
                     specEl.append([
-                        this.getLabel('To') + ': ',
+                        $$('br'),
+                        $$('span').append(
+                            this.getLabel('To') + ': '
+                        ),
                         $$('strong').append(
                             moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
                         )
