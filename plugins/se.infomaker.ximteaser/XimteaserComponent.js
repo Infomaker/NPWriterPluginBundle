@@ -25,7 +25,10 @@ class XimteaserComponent extends Component {
         el.append('I AM A TEASER')
 
         el.append(
-            $$(ImageDisplay, { node: node })
+            $$(ImageDisplay, {
+                node: node,
+                isolatedNodeState: this.props.isolatedNodeState
+            })
         )
 
         el.append(
