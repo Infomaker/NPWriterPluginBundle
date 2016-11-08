@@ -1,10 +1,10 @@
 import { Component } from 'substance'
-
 import ImageCropper from './ImageCropper'
 import ImageMetadata from './ImageMetadata'
 
 /*
-  Intended to be used in Ximimage and Ximteaser
+  Intended to be used in Ximimage and Ximteaser and other content types
+  that include an imageFile property.
 */
 class ImageDisplay extends Component {
     didMount() {
@@ -16,6 +16,7 @@ class ImageDisplay extends Component {
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-image-display')
+        el.addClass('sm-'+this.props.isolatedNodeState)
         let imgSrc = node.getUrl()
         let Button = this.getComponent('button')
         let Modal = this.getComponent('modal')

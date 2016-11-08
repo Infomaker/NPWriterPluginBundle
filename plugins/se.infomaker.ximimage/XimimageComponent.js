@@ -23,7 +23,10 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage')
 
         el.append(
-            $$(ImageDisplay, { node: node })
+            $$(ImageDisplay, {
+                node: node,
+                isolatedNodeState: this.props.isolatedNodeState
+            })
         )
 
         el.append(
