@@ -45,12 +45,12 @@ class AuthorMainComponent extends Component {
         //     placeholderText: "Add author"
         // }).ref('authorSearchComponent');
 
-        // var existingAuthorsList = $$(AuthorListComponent, {
-        //     existingAuthors: this.state.existingAuthors,
-        //     removeAuthor: this.removeAuthor.bind(this)
-        // }).ref('existingAuthorList');
+        var existingAuthorsList = $$(AuthorListComponent, {
+            existingAuthors: this.state.existingAuthors,
+            removeAuthor: this.removeAuthor.bind(this)
+        }).ref('existingAuthorList');
 
-        // el.append(existingAuthorsList);
+        el.append(existingAuthorsList);
         // el.append(searchComponent);
 
         return el;

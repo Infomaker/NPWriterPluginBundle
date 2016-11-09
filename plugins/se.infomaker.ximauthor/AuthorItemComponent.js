@@ -8,6 +8,8 @@ var Avatar = require('writer/components/avatar/AvatarComponent');
 var NilUUID = require('writer/utils/NilUUID');
 var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
 
+
+
 function AuthorItemComponent() {
     AuthorItemComponent.super.apply(this, arguments);
 

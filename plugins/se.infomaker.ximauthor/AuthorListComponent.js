@@ -19,13 +19,14 @@ class AuthorListComponent extends Component {
         var existingAuthors = this.props.existingAuthors;
         var authorList = $$('ul').addClass('authors__list');
 
-        existingAuthors.forEach(function (author) {
+        existingAuthors.forEach((author) => {
             // TODO: Watch this reference for memory leaks
-            authorList.append($$(AuthorItem, {
-                author: author,
-                removeAuthor: this.deleteAuthorAndReference.bind(this)
-            }).ref(this.getIdForRef(author)));
-        }.bind(this));
+            authorList.append($$('li').append(author['$title']))
+            // authorList.append($$(AuthorItem, {
+            //     author: author,
+            //     removeAuthor: this.deleteAuthorAndReference.bind(this)
+            // }).ref(this.getIdForRef(author)));
+        });
         return authorList;
     }
 
@@ -34,7 +35,7 @@ class AuthorListComponent extends Component {
         this.props.removeAuthor(author);
     }
 }
-
+export default AuthorListComponent
 /*'use strict';
 
  var Component = require('substance/ui/Component');
