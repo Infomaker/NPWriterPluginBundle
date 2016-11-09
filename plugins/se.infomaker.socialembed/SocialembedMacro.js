@@ -1,6 +1,6 @@
 export default {
 
-    execute: function(params, context) {
+    execute: function (params, context) {
         let editorSession = context.editorSession
         let text = params.text
         // only react on 'break' (as medium does)

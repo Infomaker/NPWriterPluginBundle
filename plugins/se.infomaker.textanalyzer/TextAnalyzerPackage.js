@@ -5,6 +5,10 @@ export default {
     id: 'se.infomaker.textanalyzer',
     configure: function (config) {
 
+        config.addLabel('hello', {
+            en: "world",
+            sv: "worldse"
+        })
         config.addPopover(
             'textanalyzer',
             {
