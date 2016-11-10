@@ -1,4 +1,4 @@
-import { NilUUID, idGenerator } from 'writer'
+import { api, NilUUID, idGenerator } from 'writer'
 
 export default {
     type: 'ximimage',
@@ -131,11 +131,11 @@ export default {
         })
 
         var data = $$('data').append([
-            $$('width').append(node.width),
-            $$('height').append(node.height)
+            $$('width').append(String(node.width)),
+            $$('height').append(String(node.height))
         ])
 
-        var fields = converter.pluginManager.api.getConfigValue('ximimage', 'fields')
+        var fields = api.getConfigValue('ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
 

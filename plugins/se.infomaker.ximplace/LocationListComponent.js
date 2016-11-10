@@ -1,33 +1,25 @@
-'use strict';
+import {Component} from 'substance'
+//var LocationItem = require('./LocationItemComponent');
+class LocationListComponent extends Component {
+    constructor(...args) {
+        super(...args)
+    }
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var LocationItem = require('./LocationItemComponent');
+    render($$) {
+        const el = $$('ul').addClass('tag-list').ref('locationItemList');
 
-function LocationListComponent() {
-    LocationListComponent.super.apply(this, arguments);
-    this.name = 'location';
-}
-
-LocationListComponent.Prototype = function() {
-
-    this.render = function() {
-        var el = $$('ul').addClass('tag-list').ref('locationItemList');
-
-        var locations = this.props.locations.map(function(location) {
-            return $$(LocationItem, {
-                location: location,
-                openMap: this.props.openMap.bind(this),
-                removeLocation: this.props.removeLocation.bind(this)
-            }).ref(location.uuid);
-        }.bind(this));
+        const locations = this.props.locations.map((location) => {
+            return $$('li').append(location.title)
+            // return $$(LocationItem, {
+            //     location: location,
+            //     openMap: this.props.openMap.bind(this),
+            //     removeLocation: this.props.removeLocation.bind(this)
+            // }).ref(location.uuid);
+        });
 
         el.append(locations);
         return el;
-    };
+    }
+}
 
-
-};
-
-Component.extend(LocationListComponent);
-module.exports = LocationListComponent;
+export default LocationListComponent
