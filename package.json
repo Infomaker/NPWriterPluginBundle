@@ -1,7 +1,7 @@
 {
   "name": "npwriter-plugin-bundle",
   "version": "0.0.1",
-  "description": "Infomaker plugin bundle for Newspilor writer 2",
+  "description": "Infomaker plugin bundle for Newspilot Writer",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
