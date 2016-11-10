@@ -6,10 +6,9 @@ import SocialEmbed from './se.infomaker.socialembed/index'
 import NewsPriority from './se.infomaker.newspriority/index'
 import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
+import XImAuthor from './se.infomaker.ximauthor/index'
 
 (() => {
-
-    console.log("Hello")
 
     Skeleton()
     TextAnalyzer()
@@ -19,4 +18,5 @@ import XImimage from './se.infomaker.ximimage/index'
     XImimage()
     PublishFlow()
     NewsPriority()
+    XImAuthor()
 })()
