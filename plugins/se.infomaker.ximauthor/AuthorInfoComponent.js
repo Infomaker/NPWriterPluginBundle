@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {replace, isObject} from 'lodash'
+import {isObject, find} from 'lodash'
 
 class AuthorInfoComponent extends Component {
 
@@ -7,45 +7,37 @@ class AuthorInfoComponent extends Component {
         super(...args)
     }
 
-    didMount() {
-
-    }
-
     dispose() {
-        Component.prototype.dispose.call(this)
-        // TODO: what to use
-        //this.context.editorSession.off(this)
+        // TODO: How to dispose?
+        super.dispose()
     }
 
     render($$) {
-        var el = $$('div').addClass('author__info')
-        var avatarSrc = replace(this.props.author.avatarSrc, '_normal', '')
-        var avatar = $$('img').attr('src', avatarSrc)
+        // TODO: add support for avatar?
+        let el = $$('div').addClass('author__info')
 
-        el.append(avatar)
-
-        var description = find(this.props.author.definition, function (def) {
+        let description = find(this.props.author.definition, function (def) {
             return def['@role'] === 'drol:long'
         });
 
         if (description) {
-            var descriptionEl = $$('p').append(description['keyValue']);
+            var descriptionEl = $$('p').append(description['keyValue'])
             el.append(descriptionEl);
         }
 
-        var email = this.findAttribute(this.props.author, 'email')
-
+        let email = this.findAttribute(this.props.author, 'email')
         if (email) {
-            var emailEl = $$('a')
+            let emailEl = $$('a')
                 .append($$(FontAwesomeIcon, {icon: 'fa-envelope-o'}))
                 .attr('href', 'mailto:' + email)
                 .append(email)
 
             el.append(emailEl)
         }
-        var phone = this.findAttribute(this.props.author, 'phone');
+
+        let phone = this.findAttribute(this.props.author, 'phone')
         if (phone) {
-            var phoneEl = $$('a')
+            let phoneEl = $$('a')
                 .append($$(FontAwesomeIcon, {icon: 'fa-phone'}))
                 .attr('href', 'tel:' + phone)
                 .append(phone)
@@ -56,8 +48,9 @@ class AuthorInfoComponent extends Component {
         return el
     }
 
+    // TODO: Should be refactored to util somewhere
     findAttribute(object, attribute) {
-        var match;
+        let match;
 
         function iterateObject(target, name) {
             Object.keys(target).forEach(function (key) {
@@ -75,38 +68,8 @@ class AuthorInfoComponent extends Component {
     }
 
     onClose(status) {
-
+      // TODO: What to do?
     }
 }
 
 export default AuthorInfoComponent
-
-/*'use strict';
-
- var Component = require('substance/ui/Component');
- var $$ = Component.$$;
- var Icon = require('substance/ui/FontAwesomeIcon');
- var jxon = require('jxon/index');
- var replace = require('lodash/replace');
- var find = require('lodash/find');
- var isObject = require('lodash/isObject');
-
- var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
-
- function AuthorInfoComponent() {
- AuthorInfoComponent.super.apply(this, arguments);
- }
-
- AuthorInfoComponent.Prototype = function () {
-
-
-
-
-
-
-
-
- };
- Component.extend(AuthorInfoComponent);
- module.exports = AuthorInfoComponent;
- */

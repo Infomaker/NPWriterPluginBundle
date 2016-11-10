@@ -1,6 +1,7 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {NilUUID, jxon} from 'writer'
 import {isObject, isArray} from 'lodash'
+import authorInfoComponent from './AuthorInfoComponent'
 
 class AuthorItemComponent extends Component {
     constructor(...args) {
@@ -42,21 +43,16 @@ class AuthorItemComponent extends Component {
                     isSimpleAuthor: true,
                     loadedAuthor: {name: this.props.author.title}
                 })
-            }
-                .bind(this), 1)
+            }.bind(this), 1)
         } else {
-            this.ajaxRequest = this.context.api.router.ajax(
-                'GET', 'xml', '/api/newsitem/' + this.props.author.uuid, {imType: this.props.author.type}
-            )
+            this.context.api.router.getConceptItem(this.props.author.uuid, this.props.author.type)
+                .then(function (dom) {
+                    var conceptXML = dom.querySelector('concept')
+                    var linksXML = dom.querySelector('itemMeta links')
 
-            this.ajaxRequest
-                .then(response => response.text())
-                .then(function (data) {
-                    var conceptXML = data.querySelector('concept')
-                    var linksXML = data.querySelector('itemMeta links')
                     var jsonFormat = jxon.build(conceptXML)
-
                     var authorLinks
+
                     if (linksXML) {
                         authorLinks = jxon.build(linksXML);
                     }
@@ -69,8 +65,7 @@ class AuthorItemComponent extends Component {
                         loadedAuhtorLinks: authorLinks
                     });
 
-                }
-                    .bind(this))
+                }.bind(this))
                 .catch(function () {
                     this.setState({
                         name: this.props.author.title,
@@ -78,8 +73,44 @@ class AuthorItemComponent extends Component {
                         isSimpleAuthor: true,
                         loadedAuthor: {name: this.props.author.title}
                     })
-                }
-                    .bind(this))
+                }.bind(this))
+
+
+            // this.ajaxRequest = this.context.api.router.ajax(
+            //     'GET', 'xml', '/api/newsitem/' + this.props.author.uuid, {imType: this.props.author.type}
+            // )
+            //
+            // this.ajaxRequest
+            //     .then(response => response.text())
+            //     .then(function (data) {
+            //         var conceptXML = data.querySelector('concept')
+            //         var linksXML = data.querySelector('itemMeta links')
+            //         var jsonFormat = jxon.build(conceptXML)
+            //
+            //         var authorLinks
+            //         if (linksXML) {
+            //             authorLinks = jxon.build(linksXML);
+            //         }
+            //
+            //         this.setState({
+            //             name: jsonFormat.name,
+            //             isLoaded: true,
+            //             isSimpleAuthor: false,
+            //             loadedAuthor: jsonFormat,
+            //             loadedAuhtorLinks: authorLinks
+            //         });
+            //
+            //     }
+            //         .bind(this))
+            //     .catch(function () {
+            //         this.setState({
+            //             name: this.props.author.title,
+            //             isLoaded: true,
+            //             isSimpleAuthor: true,
+            //             loadedAuthor: {name: this.props.author.title}
+            //         })
+            //     }
+            //         .bind(this))
         }
     }
 
@@ -118,9 +149,6 @@ class AuthorItemComponent extends Component {
             .append($$('div')
                 .addClass('avatar__container')
                 .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
-                // .append($$('img')
-                //     .attr('src', this.context.api.router.getEndpoint() + '/asset/dummy.svg')
-                //     .addClass('avatar')))
             .append($$('div')
                 .addClass('metadata__container')
                 .append($$('span')
@@ -160,8 +188,10 @@ class AuthorItemComponent extends Component {
 
         authorItem
             .append($$('div')
-                .addClass('avatar__container').ref('avatarContainer'))
-//                .append($$(Avatar, {author: author, links: this.state.loadedAuhtorLinks}).ref('avatar')))
+                .addClass('avatar__container').ref('avatarContainer')
+                .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
+
+            //                .append($$(Avatar, {author: author, links: this.state.loadedAuhtorLinks}).ref('avatar')))
             .append(metaDataContainer)
             .append($$('div')
                 .addClass('button__container')
@@ -229,9 +259,7 @@ class AuthorItemComponent extends Component {
      * Show information about the author in AuthorInfoComponent rendered in a dialog
      */
     showInformation() {
-        var authorInfo = require('./AuthorInfoComponent')
-
-        this.context.api.showDialog(authorInfo, {
+        this.context.api.ui.showDialog(authorInfoComponent, {
             author: this.state.loadedAuthor
         }, {
             secondary: false,

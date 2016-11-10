@@ -1,4 +1,5 @@
 import './scss/author.scss'
+import './scss/_authorinfo.scss'
 import AuthorMainComponent from './AuthorMainComponent'
 
 export default {
