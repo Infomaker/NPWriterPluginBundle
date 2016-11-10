@@ -3,7 +3,7 @@ import PublishFlowComponent from './PublishFlowComponent'
 export default {
     name: 'publishflow',
     id: 'se.infomaker.publishflow',
-
+    index: 100,
     configure: function (config) {
         config.addPopover(
             this.id + '_1',
