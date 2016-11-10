@@ -58,7 +58,7 @@ class LocationItemComponent extends Component {
                     .append(location.title)
                     .attr('title', this.getLabel('This item could not be loaded. UUID: ') + location.uuid)
             } else {
-                locationType = this.state.loadedLocation.concept.metadata.object['$type']
+                locationType = this.state.loadedLocation.concept.metadata.object['@type']
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(this.state.loadedLocation.concept.name)
 
                 displayNameEl.attr('title', location.title)
@@ -137,9 +137,9 @@ class LocationItemComponent extends Component {
             var definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (var i = 0; i < definition.length; i++) {
                 var item = definition[i]
-                if (item["$role"] === "drol:short") {
-                    if (item["_"] && item["_"].length > 0) {
-                        tagItem.attr('title', item["_"])
+                if (item["@role"] === "drol:short") {
+                    if (item["keyValue"] && item["keyValue"].length > 0) {
+                        tagItem.attr('title', item["keyValue"])
                         break
                     }
                 }

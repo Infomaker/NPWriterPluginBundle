@@ -1,7 +1,6 @@
 'use strict';
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
+import {Component} from 'substance/ui/Component'
 var MapComponent = require('./MapComponent');
 var SearchComponent = require('./SearchComponent');
 var jxon = require('jxon/index');
@@ -12,32 +11,33 @@ var isArray = require('lodash/isArray');
 var ConceptUtil = require('vendor/infomaker.se/utils/ConceptUtil');
 var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
 
-function LocationDetailComponent() {
-    LocationDetailComponent.super.apply(this, arguments);
+class LocationDetailComponent {
 
-    this.conceptUtil = new ConceptUtil();
+    constructor(...args) {
+        super(...args)
 
-    // action handlers
-    this.handleActions({
-        'googleMapsLoaded': this.googleMapsLoaded,
-        'searchItemSelected': this.searchItemSelected,
-        'markerPositionChanged': this.markerPositionChanged
-    });
-}
+        this.conceptUtil = new ConceptUtil();
 
-LocationDetailComponent.Prototype = function () {
+        // action handlers
+        this.handleActions({
+            'googleMapsLoaded': this.googleMapsLoaded,
+            'searchItemSelected': this.searchItemSelected,
+            'markerPositionChanged': this.markerPositionChanged
+        });
+    }
 
-    this.dispose = function () {
-        if (this.ajaxRequest) {
-            this.ajaxRequest.abort();
-        }
+    dispose() {
+        // TODO Abort on fetch method?
+        // if (this.ajaxRequest) {
+        //     this.ajaxRequest.abort();
+        // }
         Component.prototype.dispose.call(this);
-    };
+    }
 
     /**
      * Creates an Id and update the id property on contept.metadata.object.id
      */
-    this.createIdForObject = function () {
+    createIdForObject() {
         this.props.location.concept.metadata.object['$id'] = idGen();
     };
 
@@ -80,9 +80,9 @@ LocationDetailComponent.Prototype = function () {
         }.bind(this));
     };
 
-    this.getGeometryObject = function() {
+    this.getGeometryObject = function () {
         var geometry = findAttribute(this.props.location, 'geometry');
-        if(geometry) {
+        if (geometry) {
             return {
                 position: this.props.location.concept.metadata.object.data.geometry
             };
@@ -97,12 +97,12 @@ LocationDetailComponent.Prototype = function () {
      * @param {string} inputValue The form value filled in by user
      * @param {string} role The definition type, drol:short or drol:long
      */
-    this.setDescription = function(inputValue, role) {
+    this.setDescription = function (inputValue, role) {
         var currentDescription = this.conceptUtil.getDefinitionForType(this.props.location.concept.definition, role);
-        if(inputValue.length > 0 && !currentDescription) {
+        if (inputValue.length > 0 && !currentDescription) {
             var longDesc = {'$role': role, keyValue: inputValue};
             this.props.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.location.concept.definition, longDesc);
-        } else if( inputValue.length >= 0 && currentDescription) {
+        } else if (inputValue.length >= 0 && currentDescription) {
             currentDescription['keyValue'] = inputValue;
         }
     };
@@ -122,12 +122,12 @@ LocationDetailComponent.Prototype = function () {
         var longDescriptionInputValue = this.refs.locationLongDescText.val();
 
         // Check if definition exists
-        if(!location.concept.definition) {
+        if (!location.concept.definition) {
             location.concept.definition = [];
         }
 
-       this.setDescription(shortDescriptionInputValue, 'drol:short');
-       this.setDescription(longDescriptionInputValue, 'drol:long');
+        this.setDescription(shortDescriptionInputValue, 'drol:short');
+        this.setDescription(longDescriptionInputValue, 'drol:long');
 
         this.xmlDoc = jxon.unbuild(location, null, 'conceptItem');
         var conceptItem = this.xmlDoc.documentElement.outerHTML;
@@ -180,7 +180,7 @@ LocationDetailComponent.Prototype = function () {
         this.refs.mapComponent.setProps({googleLatLng: new this.google.maps.LatLng(latlng.lat, latlng.lng)});
     };
 
-    this.updateMapPositionPolygon = function() {
+    this.updateMapPositionPolygon = function () {
         var wktPolygon = this.props.location.concept.metadata.object.data.geometry;
         this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon});
     };
@@ -192,7 +192,7 @@ LocationDetailComponent.Prototype = function () {
     this.getLatLngFromLoadedLocation = function () {
         var geometry = findAttribute(this.props.location.concept, 'geometry');
 
-        if(!geometry) {
+        if (!geometry) {
             return {
                 lat: 0,
                 lng: 0
@@ -207,7 +207,7 @@ LocationDetailComponent.Prototype = function () {
     };
 
     this.markerPositionChanged = function (latLng) {
-        if(!this.props.location.concept.metadata.object.data) {
+        if (!this.props.location.concept.metadata.object.data) {
             this.props.location.concept.metadata.object.data = {};
         }
         this.props.location.concept.metadata.object.data.geometry = "POINT(" + latLng.lng + " " + latLng.lat + ")";
@@ -215,19 +215,21 @@ LocationDetailComponent.Prototype = function () {
 
     this.getDescription = function (descriptionType) {
         var locationConcept = this.props.location.concept;
-        if(!locationConcept.definition) { return undefined; }
+        if (!locationConcept.definition) {
+            return undefined;
+        }
 
         if (isArray(locationConcept.definition)) {
             return find(locationConcept.definition, function (definition) {
                 return definition['$role'] === descriptionType;
             });
-        } else if(isObject(locationConcept.definition)) {
-           return locationConcept.definition['$role'] === descriptionType ? locationConcept.definition : undefined;
+        } else if (isObject(locationConcept.definition)) {
+            return locationConcept.definition['$role'] === descriptionType ? locationConcept.definition : undefined;
         }
 
     };
 
-    this.render = function () {
+    this.render = function ($$) {
 
         var location,
             name = this.props.query,
@@ -254,7 +256,7 @@ LocationDetailComponent.Prototype = function () {
                 shortDesc = shortDesc ? shortDesc : "";
                 longDesc = longDesc ? longDesc : "";
 
-                if(this.props.location.concept.metadata.object['$type'] === 'x-im/polygon') {
+                if (this.props.location.concept.metadata.object['$type'] === 'x-im/polygon') {
                     console.warn("Edit of polygons is not yet supported");
                     this.searchDisabled = true;
                     this.isPolygon = true;
@@ -288,7 +290,7 @@ LocationDetailComponent.Prototype = function () {
                 .addClass('form-control').val(name)
                 .ref('locationNameInput');
 
-            locationName.on('change', function() {
+            locationName.on('change', function () {
                 if (this.refs['locationNameInput'].val() === "") {
                     this.send("dialog:disablePrimaryBtn");
                 } else {
@@ -312,11 +314,11 @@ LocationDetailComponent.Prototype = function () {
         if (this.props.editable) {
             formGroupShortDesc.append(
                 $$('input').attr({
-                        id: 'locationShortDescInput'
+                    id: 'locationShortDescInput'
                 })
-                .addClass('form-control')
-                .val(shortDesc['keyValue'])
-                .ref('locationShortDescInput')
+                    .addClass('form-control')
+                    .val(shortDesc['keyValue'])
+                    .ref('locationShortDescInput')
             );
         }
         else {
@@ -334,9 +336,9 @@ LocationDetailComponent.Prototype = function () {
                 $$('textarea').attr({
                     id: 'locationLongDescText'
                 })
-                .addClass('form-control')
-                .val(longDesc['keyValue'])
-                .ref('locationLongDescText')
+                    .addClass('form-control')
+                    .val(longDesc['keyValue'])
+                    .ref('locationLongDescText')
             );
         }
         else {
@@ -350,14 +352,15 @@ LocationDetailComponent.Prototype = function () {
         el.append(formContainer);
 
         if (this.props.exists) {
-            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(this.context.i18n.t("Please note that this name is already in use") + ": " + this.props.query)))
+            el.append($$('div').addClass('pad-top').append(
+                $$('div').addClass('alert alert-info').append(this.context.i18n.t("Please note that this name is already in use") + ": " + this.props.query)))
         }
 
-        if(!this.searchDisabled) {
+        if (!this.searchDisabled) {
             var searchComponent = $$(SearchComponent).ref('searchComponent');
             el.append(searchComponent);
         }
-        if(this.isPolygon) {
+        if (this.isPolygon) {
             el.append($$('p').addClass('col-xs-12 not-supported').append(this.context.i18n.t('Edit of polygons is not currently supported')));
         }
 
@@ -381,14 +384,14 @@ LocationDetailComponent.Prototype = function () {
         return false;
     };
 
-    this.getLocationType = function() {
+    this.getLocationType = function () {
         var useGeometryType = this.context.api.getConfigValue(this.props.plugin, 'useGeometryType');
         if (useGeometryType) {
             var locationType = '';
             try {
-               if (typeof(this.props.location.concept.metadata.object['$type']) !== 'undefined') {
-                   locationType = this.props.location.concept.metadata.object['$type'];
-               }
+                if (typeof(this.props.location.concept.metadata.object['$type']) !== 'undefined') {
+                    locationType = this.props.location.concept.metadata.object['$type'];
+                }
             }
             catch (ex) {
                 console.error(ex);
