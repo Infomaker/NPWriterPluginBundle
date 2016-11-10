@@ -8,6 +8,7 @@ class LocationMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
+        this.name = 'ximplace'
     }
 
     configureFeatures() {
@@ -141,7 +142,7 @@ class LocationMainComponent extends Component {
 
     openMap(item) {
         var editable = true;
-        if (item.concept.metadata.object['@type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
+        if (item.concept.metadata.object['$type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
             editable = false;
         }
 
