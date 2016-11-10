@@ -3,6 +3,7 @@ import LocationItem from './LocationItemComponent'
 class LocationListComponent extends Component {
     constructor(...args) {
         super(...args)
+        this.name = 'ximplace'
     }
 
     render($$) {

@@ -38,7 +38,7 @@ LocationDetailComponent.Prototype = function () {
      * Creates an Id and update the id property on contept.metadata.object.id
      */
     this.createIdForObject = function () {
-        this.props.location.concept.metadata.object['@id'] = idGen();
+        this.props.location.concept.metadata.object['$id'] = idGen();
     };
 
     this.createLocation = function () {
@@ -61,7 +61,7 @@ LocationDetailComponent.Prototype = function () {
 
     this.updateLocation = function () {
         var location = this.props.location;
-        var uuid = location['@guid'] ? location['@guid'] : null;
+        var uuid = location['$guid'] ? location['$guid'] : null;
         if (!uuid) {
             throw new Error("ConceptItem has no UUID to update");
         }
@@ -100,7 +100,7 @@ LocationDetailComponent.Prototype = function () {
     this.setDescription = function(inputValue, role) {
         var currentDescription = this.conceptUtil.getDefinitionForType(this.props.location.concept.definition, role);
         if(inputValue.length > 0 && !currentDescription) {
-            var longDesc = {'@role': role, keyValue: inputValue};
+            var longDesc = {'$role': role, keyValue: inputValue};
             this.props.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.location.concept.definition, longDesc);
         } else if( inputValue.length >= 0 && currentDescription) {
             currentDescription['keyValue'] = inputValue;
@@ -219,10 +219,10 @@ LocationDetailComponent.Prototype = function () {
 
         if (isArray(locationConcept.definition)) {
             return find(locationConcept.definition, function (definition) {
-                return definition['@role'] === descriptionType;
+                return definition['$role'] === descriptionType;
             });
         } else if(isObject(locationConcept.definition)) {
-           return locationConcept.definition['@role'] === descriptionType ? locationConcept.definition : undefined;
+           return locationConcept.definition['$role'] === descriptionType ? locationConcept.definition : undefined;
         }
 
     };
@@ -254,7 +254,7 @@ LocationDetailComponent.Prototype = function () {
                 shortDesc = shortDesc ? shortDesc : "";
                 longDesc = longDesc ? longDesc : "";
 
-                if(this.props.location.concept.metadata.object['@type'] === 'x-im/polygon') {
+                if(this.props.location.concept.metadata.object['$type'] === 'x-im/polygon') {
                     console.warn("Edit of polygons is not yet supported");
                     this.searchDisabled = true;
                     this.isPolygon = true;
@@ -386,8 +386,8 @@ LocationDetailComponent.Prototype = function () {
         if (useGeometryType) {
             var locationType = '';
             try {
-               if (typeof(this.props.location.concept.metadata.object['@type']) !== 'undefined') {
-                   locationType = this.props.location.concept.metadata.object['@type'];
+               if (typeof(this.props.location.concept.metadata.object['$type']) !== 'undefined') {
+                   locationType = this.props.location.concept.metadata.object['$type'];
                }
             }
             catch (ex) {

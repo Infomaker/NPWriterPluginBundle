@@ -2,32 +2,41 @@
 
 import {Component} from 'substance'
 // var $$ = Component.$$;
-import {Icon} from 'substance'
+import {FontAwesomeIcon} from 'substance'
 import {jxon} from 'writer'
 import {isArray} from 'lodash'
 
 
 class LocationItemComponent extends Component {
     constructor(...args) {
-        super(args)
+        super(...args)
+        this.name = 'ximplace'
     }
 
     loadLocation() {
-        this.ajaxRequest = this.context.api.router.ajax('GET', 'xml', '/api/newsitem/' + this.props.location.uuid, {imType: this.props.location.type})
-        this.ajaxRequest
-            .done(function (data) {
-                var conceptXML = data.querySelector('conceptItem')
-                this.setState({
-                    loadedLocation: jxon.build(conceptXML),
-                    isLoaded: true
-                });
-            }.bind(this))
-            .error(function () {
+        var api = this.context.api;
+        api.router.getConceptItem(this.props.location.uuid, this.props.location.type)
+            .then(xml => {
+                var conceptXML = xml.querySelector('conceptItem')
+                try {
+                    this.setState({
+                        loadedLocation: jxon.build(conceptXML),
+                        isLoaded: true
+                    });
+                } catch (e) {
+                    console.log("Error parsing location", e);
+                    this.setState({
+                        isLoaded: true,
+                        couldNotLoad: true
+                    })
+                }
+            })
+            .catch(e => {
                 this.setState({
                     isLoaded: true,
                     couldNotLoad: true
                 });
-            }.bind(this))
+            })
     }
 
     render($$) {
@@ -47,9 +56,9 @@ class LocationItemComponent extends Component {
             if (this.state.couldNotLoad) {
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar tag-item__title--notexisting')
                     .append(location.title)
-                    .attr('title', this.context.i18n.t('This item could not be loaded. UUID: ') + location.uuid)
+                    .attr('title', this.getLabel('This item could not be loaded. UUID: ') + location.uuid)
             } else {
-                locationType = this.state.loadedLocation.concept.metadata.object['@type']
+                locationType = this.state.loadedLocation.concept.metadata.object['$type']
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(this.state.loadedLocation.concept.name)
 
                 displayNameEl.attr('title', location.title)
@@ -80,9 +89,9 @@ class LocationItemComponent extends Component {
 
             locItem.append(displayNameEl)
 
-            var deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
+            var deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
-                .attr('title', this.context.i18n.t('Remove from article')))
+                .attr('title', this.getLabel('Remove from article')))
                 .on('click', function () {
                     this.removeTag(location)
                 }.bind(this))
@@ -92,7 +101,7 @@ class LocationItemComponent extends Component {
             if (locationType === 'x-im/polygon') {
                 icon = 'fa-map'
             }
-            locItem.append($$(Icon, {icon: icon}).addClass('tag-icon'))
+            locItem.append($$(FontAwesomeIcon, {icon: icon}).addClass('tag-icon'))
         }
 
 
@@ -101,9 +110,9 @@ class LocationItemComponent extends Component {
 
 
     removeTag(location) {
-        this.$el.first().fadeOut(200, function () {
-            this.props.removeLocation(location)
-        }.bind(this))
+//        this.$el.first().fadeOut(200, function () {
+        this.props.removeLocation(location)
+//        }.bind(this))
 
     }
 
@@ -128,9 +137,9 @@ class LocationItemComponent extends Component {
             var definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (var i = 0; i < definition.length; i++) {
                 var item = definition[i]
-                if (item["@role"] === "drol:short") {
-                    if (item["keyValue"] && item["keyValue"].length > 0) {
-                        tagItem.attr('title', item["keyValue"])
+                if (item["$role"] === "drol:short") {
+                    if (item["_"] && item["_"].length > 0) {
+                        tagItem.attr('title', item["_"])
                         break
                     }
                 }
