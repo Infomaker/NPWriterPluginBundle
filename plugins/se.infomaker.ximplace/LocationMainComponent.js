@@ -1,68 +1,68 @@
-'use strict';
+import {Component} from 'substance'
+import {api} from 'writer'
+import LocationListComponent from './LocationListComponent'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var AuthorSearchComponent = require('writer/components/form-search/FormSearchComponent');
-var LocationDetailComponent = require('./LocationDetailComponent');
-var LocationListComponent = require('./LocationListComponent');
+// var AuthorSearchComponent = require('writer/components/form-search/FormSearchComponent');
+// var LocationDetailComponent = require('./LocationDetailComponent');
+// var LocationListComponent = require('./LocationListComponent');
 
-function LocationMainComponent() {
-    LocationMainComponent.super.apply(this, arguments);
-    this.name = this.props.plugin.schema.name;
-}
+class LocationMainComponent extends Component {
 
-LocationMainComponent.Prototype = function () {
+    constructor(...args) {
+        super(...args)
+    }
 
-    this.configureFeatures = function() {
-        var features = this.context.api.getConfigValue(this.props.plugin, 'features');
+    configureFeatures() {
+        const features = api.getConfigValue(this.props.panel.id, 'features');
 
-        switch(features) {
+        switch (features) {
             case 'position':
                 this.features = 'position';
                 this.t = {
-                    title: this.context.i18n.t('Positions'),
-                    placeholder: this.context.i18n.t('Search positions')
+                    title: this.getLabel('Positions'),
+                    placeholder: this.getLabel('Search positions')
                 };
                 break;
 
             case 'polygon':
                 this.features = 'polygon';
                 this.t = {
-                    title: this.context.i18n.t('Areas'),
-                    placeholder: this.context.i18n.t('Search areas')
+                    title: this.getLabel('Areas'),
+                    placeholder: this.getLabel('Search areas')
                 };
                 break;
 
             default:
                 this.features = 'all';
                 this.t = {
-                    title: this.context.i18n.t('Locations'),
-                    placeholder: this.context.i18n.t('Search locations')
+                    title: this.getLabel('Locations'),
+                    placeholder: this.getLabel('Search locations')
                 };
         }
 
 
-        this.polygonIsEditable = this.context.api.getConfigValue(
-            this.props.plugin,
+        this.polygonIsEditable = api.getConfigValue(
+            this.props.panel.id,
             'polygon.editable',
             true
-        );
-    };
+        )
+    }
 
-    this.getInitialState = function () {
+
+    getInitialState() {
         this.configureFeatures();
         return {
-            existingLocations: this.context.api.getLocations(this.features)
-        };
-    };
+            existingLocations: api.newsItem.getLocations(this.features)
+        }
+    }
 
-    this.reload = function () {
+    reload() {
         this.setState({
-            existingLocations: this.context.api.getLocations(this.features)
-        });
-    };
+            existingLocations: api.newsItem.getLocations(this.features)
+        })
+    }
 
-    this.render = function () {
+    render($$) {
         var el = $$('div').addClass('location-main').append(
             $$('h2').append(
                 this.t.title
@@ -76,16 +76,17 @@ LocationMainComponent.Prototype = function () {
         }).ref('locationList');
 
         var query = 'q=';
-        if (this.features != 'all') {
+        if (this.features !== 'all') {
             query = 'f=' + this.features + '&q=';
         }
 
+        const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
         var searchComponent = $$(AuthorSearchComponent, {
             existingItems: this.state.existingLocations,
-            searchUrl: this.context.api.router.getEndpoint() + '/api/search/concepts/locations?' + query,
+            searchUrl: api.router.getEndpoint() + '/api/search/concepts/locations?' + query,
             onSelect: this.addLocation.bind(this),
             onCreate: this.createMap.bind(this),
-            createAllowed: (this.features == 'polygon') ? false : true,
+            createAllowed: (this.features === 'polygon') ? false : true,
             placeholderText: this.t.placeholder
         }).ref('authorSearchComponent');
 
@@ -93,9 +94,9 @@ LocationMainComponent.Prototype = function () {
         el.append(searchComponent);
 
         return el;
-    };
+    }
 
-    this.createMap = function (selectedItem, exists) {
+    createMap(selectedItem, exists) {
         var properties = {
             newLocation: true,
             exists: exists,
@@ -105,16 +106,16 @@ LocationMainComponent.Prototype = function () {
             plugin: this.props.plugin
         };
 
-        this.context.api.showDialog(LocationDetailComponent, properties, {
-            title: this.context.i18n.t('Place'),
-            global: true,
-            primary: this.context.i18n.t('Save')
-        });
-    };
+        // api.ui.showDialog(LocationDetailComponent, properties, {
+        //     title: this.getLabel('Place'),
+        //     global: true,
+        //     primary: this.getLabel('Save')
+        // })
+    }
 
-    this.addLocation = function (item) {
+    addLocation(item) {
         // Use location "sub-type" as type for link
-        var useGeometryType = this.context.api.getConfigValue(this.props.plugin, 'useGeometryType');
+        var useGeometryType = api.getConfigValue(this.props.panel.id, 'useGeometryType');
 
         // Validate that writer config corresponds with concept backend config
         if (useGeometryType === true && !item.hasOwnProperty('geometryType')) {
@@ -124,22 +125,22 @@ LocationMainComponent.Prototype = function () {
         var location = {
             title: item.name[0],
             uuid: item.uuid,
-            data: item.location ?  { position: item.location[0] } : {},
+            data: item.location ? {position: item.location[0]} : {},
             type: useGeometryType ? item.geometryType[0] : 'x-im/place'
         };
 
-        this.context.api.addLocation(this.name, location);
-        this.reload();
-    };
+        api.newsItem.addLocation(this.name, location)
+        this.reload()
+    }
 
-    this.removeLocation = function (location) {
-        this.context.api.removeLinkByUUID(this.name, location.uuid);
+    removeLocation(location) {
+        api.newsItem.removeLinkByUUID(this.name, location.uuid);
         this.reload();
-    };
+    }
 
-    this.openMap = function (item) {
+    openMap(item) {
         var editable = true;
-        if (item.concept.metadata.object['@type'] == 'x-im/polygon' && false === this.polygonIsEditable) {
+        if (item.concept.metadata.object['@type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
             editable = false;
         }
 
@@ -153,14 +154,14 @@ LocationMainComponent.Prototype = function () {
         };
 
 
-        this.context.api.showDialog(LocationDetailComponent, properties, {
-            title: this.context.i18n.t('Place') + " " + item.concept.name,
-            global: true,
-            primary: editable ? this.context.i18n.t('Save') : this.context.i18n.t('Close'),
-            secondary: editable ? this.context.i18n.t('Cancel') : false
-        });
-    };
-};
+        // api.showDialog(LocationDetailComponent, properties, {
+        //     title: this.context.i18n.t('Place') + " " + item.concept.name,
+        //     global: true,
+        //     primary: editable ? this.context.i18n.t('Save') : this.context.i18n.t('Close'),
+        //     secondary: editable ? this.context.i18n.t('Cancel') : false
+        // })
+    }
 
-Component.extend(LocationMainComponent);
-module.exports = LocationMainComponent;
+}
+
+export default LocationMainComponent
