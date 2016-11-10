@@ -1,9 +1,3 @@
-'use strict';
-
-//var AuthorSearchComponent = require('./AuthorSearchComponent');
-// var AuthorSearchComponent = require('writer/components/form-search/FormSearchComponent');
-// var AuthorListComponent = require('./AuthorListComponent');
-
 import {Component} from 'substance'
 import {api, NilUUID} from 'writer'
 import AuthorListComponent from './AuthorListComponent'
@@ -36,14 +30,16 @@ class AuthorMainComponent extends Component {
 
         var authorSearchUrl = api.router.getEndpoint();
 
-        // var searchComponent = $$(AuthorSearchComponent, {
-        //     existingItems: this.state.existingAuthors,
-        //     searchUrl: authorSearchUrl + '/api/search/concepts/authors?q=',
-        //     onSelect: this.addAuthor.bind(this),
-        //     onCreate: this.createAuthor.bind(this),
-        //     createAllowed: true,
-        //     placeholderText: "Add author"
-        // }).ref('authorSearchComponent');
+        const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
+
+        var searchComponent = $$(AuthorSearchComponent, {
+            existingItems: this.state.existingAuthors,
+            searchUrl: authorSearchUrl + '/api/search/concepts/authors?q=',
+            onSelect: this.addAuthor.bind(this),
+            onCreate: this.createAuthor.bind(this),
+            createAllowed: true,
+            placeholderText: 'Add author'
+        }).ref('authorSearchComponent')
 
         var existingAuthorsList = $$(AuthorListComponent, {
             existingAuthors: this.state.existingAuthors,
@@ -51,18 +47,17 @@ class AuthorMainComponent extends Component {
         }).ref('existingAuthorList');
 
         el.append(existingAuthorsList);
-        // el.append(searchComponent);
+        el.append(searchComponent);
 
         return el;
     }
 
-
     removeAuthor(author) {
         try {
             if (NilUUID.isNilUUID(author.uuid)) {
-                api.removeAuthorByTitle(this.name, author.title);
+                api.newsItem.removeAuthorByTitle(this.name, author.title);
             } else {
-                api.removeAuthorByUUID(this.name, author.uuid);
+                api.newsItem.removeAuthorByUUID(this.name, author.uuid);
             }
             this.reloadAuthors();
         } catch (e) {
@@ -72,7 +67,7 @@ class AuthorMainComponent extends Component {
 
     addAuthor(author) {
         try {
-            api.addAuthor(this.name, author);
+            api.newsItem.addAuthor(this.name, author);
             this.reloadAuthors();
         } catch (e) {
             console.log("e", e);
@@ -80,7 +75,7 @@ class AuthorMainComponent extends Component {
     }
 
     createAuthor(authorTemp) {
-        api.addSimpleAuthor(this.name, authorTemp.inputValue);
+        api.newsItem.addSimpleAuthor(this.name, authorTemp.inputValue);
         this.reloadAuthors()
     }
 }

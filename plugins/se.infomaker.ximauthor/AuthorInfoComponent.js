@@ -1,63 +1,112 @@
-/*'use strict';
+import {Component, FontAwesomeIcon} from 'substance'
+import {replace, isObject} from 'lodash'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-var jxon = require('jxon/index');
-var replace = require('lodash/replace');
-var find = require('lodash/find');
-var isObject = require('lodash/isObject');
+class AuthorInfoComponent extends Component {
 
-var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
+    constructor(...args) {
+        super(...args)
+    }
 
-function AuthorInfoComponent() {
-    AuthorInfoComponent.super.apply(this, arguments);
-}
+    didMount() {
 
-AuthorInfoComponent.Prototype = function () {
+    }
 
-    this.dispose = function () {
-        Component.prototype.dispose.call(this);
-    };
+    dispose() {
+        Component.prototype.dispose.call(this)
+        // TODO: what to use
+        //this.context.editorSession.off(this)
+    }
 
+    render($$) {
+        var el = $$('div').addClass('author__info')
+        var avatarSrc = replace(this.props.author.avatarSrc, '_normal', '')
+        var avatar = $$('img').attr('src', avatarSrc)
 
-    this.render = function () {
-        var el = $$('div').addClass('author__info');
-
-        var avatarSrc = replace(this.props.author.avatarSrc, '_normal', '');
-
-        var avatar = $$('img').attr('src', avatarSrc);
-        el.append(avatar);
+        el.append(avatar)
 
         var description = find(this.props.author.definition, function (def) {
-            return def['@role'] === 'drol:long';
+            return def['@role'] === 'drol:long'
         });
 
-        if(description) {
+        if (description) {
             var descriptionEl = $$('p').append(description['keyValue']);
             el.append(descriptionEl);
         }
 
-        var email = findAttribute(this.props.author, 'email');
-        if(email) {
-            var emailEl = $$('a').append($$(Icon, {icon: 'fa-envelope-o'})).attr('href','mailto:'+email).append(email);
-            el.append(emailEl);
+        var email = this.findAttribute(this.props.author, 'email')
+
+        if (email) {
+            var emailEl = $$('a')
+                .append($$(FontAwesomeIcon, {icon: 'fa-envelope-o'}))
+                .attr('href', 'mailto:' + email)
+                .append(email)
+
+            el.append(emailEl)
         }
-        var phone = findAttribute(this.props.author, 'phone');
-        if(phone) {
-            var phoneEl = $$('a').append($$(Icon, {icon: 'fa-phone'})).attr('href','tel:'+phone).append(phone);
-            el.append(phoneEl);
+        var phone = this.findAttribute(this.props.author, 'phone');
+        if (phone) {
+            var phoneEl = $$('a')
+                .append($$(FontAwesomeIcon, {icon: 'fa-phone'}))
+                .attr('href', 'tel:' + phone)
+                .append(phone)
+
+            el.append(phoneEl)
         }
 
+        return el
+    }
 
-        return el;
-    };
+    findAttribute(object, attribute) {
+        var match;
 
-    this.onClose = function (status) {
+        function iterateObject(target, name) {
+            Object.keys(target).forEach(function (key) {
+                if (isObject(target[key])) {
+                    iterateObject(target[key], name);
+                } else if (key === name) {
+                    match = target[key];
+                }
+            })
+        }
 
-    };
+        iterateObject(object, attribute)
 
-};
-Component.extend(AuthorInfoComponent);
-module.exports = AuthorInfoComponent;
-*/
+        return match ? match : undefined;
+    }
+
+    onClose(status) {
+
+    }
+}
+
+export default AuthorInfoComponent
+
+/*'use strict';
+
+ var Component = require('substance/ui/Component');
+ var $$ = Component.$$;
+ var Icon = require('substance/ui/FontAwesomeIcon');
+ var jxon = require('jxon/index');
+ var replace = require('lodash/replace');
+ var find = require('lodash/find');
+ var isObject = require('lodash/isObject');
+
+ var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
+
+ function AuthorInfoComponent() {
+ AuthorInfoComponent.super.apply(this, arguments);
+ }
+
+ AuthorInfoComponent.Prototype = function () {
+
+
+
+
+
+
+
+
+ };
+ Component.extend(AuthorInfoComponent);
+ module.exports = AuthorInfoComponent;
+ */
