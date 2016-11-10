@@ -35,7 +35,7 @@ class TextanalyzerComponent extends Component {
 
         var textlengthEl = $$('div').addClass('count-info')
             .append($$('span').append(this.state.textLength.toString()))
-            .append($$('p').append(this.getLabel('Characters')))
+            .append($$('p').append(this.getLabel('hello')))
             .attr('title', this.getLabel('Characters'))
 
         var wordsEl = $$('div').addClass('count-info')

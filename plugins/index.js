@@ -7,6 +7,7 @@ import NewsPriority from './se.infomaker.newspriority/index'
 import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
 import XImPlace from './se.infomaker.ximplace/index'
+import XImAuthor from './se.infomaker.ximauthor/index'
 
 (() => {
 
@@ -19,4 +20,5 @@ import XImPlace from './se.infomaker.ximplace/index'
     XImimage()
     PublishFlow()
     NewsPriority()
+    XImAuthor()
 })()
