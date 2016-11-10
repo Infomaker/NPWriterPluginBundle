@@ -26,7 +26,7 @@ class AuthorMainComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Author')));
+        var el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
 
         var authorSearchUrl = api.router.getEndpoint();
 

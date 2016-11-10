@@ -1,8 +1,7 @@
 import {Component} from 'substance'
 import {api} from 'writer'
 import LocationListComponent from './LocationListComponent'
-
-// var LocationDetailComponent = require('./LocationDetailComponent');
+//import LocationDetailComponent from './LocationDetailComponent'
 
 class LocationMainComponent extends Component {
 
@@ -85,7 +84,7 @@ class LocationMainComponent extends Component {
             searchUrl: api.router.getEndpoint() + '/api/search/concepts/locations?' + query,
             onSelect: this.addLocation.bind(this),
             onCreate: this.createMap.bind(this),
-            createAllowed: (this.features === 'polygon') ? false : true,
+            createAllowed: (this.features !== 'polygon'),
             placeholderText: this.t.placeholder
         }).ref('authorSearchComponent');
 
@@ -104,9 +103,6 @@ class LocationMainComponent extends Component {
             editable: true,
             plugin: this.props.plugin
         };
-
-        // TODO Implement dialog call
-        console.error("About to show dialog, but not implemeents")
 
         // api.ui.showDialog(LocationDetailComponent, properties, {
         //     title: this.getLabel('Place'),
@@ -142,7 +138,7 @@ class LocationMainComponent extends Component {
 
     openMap(item) {
         var editable = true;
-        if (item.concept.metadata.object['$type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
+        if (item.concept.metadata.object['@type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
             editable = false;
         }
 
@@ -155,11 +151,7 @@ class LocationMainComponent extends Component {
             plugin: this.props.plugin
         };
 
-
-        // TODO Show dialog
-        console.error("About to show dialog, but not implemented")
-
-        // api.showDialog(LocationDetailComponent, properties, {
+        // api.ui.showDialog(LocationDetailComponent, properties, {
         //     title: this.context.i18n.t('Place') + " " + item.concept.name,
         //     global: true,
         //     primary: editable ? this.context.i18n.t('Save') : this.context.i18n.t('Close'),
