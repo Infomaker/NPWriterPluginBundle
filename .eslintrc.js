@@ -17,7 +17,8 @@ module.exports = {
     'describe': true,
     'beforeEach': true,
     'writer': true,
-    'substance': true
+    'substance': true,
+    'google': true
   },
   "rules": {
     // 0 - off, 1 - warning, 2 - error

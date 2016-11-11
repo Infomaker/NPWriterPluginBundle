@@ -1,7 +1,7 @@
 import {Component} from 'substance'
 import {api} from 'writer'
 import LocationListComponent from './LocationListComponent'
-//import LocationDetailComponent from './LocationDetailComponent'
+import LocationDetailComponent from './LocationDetailComponent'
 
 class LocationMainComponent extends Component {
 
@@ -104,11 +104,11 @@ class LocationMainComponent extends Component {
             plugin: this.props.plugin
         };
 
-        // api.ui.showDialog(LocationDetailComponent, properties, {
-        //     title: this.getLabel('Place'),
-        //     global: true,
-        //     primary: this.getLabel('Save')
-        // })
+        api.ui.showDialog(LocationDetailComponent, properties, {
+            title: this.getLabel('Place'),
+            global: true,
+            primary: this.getLabel('Save')
+        })
     }
 
     addLocation(item) {
@@ -151,12 +151,12 @@ class LocationMainComponent extends Component {
             plugin: this.props.plugin
         };
 
-        // api.ui.showDialog(LocationDetailComponent, properties, {
-        //     title: this.context.i18n.t('Place') + " " + item.concept.name,
-        //     global: true,
-        //     primary: editable ? this.context.i18n.t('Save') : this.context.i18n.t('Close'),
-        //     secondary: editable ? this.context.i18n.t('Cancel') : false
-        // })
+        api.ui.showDialog(LocationDetailComponent, properties, {
+            title: this.getLabel('Place') + " " + item.concept.name,
+            global: true,
+            primary: editable ? this.getLabel('Save') : this.getLabel('Close'),
+            secondary: editable ? this.getLabel('Cancel') : false
+        })
     }
 
 }

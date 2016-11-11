@@ -1,95 +1,95 @@
 'use strict';
 
-import {Component} from 'substance/ui/Component'
-var MapComponent = require('./MapComponent');
-var SearchComponent = require('./SearchComponent');
-var jxon = require('jxon/index');
-var idGen = require('writer/utils/IdGenerator');
-var find = require('lodash/find');
-var isObject = require('lodash/isObject');
-var isArray = require('lodash/isArray');
-var ConceptUtil = require('vendor/infomaker.se/utils/ConceptUtil');
-var findAttribute = require('vendor/infomaker.se/utils/FindAttribute');
+import {Component} from 'substance'
+import MapComponent from './MapComponent'
+import SearchComponent from './SearchComponent'
+import {jxon} from 'writer'
+import {idGenerator} from 'writer'
+import {lodash} from 'writer'
 
-class LocationDetailComponent {
+var isArray = lodash.isArray
+var isObject = lodash.isObject
+var find = lodash.find
+
+class LocationDetailComponent extends Component {
 
     constructor(...args) {
         super(...args)
-
-        this.conceptUtil = new ConceptUtil();
 
         // action handlers
         this.handleActions({
             'googleMapsLoaded': this.googleMapsLoaded,
             'searchItemSelected': this.searchItemSelected,
             'markerPositionChanged': this.markerPositionChanged
-        });
+        })
     }
 
     dispose() {
         // TODO Abort on fetch method?
         // if (this.ajaxRequest) {
-        //     this.ajaxRequest.abort();
+        //     this.ajaxRequest.abort()
         // }
-        Component.prototype.dispose.call(this);
+        Component.prototype.dispose.call(this)
     }
 
     /**
      * Creates an Id and update the id property on contept.metadata.object.id
      */
     createIdForObject() {
-        this.props.location.concept.metadata.object['$id'] = idGen();
-    };
+        this.props.location.concept.metadata.object['@id'] = idGenerator()
+    }
 
-    this.createLocation = function () {
+    createLocation() {
         var location = this.props.location,
-            url = '/api/newsitem';
-        this.createIdForObject();
-        this.saveLocation(url, 'POST').done(function (data) {
+            url = '/api/newsitem'
+
+        this.createIdForObject()
+
+        this.saveLocation(url, 'POST').then(data => {
             // Update tag in newsItem
             this.context.api.addLocation(this.name, {
                 title: location.concept.name,
                 data: this.getGeometryObject(),
                 uuid: data,
                 type: this.getLocationType()
-            });
+            })
 
-            this.props.reload();
-            this.send('close');
-        }.bind(this));
-    };
+            this.props.reload()
+            this.send('close')
+        }).catch (err => console.log(err))
+    }
 
-    this.updateLocation = function () {
+    updateLocation() {
         var location = this.props.location;
-        var uuid = location['$guid'] ? location['$guid'] : null;
+        var uuid = location['@guid'] ? location['@guid'] : null
         if (!uuid) {
-            throw new Error("ConceptItem has no UUID to update");
+            throw new Error("ConceptItem has no UUID to update")
         }
-        var url = '/api/newsitem/' + uuid;
+        var url = '/api/newsitem/' + uuid
 
-        this.saveLocation(url, 'PUT').done(function () {
+        this.saveLocation(url, 'PUT').then(() => {
             // Update tag in newsItem
-            this.context.api.updateLocation(this.name, {
+            this.context.api.newsItem.updateLocation(this.name, {
                 title: location.concept.name,
                 data: this.getGeometryObject(),
                 uuid: uuid,
                 type: this.getLocationType()
-            });
-            this.props.reload();
-            this.send('close');
-        }.bind(this));
-    };
+            })
+            this.props.reload()
+            this.send('close')
+        }).catch(err => console.log(err));
+    }
 
-    this.getGeometryObject = function () {
-        var geometry = findAttribute(this.props.location, 'geometry');
+    getGeometryObject() {
+        var geometry = findAttribute(this.props.location, 'geometry')
         if (geometry) {
             return {
                 position: this.props.location.concept.metadata.object.data.geometry
-            };
+            }
         } else {
-            return {};
+            return {}
         }
-    };
+    }
 
     /**
      * Sets the definition description
@@ -97,15 +97,15 @@ class LocationDetailComponent {
      * @param {string} inputValue The form value filled in by user
      * @param {string} role The definition type, drol:short or drol:long
      */
-    this.setDescription = function (inputValue, role) {
-        var currentDescription = this.conceptUtil.getDefinitionForType(this.props.location.concept.definition, role);
+    setDescription(inputValue, role) {
+        var currentDescription = this.context.api.concept.getDefinitionForType(this.props.location.concept.definition, role)
         if (inputValue.length > 0 && !currentDescription) {
-            var longDesc = {'$role': role, keyValue: inputValue};
-            this.props.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.location.concept.definition, longDesc);
+            var longDesc = {'@role': role, keyValue: inputValue}
+            this.props.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.location.concept.definition, longDesc)
         } else if (inputValue.length >= 0 && currentDescription) {
-            currentDescription['keyValue'] = inputValue;
+            currentDescription['keyValue'] = inputValue
         }
-    };
+    }
 
 
     /**
@@ -114,203 +114,202 @@ class LocationDetailComponent {
      * @param {string} method POST, PUT
      * @returns {*} Returns jQuery ajax promise
      */
-    this.saveLocation = function (url, method) {
-        var location = this.props.location;
-        location.concept.name = this.refs.locationNameInput.val().length > 0 ? this.refs.locationNameInput.val() : location.concept.name;
+    saveLocation(url, method) {
+        var location = this.props.location
+        location.concept.name = this.refs.locationNameInput.val().length > 0 ? this.refs.locationNameInput.val() : location.concept.name
 
-        var shortDescriptionInputValue = this.refs.locationShortDescInput.val();
-        var longDescriptionInputValue = this.refs.locationLongDescText.val();
+        var shortDescriptionInputValue = this.refs.locationShortDescInput.val()
+        var longDescriptionInputValue = this.refs.locationLongDescText.val()
 
         // Check if definition exists
         if (!location.concept.definition) {
-            location.concept.definition = [];
+            location.concept.definition = []
         }
 
-        this.setDescription(shortDescriptionInputValue, 'drol:short');
-        this.setDescription(longDescriptionInputValue, 'drol:long');
+        this.setDescription(shortDescriptionInputValue, 'drol:short')
+        this.setDescription(longDescriptionInputValue, 'drol:long')
 
-        this.xmlDoc = jxon.unbuild(location, null, 'conceptItem');
-        var conceptItem = this.xmlDoc.documentElement.outerHTML;
+        this.xmlDoc = jxon.unbuild(location, null, 'conceptItem')
+        var conceptItem = this.xmlDoc.documentElement.outerHTML
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.put(url, conceptItem);
-                break;
+                return this.context.api.router.put(url, conceptItem)
             case "POST":
-                return this.context.api.router.post(url, conceptItem);
-                break;
+                return this.context.api.router.post(url, conceptItem)
         }
 
-    };
+    }
 
     /**
      * When searchItem is clicked update the map by setting props on MapComponent
      * @param {class} googleLatLng
      */
-    this.searchItemSelected = function (googleLatLng) {
-        this.markerPositionChanged({lat: googleLatLng.lat(), lng: googleLatLng.lng()});
-        this.refs.mapComponent.setProps({googleLatLng: googleLatLng});
-    };
+    searchItemSelected(googleLatLng) {
+        this.markerPositionChanged({lat: googleLatLng.lat(), lng: googleLatLng.lng()})
+        this.refs.mapComponent.setProps({googleLatLng: googleLatLng})
+    }
 
 
     /**
      * When Google maps is loaded in MapComponent pass the google instance to searchComponent
      * @param {class} google
      */
-    this.googleMapsLoaded = function (google) {
-        this.google = google;
+    googleMapsLoaded(google) {
+        this.google = google
 
         this.setState({
             googleMapsLoaded: true
-        });
+        })
 
         if (this.props.newLocation && this.props.query) { // If there is a new location and there is a query entered show that in map
-            this.refs.searchComponent.setProps({google: google, query: this.props.query});
+            this.refs.searchComponent.setProps({google: google, query: this.props.query})
         } else {
-            this.refs.searchComponent.setProps({google: google});
+            this.refs.searchComponent.setProps({google: google})
         }
 
-    };
+    }
 
     /**
      * Updates the marker on the map by setting props on MapComponent
      */
-    this.updateMapPosition = function () {
-        var latlng = this.getLatLngFromLoadedLocation();
-        this.refs.mapComponent.setProps({googleLatLng: new this.google.maps.LatLng(latlng.lat, latlng.lng)});
-    };
+    updateMapPosition() {
+        var latlng = this.getLatLngFromLoadedLocation()
+        this.refs.mapComponent.setProps({googleLatLng: new this.google.maps.LatLng(latlng.lat, latlng.lng)})
+    }
 
-    this.updateMapPositionPolygon = function () {
-        var wktPolygon = this.props.location.concept.metadata.object.data.geometry;
-        this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon});
-    };
+    updateMapPositionPolygon() {
+        var wktPolygon = this.props.location.concept.metadata.object.data.geometry
+        this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
+    }
 
     /**
      * The lat and long from loaded location
      * @returns {{lat: *, lng: *}}
      */
-    this.getLatLngFromLoadedLocation = function () {
-        var geometry = findAttribute(this.props.location.concept, 'geometry');
+    getLatLngFromLoadedLocation() {
+        var geometry = findAttribute(this.props.location.concept, 'geometry')
 
         if (!geometry) {
             return {
                 lat: 0,
                 lng: 0
-            };
+            }
         }
 
-        var latLongString = /POINT\((\-?[0-9\.\s]+)\)/.exec(geometry)[1].split(' ');
+        var latLongString = /POINT\((\-?[0-9\.\s]+)\)/.exec(geometry)[1].split(' ')
         return {
             lat: latLongString[1],
             lng: latLongString[0]
-        };
-    };
-
-    this.markerPositionChanged = function (latLng) {
-        if (!this.props.location.concept.metadata.object.data) {
-            this.props.location.concept.metadata.object.data = {};
         }
-        this.props.location.concept.metadata.object.data.geometry = "POINT(" + latLng.lng + " " + latLng.lat + ")";
-    };
+    }
 
-    this.getDescription = function (descriptionType) {
-        var locationConcept = this.props.location.concept;
+    markerPositionChanged(latLng) {
+        if (!this.props.location.concept.metadata.object.data) {
+            this.props.location.concept.metadata.object.data = {}
+        }
+        this.props.location.concept.metadata.object.data.geometry = "POINT(" + latLng.lng + " " + latLng.lat + ")"
+    }
+
+    getDescription(descriptionType) {
+        var locationConcept = this.props.location.concept
         if (!locationConcept.definition) {
-            return undefined;
+            return undefined
         }
 
         if (isArray(locationConcept.definition)) {
             return find(locationConcept.definition, function (definition) {
-                return definition['$role'] === descriptionType;
-            });
+                return definition['@role'] === descriptionType
+            })
         } else if (isObject(locationConcept.definition)) {
-            return locationConcept.definition['$role'] === descriptionType ? locationConcept.definition : undefined;
+            return locationConcept.definition['@role'] === descriptionType ? locationConcept.definition : undefined
         }
 
-    };
+    }
 
-    this.render = function ($$) {
+    render($$) {
 
         var location,
             name = this.props.query,
             shortDesc = "",
-            longDesc = "";
+            longDesc = ""
 
         if (this.state.googleMapsLoaded) { // wait until google maps is loaded in MapCompontent
             if (this.props.newLocation && !this.props.newLocationLoaded) {
-                var locationTemplate = require('./template/concept');
-                var placeXML = $.parseXML(locationTemplate.place).firstChild;
-                location = jxon.build(placeXML);
+                var locationTemplate = require('./template/concept')
+                var parser = new DOMParser();
+                var placeXML = parser.parseFromString(locationTemplate.place).firstChild
+                location = jxon.build(placeXML)
 
                 this.extendProps({
                     location: location,
                     newLocationLoaded: true
-                });
+                })
             }
             else {
-                name = this.props.location.concept.name;
+                name = this.props.location.concept.name
 
-                shortDesc = this.getDescription('drol:short');
-                longDesc = this.getDescription('drol:long');
+                shortDesc = this.getDescription('drol:short')
+                longDesc = this.getDescription('drol:long')
 
-                shortDesc = shortDesc ? shortDesc : "";
-                longDesc = longDesc ? longDesc : "";
+                shortDesc = shortDesc ? shortDesc : ""
+                longDesc = longDesc ? longDesc : ""
 
-                if (this.props.location.concept.metadata.object['$type'] === 'x-im/polygon') {
-                    console.warn("Edit of polygons is not yet supported");
-                    this.searchDisabled = true;
-                    this.isPolygon = true;
-                    this.updateMapPositionPolygon();
+                if (this.props.location.concept.metadata.object['@type'] === 'x-im/polygon') {
+                    console.warn("Edit of polygons is not yet supported")
+                    this.searchDisabled = true
+                    this.isPolygon = true
+                    this.updateMapPositionPolygon()
                 }
                 else {
-                    this.updateMapPosition();
+                    this.updateMapPosition()
                 }
             }
         }
-        var el = $$('div');
+        var el = $$('div')
 
         var formContainer = $$('form').addClass('location-form__container clearfix').ref('formContainer').on('submit', function (e) {
-            e.preventDefault();
+            e.preventDefault()
             if (this.refs['locationNameInput'].val() !== "") {
-                this.onClose('save');
+                this.onClose('save')
             }
-        }.bind(this));
+        }.bind(this))
 
-        var hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'});
-        formContainer.append(hiddenSubmitButtonToEnableEnterSubmit);
+        var hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'})
+        formContainer.append(hiddenSubmitButtonToEnableEnterSubmit)
 
         // Name
-        var formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName');
-        formGroup.append($$('label').attr('for', 'locationNameInput').append(this.context.i18n.t('Name')));
+        var formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
+        formGroup.append($$('label').attr('for', 'locationNameInput').append(this.getLabel('Name')))
         if (this.props.editable) {
             var locationName = $$('input').attr({
                 type: 'text',
                 id: 'locationNameInput'
             })
                 .addClass('form-control').val(name)
-                .ref('locationNameInput');
+                .ref('locationNameInput')
 
             locationName.on('change', function () {
                 if (this.refs['locationNameInput'].val() === "") {
-                    this.send("dialog:disablePrimaryBtn");
+                    this.send("dialog:disablePrimaryBtn")
                 } else {
-                    this.send("dialog:enablePrimaryBtn");
+                    this.send("dialog:enablePrimaryBtn")
                 }
-            }.bind(this));
+            }.bind(this))
 
-            formGroup.append(locationName);
+            formGroup.append(locationName)
         }
         else {
             formGroup.append(
                 $$('p').append(name).ref('locationNameP')
-            );
+            )
         }
-        formContainer.append(formGroup);
+        formContainer.append(formGroup)
 
 
         // Short Desc
-        var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc');
-        formGroupShortDesc.append($$('label').attr('for', 'locationShortDescInput').append(this.context.i18n.t('Short description')));
+        var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
+        formGroupShortDesc.append($$('label').attr('for', 'locationShortDescInput').append(this.getLabel('Short description')))
         if (this.props.editable) {
             formGroupShortDesc.append(
                 $$('input').attr({
@@ -319,18 +318,18 @@ class LocationDetailComponent {
                     .addClass('form-control')
                     .val(shortDesc['keyValue'])
                     .ref('locationShortDescInput')
-            );
+            )
         }
         else {
             formGroupShortDesc.append(
                 $$('p').append(shortDesc['keyValue']).ref('locationShortDescP')
-            );
+            )
         }
-        formContainer.append(formGroupShortDesc);
+        formContainer.append(formGroupShortDesc)
 
         // Long desc
-        var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc');
-        formGroupLongDesc.append($$('label').attr('for', 'locationLongDescText').append(this.context.i18n.t('Long description')));
+        var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
+        formGroupLongDesc.append($$('label').attr('for', 'locationLongDescText').append(this.getLabel('Long description')))
         if (this.props.editable) {
             formGroupLongDesc.append(
                 $$('textarea').attr({
@@ -339,77 +338,96 @@ class LocationDetailComponent {
                     .addClass('form-control')
                     .val(longDesc['keyValue'])
                     .ref('locationLongDescText')
-            );
+            )
         }
         else {
             formGroupLongDesc.append(
                 $$('p').append(longDesc['keyValue']).ref('locationLongDescP')
-            );
+            )
         }
-        formContainer.append(formGroupLongDesc);
+        formContainer.append(formGroupLongDesc)
 
 
-        el.append(formContainer);
+        el.append(formContainer)
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append(
-                $$('div').addClass('alert alert-info').append(this.context.i18n.t("Please note that this name is already in use") + ": " + this.props.query)))
+                $$('div').addClass('alert alert-info').append(this.getLabel("Please note that this name is already in use") + ": " + this.props.query)))
         }
 
         if (!this.searchDisabled) {
-            var searchComponent = $$(SearchComponent).ref('searchComponent');
-            el.append(searchComponent);
+            var searchComponent = $$(SearchComponent).ref('searchComponent')
+            el.append(searchComponent)
         }
         if (this.isPolygon) {
-            el.append($$('p').addClass('col-xs-12 not-supported').append(this.context.i18n.t('Edit of polygons is not currently supported')));
+            el.append($$('p').addClass('col-xs-12 not-supported').append(this.getLabel('Edit of polygons is not currently supported')))
         }
 
-        var mapComponent = $$(MapComponent).ref('mapComponent');
-        el.append(mapComponent);
+        var mapComponent = $$(MapComponent).ref('mapComponent')
+        el.append(mapComponent)
 
-        return el;
-    };
+        return el
+    }
 
-    this.onClose = function (status) {
+    onClose(status) {
         if ('cancel' === status || this.props.editable === false) {
-            return true;
+            return true
         }
 
         if (this.props.newLocation) {
-            this.createLocation();
+            this.createLocation()
         } else {
-            this.updateLocation();
+            this.updateLocation()
         }
 
-        return false;
-    };
+        return false
+    }
 
-    this.getLocationType = function () {
-        var useGeometryType = this.context.api.getConfigValue(this.props.plugin, 'useGeometryType');
+    getLocationType() {
+        var useGeometryType = this.context.api.getConfigValue('se.infomaker.ximplace', 'useGeometryType')
         if (useGeometryType) {
-            var locationType = '';
+            var locationType = ''
             try {
-                if (typeof(this.props.location.concept.metadata.object['$type']) !== 'undefined') {
-                    locationType = this.props.location.concept.metadata.object['$type'];
+                if (typeof(this.props.location.concept.metadata.object['@type']) !== 'undefined') {
+                    locationType = this.props.location.concept.metadata.object['@type']
                 }
             }
             catch (ex) {
-                console.error(ex);
-                throw new Error('Invalid conceptItem for location');
+                console.error(ex)
+                throw new Error('Invalid conceptItem for location')
             }
 
             if (locationType) {
-                return locationType;
+                return locationType
             }
             else {
-                throw new Error('Invalid conceptItem for location. Missing object type');
+                throw new Error('Invalid conceptItem for location. Missing object type')
             }
         }
         else {
-            return 'x-im/place';
+            return 'x-im/place'
         }
-    };
-};
+    }
+}
 
-Component.extend(LocationDetailComponent);
-module.exports = LocationDetailComponent;
+
+function findAttribute(object, attribute) {
+    var match
+
+    function iterateObject(target, name) {
+        Object.keys(target).forEach(function (key) {
+            if (isObject(target[key])) {
+                iterateObject(target[key], name)
+            } else if (key === name) {
+                match = target[key]
+            }
+        })
+    }
+
+    iterateObject(object, attribute)
+
+    return match ? match : undefined
+}
+
+
+export default LocationDetailComponent

@@ -38,5 +38,8 @@
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "google-maps-api-loader": "^0.3.0"
   }
 }

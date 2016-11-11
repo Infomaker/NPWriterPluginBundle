@@ -1,49 +1,51 @@
-'use strict';
+import {Component} from 'substance'
+import GoogleMapsApiLoader from 'google-maps-api-loader'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-var GoogleMapsLoader = require('./lib/Google'); // only for common js environments
+class MapComponent extends Component {
 
-function MapComponent() {
-    MapComponent.super.apply(this, arguments);
-    this.name = 'location';
-    this.apiKey = this.context.api.getConfigValue(this.name, 'googleMapAPIKey');
+    constructor(...args) {
+        super(...args)
 
-    GoogleMapsLoader.KEY = this.apiKey;
-    GoogleMapsLoader.LIBRARIES = ['geometry', 'places'];
+        this.name = 'location'
 
-    GoogleMapsLoader.onLoad(function (google) {
-        this.googleMapsLoaded(google);
-    }.bind(this));
-}
+        var apiKey = this.context.api.getConfigValue(this.name, 'googleMapAPIKey')
 
-MapComponent.Prototype = function () {
+        GoogleMapsApiLoader({
+            libraries: ['geometry', 'places'],
+            apiKey: apiKey
+        }).then(googleApi => {
+            this.googleMapsLoaded(googleApi)
+        }, err => {
+            console.error(err);
+        });
+    }
 
-    this.handleWKTPolygon = function (wktString) {
+
+    handleWKTPolygon(wktString) {
+        var ptsArray = []
 
         function addPoints(google, data) {
-            var pointsData = data.split(",");
-            var len = pointsData.length;
+            var pointsData = data.split(",")
+            var len = pointsData.length
             for (var i = 0; i < len; i++) {
-                var xy = pointsData[i].split(" ");
+                var xy = pointsData[i].split(" ")
 
                 var pt = new google.maps.LatLng(xy[1], xy[0]); // Make to Google LatLng format
-                ptsArray.push(pt);
+                ptsArray.push(pt)
             }
         }
 
         //Get ring if there's many
-        var regex = /\(([^()]+)\)/g;
-        var wktRings = [];
-        var results;
-        while (results = regex.exec(wktString)) {
-            wktRings.push(results[1]);
-        }
+        var regex = /\(([^()]+)\)/g
+        var wktRings = []
+        var results
+        do {
+            results = regex.exec(wktString)
+            wktRings.push(results[1])
+        } while (results)
 
-        var ptsArray = [];
         for (var i = 0; i < wktRings.length; i++) {
-            addPoints(this.google, wktRings[i]);
+            addPoints(this.google, wktRings[i])
         }
 
         var poly = new this.google.maps.Polygon({
@@ -53,42 +55,42 @@ MapComponent.Prototype = function () {
             strokeWeight: 2,
             fillColor: '#1E90FF',
             fillOpacity: 0.35
-        });
+        })
 
-        poly.setMap(this.map);
-        this.map.setZoom(9);
+        poly.setMap(this.map)
+        this.map.setZoom(9)
 
-    };
+    }
 
-    this.dispose = function () {
-        GoogleMapsLoader.release(function () {
-            //Release the google maps on dispose of component
-        });
-    };
+    dispose() {
+        // this.google.release(function () {
+        //     //Release the google maps on dispose of component
+        // })
+    }
 
-    this.getDefaultMapOptions = function () {
-        var latlng = new google.maps.LatLng(56.683687, 16.363279);
+    getDefaultMapOptions() {
+        var latlng = new google.maps.LatLng(56.683687, 16.363279)
         return {
             zoom: 14,
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false,
-        };
-    };
+        }
+    }
 
-    this.googleMapsLoaded = function (google) {
-        this.google = google;
-        this.map = new google.maps.Map(this.refs.mapContainer.el, this.getDefaultMapOptions());
-        this.send('googleMapsLoaded', google);
-    };
+    googleMapsLoaded(google) {
+        this.google = google
+        this.map = new google.maps.Map(this.refs.mapContainer.el.el, this.getDefaultMapOptions())
+        this.send('googleMapsLoaded', google)
+    }
 
     /**
      * Set marker
      * @param {google.maps.Marker} googleLatLong
      */
-    this.setMarker = function (googleLatLong) {
+    setMarker(googleLatLong) {
         if (this.marker) {
-            this.marker.position = googleLatLong;
+            this.marker.position = googleLatLong
         } else {
             this.marker = new google.maps.Marker({
                 position: googleLatLong,
@@ -102,48 +104,38 @@ MapComponent.Prototype = function () {
                     scale: 4
                 },
                 draggable: true
-            });
+            })
 
             this.marker.addListener('dragend', function (event) {
-                this.send('markerPositionChanged', {lat: event.latLng.lat(), lng: event.latLng.lng()});
-            }.bind(this));
+                this.send('markerPositionChanged', {lat: event.latLng.lat(), lng: event.latLng.lng()})
+            }.bind(this))
         }
 
-        this.marker.setMap(this.map);
-    };
+        this.marker.setMap(this.map)
+    }
 
-    this.updateMapLocation = function (googleLatLng) {
-        this.map.setCenter(googleLatLng);
-        this.setMarker(googleLatLng);
-    };
+    updateMapLocation(googleLatLng) {
+        this.map.setCenter(googleLatLng)
+        this.setMarker(googleLatLng)
+    }
 
-    this.didMount = function () {
-        this.loadGoogleMaps();
-    };
 
-    this.loadGoogleMaps = function () {
-        GoogleMapsLoader.load(function (google) {
-        }.bind(this));
-
-    };
-
-    this.didReceiveProps = function () {
+    didReceiveProps() {
         if (this.props.googleLatLng) {
-            this.updateMapLocation(this.props.googleLatLng);
-        } else if(this.props.isPolygon) {
-            this.handleWKTPolygon(this.props.wktString);
+            this.updateMapLocation(this.props.googleLatLng)
+        } else if (this.props.isPolygon) {
+            this.handleWKTPolygon(this.props.wktString)
         }
-    };
+    }
 
-    this.render = function () {
+    render($$) {
         // https://developers.google.com/maps/documentation/javascript/events
-        var el = $$('div');
-        var mapContainer = $$('div').attr('id', 'map-container').ref('mapContainer');
-        el.append(mapContainer);
-        return el;
-    };
+        var el = $$('div')
+        var mapContainer = $$('div').attr('id', 'map-container').ref('mapContainer')
+        el.append(mapContainer)
+        return el
+    }
 
-};
+}
 
-Component.extend(MapComponent);
-module.exports = MapComponent;
+export default MapComponent
