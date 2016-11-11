@@ -16,7 +16,8 @@ export default {
         let imageFile = {
             id: idGenerator(),
             type: 'npfile',
-            fileType: 'image'
+            fileType: 'image',
+            parentNodeId: el.attr('id')
         }
         if (el.attr('uuid')) {
             imageFile.uuid = el.attr('uuid')

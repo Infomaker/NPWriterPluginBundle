@@ -20,7 +20,7 @@ class Ximimage extends BlockNode {
 
 Ximimage.define({
     type: 'ximimage',
-    uuid: { type: 'string'},
+    uuid: { type: 'string', optional: true},
     imageFile: { type: 'file' },
 
     knownData: { type: 'boolean', default: false },
