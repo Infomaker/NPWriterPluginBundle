@@ -3,8 +3,13 @@ import TextanalyzerComponent from './TextAnalyzerComponent'
 export default {
     name: 'textanalyzer',
     id: 'se.infomaker.textanalyzer',
+    index: 5000,
     configure: function (config) {
 
+        config.addLabel('hello', {
+            en: "world",
+            sv: "worldse"
+        })
         config.addPopover(
             'textanalyzer',
             {

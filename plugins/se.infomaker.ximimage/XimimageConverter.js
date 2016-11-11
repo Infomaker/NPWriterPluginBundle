@@ -1,14 +1,14 @@
-import { niluuid, idGenerator } from 'writer'
+import {api, NilUUID, idGenerator} from 'writer'
 
 export default {
     type: 'ximimage',
     tagName: 'object',
 
-    matchElement: function(el) {
+    matchElement: function (el) {
         return el.is('object') && el.attr('type') === 'x-im/image'
     },
 
-    import: function(el, node, converter) { // jshint ignore:line
+    import: function (el, node, converter) { // jshint ignore:line
 
         // Import link - base data
         var linkEl = el.find('links>link')
@@ -30,6 +30,8 @@ export default {
         converter.createNode(imageFile)
         node.imageFile = imageFile.id
 
+        node.uuid = el.attr('uuid')
+
         // Import data
         var dataEl = linkEl.find('data')
         node.caption = ''
@@ -39,7 +41,7 @@ export default {
         node.crops = {}
 
         if (dataEl) {
-            dataEl.children.forEach(function(child) {
+            dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
                     node.caption = converter.annotatedText(child, [node.id, 'caption']);
                 }
@@ -67,7 +69,7 @@ export default {
                 if (child.tagName === 'crops' && child.children.length > 0) {
                     var crops = {crops: []};
 
-                    child.children.forEach(function(crop) {
+                    child.children.forEach(function (crop) {
                         if (crop.children.length === 0) {
                             // Sanity check
                             return;
@@ -106,7 +108,7 @@ export default {
         node.authors = []
         var authorLinks = linkEl.find('links')
         if (authorLinks) {
-            authorLinks.children.forEach(function(authorLinkEl) {
+            authorLinks.children.forEach(function (authorLinkEl) {
                 if ("author" === authorLinkEl.getAttribute('rel')) {
                     node.authors.push({
                         uuid: authorLinkEl.getAttribute('uuid'),
@@ -120,7 +122,7 @@ export default {
         }
     },
 
-    export: function(node, el, converter) {
+    export: function (node, el, converter) {
         var $$ = converter.$$;
 
         el.removeAttr('data-id')
@@ -131,13 +133,11 @@ export default {
         })
 
         var data = $$('data').append([
-            $$('width').append(node.width),
-            $$('height').append(node.height)
+            $$('width').append(String(node.width)),
+            $$('height').append(String(node.height))
         ])
 
-        let api = converter.context.api
-        // FIXME: there is no config right now
-        var fields = api.getConfigValue('ximimage', 'fields') || []
+        var fields = window.writer.api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
             if (obj.type === 'option') {
@@ -184,11 +184,12 @@ export default {
             data.append(crops);
         }
 
+        let fileNode = node.document.get(node.imageFile)
         var link = $$('link').attr({
             rel: 'self',
             type: 'x-im/image',
-            uri: node.uri ? node.uri : '',
-            uuid: node.uuid ? node.uuid : niluuid.getNilUUID()
+            uri: fileNode.uri ? fileNode.uri : '',
+            uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 
         if (node.authors.length) {
@@ -201,7 +202,7 @@ export default {
                         title: node.authors[n].name
                     })
 
-                    if (!niluuid.isNilUUID(node.authors[n].uuid)) {
+                    if (!NilUUID.isNilUUID(node.authors[n].uuid)) {
                         authorLink.attr('type', 'x-im/author')
                     }
                     authorLinks.append(authorLink);
