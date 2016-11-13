@@ -1,6 +1,6 @@
 import {Component} from 'substance'
 
-class SearchComponent extends Component{
+class SearchComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -9,36 +9,38 @@ class SearchComponent extends Component{
 
     getInitialState() {
         return {
-            searchResults: []
+            searchResults: [],
+            googleMapsLoaded: false
         }
     }
 
     didMount() {
+
         //this.search(this.props.query)
     }
 
-    didReceiveProps() {
-        if (this.props.google) {
-            this.google = this.props.google
+    willReceiveProps(props) {
+        let newState = {}
+        if (props.google) {
+            this.google = props.google
+            newState.googleMapsLoaded = true
 
-            if (!this.state.googleMapsLoaded) {
-                this.setState({
-                    googleMapsLoaded: true,
-                    searchResults: this.state.searchResults
-                })
+            if (props.query) {
+                newState.query = props.query
+                this.populateInitialQuery(props.query)
             }
-            if (this.props.query) {
-                this.populateInitialQuery()
-            }
-
         }
+
+        if (Object.keys(newState).length > 0) {
+            this.extendState(newState)
+        }
+
     }
 
-    populateInitialQuery() {
-        this.refs.searchInput.val(this.props.query)
-        this.makeInitialSearch(this.props.query)
+    populateInitialQuery(initialQuery) {
+        this.makeInitialSearch(initialQuery)
     }
-    
+
     render($$) {
 
         var el = $$('div').addClass('search-container').ref('searchContainer')
@@ -50,17 +52,18 @@ class SearchComponent extends Component{
 
         if (this.state.googleMapsLoaded) {
 
-            var searchForm = $$('form')
+            var searchForm = $$('form').attr('style', 'display:flex')
                 .on('submit', this.search.bind(this)).ref('searchForm')
 
             var searchInput = $$('input')
                 .addClass('form-control search__query col-xs-9')
                 .ref('searchInput')
-                .attr('placeholder', this.context.i18n.t('Address or place'))
+                .val(this.state.query)
+                .attr('placeholder', this.getLabel('Address or place'))
 
             var searchButton = $$('button')
                 .addClass('btn btn-neutral col-xs-3')
-                .append(this.context.i18n.t('Search'))
+                .append(this.getLabel('Search'))
                 .on('click', this.search.bind(this))
                 .ref('serchButton')
 
@@ -115,7 +118,7 @@ class SearchComponent extends Component{
         var request = {
             query: this.refs.searchInput.val()
         }
-        var service = new this.google.maps.places.PlacesService(this.refs.tmpSearchContainer.el)
+        var service = new this.google.maps.places.PlacesService(this.refs.tmpSearchContainer.el.el)
         service.textSearch(request, this.searchDone.bind(this))
     }
 
@@ -128,7 +131,7 @@ class SearchComponent extends Component{
         var request = {
             query: query
         }
-        var service = new this.google.maps.places.PlacesService(this.refs.tmpSearchContainer.el)
+        var service = new this.google.maps.places.PlacesService(this.refs.tmpSearchContainer.el.el)
         service.textSearch(request, function (results, status) {
             if (status === this.google.maps.places.PlacesServiceStatus.OK && results[0]) {
                 var lat = results[0].geometry.location.lat()
@@ -136,6 +139,7 @@ class SearchComponent extends Component{
                 this.send('searchItemSelected', new google.maps.LatLng(lat, lng))
             }
         }.bind(this))
+
     }
 }
 

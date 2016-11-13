@@ -85,22 +85,18 @@ class XimimageCommand extends Command {
 
     createPreviewNode(file) {
 
-        const ximImageNodeId = idGenerator()
-
         let fileNode = {
             id: idGenerator(),
             type: 'npfile',
             fileType: 'image',
-            parentNodeId: ximImageNodeId,
             data: file
         }
-
-        // let imageFileNode = api.editorSession.getDocument().nodeFactory.create('npfile', fileNode)
 
         api.editorSession.transaction((tx) => {
             tx.create(fileNode);
         })
 
+        const ximImageNodeId = idGenerator()
         var data = {
             type: 'ximimage',
             id: ximImageNodeId,

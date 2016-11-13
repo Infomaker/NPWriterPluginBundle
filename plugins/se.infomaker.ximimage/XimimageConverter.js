@@ -16,8 +16,7 @@ export default {
         let imageFile = {
             id: idGenerator(),
             type: 'npfile',
-            fileType: 'image',
-            parentNodeId: el.attr('id')
+            fileType: 'image'
         }
         if (el.attr('uuid')) {
             imageFile.uuid = el.attr('uuid')
@@ -129,7 +128,6 @@ export default {
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
-            uuid: node.uuid,
             type: 'x-im/image'
         })
 
@@ -186,6 +184,9 @@ export default {
         }
 
         let fileNode = node.document.get(node.imageFile)
+
+        el.attr('uuid', fileNode.uuid)
+
         var link = $$('link').attr({
             rel: 'self',
             type: 'x-im/image',

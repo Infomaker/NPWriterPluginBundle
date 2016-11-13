@@ -7,9 +7,9 @@ import {jxon} from 'writer'
 import {idGenerator} from 'writer'
 import {lodash} from 'writer'
 
-var isArray = lodash.isArray
-var isObject = lodash.isObject
-var find = lodash.find
+const isArray = lodash.isArray
+const isObject = lodash.isObject
+const find = lodash.find
 
 class LocationDetailComponent extends Component {
 
@@ -29,18 +29,18 @@ class LocationDetailComponent extends Component {
         // if (this.ajaxRequest) {
         //     this.ajaxRequest.abort()
         // }
-        Component.prototype.dispose.call(this)
+        super.dispose()
     }
 
     /**
      * Creates an Id and update the id property on contept.metadata.object.id
      */
     createIdForObject() {
-        this.props.location.concept.metadata.object['@id'] = idGenerator()
+        this.state.location.concept.metadata.object['@id'] = idGenerator()
     }
 
     createLocation() {
-        var location = this.props.location,
+        var location = this.state.location,
             url = '/api/newsitem'
 
         this.createIdForObject()
@@ -56,11 +56,11 @@ class LocationDetailComponent extends Component {
 
             this.props.reload()
             this.send('close')
-        }).catch (err => console.log(err))
+        }).catch(err => console.log(err))
     }
 
     updateLocation() {
-        var location = this.props.location;
+        var location = this.state.location;
         var uuid = location['@guid'] ? location['@guid'] : null
         if (!uuid) {
             throw new Error("ConceptItem has no UUID to update")
@@ -81,10 +81,10 @@ class LocationDetailComponent extends Component {
     }
 
     getGeometryObject() {
-        var geometry = findAttribute(this.props.location, 'geometry')
+        var geometry = findAttribute(this.state.location, 'geometry')
         if (geometry) {
             return {
-                position: this.props.location.concept.metadata.object.data.geometry
+                position: this.state.location.concept.metadata.object.data.geometry
             }
         } else {
             return {}
@@ -98,10 +98,10 @@ class LocationDetailComponent extends Component {
      * @param {string} role The definition type, drol:short or drol:long
      */
     setDescription(inputValue, role) {
-        var currentDescription = this.context.api.concept.getDefinitionForType(this.props.location.concept.definition, role)
+        var currentDescription = this.context.api.concept.getDefinitionForType(this.state.location.concept.definition, role)
         if (inputValue.length > 0 && !currentDescription) {
             var longDesc = {'@role': role, keyValue: inputValue}
-            this.props.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.location.concept.definition, longDesc)
+            this.state.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.state.location.concept.definition, longDesc)
         } else if (inputValue.length >= 0 && currentDescription) {
             currentDescription['keyValue'] = inputValue
         }
@@ -115,7 +115,7 @@ class LocationDetailComponent extends Component {
      * @returns {*} Returns jQuery ajax promise
      */
     saveLocation(url, method) {
-        var location = this.props.location
+        var location = this.state.location
         location.concept.name = this.refs.locationNameInput.val().length > 0 ? this.refs.locationNameInput.val() : location.concept.name
 
         var shortDescriptionInputValue = this.refs.locationShortDescInput.val()
@@ -156,17 +156,25 @@ class LocationDetailComponent extends Component {
      * @param {class} google
      */
     googleMapsLoaded(google) {
+
         this.google = google
 
-        this.setState({
-            googleMapsLoaded: true
-        })
 
-        if (this.props.newLocation && this.props.query) { // If there is a new location and there is a query entered show that in map
-            this.refs.searchComponent.setProps({google: google, query: this.props.query})
+        if (this.state.newLocation && this.state.query) { // If there is a new location and there is a query entered show that in map
+            try {
+                this.refs.searchComponent.setProps({google: google, query: this.state.query})
+            } catch(e) {
+                console.log("e",e);
+            }
+
         } else {
             this.refs.searchComponent.setProps({google: google})
         }
+
+        this.extendState({
+            googleMapsLoaded: true
+        })
+
 
     }
 
@@ -179,8 +187,13 @@ class LocationDetailComponent extends Component {
     }
 
     updateMapPositionPolygon() {
-        var wktPolygon = this.props.location.concept.metadata.object.data.geometry
-        this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
+        var wktPolygon = this.state.location.concept.metadata.object.data.geometry
+        try {
+            this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
+        } catch(e) {
+            console.log("e", e);
+        }
+
     }
 
     /**
@@ -188,7 +201,7 @@ class LocationDetailComponent extends Component {
      * @returns {{lat: *, lng: *}}
      */
     getLatLngFromLoadedLocation() {
-        var geometry = findAttribute(this.props.location.concept, 'geometry')
+        var geometry = findAttribute(this.state.location.concept, 'geometry')
 
         if (!geometry) {
             return {
@@ -205,14 +218,14 @@ class LocationDetailComponent extends Component {
     }
 
     markerPositionChanged(latLng) {
-        if (!this.props.location.concept.metadata.object.data) {
-            this.props.location.concept.metadata.object.data = {}
+        if (!this.state.location.concept.metadata.object.data) {
+            this.state.location.concept.metadata.object.data = {}
         }
-        this.props.location.concept.metadata.object.data.geometry = "POINT(" + latLng.lng + " " + latLng.lat + ")"
+        this.state.location.concept.metadata.object.data.geometry = "POINT(" + latLng.lng + " " + latLng.lat + ")"
     }
 
     getDescription(descriptionType) {
-        var locationConcept = this.props.location.concept
+        var locationConcept = this.state.location.concept
         if (!locationConcept.definition) {
             return undefined
         }
@@ -227,43 +240,46 @@ class LocationDetailComponent extends Component {
 
     }
 
+    willReceiveProps(props) {
+        this.extendState({
+            query: props.query,
+            newLocation: props.newLocation,
+            location: props.location,
+            editable: props.editable
+        })
+    }
+
+    getNameForLocation() {
+        if (this.state.query) {
+            return this.state.query
+        } else {
+            return this.state.location.concept.name
+        }
+    }
+
     render($$) {
 
         var location,
-            name = this.props.query,
             shortDesc = "",
             longDesc = ""
 
-        if (this.state.googleMapsLoaded) { // wait until google maps is loaded in MapCompontent
-            if (this.props.newLocation && !this.props.newLocationLoaded) {
-                var locationTemplate = require('./template/concept')
-                var parser = new DOMParser();
-                var placeXML = parser.parseFromString(locationTemplate.place).firstChild
-                location = jxon.build(placeXML)
+        const name = this.getNameForLocation()
 
-                this.extendProps({
-                    location: location,
-                    newLocationLoaded: true
-                })
+        if (this.state.googleMapsLoaded) { // wait until google maps is loaded in MapCompontent
+            shortDesc = this.getDescription('drol:short')
+            longDesc = this.getDescription('drol:long')
+
+            shortDesc = shortDesc ? shortDesc : ""
+            longDesc = longDesc ? longDesc : ""
+
+            if (this.state.location.concept.metadata.object['@type'] === 'x-im/polygon') {
+                console.warn("Edit of polygons is not yet supported")
+                this.searchDisabled = true
+                this.isPolygon = true
+                this.updateMapPositionPolygon()
             }
             else {
-                name = this.props.location.concept.name
-
-                shortDesc = this.getDescription('drol:short')
-                longDesc = this.getDescription('drol:long')
-
-                shortDesc = shortDesc ? shortDesc : ""
-                longDesc = longDesc ? longDesc : ""
-
-                if (this.props.location.concept.metadata.object['@type'] === 'x-im/polygon') {
-                    console.warn("Edit of polygons is not yet supported")
-                    this.searchDisabled = true
-                    this.isPolygon = true
-                    this.updateMapPositionPolygon()
-                }
-                else {
-                    this.updateMapPosition()
-                }
+                this.updateMapPosition()
             }
         }
         var el = $$('div')
@@ -281,7 +297,7 @@ class LocationDetailComponent extends Component {
         // Name
         var formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
         formGroup.append($$('label').attr('for', 'locationNameInput').append(this.getLabel('Name')))
-        if (this.props.editable) {
+        if (this.state.editable) {
             var locationName = $$('input').attr({
                 type: 'text',
                 id: 'locationNameInput'
@@ -310,7 +326,7 @@ class LocationDetailComponent extends Component {
         // Short Desc
         var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
         formGroupShortDesc.append($$('label').attr('for', 'locationShortDescInput').append(this.getLabel('Short description')))
-        if (this.props.editable) {
+        if (this.state.editable) {
             formGroupShortDesc.append(
                 $$('input').attr({
                     id: 'locationShortDescInput'
@@ -330,7 +346,7 @@ class LocationDetailComponent extends Component {
         // Long desc
         var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
         formGroupLongDesc.append($$('label').attr('for', 'locationLongDescText').append(this.getLabel('Long description')))
-        if (this.props.editable) {
+        if (this.state.editable) {
             formGroupLongDesc.append(
                 $$('textarea').attr({
                     id: 'locationLongDescText'
@@ -352,7 +368,7 @@ class LocationDetailComponent extends Component {
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append(
-                $$('div').addClass('alert alert-info').append(this.getLabel("Please note that this name is already in use") + ": " + this.props.query)))
+                $$('div').addClass('alert alert-info').append(this.getLabel("Please note that this name is already in use") + ": " + this.state.query)))
         }
 
         if (!this.searchDisabled) {
@@ -370,11 +386,11 @@ class LocationDetailComponent extends Component {
     }
 
     onClose(status) {
-        if ('cancel' === status || this.props.editable === false) {
+        if ('cancel' === status || this.state.editable === false) {
             return true
         }
 
-        if (this.props.newLocation) {
+        if (this.state.newLocation) {
             this.createLocation()
         } else {
             this.updateLocation()
@@ -388,8 +404,8 @@ class LocationDetailComponent extends Component {
         if (useGeometryType) {
             var locationType = ''
             try {
-                if (typeof(this.props.location.concept.metadata.object['@type']) !== 'undefined') {
-                    locationType = this.props.location.concept.metadata.object['@type']
+                if (typeof(this.state.location.concept.metadata.object['@type']) !== 'undefined') {
+                    locationType = this.state.location.concept.metadata.object['@type']
                 }
             }
             catch (ex) {

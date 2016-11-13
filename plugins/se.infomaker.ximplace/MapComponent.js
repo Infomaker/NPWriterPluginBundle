@@ -6,18 +6,8 @@ class MapComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        this.name = 'location'
+        this.pluginId = 'se.infomaker.ximplace'
 
-        var apiKey = this.context.api.getConfigValue(this.name, 'googleMapAPIKey')
-
-        GoogleMapsApiLoader({
-            libraries: ['geometry', 'places'],
-            apiKey: apiKey
-        }).then(googleApi => {
-            this.googleMapsLoaded(googleApi)
-        }, err => {
-            console.error(err);
-        });
     }
 
 
@@ -42,6 +32,7 @@ class MapComponent extends Component {
         do {
             results = regex.exec(wktString)
             wktRings.push(results[1])
+
         } while (results)
 
         for (var i = 0; i < wktRings.length; i++) {
@@ -63,8 +54,9 @@ class MapComponent extends Component {
     }
 
     dispose() {
+        this.map.unbindAll()
         // this.google.release(function () {
-        //     //Release the google maps on dispose of component
+        //     Release the google maps on dispose of component
         // })
     }
 
@@ -78,9 +70,24 @@ class MapComponent extends Component {
         }
     }
 
+    didMount() {
+        var apiKey = this.context.api.getConfigValue(this.pluginId, 'googleMapAPIKey')
+
+        GoogleMapsApiLoader({
+            libraries: ['geometry', 'places'],
+            apiKey: apiKey
+        }).then(googleApi => {
+            this.googleMapsLoaded(googleApi)
+        }, err => {
+            console.error(err);
+        })
+
+    }
+
     googleMapsLoaded(google) {
         this.google = google
-        this.map = new google.maps.Map(this.refs.mapContainer.el.el, this.getDefaultMapOptions())
+        let mapContaienr = document.getElementById('map-container')
+        this.map = new google.maps.Map(mapContaienr, this.getDefaultMapOptions())
         this.send('googleMapsLoaded', google)
     }
 
@@ -119,18 +126,24 @@ class MapComponent extends Component {
         this.setMarker(googleLatLng)
     }
 
-
-    didReceiveProps() {
-        if (this.props.googleLatLng) {
-            this.updateMapLocation(this.props.googleLatLng)
-        } else if (this.props.isPolygon) {
-            this.handleWKTPolygon(this.props.wktString)
+    willReceiveProps(props) {
+        if (props.googleLatLng) {
+            this.updateMapLocation(props.googleLatLng)
+        } else if (props.isPolygon) {
+            this.handleWKTPolygon(props.wktString)
         }
     }
 
+    // Prevent rerender on this MapComponent
+    // When rerender the google map disappears
+    shouldRerender() {
+        return false
+    }
+
+
     render($$) {
         // https://developers.google.com/maps/documentation/javascript/events
-        var el = $$('div')
+        var el = $$('div').ref('mapComponent')
         var mapContainer = $$('div').attr('id', 'map-container').ref('mapContainer')
         el.append(mapContainer)
         return el

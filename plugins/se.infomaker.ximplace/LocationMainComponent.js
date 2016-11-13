@@ -1,7 +1,9 @@
 import {Component} from 'substance'
-import {api} from 'writer'
+import {api, jxon} from 'writer'
 import LocationListComponent from './LocationListComponent'
 import LocationDetailComponent from './LocationDetailComponent'
+import LocationTemplate from './template/concept'
+
 
 class LocationMainComponent extends Component {
 
@@ -95,13 +97,20 @@ class LocationMainComponent extends Component {
     }
 
     createMap(selectedItem, exists) {
+
+        var parser = new DOMParser();
+        var placeXML = parser.parseFromString(LocationTemplate.place, 'text/xml').firstChild
+        var location = jxon.build(placeXML)
+
+
         var properties = {
             newLocation: true,
             exists: exists,
             query: selectedItem.inputValue,
             reload: this.reload.bind(this),
             editable: true,
-            plugin: this.props.plugin
+            plugin: this.props.plugin,
+            location: location
         };
 
         api.ui.showDialog(LocationDetailComponent, properties, {
