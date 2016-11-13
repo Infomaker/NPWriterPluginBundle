@@ -47,7 +47,7 @@ class LocationDetailComponent extends Component {
 
         this.saveLocation(url, 'POST').then(data => {
             // Update tag in newsItem
-            this.context.api.addLocation(this.name, {
+            this.context.api.newsItem.addLocation(this.name, {
                 title: location.concept.name,
                 data: this.getGeometryObject(),
                 uuid: data,
