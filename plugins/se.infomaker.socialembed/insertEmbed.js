@@ -1,10 +1,11 @@
 /*
     Insert socialembed at current cursor pos
 */
-export default function insertEmbed(tx, url) {
-    tx.insertBlockNode({
+
+export default function insertEmbed(tx, embedUrl) {
+    tx.insertNode({
         type: 'socialembed',
         dataType: 'x-im/socialembed',
-        url: url
+        url: embedUrl
     })
 }
