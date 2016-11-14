@@ -74,43 +74,6 @@ class AuthorItemComponent extends Component {
                         loadedAuthor: {name: this.props.author.title}
                     })
                 }.bind(this))
-
-
-            // this.ajaxRequest = this.context.api.router.ajax(
-            //     'GET', 'xml', '/api/newsitem/' + this.props.author.uuid, {imType: this.props.author.type}
-            // )
-            //
-            // this.ajaxRequest
-            //     .then(response => response.text())
-            //     .then(function (data) {
-            //         var conceptXML = data.querySelector('concept')
-            //         var linksXML = data.querySelector('itemMeta links')
-            //         var jsonFormat = jxon.build(conceptXML)
-            //
-            //         var authorLinks
-            //         if (linksXML) {
-            //             authorLinks = jxon.build(linksXML);
-            //         }
-            //
-            //         this.setState({
-            //             name: jsonFormat.name,
-            //             isLoaded: true,
-            //             isSimpleAuthor: false,
-            //             loadedAuthor: jsonFormat,
-            //             loadedAuhtorLinks: authorLinks
-            //         });
-            //
-            //     }
-            //         .bind(this))
-            //     .catch(function () {
-            //         this.setState({
-            //             name: this.props.author.title,
-            //             isLoaded: true,
-            //             isSimpleAuthor: true,
-            //             loadedAuthor: {name: this.props.author.title}
-            //         })
-            //     }
-            //         .bind(this))
         }
     }
 
