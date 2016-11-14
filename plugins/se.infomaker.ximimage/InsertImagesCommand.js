@@ -1,5 +1,5 @@
 import {Command} from 'substance'
-import insertImageFromFile from './insertImageFromFile'
+import insertImage from './insertImage'
 
 /*
     Insert multiple images based on a list of image files
@@ -15,7 +15,7 @@ class XimimageCommand extends Command {
     execute(params) {
         params.editorSession.transaction((tx) => {
             params.files.forEach((file) => {
-                insertImageFromFile(tx, file)
+                insertImage(tx, file)
             })
         })
         return true;

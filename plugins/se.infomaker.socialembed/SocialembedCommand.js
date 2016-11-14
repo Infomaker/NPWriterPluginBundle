@@ -1,5 +1,5 @@
 import { Command } from 'substance'
-import { insertEmbed } from './insertEmbed'
+import insertEmbed from './insertEmbed'
 
 class SocialembedCommand extends Command {
 
@@ -8,7 +8,7 @@ class SocialembedCommand extends Command {
     }
 
     execute(params) {
-        params.documentSession.transaction((tx) => {
+        params.editorSession.transaction((tx) => {
             insertEmbed(tx, params.url)
         })
         return true

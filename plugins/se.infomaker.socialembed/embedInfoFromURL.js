@@ -12,4 +12,5 @@ export default function embedInfoFromURL(url) {
     } else {
         result.isEmbed = false
     }
+    return result
 }
