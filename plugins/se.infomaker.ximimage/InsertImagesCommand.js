@@ -14,7 +14,7 @@ class XimimageCommand extends Command {
 
     execute(params) {
         params.editorSession.transaction((tx) => {
-            params.files.forEach((file) => {
+            Array.prototype.forEach.call(params.files, (file) => {
                 insertImage(tx, file)
             })
         })

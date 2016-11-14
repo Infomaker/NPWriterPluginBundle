@@ -32,7 +32,7 @@ class XimimageTool extends Tool {
     }
 
     triggerFileUpload(ev) {
-        this.context.editorSession.executeCommand('insert-ximimage', {
+        this.context.editorSession.executeCommand('insert-images', {
             files: ev.target.files
         })
     }

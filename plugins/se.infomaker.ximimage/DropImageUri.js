@@ -2,7 +2,7 @@ import insertImage from './insertImage'
 import { DragAndDropHandler } from 'substance'
 
 // Implements a file drop handler
-class DropImageFile extends DragAndDropHandler {
+class DropImageUri extends DragAndDropHandler {
     match(params) {
         return params.type === 'uri' && _isImage(params.uri)
     }
@@ -19,4 +19,4 @@ function _isImage(uri) {
 }
 
 
-export default DropImageFile
+export default DropImageUri

@@ -3,7 +3,7 @@
 */
 
 export default function insertEmbed(tx, embedUrl) {
-    tx.insertNode({
+    tx.insertBlockNode({
         type: 'socialembed',
         dataType: 'x-im/socialembed',
         url: embedUrl

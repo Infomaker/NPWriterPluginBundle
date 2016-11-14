@@ -2,7 +2,6 @@ import SocialembedComponent from './SocialembedComponent'
 import SocialembedCommand from './SocialembedCommand'
 import SocialembedConverter from './SocialembedConverter'
 import SocialembedMacro from './SocialembedMacro'
-import DropSocialEmbed from './DropSocialEmbed'
 import Socialembed from './Socialembed'
 import DropSocialEmbed from './DropSocialEmbed'
 
