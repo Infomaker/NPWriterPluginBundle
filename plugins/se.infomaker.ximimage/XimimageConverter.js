@@ -1,4 +1,4 @@
-import {NilUUID, idGenerator} from 'writer'
+import {NilUUID, idGenerator, api} from 'writer'
 
 export default {
     type: 'ximimage',
@@ -138,7 +138,7 @@ export default {
             $$('height').append(String(node.height))
         ])
 
-        let fields = converter.context.api.getConfigValue('se.infomaker.ximimage', 'fields') || []
+        let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
             if (obj.type === 'option') {

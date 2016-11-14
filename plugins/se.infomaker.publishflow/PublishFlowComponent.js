@@ -170,7 +170,7 @@ class PublishFlowComponent extends Component {
                 .css({'text-align': 'right'})
                 .append(
                     $$('button')
-                        .addClass('btn-secondary')
+                        .addClass('sc-np-btn btn-secondary')
                         .append(
                             this.getLabel('Cancel')
                         )
@@ -307,7 +307,7 @@ class PublishFlowComponent extends Component {
                         .addClass('sc-np-publish-action-section-content-actions')
                         .append(
                             $$('button')
-                                .addClass('btn-secondary')
+                                .addClass('sc-np-btn btn-secondary')
                                 .append(
                                     this.getLabel('Save')
                                 )

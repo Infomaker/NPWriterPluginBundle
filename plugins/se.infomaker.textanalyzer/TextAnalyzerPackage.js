@@ -6,24 +6,21 @@ export default {
     index: 5000,
     configure: function (config) {
 
-        config.addLabel('hello', {
-            en: "world",
-            sv: "worldse"
+        config.addLabel('Characters', {
+            sv: "Antal tecken"
         })
+
+        config.addLabel('Words', {
+            sv: "Antal ord"
+        })
+
         config.addPopover(
             'textanalyzer',
             {
-                icon: 'fa-line-chart',
-                align: 'right',
-                css: {
-                    width: '30px',
-                    height: '30px'
-                }
+                icon: 'fa-info',
+                align: 'right'
             },
             TextanalyzerComponent
         )
-        // config.addSidebarTab({id: 'textanalyzer', name: 'Textanalys'})
-        // config.addComponentToSidebarTop(this.id, TextanalyzerComponent)
-        // config.addComponentToSidebarWithTabId(this.id, 'textanalyzer', TextanalyzerComponent)
     }
 }
