@@ -1,11 +1,6 @@
-
 import {Tool} from 'substance'
 
 class XimimageTool extends Tool {
-
-    constructor(...args) {
-        super(...args)
-    }
 
     render($$) {
         var el = $$('div')
@@ -30,7 +25,6 @@ class XimimageTool extends Tool {
     }
 
     triggerFileDialog() {
-
         var evt = document.createEvent('MouseEvents');
         evt.initEvent('click', true, false);
         this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt);
@@ -38,7 +32,9 @@ class XimimageTool extends Tool {
     }
 
     triggerFileUpload(ev) {
-        this.context.commandManager.commandRegistry.get('ximimagetool').handleFiles(ev.target.files);
+        this.context.editorSession.executeCommand('insert-ximimage', {
+            files: ev.target.files
+        })
     }
 }
 
