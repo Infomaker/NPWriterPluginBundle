@@ -45,18 +45,21 @@ class LocationDetailComponent extends Component {
 
         this.createIdForObject()
 
-        this.saveLocation(url, 'POST').then(data => {
-            // Update tag in newsItem
-            this.context.api.newsItem.addLocation(this.name, {
-                title: location.concept.name,
-                data: this.getGeometryObject(),
-                uuid: data,
-                type: this.getLocationType()
-            })
+        this.saveLocation(url, 'POST')
+            .then(response => this.context.api.router.checkForOKStatus(response))
+            .then(response => response.text())
+            .then(uuid => {
+                // Update tag in newsItem
+                this.context.api.newsItem.addLocation(this.name, {
+                    title: location.concept.name,
+                    data: this.getGeometryObject(),
+                    uuid: uuid,
+                    type: this.getLocationType()
+                })
 
-            this.props.reload()
-            this.send('close')
-        }).catch(err => console.log(err))
+                this.props.reload()
+                this.send('close')
+            }).catch(err => console.log(err))
     }
 
     updateLocation() {
@@ -67,17 +70,20 @@ class LocationDetailComponent extends Component {
         }
         var url = '/api/newsitem/' + uuid
 
-        this.saveLocation(url, 'PUT').then(() => {
-            // Update tag in newsItem
-            this.context.api.newsItem.updateLocation(this.name, {
-                title: location.concept.name,
-                data: this.getGeometryObject(),
-                uuid: uuid,
-                type: this.getLocationType()
-            })
-            this.props.reload()
-            this.send('close')
-        }).catch(err => console.log(err));
+        this.saveLocation(url, 'PUT')
+            .then(response => this.context.api.router.checkForOKStatus(response))
+            .then(response => response.text())
+            .then(() => {
+                // Update tag in newsItem
+                this.context.api.newsItem.updateLocation(this.name, {
+                    title: location.concept.name,
+                    data: this.getGeometryObject(),
+                    uuid: uuid,
+                    type: this.getLocationType()
+                })
+                this.props.reload()
+                this.send('close')
+            }).catch(err => console.log(err));
     }
 
     getGeometryObject() {
@@ -163,8 +169,8 @@ class LocationDetailComponent extends Component {
         if (this.state.newLocation && this.state.query) { // If there is a new location and there is a query entered show that in map
             try {
                 this.refs.searchComponent.setProps({google: google, query: this.state.query})
-            } catch(e) {
-                console.log("e",e);
+            } catch (e) {
+                console.log("e", e);
             }
 
         } else {
@@ -190,7 +196,7 @@ class LocationDetailComponent extends Component {
         var wktPolygon = this.state.location.concept.metadata.object.data.geometry
         try {
             this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
-        } catch(e) {
+        } catch (e) {
             console.log("e", e);
         }
 
