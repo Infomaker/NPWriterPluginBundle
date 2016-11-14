@@ -15,8 +15,9 @@ export default {
 
         let imageFile = {
             id: idGenerator(),
-            type: 'npfile',
-            fileType: 'image'
+            type: 'ximimagefile',
+            fileType: 'image',
+            crops: {}
         }
         if (el.attr('uuid')) {
             imageFile.uuid = el.attr('uuid')
@@ -38,7 +39,6 @@ export default {
         node.alttext = ''
         node.credit = ''
         node.alignment = ''
-        node.crops = {}
 
         if (dataEl) {
             dataEl.children.forEach(function (child) {
@@ -59,11 +59,11 @@ export default {
                 }
 
                 if (child.tagName === 'width') {
-                    node.width = parseInt(child.text(), 10)
+                    imageFile.width = parseInt(child.text(), 10)
                 }
 
                 if (child.tagName === 'height') {
-                    node.height = parseInt(child.text(), 10)
+                    imageFile.height = parseInt(child.text(), 10)
                 }
 
                 if (child.tagName === 'crops' && child.children.length > 0) {
@@ -98,7 +98,7 @@ export default {
                     });
 
                     if (crops.crops.length) {
-                        node.crops.original = crops;
+                        imageFile.crops.original = crops;
                     }
                 }
             })
@@ -124,6 +124,8 @@ export default {
 
     export: function (node, el, converter) {
         var $$ = converter.$$;
+
+        let fileNode = node.document.get(node.imageFile)
 
         el.removeAttr('data-id')
         el.attr({
@@ -155,13 +157,13 @@ export default {
 
         // Add crops to data
         var crops = []
-        if (node.crops && node.crops.original) {
+        if (fileNode.crops && fileNode.crops.original) {
             var originalCrops = $$('crops')
 
-            for (var x in node.crops.original.crops) {
+            for (var x in fileNode.crops.original.crops) {
 
-                if (node.crops.original.crops.hasOwnProperty(x)) {
-                    var origCrop = node.crops.original.crops[x];
+                if (fileNode.crops.original.crops.hasOwnProperty(x)) {
+                    var origCrop = fileNode.crops.original.crops[x];
 
                     originalCrops.append(
                         $$('crop').attr('name', origCrop.name).append([
@@ -183,7 +185,6 @@ export default {
             data.append(crops);
         }
 
-        let fileNode = node.document.get(node.imageFile)
 
         el.attr('uuid', fileNode.uuid)
 
