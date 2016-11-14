@@ -87,7 +87,7 @@ class XimimageCommand extends Command {
 
         let fileNode = {
             id: idGenerator(),
-            type: 'npfile',
+            type: 'ximimagefile',
             fileType: 'image',
             data: file
         }
@@ -105,8 +105,6 @@ class XimimageCommand extends Command {
             alttext: '',
             credit: '',
             alignment: '',
-            width: 0,
-            height: 0,
             imageFile: fileNode.id,
             knownData: Boolean(file)
         };

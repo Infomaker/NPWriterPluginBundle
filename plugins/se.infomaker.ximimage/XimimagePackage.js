@@ -3,6 +3,7 @@ import XimimageConverter from './XimimageConverter'
 import Ximimage from './Ximimage'
 import XimimageTool from './XimimageTool'
 import XimimageCommand from './XimimageCommand'
+import XimimageFileNode from './XimimageFileNode'
 
 export default {
     name: 'ximimage',
@@ -16,5 +17,7 @@ export default {
         config.addIcon('image', { 'fontawesome': 'fa-image' })
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })
         config.addIcon('upload', { 'fontawesome': 'fa-upload' })
+        config.addNode(XimimageFileNode)
+
     }
 }

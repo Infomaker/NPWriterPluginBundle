@@ -82,7 +82,7 @@ class ImageDisplay extends Component {
         this.context.editorSession.transaction((tx) => {
             // create a new file node and replace the old one
             var newFile = tx.create({
-                type: 'npfile',
+                type: 'ximimagefile',
                 fileType: 'image',
                 data: file
             })

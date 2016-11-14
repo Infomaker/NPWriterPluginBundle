@@ -29,10 +29,7 @@ Ximimage.define({
     credit: { type: 'string', optional: true },
     alignment: { type: 'string', optional: true },
 
-    width: { type: 'number', optional: true },
-    height: { type: 'number', optional: true },
     authors: { type: 'array', default: [] },
-    crops: { type: 'object', default: [] }
 })
 
 export default Ximimage
