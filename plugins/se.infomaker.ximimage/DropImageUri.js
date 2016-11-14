@@ -1,5 +1,5 @@
 import insertImage from './insertImage'
-import DragAndDropHandler from '../../ui/DragAndDropHandler'
+import { DragAndDropHandler } from 'substance'
 
 // Implements a file drop handler
 class DropImageFile extends DragAndDropHandler {

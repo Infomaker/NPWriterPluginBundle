@@ -1,4 +1,4 @@
-import DragAndDropHandler from '../../ui/DragAndDropHandler'
+import { DragAndDropHandler } from 'substance'
 import embedInfoFromURL from './embedInfoFromURL'
 import insertEmbed from './insertEmbed'
 
