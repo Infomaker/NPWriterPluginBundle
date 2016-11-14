@@ -6,7 +6,6 @@ import { Component } from 'substance'
 class ImageMetadata extends Component {
     render($$) {
         let el = $$('div').addClass('sc-image-metadata')
-
         el.append('TODO: Implement image metadata dialog here')
         return el
     }

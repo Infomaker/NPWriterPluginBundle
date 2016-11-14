@@ -13,5 +13,6 @@ export default {
         config.addComponent(Socialembed.type, SocialembedComponent)
         config.addConverter('newsml', SocialembedConverter)
         config.addMacro(SocialembedMacro)
+        config.addDragAndDrop(DropSocialEmbed)
     }
 }

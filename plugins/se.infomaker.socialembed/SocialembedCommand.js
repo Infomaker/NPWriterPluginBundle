@@ -1,4 +1,5 @@
-const { Command } = substance
+import { Command } from 'substance'
+import { insertEmbed } from './insertEmbed'
 
 class SocialembedCommand extends Command {
 
@@ -6,15 +7,10 @@ class SocialembedCommand extends Command {
         return { disabled: false }
     }
 
-    execute(params, context) {
-        let node = {
-            type: 'socialembed',
-            dataType: 'x-im/socialembed',
-            url: params.url
-        }
-
-        params.editorSession.selectNode(params.nodeId)
-        context.api.document.insertBlockNode(node.type, node)
+    execute(params) {
+        params.documentSession.transaction((tx) => {
+            insertEmbed(tx, params.url)
+        })
         return true
     }
 }
