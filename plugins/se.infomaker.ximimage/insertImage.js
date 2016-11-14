@@ -30,7 +30,7 @@ export default function(tx, data) {
     })
 
     // Inserts image at current cursor pos
-    tx.insertNode({
+    tx.insertBlockNode({
         type: 'ximimage',
         imageFile: imageFile.id
     })
