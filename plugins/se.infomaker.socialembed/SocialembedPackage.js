@@ -3,6 +3,7 @@ import SocialembedCommand from './SocialembedCommand'
 import SocialembedConverter from './SocialembedConverter'
 import SocialembedMacro from './SocialembedMacro'
 import Socialembed from './Socialembed'
+import DropSocialEmbed from './DropSocialEmbed'
 
 export default {
     name: 'socialembed',
