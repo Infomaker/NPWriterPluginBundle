@@ -6,14 +6,12 @@ import InsertImagesTool from './InsertImagesTool'
 import InsertImagesCommand from './InsertImagesCommand'
 import DropImageFile from './DropImageFile'
 import DropImageUri from './DropImageUri'
-import XimimageFileNode from './XimimageFileNode'
 
 export default {
     name: 'ximimage',
     id: 'se.infomaker.ximimage',
     configure: function (config) {
         config.addNode(Ximimage)
-        config.addNode(XimimageFileNode)
         config.addComponent(Ximimage.type, XimimageComponent)
         config.addConverter('newsml', XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
