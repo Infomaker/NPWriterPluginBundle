@@ -13,6 +13,7 @@ import Drophead from './se.infomaker.drophead/Drophead'
 import Pagedateline from './se.infomaker.pagedateline/Pagedateline'
 import Dateline from './se.infomaker.dateline/Dateline'
 import Preleadin from './se.infomaker.preleadin/Preleadin'
+import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 
 (() => {
 
@@ -31,4 +32,5 @@ import Preleadin from './se.infomaker.preleadin/Preleadin'
     PublishFlow()
     NewsPriority()
     XImAuthor()
+    YoutubeEmbed()
 })()
