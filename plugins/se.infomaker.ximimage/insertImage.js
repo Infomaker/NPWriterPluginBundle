@@ -5,16 +5,13 @@
     data is a file or uri and calls the appropriate sync(=upload) method.
 */
 
-import {lodash} from 'writer'
-
-export default function(tx, data) {
-    let isFile = data instanceof File
+export default function(tx, params) {
     let mimeType
 
-    if (isFile) {
-        mimeType = data.type
-    } else if (typeof data === 'string') {
-        let ext = data.split('.').pop()
+    if (params.file) {
+        mimeType = params.file.type
+    } else if (params.sourceUrl) {
+        let ext = params.sourceUrl.split('.').pop()
         // Extract use file extension
         mimeType = 'image/'+ext
     } else {
@@ -26,9 +23,10 @@ export default function(tx, data) {
         type: 'ximimagefile',
         fileType: 'image',
         mimeType: mimeType,
-        data: data, // either File object or uri
+        sourceUrl: params.sourceUrl,
+        data: params.file,
         // QUESTION Michael: why is this needed?
-        knownData: isFile
+        knownData: Boolean(params.file)
     })
 
     // Inserts image at current cursor pos

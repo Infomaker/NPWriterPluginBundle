@@ -9,7 +9,7 @@ class DropImageFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        insertImage(tx, params.file)
+        insertImage(tx, {file: params.file})
     }
 }
 
