@@ -22,7 +22,7 @@ Ximimage.define({
     type: 'ximimage',
     uuid: { type: 'string', optional: true},
     imageFile: { type: 'file' },
-
+    data: { type: 'string', optional: true},
     knownData: { type: 'boolean', default: false },
     caption: { type: 'string', default: '' },
     alttext: { type: 'string', optional: true },

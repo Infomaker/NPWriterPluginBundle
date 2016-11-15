@@ -13,7 +13,6 @@
     &>div {
         display: inline-block;
         width: 100%;
-        cursor: move;
         padding: 4px 8px 8px 8px;
         margin: -5px 9px -9px -9px;
         border-radius: 3px;
@@ -73,14 +72,6 @@
 
             &.fa-instagram::before {
                 content: "\f16d";
-            }
-
-            .remove-button {
-                display: inline-block;
-                float: right;
-                color: red; // FIXME: should be $red
-                cursor: pointer;
-                opacity: 0;
             }
 
             strong {

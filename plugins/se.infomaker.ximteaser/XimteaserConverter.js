@@ -20,7 +20,7 @@ export default {
 
             let imageFile = {
                 id: idGenerator(),
-                type: 'npfile',
+                type: 'ximimagefile',
                 fileType: 'image'
             }
             if (el.attr('uuid')) {

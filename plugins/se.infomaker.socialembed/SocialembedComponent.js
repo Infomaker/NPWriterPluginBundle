@@ -32,12 +32,7 @@ class SocialembedComponent extends Component {
                     $$('strong').append(
                         node.socialChannel
                     )
-                    .attr('contenteditable', false),
-                    $$('span').addClass('remove-button').append(
-                        this.context.iconProvider.renderIcon($$, 'delete')
-                    )
-                    .on('click', this.removeEmbed)
-                    .attr('title', this.getLabel('Remove from article'))
+                    .attr('contenteditable', false)
                 ])
                 .addClass('header')
                 .addClass(node.socialChannelIcon)

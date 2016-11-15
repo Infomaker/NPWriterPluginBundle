@@ -6,7 +6,6 @@ class XimimageFileNode extends FileNode {
     }
 
     handleDocument(xmlString) {
-        console.log('handling document', xmlString);
         const parser = new DOMParser()
         let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')
         let documentElement = newsItemDOM.documentElement
@@ -29,7 +28,7 @@ XimimageFileNode.define({
     uuid: {type: 'string', optional: true},
     url: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
-    data: {type: 'object', optional: true},
+    data: {type: 'object|string', optional: true},
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
     crops: {type: 'object', default: []}

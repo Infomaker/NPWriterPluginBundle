@@ -61,7 +61,7 @@ class AuthorMainComponent extends Component {
             }
             this.reloadAuthors();
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     }
 
@@ -70,7 +70,7 @@ class AuthorMainComponent extends Component {
             api.newsItem.addAuthor(this.name, author);
             this.reloadAuthors();
         } catch (e) {
-            console.log("e", e);
+            console.error("e", e);
         }
     }
 
