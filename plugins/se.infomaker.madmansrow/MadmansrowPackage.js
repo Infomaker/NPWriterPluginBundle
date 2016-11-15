@@ -22,11 +22,11 @@ export default {
         })
         config.addLabel('madmansrow', {
             en: 'Madmansrow',
-            sv: 'Dårrad'
+            sv: 'DÃ¥rrad'
         })
         config.addLabel('madmansrow.content', {
             en: 'Madmansrow',
-            sv: 'Dårrad'
+            sv: 'DÃ¥rrad'
         })
     }
 }
