@@ -31,19 +31,20 @@ class ImageDisplay extends Component {
         }
 
         // Actions
-        imgContainer.append(
-            $$('div').addClass('se-actions').append(
-                $$(Button, {
-                    icon: 'upload'
-                }).on('click', this._replaceImage),
-                $$(Button, {
-                    icon: 'image'
-                }).on('click', this._openMetaData),
-                $$(Button, {
-                    icon: 'crop'
-                }).on('click', this._openCropper)
-            )
-        )
+        // TODO: Implement before adding buttons
+        // imgContainer.append(
+        //     $$('div').addClass('se-actions').append(
+        //         $$(Button, {
+        //             icon: 'upload'
+        //         }).on('click', this._replaceImage),
+        //         $$(Button, {
+        //             icon: 'image'
+        //         }).on('click', this._openMetaData),
+        //         $$(Button, {
+        //             icon: 'crop'
+        //         }).on('click', this._openCropper)
+        //     )
+        // )
 
         el.append(imgContainer)
 
@@ -111,4 +112,3 @@ class ImageDisplay extends Component {
 }
 
 export default ImageDisplay
-
