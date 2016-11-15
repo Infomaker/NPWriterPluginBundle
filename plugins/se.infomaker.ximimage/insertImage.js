@@ -20,7 +20,7 @@ export default function(tx, data) {
 
     // Create file node for the image
     let imageFile = tx.create({
-        type: 'npfile',
+        type: 'ximimagefile',
         fileType: 'image',
         mimeType: mimeType,
         data: data, // either File object or uri
