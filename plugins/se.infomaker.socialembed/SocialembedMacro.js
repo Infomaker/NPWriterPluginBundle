@@ -11,9 +11,21 @@ export default {
         // take the url, select the node, and run the social embed command
         let url = match[1]
 
-        editorSession.executeCommand('socialembed', {
-            url: url
-        })
-        return true
+        let hasMatch = false
+        if (url.indexOf('twitter') > 0) {
+            hasMatch = true
+        } else if (url.indexOf('instagram') > 0) {
+            hasMatch = true
+        } else if (url.indexOf('facebook') > 0) {
+            hasMatch = true
+        }
+
+        if(hasMatch) {
+            editorSession.executeCommand('socialembed', {
+                url: url
+            })
+            return true
+        }
+        return false
     }
 }
