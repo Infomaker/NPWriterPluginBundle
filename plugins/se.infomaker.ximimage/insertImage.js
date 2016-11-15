@@ -27,7 +27,6 @@ export default function(tx, data) {
         fileType: 'image',
         mimeType: mimeType,
         data: data, // either File object or uri
-        caption: 'Enter caption here',
         // QUESTION Michael: why is this needed?
         knownData: isFile
     })
@@ -35,6 +34,7 @@ export default function(tx, data) {
     // Inserts image at current cursor pos
     tx.insertBlockNode({
         type: 'ximimage',
+        caption: 'Enter caption here',
         imageFile: imageFile.id
     })
 }
