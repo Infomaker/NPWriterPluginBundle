@@ -1,4 +1,4 @@
-import lodash from 'writer'
+import { lodash } from 'writer'
 import insertImage from './insertImage'
 import { DragAndDropHandler } from 'substance'
 
