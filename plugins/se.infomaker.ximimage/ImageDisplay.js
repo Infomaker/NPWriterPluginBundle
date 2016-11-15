@@ -1,4 +1,4 @@
-import { Component } from 'substance'
+import { Component, FontAwesomeIcon } from 'substance'
 import ImageCropper from './ImageCropper'
 import ImageMetadata from './ImageMetadata'
 
@@ -27,6 +27,11 @@ class ImageDisplay extends Component {
         if (imgSrc) {
             imgContainer.append(
                 $$('img', { src: imgSrc }).ref('img')
+            )
+        } else {
+            imgContainer.append(
+                $$(FontAwesomeIcon, {icon: 'fa-picture-o'})
+                    .attr('style', 'font-size:25rem;color:#efefef')
             )
         }
 
