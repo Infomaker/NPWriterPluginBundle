@@ -8,7 +8,7 @@ class DropImageUri extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        insertImage(tx, params.uri)
+        insertImage(tx, {sourceUrl: params.uri})
     }
 }
 
