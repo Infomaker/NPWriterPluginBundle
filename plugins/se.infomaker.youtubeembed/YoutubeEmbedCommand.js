@@ -1,6 +1,5 @@
-import {Command} from 'substance'
-import YoutubeEmbedEditTool from './YoutubeEmbedEditTool'
-import {api} from 'writer'
+import { Command } from 'substance'
+import insertEmbed from './insertEmbed'
 
 class YoutubeEmbedCommand extends Command {
 
@@ -10,9 +9,11 @@ class YoutubeEmbedCommand extends Command {
         }
     }
 
-    execute() {
-        api.ui.showDialog(YoutubeEmbedEditTool, {}, {title: 'insert-youtube-id'})
-        console.log("Execute youtube command")
+    execute(params) {
+        params.editorSession.transaction((tx) => {
+            insertEmbed(tx, params.url)
+        })
+        return true
     }
 
 }

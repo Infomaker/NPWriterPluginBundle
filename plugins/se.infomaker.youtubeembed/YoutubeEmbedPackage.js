@@ -5,6 +5,7 @@ import YoutubeEmbedEditCommand from './YoutubeEmbedEditCommand'
 import YoutubeEmbedNode from './YoutubeEmbedNode'
 import YoutubeEmbedComponent from './YoutubeEmbedComponent'
 import YoutubeEmbedConverter from './YoutubeEmbedConverter'
+import YoutubeEmbedMacro from './YoutubeEmbedMacro'
 
 export default {
     id: 'se.infomaker.youtubeembed',
@@ -25,6 +26,8 @@ export default {
         config.addCommand('youtubeembededit', YoutubeEmbedEditCommand)
         // Add node
         config.addNode(YoutubeEmbedNode)
+
+        config.addMacro(YoutubeEmbedMacro)
 
         config.addLabel('insert-youtube-id', {
             en: 'Insert Youtube Id',
