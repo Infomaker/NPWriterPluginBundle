@@ -1,6 +1,6 @@
-import { lodash } from 'writer'
+import {lodash, api} from 'writer'
 import insertImage from './insertImage'
-import { DragAndDropHandler } from 'substance'
+import {DragAndDropHandler} from 'substance'
 
 // Implements a file drop handler
 class DropImageFile extends DragAndDropHandler {
@@ -10,6 +10,10 @@ class DropImageFile extends DragAndDropHandler {
 
     drop(tx, params) {
         insertImage(tx, params.file)
+        setTimeout(() => {
+            api.editorSession.fileManager.sync()
+        }, 300)
+
     }
 }
 

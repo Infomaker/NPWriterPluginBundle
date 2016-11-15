@@ -1,5 +1,6 @@
 import insertImage from './insertImage'
 import { DragAndDropHandler } from 'substance'
+import {api} from 'writer'
 
 // Implements a file drop handler
 class DropImageUri extends DragAndDropHandler {
@@ -9,6 +10,10 @@ class DropImageUri extends DragAndDropHandler {
 
     drop(tx, params) {
         insertImage(tx, params.uri)
+        setTimeout(() => {
+            api.editorSession.fileManager.sync()
+        }, 300)
+
     }
 }
 
