@@ -6,7 +6,6 @@ class Ximimage extends BlockNode {
         if (this.imageFile) {
             return this.document.get(this.imageFile)
         }
-
     }
 
     getUrl() {

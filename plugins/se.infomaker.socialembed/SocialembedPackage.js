@@ -3,6 +3,7 @@ import SocialembedCommand from './SocialembedCommand'
 import SocialembedConverter from './SocialembedConverter'
 import SocialembedMacro from './SocialembedMacro'
 import Socialembed from './Socialembed'
+import DropSocialEmbed from './DropSocialEmbed'
 
 export default {
     name: 'socialembed',
@@ -13,5 +14,6 @@ export default {
         config.addComponent(Socialembed.type, SocialembedComponent)
         config.addConverter('newsml', SocialembedConverter)
         config.addMacro(SocialembedMacro)
+        config.addDragAndDrop(DropSocialEmbed)
     }
 }

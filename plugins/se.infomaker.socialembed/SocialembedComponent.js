@@ -19,12 +19,6 @@ class SocialembedComponent extends Component {
             .addClass(node.socialChannel)
                 .attr('contenteditable', false);
 
-        // TODO: activate drag+drop
-        // this.context.api.handleDrag(
-        //     el,
-        //     this.props.node
-        // );
-
         // Only when HTML has been resolved
         if (node.hasPayload()) {
             var innerEl = $$('div').append(

@@ -1,4 +1,5 @@
-const { BlockNode } = substance
+import { BlockNode } from 'substance'
+import embedInfoFromURL from './embedInfoFromURL'
 
 /* globals $ */
 
@@ -15,14 +16,20 @@ class SocialembedNode extends BlockNode {
     */
     fetchPayload(context, cb) {
         let url = this.url
-        if (url.indexOf('twitter') > -1) {
-            this._loadTwitter(url, context, cb)
-        } else if (url.indexOf('instagram') > -1) {
-            this._loadInstagram(url, context, cb)
-        } else if (this.url.indexOf('facebook') > -1) {
-            this._loadFacebook(url, context, cb)
-        } else {
-            cb(new Error('Could not resolve an embed for this url'))
+        let embedInfo = embedInfoFromURL(url)
+
+        switch(embedInfo.socialChannel) {
+            case 'twitter':
+                this._loadTwitter(url, context, cb)
+                break;
+            case 'instagram':
+                this._loadInstagram(url, context, cb)
+                break;
+            case 'facebook':
+                this._loadFacebook(url, context, cb)
+                break;
+            default:
+                cb(new Error('Could not resolve an embed for this url'))
         }
     }
 

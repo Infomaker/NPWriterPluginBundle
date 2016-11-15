@@ -10,8 +10,8 @@ export default {
         if (!match) return
         // take the url, select the node, and run the social embed command
         let url = match[1]
+
         editorSession.executeCommand('socialembed', {
-            nodeId: params.node.id,
             url: url
         })
         return true
