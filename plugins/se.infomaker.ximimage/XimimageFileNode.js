@@ -6,13 +6,27 @@ class XimimageFileNode extends FileNode {
     }
 
     handleDocument(xmlString) {
-        const parser = new DOMParser()
-        let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')
-        let documentElement = newsItemDOM.documentElement
-        let uuid = documentElement.getAttribute('guid')
 
-        this.uuid = uuid
-        this.uri = documentElement.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+        return new Promise((resolve, reject) => {
+
+            try {
+
+                const parser = new DOMParser()
+                let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')
+                let documentElement = newsItemDOM.documentElement
+                let uuid = documentElement.getAttribute('guid')
+
+                this.uuid = uuid
+                this.uri = documentElement.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+
+                resolve()
+            }
+            catch(e) {
+                reject(e)
+            }
+
+        })
+
 
         // TODO Width, heigth, caption etc
     }
