@@ -5,8 +5,10 @@ import insertEmbed from './insertEmbed'
 // Implements a file drop handler
 class DropSocialEmbed extends DragAndDropHandler {
     match(params) {
-        let embedInfo = embedInfoFromURL(params.uri)
-        return embedInfo.isEmbed
+        if (params.type === 'uri') {
+            let embedInfo = embedInfoFromURL(params.uri)
+            return embedInfo.isEmbed
+        }
     }
 
     drop(tx, params) {
