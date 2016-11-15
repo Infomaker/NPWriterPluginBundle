@@ -9,11 +9,24 @@ export default {
     id: 'se.infomaker.contentrelations',
     configure: function(config) {
 
-        config.addSidebarTab('contentrelations', 'Related Content')
+        config.addSidebarTab('contentrelations', 'Relaterat innehåll')
         config.addComponentToSidebarWithTabId('contentrelations', 'contentrelations', ContentRelationsMainComponent)
         config.addDragAndDrop(ContentRelationsDropHandler)
         config.addComponent('contentrelations', ContentRelationsComponent)
         config.addNode(ContentRelationsNode)
         config.addConverter('newsml', ContentRelationsConverter)
+
+        config.addLabel('ContentRelations', {
+            sv: 'Relaterat innehåll'
+        })
+        config.addLabel('Enter query', {
+            sv: 'Sökfråga'
+        })
+
+        config.addLabel('Search', {
+            sv: 'Sök'
+        })
+
+
     }
 }
