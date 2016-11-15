@@ -1,6 +1,7 @@
 import XimimageComponent from './XimimageComponent'
 import XimimageConverter from './XimimageConverter'
 import Ximimage from './Ximimage'
+import XimimageFileNode from './XimimageFileNode'
 import InsertImagesTool from './InsertImagesTool'
 import InsertImagesCommand from './InsertImagesCommand'
 import DropImageFile from './DropImageFile'
@@ -12,6 +13,7 @@ export default {
     id: 'se.infomaker.ximimage',
     configure: function (config) {
         config.addNode(Ximimage)
+        config.addNode(XimimageFileNode)
         config.addComponent(Ximimage.type, XimimageComponent)
         config.addConverter('newsml', XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)

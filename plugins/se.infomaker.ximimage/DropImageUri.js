@@ -13,9 +13,9 @@ class DropImageUri extends DragAndDropHandler {
 }
 
 function _isImage(uri) {
-    return uri.indexOf('.jpg') ||
-           uri.indexOf('.png') ||
-           uri.indexOf('.gif')
+    return uri.indexOf('.jpg') > 0 ||
+           uri.indexOf('.png') > 0 ||
+           uri.indexOf('.gif') > 0
 }
 
 
