@@ -1,4 +1,4 @@
-import { Component } from 'substance'
+import { Component, FontAwesomeIcon } from 'substance'
 import ImageCropper from './ImageCropper'
 import ImageMetadata from './ImageMetadata'
 
@@ -28,22 +28,28 @@ class ImageDisplay extends Component {
             imgContainer.append(
                 $$('img', { src: imgSrc }).ref('img')
             )
+        } else {
+            imgContainer.append(
+                $$(FontAwesomeIcon, {icon: 'fa-picture-o'})
+                    .attr('style', 'font-size:25rem;color:#efefef')
+            )
         }
 
         // Actions
-        imgContainer.append(
-            $$('div').addClass('se-actions').append(
-                $$(Button, {
-                    icon: 'upload'
-                }).on('click', this._replaceImage),
-                $$(Button, {
-                    icon: 'image'
-                }).on('click', this._openMetaData),
-                $$(Button, {
-                    icon: 'crop'
-                }).on('click', this._openCropper)
-            )
-        )
+        // TODO: Implement before adding buttons
+        // imgContainer.append(
+        //     $$('div').addClass('se-actions').append(
+        //         $$(Button, {
+        //             icon: 'upload'
+        //         }).on('click', this._replaceImage),
+        //         $$(Button, {
+        //             icon: 'image'
+        //         }).on('click', this._openMetaData),
+        //         $$(Button, {
+        //             icon: 'crop'
+        //         }).on('click', this._openCropper)
+        //     )
+        // )
 
         el.append(imgContainer)
 
@@ -111,4 +117,3 @@ class ImageDisplay extends Component {
 }
 
 export default ImageDisplay
-

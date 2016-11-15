@@ -22,11 +22,11 @@ export default {
         })
         config.addLabel('preleadin', {
             en: 'Preleadin',
-            sv: 'Överingress'
+            sv: 'Ã–veringress'
         })
         config.addLabel('preleadin.content', {
             en: 'Preleadin',
-            sv: 'Överingress'
+            sv: 'Ã–veringress'
         })
     }
 }
