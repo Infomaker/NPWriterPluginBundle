@@ -5,7 +5,7 @@
 export default function insertEmbed(tx, embedUrl) {
     tx.insertBlockNode({
         type: 'youtubeembed',
-        dataType: 'x-im/youtubeembed',
+        dataType: 'x-im/youtube',
         url: embedUrl
     })
 }
