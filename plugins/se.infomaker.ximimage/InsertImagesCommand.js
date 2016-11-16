@@ -7,9 +7,9 @@ import {api} from 'writer'
 */
 class XimimageCommand extends Command {
 
-    getCommandState() {
+    getCommandState(params) {
         return {
-            disabled: false
+            disabled: params.surface ? false : true
         }
     }
 
