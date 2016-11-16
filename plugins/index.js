@@ -14,6 +14,7 @@ import Pagedateline from './se.infomaker.pagedateline/Pagedateline'
 import Dateline from './se.infomaker.dateline/Dateline'
 import Preleadin from './se.infomaker.preleadin/Preleadin'
 import YoutubeEmbed from './se.infomaker.youtubeembed/index'
+import ContentRelations from './se.infomaker.contentrelations/index'
 
 (() => {
 
@@ -33,4 +34,5 @@ import YoutubeEmbed from './se.infomaker.youtubeembed/index'
     NewsPriority()
     XImAuthor()
     YoutubeEmbed()
+    ContentRelations()
 })()
