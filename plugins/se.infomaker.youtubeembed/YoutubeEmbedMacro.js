@@ -11,9 +11,13 @@ export default {
         // take the url, select the node, and run the social embed command
         let url = match[1]
 
-        editorSession.executeCommand('youtubeembed', {
-            url: url
-        })
-        return true
+        if(url.indexOf('youtube') > 0) {
+            editorSession.executeCommand('youtubeembed', {
+                url: url
+            })
+            return true
+        }
+
+
     }
 }

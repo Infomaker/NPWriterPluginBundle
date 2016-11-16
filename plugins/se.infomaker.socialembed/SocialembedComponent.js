@@ -4,6 +4,7 @@ class SocialembedComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+        this.context.api.document.triggerFetchResourceNode(this.props.node)
     }
 
     dispose() {
