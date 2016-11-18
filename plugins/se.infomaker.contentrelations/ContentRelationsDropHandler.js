@@ -4,6 +4,10 @@ import insertRelatedContentLink from './insertRelatedContentLink'
 // Implements a file drop handler
 class ContentRelationsDropHandler extends DragAndDropHandler {
     match(params) {
+        if (!params.uri) {
+            return false
+        }
+        
         if (this.isContentRelationsDrop(params.uri)) {
             this.data = this.getDataFromURL(params.uri)
 
