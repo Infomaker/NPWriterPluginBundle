@@ -18,7 +18,7 @@ class ImageDisplay extends Component {
         let el = $$('div').addClass('sc-image-display')
         el.addClass('sm-'+this.props.isolatedNodeState)
         let imgSrc = node.getUrl()
-        let Button = this.getComponent('button')
+        // let Button = this.getComponent('button')
         let Modal = this.getComponent('modal')
         let DialogClass = this.state.DialogClass
 

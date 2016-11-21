@@ -5,7 +5,6 @@
     data is a file or uri and calls the appropriate sync(=upload) method.
 */
 
-import {lodash} from 'writer'
 
 export default function(tx, data) {
     let isFile = data instanceof File

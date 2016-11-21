@@ -24,14 +24,13 @@ class LocationItemComponent extends Component {
                         isLoaded: true
                     });
                 } catch (e) {
-                    console.log("Error parsing location", e);
                     this.setState({
                         isLoaded: true,
                         couldNotLoad: true
                     })
                 }
             })
-            .catch(e => {
+            .catch(() => {
                 this.setState({
                     isLoaded: true,
                     couldNotLoad: true

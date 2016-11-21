@@ -9,7 +9,7 @@ class YoutubeEmbedEditCommand extends Command {
         }
     }
 
-    execute(params, context) {
+    execute(params) {
         var data = {
             dataType: 'x-im/youtube',
             url: params.url,
@@ -20,8 +20,6 @@ class YoutubeEmbedEditCommand extends Command {
         }
 
         api.document.insertBlockNode(data.type, data)
-
-        console.log("Execute youtube command", data)
     }
 
 }

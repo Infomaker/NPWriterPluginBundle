@@ -24,7 +24,8 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
         return JSON.parse(window.atob(encodedData))
     }
 
-    drop(tx, params) {
+    drop(tx) {
+
         insertRelatedContentLink(tx, this.data)
     }
 }

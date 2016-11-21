@@ -36,8 +36,7 @@ export default {
 
     },
 
-    export: function (node, el, converter) {
-        var $$ = converter.$$;
+    export: function (node, el) {
         el.attr({
             id: node.id,
             type: node.dataType,

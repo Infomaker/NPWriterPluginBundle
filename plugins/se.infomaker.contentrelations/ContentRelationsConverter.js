@@ -6,7 +6,7 @@ var ContentRelationsConverter = {
         return el.is('object') && el.attr('type') === 'x-im/link';
     },
 
-    import: function(el, node, converter) { // jshint ignore:line
+    import: function(el, node) { // jshint ignore:line
         if (el.attr('uuid')) {
             node.uuid = el.attr('uuid');
         }

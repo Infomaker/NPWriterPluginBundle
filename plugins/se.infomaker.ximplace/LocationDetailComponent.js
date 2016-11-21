@@ -59,7 +59,7 @@ class LocationDetailComponent extends Component {
 
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.log(err))
+            }).catch(err => console.error(err))
     }
 
     updateLocation() {
@@ -83,7 +83,7 @@ class LocationDetailComponent extends Component {
                 })
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.log(err));
+            }).catch(err => console.error(err));
     }
 
     getGeometryObject() {
@@ -170,7 +170,6 @@ class LocationDetailComponent extends Component {
             try {
                 this.refs.searchComponent.setProps({google: google, query: this.state.query})
             } catch (e) {
-                console.log("e", e);
             }
 
         } else {
@@ -197,7 +196,7 @@ class LocationDetailComponent extends Component {
         try {
             this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
         } catch (e) {
-            console.log("e", e);
+            console.error("e", e);
         }
 
     }

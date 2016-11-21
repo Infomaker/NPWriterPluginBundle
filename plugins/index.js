@@ -15,6 +15,7 @@ import Dateline from './se.infomaker.dateline/Dateline'
 import Preleadin from './se.infomaker.preleadin/Preleadin'
 import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 import ContentRelations from './se.infomaker.contentrelations/index'
+import History from './se.infomaker.history/index'
 
 (() => {
 
@@ -35,4 +36,5 @@ import ContentRelations from './se.infomaker.contentrelations/index'
     XImAuthor()
     YoutubeEmbed()
     ContentRelations()
+    History()
 })()

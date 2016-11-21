@@ -58,8 +58,7 @@ class ContentSearchComponent extends Component {
                     results: json
                 });
             })
-            .catch((e) => {
-                console.log("error", e);
+            .catch(() => {
             })
 
     }

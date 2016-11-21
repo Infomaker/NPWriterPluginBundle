@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component} from 'substance'
 
 class ContentRelationsComponent extends Component {
 
