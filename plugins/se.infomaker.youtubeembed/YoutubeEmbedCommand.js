@@ -3,9 +3,9 @@ import insertEmbed from './insertEmbed'
 
 class YoutubeEmbedCommand extends Command {
 
-    getCommandState() {
+    getCommandState(params) {
         return {
-            disabled: false
+            disabled: params.surface ? false : true
         }
     }
 
