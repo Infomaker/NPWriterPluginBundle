@@ -28,7 +28,8 @@ fileStreamStyle.on('open', () => {
     s3.putObject({
         Bucket: 'writer-dev-plugins',
         Key: 'style.css',
-        Body: fileStreamStyle
+        Body: fileStreamStyle,
+        ContentType: 'text/css'
     }, function (err) {
         if (err) { throw err; }
     });

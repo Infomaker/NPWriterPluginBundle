@@ -8,19 +8,62 @@ class HistoryMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.context.api.events.on('history', event.HISTORY_SAVED, () => {
-            this.updateHistoryState()
-        })
 
-        this.context.api.events.on('history', event.HISTORY_SAVED, () => {
+        api.events.on('history', event.HISTORY_SAVED, () => {
+            api.history.deleteHistory(api.newsItem.getIdForArticle());
             this.updateHistoryState()
         })
     }
 
     dispose() {
-        this.context.api.events.off('history', 'document:saved');
-        this.context.api.events.off('history', 'history:added');
-        this.context.api.events.off('history', 'history:saved');
+        api.events.off('history', 'document:saved');
+        api.events.off('history', 'history:added');
+        api.events.off('history', 'history:saved');
+    }
+
+
+    didMount() {
+        var historyArticles = api.history.getHistory();
+
+        var unsavedArticles = historyArticles.filter(function (history) {
+            return history.unsavedArticle === true;
+        });
+
+        let buttonText = 'No thanks, create a new article';
+        let description = 'We\'ve found some unsaved articles. Click on the version you would like to restore';
+        let title = "Unsaved articles found"
+
+        // If we already have loaded an article from history we should not open the dialog again.
+        let historyForArticle = api.history.get(api.newsItem.getIdForArticle());
+        if (historyForArticle && historyForArticle.versions && historyForArticle.versions.length > 0 && api.newsItem.hasTemporaryId()) {
+            return;
+        } else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length > 0) { // If we load a existing article
+            unsavedArticles = [historyForArticle];
+            buttonText = "Continue with last saved version";
+            description = 'We found some unsaved changes for this article.';
+            title = 'Unsaved changes found for this article';
+        } else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length === 0) {
+            return;
+        } else if (unsavedArticles.length === 0) {
+            return;
+        }
+
+        if(api.document.getDocumentStatus() === 'writerHasNoDocument') {
+            api.ui.showDialog(
+                VersionSelectorDialog,
+                {
+                    unsavedArticles: unsavedArticles,
+                    descriptionText: description
+                },
+                {
+                    global: true,
+                    secondary: false,
+                    primary: this.getLabel(buttonText),
+                    title: this.getLabel(title)
+                }
+            )
+        }
+
     }
 
 

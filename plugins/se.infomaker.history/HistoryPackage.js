@@ -1,14 +1,12 @@
 import './scss/history.scss'
 
 import HistoryMainComponent from './HistoryMainComponent'
-import HistoryAgentComponent from './HistoryAgentComponent'
 
 export default({
     id: 'se.infomaker.history',
     name: 'history',
-    index: 1000,
     configure: function(config) {
-        config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
+        // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
         config.addLabel('history-popover-headline', {
             en: 'Changes since last successful save',
@@ -28,6 +26,8 @@ export default({
             },
             HistoryMainComponent
         )
+
+
     }
 })
 
