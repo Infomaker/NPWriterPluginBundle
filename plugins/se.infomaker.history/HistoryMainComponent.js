@@ -59,7 +59,8 @@ class HistoryMainComponent extends Component {
                 VersionSelectorDialog,
                 {
                     unsavedArticles: unsavedArticles,
-                    descriptionText: description
+                    descriptionText: description,
+                    applyVersion: this.applyVersion.bind(this)
                 },
                 {
                     global: true,
@@ -134,7 +135,8 @@ class HistoryMainComponent extends Component {
                 VersionSelectorDialog,
                 {
                     unsavedArticles: unsavedArticles,
-                    descriptionText: this.getLabel('We\'ve found some unsaved articles. Click on the version you would like to restore')
+                    descriptionText: this.getLabel('We\'ve found some unsaved articles. Click on the version you would like to restore'),
+                    applyVersion: this.applyVersion.bind(this)
                 },
                 {
                     global: true,
@@ -155,10 +157,12 @@ class HistoryMainComponent extends Component {
     }
 
     applyVersion(version, article) {
+        api.newsItem.setTemporaryId(article.id)
+        api.events.documentIsUnsaved()
+        api.newsItem.setSource(version.src, null, true)
 
-        this.context.api.writer.temporaryArticleID = article.id
-        this.context.api.events.documentIsUnsaved()
-        this.context.api.newsItem.setSource(version.src, null, true)
+
+
 
     }
 }
