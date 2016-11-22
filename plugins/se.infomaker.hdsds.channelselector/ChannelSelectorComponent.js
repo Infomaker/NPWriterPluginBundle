@@ -12,7 +12,7 @@ class ChannelselectorComponent extends Component {
     }
 
     getInitialState() {
-        this.configProducts = this.context.api.getConfigValue('channelselector', 'products')
+        this.configProducts = this.context.api.getConfigValue('se.infomaker.hdsds.channelselector', 'products')
 
         var channels = this.context.api.newsItem.getChannels(),
             initialChannels = []
@@ -69,7 +69,7 @@ class ChannelselectorComponent extends Component {
         var el = $$('div').addClass('sc-channelselector'),
             listContainer = $$('div').addClass('sc-productlist-container').addClass('list-group'),
             list = $$('div').addClass('sc-productlist'),
-            title = $$('h2').append(this.context.i18n.t('Products'))
+            title = $$('h2').append(this.getLabel('channelselector-Products'))
 
         var products = this.sortProducts().map(function (product) {
             var cssClass = product.active ? 'active' : ''

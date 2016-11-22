@@ -7,7 +7,12 @@ export default {
     name: 'channelselector',
 
     configure: function(config) {
-        config.addComponentToSidebarWithTabId('channelselector', 'mail', ChannelSelectorComponent)
+        config.addLabel('channelselector-Products', {
+            en: 'Products',
+            sv: 'Produkter'
+        })
+
+        config.addComponentToSidebarWithTabId('channelselector', 'main', ChannelSelectorComponent)
     }
 }
 
