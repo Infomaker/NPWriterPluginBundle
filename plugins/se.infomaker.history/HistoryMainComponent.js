@@ -9,8 +9,14 @@ class HistoryMainComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on('history', event.HISTORY_SAVED, () => {
+        api.events.on('history', event.DOCUMENT_SAVED, () => {
             api.history.deleteHistory(api.newsItem.getIdForArticle());
+        })
+
+        api.events.on('history', event.HISTORY_SAVED, () => {
+            this.updateHistoryState()
+        })
+        api.events.on('history', event.HISTORY_ADDED, () => {
             this.updateHistoryState()
         })
     }
