@@ -17,6 +17,7 @@ import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 import ContentRelations from './se.infomaker.contentrelations/index'
 import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
+import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 
 (() => {
 
@@ -39,4 +40,5 @@ import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
     ContentRelations()
     History()
     ChannelSelector()
+    PublicationChannel()
 })()
