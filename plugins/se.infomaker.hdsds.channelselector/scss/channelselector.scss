@@ -1,0 +1,27 @@
+.sc-channelselector {
+    .list-group-item {
+        cursor: pointer;
+    }
+}
+
+.sc-productlist {
+    max-height: 112px;
+    overflow-y: scroll;
+
+    border-radius: 0.25rem;
+
+    background-color: #fff;
+    border: 1px solid #ddd;
+
+}
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0;
+}
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    color: #373a3c;
+    background-color: #f5f5f5;
+    font-weight:700;
+    border-color: darken(#f5f5f5, 10%);
+}
