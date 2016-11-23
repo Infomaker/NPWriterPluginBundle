@@ -80,8 +80,9 @@ class PublicationchannelComponent extends Component {
                 )
             ]),
 
-            this.renderChannelButtons($$)
         ])
+
+        el.append(this.renderChannelButtons($$))
 
         return el
     }
@@ -110,6 +111,7 @@ class PublicationchannelComponent extends Component {
                     }),
                     channel.name
                 ]).on('click', () => {
+                    this.extendState({showChannelButtons: false})
                     this.toggleChannel(channel, true)
                 })
             )
@@ -137,20 +139,22 @@ class PublicationchannelComponent extends Component {
             ])
         }
 
-        // TODO What to do?
-        // dropdownButton.on('click', (evt) => {
-        //     $(evt.target).dropdown()
-        //     return false
-        // })
+        dropdownButton.on('click', () => {
+            this.extendState({showChannelButtons: !this.state.showChannelButtons})
+            return false
+        })
+
+        var components = [dropdownButton];
+        if (this.state.showChannelButtons) {
+            components.push($$('div').addClass('dropdown-menu').append(
+                channels
+            ))
+        }
+
 
         return $$('div').attr({id: 'w-sharedchannels-main'}).addClass('dropdown').attr({
             'aria-labelledby': 'w-sharedchannels-main-select'
-        }).append([
-            dropdownButton,
-            $$('div').addClass('dropdown-menu').append(
-                channels
-            )
-        ])
+        }).append(components)
     }
 
     /**

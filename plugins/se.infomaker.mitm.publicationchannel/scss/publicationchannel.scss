@@ -1,4 +1,23 @@
 .sc-publicationchannel {
+
+    .dropdown-toggle {
+        &:before {
+            font-family: FontAwesome;
+            content: "\2304";
+            right: 25px;
+            display: inline-block;
+            text-align: right;
+            position: absolute;
+        }
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        border: 1px solid black;
+        background-color: #fff;
+        z-index: 9999999;
+    }
+
     p.sc-sharedwith {
         position: relative;
         font-size: 80%;
