@@ -18,6 +18,9 @@ class PublicationchannelComponent extends Component {
         this.context.api.events.on('publicationchannel', 'data:duplicated', () => {
             this.clearAllChannels()
         })
+
+        this.refs.dropdownButton.el.el.addEventListener('blur', () => {this.hideMenu()})
+
     }
 
     /**
@@ -111,7 +114,7 @@ class PublicationchannelComponent extends Component {
                     }),
                     channel.name
                 ]).on('click', () => {
-                    this.extendState({showChannelButtons: false})
+                    this.hideMenu()
                     this.toggleChannel(channel, true)
                 })
             )
@@ -140,9 +143,11 @@ class PublicationchannelComponent extends Component {
         }
 
         dropdownButton.on('click', () => {
-            this.extendState({showChannelButtons: !this.state.showChannelButtons})
+            this.toggleMenu();
             return false
         })
+
+        dropdownButton.ref('dropdownButton')
 
         var components = [dropdownButton];
         if (this.state.showChannelButtons) {
@@ -214,6 +219,14 @@ class PublicationchannelComponent extends Component {
         })
 
         this.synchronize()
+    }
+
+    toggleMenu() {
+        this.extendState({showChannelButtons: !this.state.showChannelButtons})
+    }
+
+    hideMenu() {
+        this.extendState({showChannelButtons: false})
     }
 
     /**
