@@ -114,7 +114,6 @@ class PublicationchannelComponent extends Component {
                     }),
                     channel.name
                 ]).on('click', () => {
-                    this.hideMenu()
                     this.toggleChannel(channel, true)
                 })
             )
@@ -226,7 +225,7 @@ class PublicationchannelComponent extends Component {
     }
 
     hideMenu() {
-        this.extendState({showChannelButtons: false})
+        window.setTimeout(()=>{this.extendState({showChannelButtons: false})},50)
     }
 
     /**
