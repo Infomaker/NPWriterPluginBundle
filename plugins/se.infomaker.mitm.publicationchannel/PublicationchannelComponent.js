@@ -149,7 +149,7 @@ class PublicationchannelComponent extends Component {
 
         dropdownButton.ref('dropdownButton')
 
-        var components = [dropdownButton];
+        let components = [dropdownButton];
         if (this.state.showChannelButtons) {
             components.push($$('div').addClass('dropdown-menu').append(
                 channels
