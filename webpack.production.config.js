@@ -85,16 +85,6 @@ module.exports = {
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
             }
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            sourceMap: false,
-            output: {
-                comments: false
-            },
-            compress: {
-                warnings: false
-            }
         })
     ]
 };
