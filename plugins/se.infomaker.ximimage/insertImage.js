@@ -26,7 +26,10 @@ export default function(tx, data) {
         fileType: 'image',
         mimeType: mimeType,
         data: data, // either File object or uri
-        caption: 'Enter caption here',
+        caption: '',
+        alttext: '',
+        credit: '',
+        alignment: '',
         // QUESTION Michael: why is this needed?
         knownData: isFile
     })

@@ -14,6 +14,10 @@ class Ximimage extends BlockNode {
             return imageFile.getUrl()
         }
     }
+
+    setAlignment(alignment) {
+        this.document.set([this.id, 'alignment'], alignment);
+    }
 }
 
 
@@ -23,6 +27,8 @@ Ximimage.define({
     imageFile: { type: 'file' },
     data: { type: 'string', optional: true},
     knownData: { type: 'boolean', default: false },
+
+    // Configurable fields
     caption: { type: 'string', default: '' },
     alttext: { type: 'string', optional: true },
     credit: { type: 'string', optional: true },
