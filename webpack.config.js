@@ -50,7 +50,7 @@ module.exports = {
               test: /\.js?$/,
               exclude: /(node_modules)/,
               loaders: [
-                  'babel?presets[]=stage-0,presets[]=es2015'
+                  'babel?presets[]=stage-0,presets[]=es2015-node6'
               ]
           }
         ],

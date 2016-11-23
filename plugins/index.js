@@ -16,6 +16,7 @@ import Preleadin from './se.infomaker.preleadin/Preleadin'
 import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 import ContentRelations from './se.infomaker.contentrelations/index'
 import History from './se.infomaker.history/index'
+import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 
 (() => {
 
@@ -37,4 +38,5 @@ import History from './se.infomaker.history/index'
     YoutubeEmbed()
     ContentRelations()
     History()
+    DefaultvalidationPackage()
 })()
