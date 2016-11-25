@@ -1,4 +1,5 @@
 import {FileNode} from 'substance'
+import {api} from 'writer'
 
 class XimpdfFileNode extends FileNode {
 
@@ -14,17 +15,23 @@ class XimpdfFileNode extends FileNode {
                 let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')
                 let documentElement = newsItemDOM.documentElement
                 let uuid = documentElement.getAttribute('guid')
-
-                this.uuid = uuid
-                this.uri = documentElement.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
-                this.text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > text')
-
+                const uri = documentElement.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+                let text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > text')
                 // TODO: Add error handling
-                if (this.text) {
-                    this.text = this.text.textContent
+                if (text) {
+                    text = text.textContent
                 } else {
-                    this.text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > objectName').textContent
+                    text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > objectName').textContent
                 }
+
+                // Update PDFNode
+                api.editorSession.transaction((tx) => {
+                    tx.set([this.pdfNodeId, 'uri'], uri)
+                    tx.set([this.pdfNodeId, 'text'], text)
+                }, {history: false})
+
+                // Update fileNode
+                this.uuid = uuid
 
                 resolve()
             }
@@ -42,13 +49,11 @@ class XimpdfFileNode extends FileNode {
 
 XimpdfFileNode.define({
     type: 'ximpdffile',
+    pdfNodeId: {type: 'string', optional: false},
     uuid: {type: 'string', optional: true},
     url: {type: 'string', optional: true},
-    uri: {type: 'string', optional: true},
-    data: {type: 'object|string', optional: true},
-    text: {type: 'string', optional: true},
-    objectName: {type: 'string', optional: true},
-    previewUrl: {type: 'string', optional: true}
+    sourceFile: {type: 'object', optional: true},
+    sourceUrl: {type: 'string', optional: true}
 })
 
 export default XimpdfFileNode

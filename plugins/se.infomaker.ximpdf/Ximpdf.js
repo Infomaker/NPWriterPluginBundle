@@ -19,14 +19,9 @@ class Ximpdf extends BlockNode {
 
 Ximpdf.define({
     type: 'ximpdf',
-    uuid: {type: 'string', optional: true},
     pdfFile: {type: 'file'},
-    url: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
-    text: {type: 'string', optional: true},
-    data: { type: 'string', optional: true},
-    objectName: {type: 'string', optional: true},
-    previewUrl: {type: 'string', optional: true}
+    text: {type: 'string', optional: true}
 })
 
 export default Ximpdf
