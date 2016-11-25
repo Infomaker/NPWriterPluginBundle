@@ -1,0 +1,60 @@
+.sc-np-headereditor {
+
+    span.sc-metdata-text__container {
+        display: block;
+
+        .fa {
+            float: left;
+            margin-left: -30px;
+            margin-top: 5px;
+            color: #ddd;
+            font-size: 18px;
+            display: none;
+
+            &.active {
+                display: inline-block;
+            }
+        }
+        .fa-header {
+            margin-top: 15px;
+        }
+        .fa-globe {
+            margin-top: 3px;
+        }
+        .fa-paragraph {
+            margin-top: 2px;
+        }
+
+        .sc-text-property {
+            white-space: pre-line !important;
+        }
+    }
+
+    .icon-container {
+        display: inline-block;
+        min-height: 30px;
+        float: left;
+    }
+
+}
+
+.se-headline {
+    font-weight: 600;
+    font-size: 32px;
+    padding-bottom: 10px;
+    letter-spacing: -0.5px;
+    line-height: normal;
+
+}
+
+.se-dateline {
+    font-weight: normal;
+    padding-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.se-leadin {
+    font-weight: 700;
+    font-size:1.2rem;
+
+}
