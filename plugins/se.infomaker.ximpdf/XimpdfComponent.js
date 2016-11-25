@@ -1,4 +1,4 @@
-import {Component, TextPropertyEditor} from 'substance'
+import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 
 class XimpdfComponent extends Component {
@@ -24,22 +24,35 @@ class XimpdfComponent extends Component {
 
         const fileNode = doc.get(node.pdfFile)
 
-        const el = $$('div').addClass('sc-ximpdf')
+        const el = $$('div').addClass('ximpdf__container')
+
+        const headerEl = $$('a')
+            .append($$('span').addClass('ximpdf-content')
+                .append($$('a')
+                    .append([
+                        $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'}),
+                        //$$(Icon, {icon: 'fa-file-pdf-o'}).addClass('title-icon'),
+                        $$('span')
+                        // TODO:
+                        //.append(this.context.api.i18n.t('Portable Document Format'))
+                            .append('Portable Document Format')
+                    ])
+                    .attr('href', node.url)
+                    .attr('target', '_blank')
+                    .on('click', function (evt) {
+                        evt.stopPropagation();
+                    })
+                ))
 
         const textEditor = $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, 'text'],
             doc: this.props.doc
-        }).ref('text').addClass('se-text')
+        }).ref('text').addClass('se-caption')
 
         const url = $$('span').append(fileNode.url)
 
-        el.append([textEditor, url])
-
-
-        //el.append($$('div').append($$('img').attr('src', node.thumbnail_url).attr('style', 'width:100%')))
-        //el.append($$('h2').append(node.getPdfFile().text).attr('style', 'background-color: #efefef; padding: 10px 15px; font-size:1rem'))
-
+        el.append([headerEl, textEditor, url])
         return el
     }
 }

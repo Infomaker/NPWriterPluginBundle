@@ -47,7 +47,7 @@ module.exports = {
                 test: /\.js?$/,
                 exclude: /(node_modules)/,
                 loaders: [
-                    'babel?presets[]=stage-0,presets[]=es2015'
+                    'babel?presets[]=stage-0,presets[]=es2015-node6'
                 ]
             }
         ],
@@ -84,16 +84,6 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
-            }
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            sourceMap: false,
-            output: {
-                comments: false
-            },
-            compress: {
-                warnings: false
             }
         })
     ]

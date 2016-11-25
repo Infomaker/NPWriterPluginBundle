@@ -5,7 +5,7 @@ import XimpdfFileNode from './XimpdfFileNode'
 //import InsertPdfsTool from './InsertPdfsTool'
 import InsertPdfsCommand from './InsertPdfsCommand'
 import DropPdfFile from './DropPdfFile'
-//import DropImageUri from './DropImageUri'
+//import DropPdfUri from './DropImageUri'
 
 export default {
     name: 'ximpdf',
@@ -25,10 +25,5 @@ export default {
         config.addDragAndDrop(DropPdfFile)
         // TODO:
         // config.addDragAndDrop(DropImageUri)
-
-        // TODO
-        // config.addIcon('image', { 'fontawesome': 'fa-image' })
-        // config.addIcon('crop', { 'fontawesome': 'fa-crop' })
-        // config.addIcon('upload', { 'fontawesome': 'fa-upload' })
     }
 }

@@ -1,18 +1,12 @@
-.sc-ximpdf {
+.ximpdf__container {
   margin-bottom: 20px;
   display: inline-block;
   text-decoration: none;
   margin-right: -13px;
   max-width: 800px;
-
-  & > div {
-    display: inline-block;
-    width: 100%;
-    padding: 4px 8px 8px 8px;
-    margin: -5px 9px -9px -9px;
-    border-radius: 3px;
-    border: 2px;
-  }
+  padding: 4px 8px 8px 8px;
+  border-radius: 3px;
+  border: 1px solid #e5e5e5;
 }
 
 #x-im-pdf-fileupload {

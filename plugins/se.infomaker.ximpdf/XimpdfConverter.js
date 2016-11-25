@@ -11,13 +11,15 @@ export default {
     import: function (el, node, converter) { // jshint ignore:line
 
         // Import link - base data
-        var linkEl = el.find('links>link')
+        let linkEl = el.find('links>link')
 
         let pdfFile = {
             id: idGenerator(),
             type: 'ximpdffile',
-            fileType: 'pdf'
+            fileType: 'pdf',
+            pdfNodeId: node.id
         }
+
         if (el.attr('uuid')) {
             pdfFile.uuid = el.attr('uuid')
         }
@@ -29,16 +31,15 @@ export default {
         }
 
         converter.createNode(pdfFile)
-        node.pdfFile = pdfFile.id
 
+        node.pdfFile = pdfFile.id
         node.uuid = el.attr('uuid')
 
         // Import data
-        var dataEl = linkEl.find('data')
+        let dataEl = linkEl.find('data')
         if (dataEl) {
             dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
-                    //pdfFile.text = converter.annotatedText(child, [node.id, 'text'])
                     node.text = converter.annotatedText(child, [node.id, 'text'])
                 }
             })
@@ -46,9 +47,9 @@ export default {
     },
 
     export: function (node, el, converter) {
-        var $$ = converter.$$;
+        const $$ = converter.$$;
 
-        let fileNode = node.document.get(node.pdfFile)
+        const fileNode = node.document.get(node.pdfFile)
 
         el.removeAttr('data-id')
         el.attr({
@@ -57,17 +58,17 @@ export default {
         })
 
         // Data element
-        var data = $$('data').append([
+        const data = $$('data').append([
             $$('text').append(String(node.text))
         ])
 
         el.attr('uuid', fileNode.uuid)
 
         // Link element
-        var link = $$('link').attr({
+        const link = $$('link').attr({
             rel: 'self',
             type: 'x-im/pdf',
-            uri: fileNode.uri ? fileNode.uri : '',
+            uri: node.uri ? node.uri : '',
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 
