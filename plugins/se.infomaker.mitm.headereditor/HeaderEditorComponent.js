@@ -6,6 +6,10 @@ class HeaderEditorComponent extends Component {
     constructor(...args) {
         super(...args)
 
+        /**
+         * Listen to all changes on the editorSession surface and
+         * when the surface selected is not body show the icons
+         */
         this.context.editorSession.onUpdate((editorSession) => {
             const surface = editorSession.getFocusedSurface()
             if(surface) {
@@ -25,9 +29,9 @@ class HeaderEditorComponent extends Component {
     }
 
     render($$) {
-        var el = $$("div").addClass("sc-np-headereditor");
-        var headerGroupFields = api.getConfigValue('se.infomaker.mitm.headereditor', 'elements') || ['headline', 'leadin'];
-        var fields = headerGroupFields.map(function (field) {
+        const el = $$("div").addClass("sc-np-headereditor");
+        const headerGroupFields = ['headline', 'leadin'];
+        const fields = headerGroupFields.map(function (field) {
             return this.getElement($$, field);
         }.bind(this));
 

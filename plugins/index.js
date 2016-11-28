@@ -37,6 +37,7 @@ import HeaderEditor from './se.infomaker.mitm.headereditor/HeaderEditorPackage'
     XImteaser()
     PublishFlow()
     NewsPriority()
+    HeaderEditor()
     XImAuthor()
     YoutubeEmbed()
     ContentRelations()
@@ -44,5 +45,5 @@ import HeaderEditor from './se.infomaker.mitm.headereditor/HeaderEditorPackage'
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
-    HeaderEditor()
+
 })()

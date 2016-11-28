@@ -3,7 +3,12 @@ module.exports = {
     tagName: 'group',
 
     matchElement: function (el) {
-        return el.is('group[type="header"]');
+        const headlineElement = el.find('group[type="header"] > element[type="headline"]')
+        const leadinElement = el.find('group[type="header"] > element[type="leadin"]')
+
+        if(headlineElement || leadinElement) {
+            return true
+        }
     },
 
     findElementForType: function (el, type) {
@@ -15,18 +20,15 @@ module.exports = {
     },
 
     import: function (el, node, converter) {
-        var oldPreserveValue;
+        let oldPreserveValue;
 
         oldPreserveValue = converter.state.preserveWhitespace;
         converter.state.preserveWhitespace = true;
 
         node.id = 'headereditor';
 
-        var api = converter.context.api
-        var headerFields = api.getConfigValue('se.infomaker.mitm.headereditor', 'elements') || this.getDefaultFields();
-
-        headerFields.forEach((field) => {
-            var element = this.findElementForType(el, field);
+        this.getDefaultFields().forEach((field) => {
+            const element = this.findElementForType(el, field);
             if (element) {
                 node[field] = converter.annotatedText(element, ['headereditor', field]);
             }
@@ -36,13 +38,10 @@ module.exports = {
     },
 
     export: function (node, el, converter) {
-        var $$ = converter.$$
+        const $$ = converter.$$
         el.attr('type', 'header')
 
-        var api = converter.context.api
-        var headerFields = api.getConfigValue('se.infomaker.mitm.headereditor', 'elements') || this.getDefaultFields()
-
-        var elements = headerFields.map(function (field) {
+        const elements = this.getDefaultFields().map(function (field) {
             if (node.hasOwnProperty(field)) {
                 return $$('element')
                     .attr('type', field)
@@ -51,13 +50,10 @@ module.exports = {
                         converter.annotatedText([node.id, field])
                     )
             } else {
-                console.log("Field " + field + " not supported")
+                console.error("Field " + field + " not supported")
                 return null
             }
         })
-
-        console.log("elements", elements);
-
         el.append(elements);
     }
 
