@@ -6,8 +6,6 @@ class MapComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        this.pluginId = 'se.infomaker.ximplace'
-
     }
 
 
@@ -71,7 +69,7 @@ class MapComponent extends Component {
     }
 
     didMount() {
-        var apiKey = this.context.api.getConfigValue(this.pluginId, 'googleMapAPIKey')
+        var apiKey = this.context.api.getConfigValue(this.props.pluginId, 'googleMapAPIKey')
 
         GoogleMapsApiLoader({
             libraries: ['geometry', 'places'],

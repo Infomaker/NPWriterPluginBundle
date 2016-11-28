@@ -264,8 +264,7 @@ class LocationDetailComponent extends Component {
 
     render($$) {
 
-        var location,
-            shortDesc = "",
+        let shortDesc = "",
             longDesc = ""
 
         const name = this.getNameForLocation()
@@ -287,23 +286,23 @@ class LocationDetailComponent extends Component {
                 this.updateMapPosition()
             }
         }
-        var el = $$('div')
+        const el = $$('div')
 
-        var formContainer = $$('form').addClass('location-form__container clearfix').ref('formContainer').on('submit', function (e) {
+        const formContainer = $$('form').addClass('location-form__container clearfix').ref('formContainer').on('submit', (e) => {
             e.preventDefault()
             if (this.refs['locationNameInput'].val() !== "") {
                 this.onClose('save')
             }
-        }.bind(this))
+        })
 
-        var hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'})
+        const hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'})
         formContainer.append(hiddenSubmitButtonToEnableEnterSubmit)
 
         // Name
-        var formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
+        const formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
         formGroup.append($$('label').attr('for', 'locationNameInput').append(this.getLabel('Name')))
         if (this.state.editable) {
-            var locationName = $$('input').attr({
+            const locationName = $$('input').attr({
                 type: 'text',
                 id: 'locationNameInput'
             })
@@ -329,7 +328,7 @@ class LocationDetailComponent extends Component {
 
 
         // Short Desc
-        var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
+        const formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
         formGroupShortDesc.append($$('label').attr('for', 'locationShortDescInput').append(this.getLabel('Short description')))
         if (this.state.editable) {
             formGroupShortDesc.append(
@@ -349,7 +348,7 @@ class LocationDetailComponent extends Component {
         formContainer.append(formGroupShortDesc)
 
         // Long desc
-        var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
+        const formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
         formGroupLongDesc.append($$('label').attr('for', 'locationLongDescText').append(this.getLabel('Long description')))
         if (this.state.editable) {
             formGroupLongDesc.append(
@@ -377,14 +376,14 @@ class LocationDetailComponent extends Component {
         }
 
         if (!this.searchDisabled) {
-            var searchComponent = $$(SearchComponent).ref('searchComponent')
+            const searchComponent = $$(SearchComponent).ref('searchComponent')
             el.append(searchComponent)
         }
         if (this.isPolygon) {
             el.append($$('p').addClass('col-xs-12 not-supported').append(this.getLabel('Edit of polygons is not currently supported')))
         }
 
-        var mapComponent = $$(MapComponent).ref('mapComponent')
+        const mapComponent = $$(MapComponent, {pluginId: this.props.plugin.id}).ref('mapComponent')
         el.append(mapComponent)
 
         return el

@@ -13,7 +13,7 @@ class LocationMainComponent extends Component {
     }
 
     configureFeatures() {
-        const features = api.getConfigValue(this.props.panel.id, 'features');
+        const features = api.getConfigValue(this.props.pluginConfigObject.id, 'features');
 
         switch (features) {
             case 'position':
@@ -42,7 +42,7 @@ class LocationMainComponent extends Component {
 
 
         this.polygonIsEditable = api.getConfigValue(
-            this.props.panel.id,
+            this.props.pluginConfigObject.id,
             'polygon.editable',
             true
         )
@@ -109,7 +109,7 @@ class LocationMainComponent extends Component {
             query: selectedItem.inputValue,
             reload: this.reload.bind(this),
             editable: true,
-            plugin: this.props.plugin,
+            plugin: this.props.pluginConfigObject,
             location: location
         };
 
@@ -122,7 +122,7 @@ class LocationMainComponent extends Component {
 
     addLocation(item) {
         // Use location "sub-type" as type for link
-        var useGeometryType = api.getConfigValue(this.props.panel.id, 'useGeometryType');
+        var useGeometryType = api.getConfigValue(this.props.pluginConfigObject.id, 'useGeometryType');
 
         // Validate that writer config corresponds with concept backend config
         if (useGeometryType === true && !item.hasOwnProperty('geometryType')) {
@@ -157,7 +157,7 @@ class LocationMainComponent extends Component {
             location: item,
             reload: this.reload.bind(this),
             editable: editable,
-            plugin: this.props.plugin
+            plugin: this.props.pluginConfigObject
         };
 
         api.ui.showDialog(LocationDetailComponent, properties, {
@@ -165,6 +165,7 @@ class LocationMainComponent extends Component {
             global: true,
             primary: editable ? this.getLabel('Save') : this.getLabel('Close'),
             secondary: editable ? this.getLabel('Cancel') : false
+
         })
     }
 
