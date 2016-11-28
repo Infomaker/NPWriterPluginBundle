@@ -19,7 +19,7 @@ import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
-import HeaderEditor from './se.infomaker.mitm.headereditor/HeaderEditorPackage'
+import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 
 (() => {
 
