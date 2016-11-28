@@ -15,6 +15,11 @@ const HeaderEditorPackage = {
         config.addConverter('newsml', HeaderEditorConverter)
         config.addTextEditComponent(HeaderEditorNode.type, HeaderEditorComponent, {display:'top'})
 
+        config.addLabel('leadin', {
+            en: 'Leadin',
+            sv: 'Ingress'
+        })
+
     }
 }
 

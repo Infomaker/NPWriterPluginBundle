@@ -20,18 +20,8 @@ class HeaderEditorComponent extends Component {
                     })
                 }
             }
-
         }, this)
-        // this.context.controller.connect(this, {
-        //     'selection:changed': function (sel, surface) {
-        //         console.log("Works???");
-                // if (surface.name !== 'body') {
-                //     this.$el.find('.fa').addClass('active');
-                // } else {
-                //     this.$el.find('.fa').removeClass('active');
-                // }
-            // }
-        // })
+
     }
 
     render($$) {
