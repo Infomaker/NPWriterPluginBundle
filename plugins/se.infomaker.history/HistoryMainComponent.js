@@ -16,7 +16,7 @@ class HistoryMainComponent extends Component {
         api.events.on('history', event.HISTORY_SAVED, () => {
             this.updateHistoryState()
         })
-        api.events.on('history', event.HISTORY_ADDED, () => {
+        api.events.on('history', event.HISTORY_CLEARED, () => {
             this.updateHistoryState()
         })
     }

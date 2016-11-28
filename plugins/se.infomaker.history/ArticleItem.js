@@ -10,7 +10,7 @@ class ArticleItem extends Component {
         let article = this.props.article
 
 
-        var deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
+        const deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
             .addClass('icon-delete')
             .attr('title', this.getLabel('Ignore and clear history')))
             .on('click', function () {
