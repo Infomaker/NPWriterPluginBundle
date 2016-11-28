@@ -4,8 +4,6 @@ import {idGenerator} from 'writer'
 /*
  Insert a pdf via file or uri.
 
- // TODO: Need to implement a NPPdfProxy in NPWriter
-
  data either contains a File object or a url. NPPdfProxy detects if
  data is a file or uri and calls the appropriate sync(=upload) method.
  */

@@ -30,14 +30,13 @@ class XimpdfComponent extends Component {
             .append($$('span').addClass('ximpdf-content')
                 .append($$('a')
                     .append([
-                        $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'}),
-                        //$$(Icon, {icon: 'fa-file-pdf-o'}).addClass('title-icon'),
+                        $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'})
+                            .addClass('title-icon'),
                         $$('span')
-                        // TODO:
-                        //.append(this.context.api.i18n.t('Portable Document Format'))
                             .append('Portable Document Format')
+                            .addClass('title-pdf')
                     ])
-                    .attr('href', node.url)
+                    .attr('href', fileNode.url)
                     .attr('target', '_blank')
                     .on('click', function (evt) {
                         evt.stopPropagation();
@@ -48,11 +47,20 @@ class XimpdfComponent extends Component {
             tagName: 'div',
             path: [this.props.node.id, 'text'],
             doc: this.props.doc
-        }).ref('text').addClass('se-caption')
+        })
+            .ref('text')
+            .addClass('text-pdf')
 
-        const url = $$('span').append(fileNode.url)
+        const loadingSpan = $$('span')
+            .append('Loading...')
+            .addClass('text-pdf')
 
-        el.append([headerEl, textEditor, url])
+        if (node.text) {
+            el.append([headerEl, textEditor])
+        } else {
+            el.append([headerEl, loadingSpan])
+        }
+
         return el
     }
 }

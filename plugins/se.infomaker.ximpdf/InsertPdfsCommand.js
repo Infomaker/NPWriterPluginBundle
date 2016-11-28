@@ -3,9 +3,9 @@ import insertPdfCommand from './InsertPdfCommand'
 import {api} from 'writer'
 
 /*
-    Insert multiple pdf files
-*/
-class XimPdfCommand extends Command {
+ Insert multiple pdf files
+ */
+class XimpdfCommand extends Command {
 
     getCommandState(params) {
         return {
@@ -14,14 +14,20 @@ class XimPdfCommand extends Command {
     }
 
     execute(params) {
-        params.editorSession.transaction((tx) => {
-            Array.prototype.forEach.call(params.files, (file) => {
-                insertPdfCommand(tx, file)
+        if (typeof params.files === 'string') {
+            params.editorSession.transaction((tx) => {
+                insertPdfCommand(tx, params.files)
             })
-        })
+        } else {
+            params.editorSession.transaction((tx) => {
+                Array.prototype.forEach.call(params.files, (file) => {
+                    insertPdfCommand(tx, file)
+                })
+            })
+        }
         api.editorSession.fileManager.sync()
         return true;
     }
 }
 
-export default XimPdfCommand
+export default XimpdfCommand

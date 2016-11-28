@@ -2,10 +2,11 @@ import XimpdfComponent from './XimpdfComponent'
 import XimpdfConverter from './XimpdfConverter'
 import Ximpdf from './Ximpdf'
 import XimpdfFileNode from './XimpdfFileNode'
-//import InsertPdfsTool from './InsertPdfsTool'
+import InsertPdfsTool from './InsertPdfsTool'
 import InsertPdfsCommand from './InsertPdfsCommand'
 import DropPdfFile from './DropPdfFile'
-//import DropPdfUri from './DropImageUri'
+import DropPdfUri from './DropPdfUri'
+import XimpdfMacro from './XimpdfMacro'
 
 export default {
     name: 'ximpdf',
@@ -14,16 +15,11 @@ export default {
         config.addNode(Ximpdf)
         config.addComponent(Ximpdf.type, XimpdfComponent)
         config.addConverter('newsml', XimpdfConverter)
-        // TODO
-        // config.addContentMenuTopTool('insert-pdfs', InsertPdfsTool)
+        config.addContentMenuTopTool('insert-pdfs', InsertPdfsTool)
         config.addCommand('insert-pdfs', InsertPdfsCommand)
-
         config.addNode(XimpdfFileNode)
-
-        // TODO: duplicate?
-        // config.addConverter('newsml', XimpdfConverter)
         config.addDragAndDrop(DropPdfFile)
-        // TODO:
-        // config.addDragAndDrop(DropImageUri)
+        config.addDragAndDrop(DropPdfUri)
+        config.addMacro(XimpdfMacro)
     }
 }

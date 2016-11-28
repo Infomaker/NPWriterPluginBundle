@@ -13,15 +13,19 @@ class XimpdfFileNode extends FileNode {
                 const parser = new DOMParser()
 
                 let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')
-                let documentElement = newsItemDOM.documentElement
-                let uuid = documentElement.getAttribute('guid')
-                const uri = documentElement.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
-                let text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > text')
-                // TODO: Add error handling
+                let document = newsItemDOM.documentElement
+                let uuid = document.getAttribute('guid')
+                const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+                let text = document.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > text')
+                let objectName = document.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > objectName')
+
                 if (text) {
                     text = text.textContent
+                } else if (objectName) {
+                    text = objectName.textContent
                 } else {
-                    text = documentElement.querySelector('contentMeta > metadata > object[type="x-im/pdf"] > data > objectName').textContent
+                    // Filename should always exist
+                    text = document.querySelector('itemMeta > fileName').textContent
                 }
 
                 // Update PDFNode
@@ -45,7 +49,6 @@ class XimpdfFileNode extends FileNode {
         return 'x-im/pdf'
     }
 }
-
 
 XimpdfFileNode.define({
     type: 'ximpdffile',

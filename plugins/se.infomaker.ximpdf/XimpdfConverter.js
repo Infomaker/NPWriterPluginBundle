@@ -33,7 +33,8 @@ export default {
         converter.createNode(pdfFile)
 
         node.pdfFile = pdfFile.id
-        node.uuid = el.attr('uuid')
+        node.uri = pdfFile.uri
+        node.uuid = pdfFile.uuid
 
         // Import data
         let dataEl = linkEl.find('data')
