@@ -19,6 +19,7 @@ import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
+import HeaderEditor from './se.infomaker.mitm.headereditor/HeaderEditorPackage'
 
 (() => {
 
@@ -36,6 +37,7 @@ import DefaultvalidationPackage from './se.infomaker.defaultvalidation/Defaultva
     XImteaser()
     PublishFlow()
     NewsPriority()
+    HeaderEditor()
     XImAuthor()
     YoutubeEmbed()
     ContentRelations()
@@ -43,4 +45,5 @@ import DefaultvalidationPackage from './se.infomaker.defaultvalidation/Defaultva
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
+
 })()
