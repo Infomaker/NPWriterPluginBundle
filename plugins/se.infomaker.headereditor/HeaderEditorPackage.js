@@ -7,7 +7,7 @@ import {registerPlugin} from 'writer'
 
 
 const HeaderEditorPackage = {
-    id: 'se.infomaker.mitm.headereditor',
+    id: 'se.infomaker.headereditor',
     name: 'headereditor',
     configure: (config) => {
 

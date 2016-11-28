@@ -30,7 +30,7 @@ class HeaderEditorComponent extends Component {
 
     render($$) {
         const el = $$("div").addClass("sc-np-headereditor");
-        const headerGroupFields = ['headline', 'leadin'];
+        const headerGroupFields = api.getConfigValue('se.infomaker.headereditor', 'elements') || ['headline', 'leadin'];
         const fields = headerGroupFields.map(function (field) {
             return this.getElement($$, field);
         }.bind(this));

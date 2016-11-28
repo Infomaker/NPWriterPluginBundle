@@ -27,8 +27,11 @@ module.exports = {
 
         node.id = 'headereditor';
 
-        this.getDefaultFields().forEach((field) => {
-            const element = this.findElementForType(el, field);
+        const api = converter.context.api
+        const headerFields = api.getConfigValue('se.infomaker.headereditor', 'elements') || this.getDefaultFields();
+
+        headerFields.forEach((field) => {
+            var element = this.findElementForType(el, field);
             if (element) {
                 node[field] = converter.annotatedText(element, ['headereditor', field]);
             }
@@ -41,7 +44,10 @@ module.exports = {
         const $$ = converter.$$
         el.attr('type', 'header')
 
-        const elements = this.getDefaultFields().map(function (field) {
+        const api = converter.context.api
+        const headerFields = api.getConfigValue('se.infomaker.headereditor', 'elements') || this.getDefaultFields()
+
+        const elements = headerFields.map(function (field) {
             if (node.hasOwnProperty(field)) {
                 return $$('element')
                     .attr('type', field)
