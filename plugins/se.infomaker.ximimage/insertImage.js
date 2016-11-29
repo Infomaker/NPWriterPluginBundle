@@ -7,16 +7,18 @@
 
 
 export default function(tx, data) {
-    let isFile = data instanceof File
-    let mimeType
+    let isFile = data instanceof File,
+        mimeType
 
     if (isFile) {
         mimeType = data.type
-    } else if (typeof data === 'string') {
+    }
+    else if (typeof data === 'string') {
         let ext = data.split('.').pop()
         // Extract use file extension
-        mimeType = 'image/'+ext
-    } else {
+        mimeType = 'image/' + ext
+    }
+    else {
         throw new Error('Unsupported data. Must be File or String')
     }
 
@@ -25,13 +27,8 @@ export default function(tx, data) {
         type: 'ximimagefile',
         fileType: 'image',
         mimeType: mimeType,
-        data: data, // either File object or uri
-        caption: '',
-        alttext: '',
-        credit: '',
-        alignment: '',
-        // QUESTION Michael: why is this needed?
-        knownData: isFile
+        sourceFile: isFile ? data: '',
+        sourceurl: !isFile ? data : ''
     })
 
     // Inserts image at current cursor pos

@@ -45,18 +45,6 @@ class XimimageComponent extends Component {
         return el
     }
 
-    // renderField($$) {
-    //
-    //     $$(TextPropertyEditor, {
-    //             tagName: 'div',
-    //             path: [this.props.node.id, 'caption'],
-    //             doc: this.props.doc
-    //         }).ref('caption').addClass('se-caption')
-    //     )
-    // }
-
-
-
     renderTextField($$, obj) {
         return $$(TextPropertyEditor, {
             tagName: 'div',
@@ -74,7 +62,7 @@ class XimimageComponent extends Component {
 
         if (!this.props.node.alignment) {
             currentOption = obj.options[0].name
-            this.props.node.setAlignment(currentOption)
+            // this.props.node.setAlignment(currentOption)
         }
         else {
             currentOption = this.props.node.alignment
@@ -92,7 +80,7 @@ class XimimageComponent extends Component {
                     })
                     .on('click', () => {
                         if (option.name !== this.props.node.alignment) {
-                            this.props.node.setAlignment(option.name)
+                            // this.props.node.setAlignment(option.name)
                             this.rerender()
                         }
                         return false

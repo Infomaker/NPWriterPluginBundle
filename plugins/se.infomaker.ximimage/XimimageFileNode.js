@@ -6,9 +6,7 @@ class XimimageFileNode extends FileNode {
     }
 
     handleDocument(xmlString) {
-
         return new Promise((resolve, reject) => {
-
             try {
 
                 const parser = new DOMParser()

@@ -1,4 +1,4 @@
-import { Component, FontAwesomeIcon } from 'substance'
+import { Component, Button, FontAwesomeIcon } from 'substance'
 import ImageCropper from './ImageCropper'
 import ImageMetadata from './ImageMetadata'
 
@@ -14,87 +14,52 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
-        let node = this.props.node
-        let el = $$('div').addClass('sc-image-display')
-        el.addClass('sm-'+this.props.isolatedNodeState)
-        let imgSrc = node.getUrl()
-        // let Button = this.getComponent('button')
-        let Modal = this.getComponent('modal')
-        let DialogClass = this.state.DialogClass
-
-        let imgContainer = $$('div').addClass('se-image-container')
+        let imgContainer = $$('div').addClass('se-image-container'),
+            imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
             imgContainer.append(
-                $$('img', { src: imgSrc }).ref('img')
+                $$('img', {
+                    src: imgSrc
+                }).ref('img')
             )
         } else {
             imgContainer.append(
-                $$(FontAwesomeIcon, {icon: 'fa-picture-o'})
-                    .attr('style', 'font-size:25rem;color:#efefef')
+                $$(FontAwesomeIcon, {
+                    icon: 'fa-picture-o'
+                })
+                .attr('style', 'font-size:25rem;color:#efefef')
             )
         }
 
-        // Actions
-        // TODO: Implement before adding buttons
-        // imgContainer.append(
-        //     $$('div').addClass('se-actions').append(
-        //         $$(Button, {
-        //             icon: 'upload'
-        //         }).on('click', this._replaceImage),
-        //         $$(Button, {
-        //             icon: 'image'
-        //         }).on('click', this._openMetaData),
-        //         $$(Button, {
-        //             icon: 'crop'
-        //         }).on('click', this._openCropper)
-        //     )
-        // )
-
-        el.append(imgContainer)
-
-        /* Invisible file input element */
-        el.append(
-            $$('input')
-                .attr('type', 'file')
-                .ref('fileInput')
-                .on('change', this._onFileSelected)
+        imgContainer.append(
+            $$('div').addClass('se-actions').append(
+                $$(Button, {
+                    icon: 'image'
+                }).on('click', this._openMetaData),
+                $$(Button, {
+                    icon: 'crop'
+                }).on('click', this._openCropper)
+            )
         )
 
-        // Render dialog if open
-        if (DialogClass) {
+        let el = $$('div').addClass('sc-image-display')
+        el.addClass('sm-' + this.props.isolatedNodeState)
+        el.append(imgContainer)
+
+        if (this.state.DialogClass) {
             el.append(
-                $$(Modal, {
+                $$(this.getComponent('modal'), {
                     width: 'medium',
                     textAlign: 'center'
                 }).append(
-                    $$(DialogClass, {
-                        node: node
+                    $$(this.state.DialogClass, {
+                        node: this.props.node
                     })
                 )
             )
         }
         return el
-    }
-
-    _replaceImage() {
-        this.refs.fileInput.click()
-    }
-
-    _onFileSelected(e) {
-        let file = e.currentTarget.files[0]
-        let nodeId = this.props.node.id
-        let oldFileId = this.props.node.imageFile
-        this.context.editorSession.transaction((tx) => {
-            // create a new file node and replace the old one
-            var newFile = tx.create({
-                type: 'ximimagefile',
-                fileType: 'image',
-                data: file
-            })
-            tx.set([nodeId, 'imageFile'], newFile.id)
-            tx.delete(oldFileId)
-        })
     }
 
     _closeDialog() {
@@ -111,7 +76,8 @@ class ImageDisplay extends Component {
 
     _openCropper() {
         this.setState({
-            DialogClass: ImageCropper
+            DialogClass: ImageCropper,
+            src: this.props.node.getUrl()
         })
     }
 }
