@@ -1,4 +1,4 @@
-import insertPdfCommand from './insertPdfCommand'
+import insertPdfCommand from './InsertPdfCommand'
 import {DragAndDropHandler} from 'substance'
 import {api} from 'writer'
 
