@@ -8,30 +8,15 @@ export default {
 
     import: function(el, node) {
         node.dataType = el.attr('type')
-        /*
-          {
-          "id": "p2ok447mofmi",
-          "type": ”x-im/socialembed",
-          "links": [
-              {
-                "rel": "self",
-                "type": "x-im/tweet",
-                "url": "https://twitter.com/fraserspeirs/status/694515217666064385",
-                "uri": "x-im://tweet/694515217666064385"
-              }
-            ]
-          }
-        */
 
-        var linkEl = el.find('links>link');
-        node.url = linkEl.attr('url');
-        node.uri = linkEl.attr('uri');
-        node.linkType = linkEl.attr('type');
-        node.html = atob(linkEl.innerHTML);
+        const linkEl = el.find('links>link')
+        node.url = linkEl.attr('url')
+        node.uri = linkEl.attr('uri')
+        node.linkType = linkEl.attr('type')
     },
 
     export: function(node, el, converter) {
-        var $$ = converter.$$;
+        const $$ = converter.$$;
 
         el.attr({
             id: node.id,
@@ -40,15 +25,15 @@ export default {
 
         el.removeAttr('data-id');
 
-        var links = $$('links');
-        var link = $$('link');
+        const links = $$('links');
+        const link = $$('link');
+
         link.attr({
             rel: 'self',
             type: node.linkType,
             url: node.url,
             uri: node.uri
         });
-        link.innerHTML = btoa(node.html)
 
         links.append(link);
         el.append(links);
