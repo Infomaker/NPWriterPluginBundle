@@ -10,6 +10,14 @@ class XimpdfFileNode extends FileNode {
     handleDocument(xmlString) {
         return new Promise((resolve, reject) => {
             try {
+                let doc = api.editorSession.getDocument()
+
+                if (!doc.get(this.pdfNodeId)) {
+                    // pdf file node may exists (in order to be able to undo/redo)
+                    // but pdf node is not present, just resolve.
+                    return resolve()
+                }
+
                 const parser = new DOMParser()
 
                 let newsItemDOM = parser.parseFromString(xmlString, 'text/xml')

@@ -4,12 +4,23 @@ export default {
         let editorSession = context.editorSession
         let text = params.text
 
-        // only react on 'break' (as medium does)
-        if (!params.action === 'break') return
+        // Only react on 'break' (as medium does)
+        if (!params.action === 'break') {
+            return
+        }
 
-        // only react of we find a HTTP(s) URL ending with .pdf
+        // Only react of we find a HTTP URL
+        let match = /^\s*(https?:\/\/([^\s]+))\s*$/.exec(text)
+        if (!match) {
+            return
+        }
+
+        // Take the url, select the node, and run the pdf embed
+        let url = match[1]
+
+        // Only react of we find a HTTP(s) URL ending with .pdf
         let hasMatch = false
-        if (text.indexOf('.pdf') > 0 && (text.startsWith('http://') || text.startsWith('https://'))) {
+        if (url.indexOf('.pdf') > 0) {
             hasMatch = true
         }
 
