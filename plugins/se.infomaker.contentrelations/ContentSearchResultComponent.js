@@ -8,8 +8,8 @@ import SearchResultItem from './SearchResultItem'
 class ContentSearchResultComponent extends Component {
 
     render($$) {
-        var el = $$('ul').addClass('search__results');
-        var items = this.props.results.map(function (item) {
+        const el = $$('ul').addClass('search__results');
+        const items = this.props.results.map(function (item) {
 
             return $$(SearchResultItem, {item: item})
 

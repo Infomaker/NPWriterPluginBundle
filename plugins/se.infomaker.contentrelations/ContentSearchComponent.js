@@ -14,18 +14,18 @@ class ContentSearchComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').addClass('search__container');
+        const el = $$('div').addClass('search__container');
 
-        var searchForm = $$('form').addClass('clearfix')
+        const searchForm = $$('form').addClass('clearfix')
             .on('submit', this.search.bind(this)).ref('form');
         searchForm.append($$('input').attr({type: 'submit', style: 'display:none'}));
 
-        var searchInput = $$('input')
+        const searchInput = $$('input')
             .addClass('form-control search__query col-xs-9')
             .ref('queryInput')
             .attr('placeholder', this.getLabel('Enter query'));
 
-        var searchButton = $$('button')
+        const searchButton = $$('button')
             .addClass('sc-np-btn btn btn-primary col-xs-3')
             .append(this.getLabel('Search'))
             .on('click', this.search.bind(this))

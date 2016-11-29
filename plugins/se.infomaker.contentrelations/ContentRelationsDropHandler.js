@@ -17,7 +17,7 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
     }
 
     isContentRelationsDrop(uri) {
-        return uri.indexOf('http://contentrelations') >= 0;
+        return uri.indexOf('x-im-entity:') >= 0;
 
     }
 
