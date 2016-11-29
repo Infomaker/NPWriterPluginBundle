@@ -1,39 +1,42 @@
 .socialembed__container {
-    margin-bottom: 20px;
+    margin-bottom:10px;
     display: inline-block;
     text-decoration: none;
-    margin-right: -13px;
-
     max-width: 800px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
 
-    &.Instagram {
-        display: block;
-    }
-
-    &>div {
-        display: inline-block;
-        width: 100%;
-        padding: 4px 8px 8px 8px;
-        margin: -5px 9px -9px -9px;
-        border-radius: 3px;
-
+    & + .se-blocker {
         &:hover {
             box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
-
+            border-radius: 3px;
+            margin-bottom:10px;
+            border: 1px solid #fff;
             .header {
                 .remove-button {
                     opacity: 1;
                 }
             }
         }
+    }
 
-        &>div.socialembed__nocontent {
+    z-index: 100;
+
+    &.Instagram {
+        display: block;
+    }
+
+    & > div {
+
+        & > div.socialembed__nocontent {
             min-height: 250px;
             width: 100%;
             background: #fafafa;
         }
 
-        &>div.socialembed__content {
+        & > div.socialembed__content {
             cursor: default;
 
             iframe {
@@ -64,14 +67,20 @@
 
             &.fa-twitter::before {
                 content: "\f099";
+                color:rgb(32, 121, 220);
+
             }
 
             &.fa-facebook::before {
                 content: "\f09a";
+                color: rgb(32, 121, 220);
+
             }
 
             &.fa-instagram::before {
                 content: "\f16d";
+                color:rgb(32, 121, 220);
+
             }
 
             strong {
@@ -84,9 +93,9 @@
 
 .sc-isolated-node.sm-socialembed.sm-selected {
     .socialembed__container {
-        &>div {
-            box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
-            background: rgba(163,205,253, 0.6);
-        }
+        box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
+        background: rgba(222, 235, 255, 0.6);
+        margin-bottom:10px;
+        border: 1px solid #fff;
     }
 }

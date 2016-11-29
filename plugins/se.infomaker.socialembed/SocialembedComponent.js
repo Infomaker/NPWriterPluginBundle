@@ -1,10 +1,25 @@
-import { Component } from 'substance'
+import {Component, FontAwesomeIcon} from 'substance'
+import {api} from 'writer'
+
 
 class SocialembedComponent extends Component {
 
     didMount() {
-        this.context.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+        this.context.editorSession.onRender('document', this.rerender, this, {path: [this.props.node.id]})
         this.context.api.document.triggerFetchResourceNode(this.props.node)
+
+        /**
+         *   // api.browser.addExternalScript('//platform.twitter.com/widgets.js').then(() => {
+            //     twttr.widgets.load(this.refs.embedContent.el.el).then((e) => {
+            //         setTimeout(() => {
+            //             api.editorSession.transaction((tx) => {
+            //                 tx.set([node.id, 'html'], this.refs.embedContent.el.el.innerHTML)
+            //             })
+            //         }, 500)
+            //
+            //     })
+            // })
+         */
     }
 
     dispose() {
@@ -12,32 +27,26 @@ class SocialembedComponent extends Component {
     }
 
     render($$) {
-        var node = this.props.node,
-            htmlContainer;
+        const node = this.props.node
 
-        var el = $$('a')
+
+        const el = $$('div')
             .addClass('socialembed__container')
             .addClass(node.socialChannel)
-                .attr('contenteditable', false);
+            .attr('contenteditable', false);
+
 
         // Only when HTML has been resolved
         if (node.hasPayload()) {
-            var innerEl = $$('div').append(
-                $$('div').append([
-                    $$('strong').append(
-                        node.socialChannel
-                    )
-                    .attr('contenteditable', false)
-                ])
-                .addClass('header')
-                .addClass(node.socialChannelIcon)
-                .attr('contenteditable', false)
-            )
-            htmlContainer = $$('div')
-                .addClass('socialembed__content')
-                .html(node.html)
-            innerEl.append(htmlContainer)
+
+            const innerEl = $$('div').ref('embed-container')
+            const headerEl = this.renderHeader($$, node)
+            const contentEl = this.renderContent($$, node)
+
+            innerEl.append([headerEl, contentEl])
+
             el.append(innerEl)
+
         } else if (node.errorMessage) {
             el.append(
                 $$('div').addClass('se-error').append(
@@ -45,9 +54,28 @@ class SocialembedComponent extends Component {
                 )
             )
         } else {
-            el.append('Loading...')
+            el.append($$(FontAwesomeIcon, {icon: 'fa-spin fa-refresh'}))
         }
         return el
+    }
+
+    renderContent($$, node) {
+        return $$('div').ref('embedContent')
+            .addClass('socialembed__content')
+            .html(node.html)
+    }
+
+    renderHeader($$, node) {
+        return $$('div')
+            .append(
+                $$('strong').append(
+                    node.socialChannel
+                )
+                    .attr('contenteditable', false)
+            )
+            .addClass('header')
+            .addClass(node.socialChannelIcon)
+            .attr('contenteditable', false)
     }
 
     removeEmbed() {
