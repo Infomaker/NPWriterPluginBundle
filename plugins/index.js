@@ -1,3 +1,4 @@
+import Skeleton from './se.infomaker.skeleton/index'
 import TextAnalyzer from './se.infomaker.textanalyzer/index'
 import Preamble from './se.infomaker.preamble/Preamble'
 import PublishFlow from './se.infomaker.publishflow/index'
@@ -19,6 +20,7 @@ import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
+import XImPdf from './se.infomaker.ximpdf/index'
 
 (() => {
 
@@ -41,6 +43,7 @@ import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
     YoutubeEmbed()
     ContentRelations()
     History()
+    XImPdf()
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
