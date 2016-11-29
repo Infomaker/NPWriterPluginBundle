@@ -26,7 +26,7 @@ class ContentSearchComponent extends Component {
             .attr('placeholder', this.getLabel('Enter query'));
 
         const searchButton = $$('button')
-            .addClass('sc-np-btn btn btn-primary col-xs-3')
+            .addClass('sc-np-btn btn btn-neutral col-xs-3')
             .append(this.getLabel('Search'))
             .on('click', this.search.bind(this))
             .ref('serchButton');
