@@ -19,7 +19,7 @@ console.log(" Plugin development build ")
 console.log(" ----------------------------\n")
 
 module.exports = {
-    entry: "./plugins/index.js",
+    entry: "./plugins/im-writer.js",
     output: {
         filename: "index.js",
         path: "dist",
