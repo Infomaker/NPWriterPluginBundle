@@ -1,7 +1,7 @@
+import './scss/youtubeembed.scss'
+
 import YoutubeEmbedTool from './YoutubeEmbedTool'
-import YoutubeEmbedEditTool from './YoutubeEmbedEditTool'
 import YoutubeEmbedCommand from './YoutubeEmbedCommand'
-import YoutubeEmbedEditCommand from './YoutubeEmbedEditCommand'
 import YoutubeEmbedNode from './YoutubeEmbedNode'
 import YoutubeEmbedComponent from './YoutubeEmbedComponent'
 import YoutubeEmbedConverter from './YoutubeEmbedConverter'
@@ -14,7 +14,6 @@ export default {
 
         // Add tool
         config.addContentMenuTopTool('youtubeembed', YoutubeEmbedTool)
-        config.addTool('youtubeembededit', YoutubeEmbedEditTool)
 
         config.addConverter('newsml', YoutubeEmbedConverter)
 
@@ -23,7 +22,6 @@ export default {
 
         // Add Command
         config.addCommand('youtubeembed', YoutubeEmbedCommand)
-        config.addCommand('youtubeembededit', YoutubeEmbedEditCommand)
         // Add node
         config.addNode(YoutubeEmbedNode)
 
