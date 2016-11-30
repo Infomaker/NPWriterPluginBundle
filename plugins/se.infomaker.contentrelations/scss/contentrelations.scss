@@ -5,45 +5,6 @@ img.product-icon {
     vertical-align: -2px;
 }
 
-.x-im-contentrelations {
-    margin: 0 0 15px 0;
-    padding: 7px 14px;
-    border: 1px solid #ddd;
-    position: relative;
-    background-color: #fff;
-
-    display: block;
-    font-size: 90%;
-
-    .remove-button {
-        display: none;
-        float:right;
-        cursor: pointer;
-    }
-    &:hover {
-        text-decoration: none;
-
-        .remove-button {
-            display: inline-block;
-        }
-    }
-
-    span.x-im-contentrelations-content {
-        a {
-            &:hover {
-                text-decoration: none;
-            }
-        }
-        &::before {
-            font-family: FontAwesome;
-            opacity: 0.5;
-            float: left;
-            content: "\f08e";
-            width: 27px;
-        }
-    }
-}
-
 .search__container {
     form {
         display: flex;
@@ -55,6 +16,7 @@ img.product-icon {
     .btn-neutral {
         border-radius: 0 3px 3px 0;
         padding: 0.37rem 1.6rem;
+        border:none;
     }
 }
 
@@ -77,6 +39,9 @@ img.product-icon {
         user-select: none;
 
         &.image {
+            img {
+                float: left;
+            }
             .title {
                 padding-left:60px;
             }
@@ -98,6 +63,8 @@ img.product-icon {
         color: #d0d0d0;
         float:left;
         margin-left: 3px;
+        font-size:1rem;
+        margin-top:4px;
     }
 
     .title {

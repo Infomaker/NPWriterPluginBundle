@@ -14,19 +14,19 @@ class ContentSearchComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').addClass('search__container');
+        const el = $$('div').addClass('search__container');
 
-        var searchForm = $$('form').addClass('clearfix')
+        const searchForm = $$('form').addClass('clearfix')
             .on('submit', this.search.bind(this)).ref('form');
         searchForm.append($$('input').attr({type: 'submit', style: 'display:none'}));
 
-        var searchInput = $$('input')
+        const searchInput = $$('input')
             .addClass('form-control search__query col-xs-9')
             .ref('queryInput')
             .attr('placeholder', this.getLabel('Enter query'));
 
-        var searchButton = $$('button')
-            .addClass('sc-np-btn btn btn-primary col-xs-3')
+        const searchButton = $$('button')
+            .addClass('sc-np-btn btn btn-neutral col-xs-3')
             .append(this.getLabel('Search'))
             .on('click', this.search.bind(this))
             .ref('serchButton');
@@ -37,7 +37,7 @@ class ContentSearchComponent extends Component {
         el.append(searchForm);
 
 
-        var results = $$(SearchResult, {results: this.state.results, query: this.state.query});
+        const results = $$(SearchResult, {results: this.state.results, query: this.state.query});
         el.append(results);
 
 
@@ -47,7 +47,7 @@ class ContentSearchComponent extends Component {
     search(e) {
         e.preventDefault();
 
-        var query = this.refs.queryInput.val();
+        const query = this.refs.queryInput.val();
 
         api.router.get('/api/search/concepts/articles?q='+query)
             .then(reponse => api.router.checkForOKStatus(reponse))
