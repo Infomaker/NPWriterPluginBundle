@@ -31,7 +31,7 @@ class SocialembedComponent extends Component {
 
 
         const el = $$('div')
-            .addClass('socialembed__container')
+            .addClass('im-blocknode__container')
             .addClass(node.socialChannel)
             .attr('contenteditable', false);
 
@@ -61,20 +61,21 @@ class SocialembedComponent extends Component {
 
     renderContent($$, node) {
         return $$('div').ref('embedContent')
-            .addClass('socialembed__content')
+            .addClass('im-blocknode__content')
             .html(node.html)
     }
 
     renderHeader($$, node) {
         return $$('div')
-            .append(
+            .append([
+                $$(FontAwesomeIcon, {icon: node.socialChannelIcon}),
+
                 $$('strong').append(
                     node.socialChannel
-                )
-                    .attr('contenteditable', false)
-            )
+                ).attr('contenteditable', false)
+
+            ])
             .addClass('header')
-            .addClass(node.socialChannelIcon)
             .attr('contenteditable', false)
     }
 

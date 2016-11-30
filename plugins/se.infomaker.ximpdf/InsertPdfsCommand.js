@@ -9,7 +9,7 @@ class XimpdfCommand extends Command {
 
     getCommandState(params) {
         return {
-            disabled: params.surface ? false : true
+            disabled: params.surface && params.surface.name === 'body' ? false : true
         }
     }
 

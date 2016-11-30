@@ -8,7 +8,7 @@ export default {
         return el.is('object') && el.attr('type') === 'x-im/image'
     },
 
-    import: function (el, node, converter) { // jshint ignore:line
+    import: function (el, node, converter) {
 
         // Import link - base data
         var linkEl = el.find('links>link')
@@ -17,20 +17,22 @@ export default {
             id: idGenerator(),
             type: 'ximimagefile',
             fileType: 'image',
-            crops: {}
         }
+
         if (el.attr('uuid')) {
             imageFile.uuid = el.attr('uuid')
         }
+
         if (linkEl.attr('uri')) {
             imageFile.uri = linkEl.attr('uri')
         }
+
         if (linkEl.attr('url')) {
             imageFile.url = linkEl.attr('url')
         }
+
         converter.createNode(imageFile)
         node.imageFile = imageFile.id
-
         node.uuid = el.attr('uuid')
 
         // Import data
@@ -59,11 +61,11 @@ export default {
                 }
 
                 if (child.tagName === 'width') {
-                    imageFile.width = parseInt(child.text(), 10)
+                    node.width = parseInt(child.text(), 10)
                 }
 
                 if (child.tagName === 'height') {
-                    imageFile.height = parseInt(child.text(), 10)
+                    node.height = parseInt(child.text(), 10)
                 }
 
                 if (child.tagName === 'crops' && child.children.length > 0) {
@@ -98,7 +100,7 @@ export default {
                     });
 
                     if (crops.crops.length) {
-                        imageFile.crops.original = crops;
+                        node.crops = crops;
                     }
                 }
             })
@@ -130,8 +132,10 @@ export default {
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
-            type: 'x-im/image'
+            type: 'x-im/image',
+            uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         })
+
 
         var data = $$('data').append([
             $$('width').append(String(node.width)),
@@ -141,7 +145,11 @@ export default {
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
-            if (obj.type === 'option') {
+            
+            if (!node[obj.name]) {
+                data.append($$(name).append(''))
+            }
+            else if (obj.type === 'option') {
                 data.append(
                     $$(name).append(node[obj.name])
                 )
@@ -156,16 +164,14 @@ export default {
         })
 
         // Add crops to data
-        var crops = []
-        if (fileNode.crops && fileNode.crops.original) {
-            var originalCrops = $$('crops')
+        if (fileNode.crops && fileNode.crops) {
+            let crops = $$('crops')
 
-            for (var x in fileNode.crops.original.crops) {
+            for (var x in fileNode.crops.crops) {
+                if (fileNode.crops.crops.hasOwnProperty(x)) {
+                    var origCrop = fileNode.crops.crops[x];
 
-                if (fileNode.crops.original.crops.hasOwnProperty(x)) {
-                    var origCrop = fileNode.crops.original.crops[x];
-
-                    originalCrops.append(
+                    crops.append(
                         $$('crop').attr('name', origCrop.name).append([
                             $$('x').append(origCrop.x),
                             $$('y').append(origCrop.y),
@@ -174,19 +180,11 @@ export default {
                         ])
                     )
                 }
-
-
             }
 
-            crops.push(originalCrops);
+            data.append(crops)
         }
 
-        if (crops.length) {
-            data.append(crops);
-        }
-
-
-        el.attr('uuid', fileNode.uuid)
 
         var link = $$('link').attr({
             rel: 'self',
@@ -221,4 +219,3 @@ export default {
         )
     }
 }
-

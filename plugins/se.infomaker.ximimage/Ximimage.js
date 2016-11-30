@@ -14,6 +14,10 @@ class Ximimage extends BlockNode {
             return imageFile.getUrl()
         }
     }
+
+    setAlignment(alignment) {
+        this.document.set([this.id, 'alignment'], alignment);
+    }
 }
 
 
@@ -21,14 +25,17 @@ Ximimage.define({
     type: 'ximimage',
     uuid: { type: 'string', optional: true},
     imageFile: { type: 'file' },
-    data: { type: 'string', optional: true},
-    knownData: { type: 'boolean', default: false },
+    width: {type: 'number', optional: true},
+    height: {type: 'number', optional: true},
+
+    crops: {type: 'object', default: []},
+    authors: { type: 'array', default: [] },
+
+    // Semi configurable, optional, fields
     caption: { type: 'string', default: '' },
     alttext: { type: 'string', optional: true },
     credit: { type: 'string', optional: true },
-    alignment: { type: 'string', optional: true },
-
-    authors: { type: 'array', default: [] },
+    alignment: { type: 'string', optional: true }
 })
 
 export default Ximimage

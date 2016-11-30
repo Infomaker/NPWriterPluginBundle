@@ -24,24 +24,7 @@ class XimpdfComponent extends Component {
 
         const fileNode = doc.get(node.pdfFile)
 
-        const el = $$('div').addClass('ximpdf__container')
-
-        const headerEl = $$('a')
-            .append($$('span').addClass('ximpdf-content')
-                .append($$('a')
-                    .append([
-                        $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'})
-                            .addClass('title-icon'),
-                        $$('span')
-                            .append('Portable Document Format')
-                            .addClass('title-pdf')
-                    ])
-                    .attr('href', fileNode.url)
-                    .attr('target', '_blank')
-                    .on('click', function (evt) {
-                        evt.stopPropagation();
-                    })
-                ))
+        const el = $$('div').addClass('im-blocknode__container ximpdf__container')
 
         const textEditor = $$(TextPropertyEditor, {
             tagName: 'div',
@@ -49,20 +32,55 @@ class XimpdfComponent extends Component {
             doc: this.props.doc
         })
             .ref('text')
-            .addClass('text-pdf')
+            .addClass('im-blocknode__content')
 
         const loadingSpan = $$('span')
             .append('Loading...')
             .addClass('text-pdf')
 
         if (node.text) {
-            el.append([headerEl, textEditor])
+            el.append([this.renderHeader($$, fileNode), textEditor])
         } else {
-            el.append([headerEl, loadingSpan])
+            el.append([this.renderHeader($$, fileNode), loadingSpan])
         }
 
         return el
     }
+
+    renderContent($$, node) {
+
+        const content = $$('div')
+            .addClass('im-blocknode__content')
+
+        const link = $$('a').append(this.props.node.label)
+            .attr('href', "#" + this.props.node.uuid)
+            .attr('target', '_blank')
+            .on('click', function (evt) {
+                evt.stopPropagation();
+            })
+
+        content.append(link)
+        return content
+    }
+
+
+    renderHeader($$, fileNode) {
+        return $$('div')
+            .append([
+                $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'}),
+                $$('a').append(this.getLabel('Portable Document Format'))
+                    .attr('contenteditable', false)
+                    .attr('href', fileNode.url)
+                    .addClass('pdf-link')
+                    .attr('target', '_blank')
+                    .on('click', function (evt) {
+                        evt.stopPropagation();
+                    })
+            ])
+            .addClass('header')
+            .attr('contenteditable', false)
+    }
+
 }
 
 export default XimpdfComponent

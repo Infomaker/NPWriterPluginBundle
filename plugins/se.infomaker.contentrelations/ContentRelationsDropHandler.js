@@ -10,7 +10,7 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
             return false
         }
 
-        if (this.isContentRelationsDrop(params) || this.isNpDroplink(params)) {
+        if (this.isContentRelationsArticleDrop(params) || this.isNpDroplink(params)) {
 
             if(params.isNpDroplink) {
                 this.data = this.getDataFromNpDroplink(params.uri)
@@ -37,7 +37,7 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
         const re = new RegExp(npDropLinkRegex);
         const urlMatches = re.exec(params.uri)
 
-        if(urlMatches.length >= 1) {
+        if(urlMatches && urlMatches.length >= 1) {
             params.isNpDroplink = true
             return true
         }
@@ -49,8 +49,8 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
      * @param params
      * @returns {boolean}
      */
-    isContentRelationsDrop(params) {
-        if(params.uri.indexOf('x-im-entity:') >= 0) {
+    isContentRelationsArticleDrop(params) {
+        if(params.uri.indexOf('x-im-entity://x-im/article') >= 0) {
             params.isContentRelations = true
             return true
         }

@@ -65,7 +65,6 @@ class SearchResultItem extends Component {
 
     _onDragStart(e) {
         e.stopPropagation()
-        console.log("drag", this.getDroplinkForItem(this.props.item));
         e.dataTransfer.setData('text/uri-list', this.dropLink)
     }
 
@@ -140,6 +139,12 @@ class SearchResultItem extends Component {
         return listItem
     }
 
+
+    /**
+     * Fetch and url for an image via the backend
+     * @param uuid
+     * @returns {Promise.<T>|*|Promise}
+     */
     fetchImageURLForUUID(uuid) {
         return api.router.get('/api/binary/url/' + uuid + '/50?imType=x-im/image&width=50')
 
