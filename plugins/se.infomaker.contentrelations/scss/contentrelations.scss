@@ -78,6 +78,9 @@ img.product-icon {
         user-select: none;
 
         &.image {
+            img {
+                float: left;
+            }
             .title {
                 padding-left:60px;
             }

@@ -1,15 +1,6 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 
-// ContentRelationsCommand.generateDroplinkForArticle = function (name, uuid) {
-//     return "x-im-entity:x-im/article:" + uuid + "?title=" + name;
-// };
-//
-// ContentRelationsCommand.generateDroplinkForImage = function (name, uuid) {
-//     return "x-im-entity:x-im/image:" + uuid + "?title=" + name;
-// };
-
-
 class SearchResultItem extends Component {
 
     getInitialState() {
@@ -33,11 +24,38 @@ class SearchResultItem extends Component {
 
         switch (imType) {
             case 'article':
-                return "x-im-entity:x-im/article?data="+dropData
+                return "x-im-entity://x-im/article?data=" + dropData
             case 'image':
-                return "x-im-entity:x-im/image?data="+dropData
+                return "x-im-entity://x-im/image?data=" + dropData
             default:
-                return "x-im-entity:x-im/article?data="+dropData
+                return "x-im-entity://x-im/article?data=" + dropData
+        }
+    }
+
+    getTitle($$, item) {
+
+        let name = item.name ? item.name[0] : "Unidentified",
+            products = item.type,
+            productsType = item.typeCatalog ? item.typeCatalog[0] : 'text'
+
+        if (!products) {
+            return name;
+        }
+
+        if (productsType && productsType === 'icon') {
+            const icons = products.map(function (product) {
+                return $$('img').attr('src', product).addClass('product-icon');
+            });
+
+            const result = $$('span').append(name);
+
+            icons.forEach(function (icon) {
+                result.append(icon)
+            });
+
+            return result;
+        } else {
+            return `${name} [${products.join(', ')}]`;
         }
     }
 
@@ -52,7 +70,6 @@ class SearchResultItem extends Component {
     }
 
     render($$) {
-
         const item = this.props.item
 
         return this.getItem($$, item)
@@ -61,7 +78,7 @@ class SearchResultItem extends Component {
     getItem($$, item) {
         const imType = item.imType ? item.imType[0] : 'article'
 
-        switch(imType) {
+        switch (imType) {
             case 'article':
                 return this.getArticleItem($$, item)
             case 'image':
@@ -72,30 +89,42 @@ class SearchResultItem extends Component {
 
     }
 
+
+    /**
+     * Get a list item for an article
+     * @param $$
+     * @param item
+     */
     getArticleItem($$, item) {
 
         const listItem = $$('li')
+            .addClass('article')
             .attr('draggable', true)
             .on('dragstart', this._onDragStart, this)
 
         const icon = $$(FontAwesomeIcon, {icon: 'fa-file-text-o'}).addClass('type-icon')
-        const label = $$('span').addClass('title article').append(this.props.item.name)
+        const label = $$('span').addClass('title').append(this.getTitle($$, item))
 
         listItem.append([icon, label])
         return listItem
     }
 
+
+    /**
+     * Get a list item for an image
+     * @param $$
+     * @param item
+     */
     getImageItem($$, item) {
-
-
         const listItem = $$('li')
+            .addClass('image')
             .attr('draggable', true)
             .on('dragstart', this._onDragStart, this)
 
         let icon = $$(FontAwesomeIcon, {icon: 'fa-picture-o'})
-        const label = $$('span').addClass('title image').append(item.name)
+        const label = $$('span').addClass('title').append(this.getTitle($$, item))
 
-        if(this.state.imageLoaded) {
+        if (this.state.imageLoaded) {
             icon = $$('img').attr('src', this.state.imageURL).addClass('image-icon')
         } else {
             this.fetchImageURLForUUID(item.uuid)
@@ -112,7 +141,7 @@ class SearchResultItem extends Component {
     }
 
     fetchImageURLForUUID(uuid) {
-        return api.router.get('/api/binary/url/' + uuid+'/50?imType=x-im/image&width=50')
+        return api.router.get('/api/binary/url/' + uuid + '/50?imType=x-im/image&width=50')
 
             .then(response => response.text())
 

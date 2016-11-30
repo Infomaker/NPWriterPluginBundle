@@ -37,7 +37,7 @@ class ContentSearchComponent extends Component {
         el.append(searchForm);
 
 
-        var results = $$(SearchResult, {results: this.state.results, query: this.state.query});
+        const results = $$(SearchResult, {results: this.state.results, query: this.state.query});
         el.append(results);
 
 
@@ -47,7 +47,7 @@ class ContentSearchComponent extends Component {
     search(e) {
         e.preventDefault();
 
-        var query = this.refs.queryInput.val();
+        const query = this.refs.queryInput.val();
 
         api.router.get('/api/search/concepts/articles?q='+query)
             .then(reponse => api.router.checkForOKStatus(reponse))
