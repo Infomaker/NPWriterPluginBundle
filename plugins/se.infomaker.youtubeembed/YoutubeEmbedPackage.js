@@ -13,9 +13,6 @@ export default {
     name: 'youtubeembed',
     configure: function(config) {
 
-        // Add tool
-        config.addContentMenuTopTool('youtubeembed', YoutubeEmbedTool)
-
         config.addConverter('newsml', YoutubeEmbedConverter)
 
         // Add component
@@ -30,9 +27,5 @@ export default {
 
         config.addMacro(YoutubeEmbedMacro)
 
-        config.addLabel('insert-youtube-id', {
-            en: 'Insert Youtube Id',
-            sv: 'Infoga Youtube Id'
-        })
     }
 }

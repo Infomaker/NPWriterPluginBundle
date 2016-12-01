@@ -41,5 +41,4 @@ import XImPdf from './se.infomaker.ximpdf/index'
     XImPdf()
     DefaultvalidationPackage()
     ChannelSelector()
-
 })()

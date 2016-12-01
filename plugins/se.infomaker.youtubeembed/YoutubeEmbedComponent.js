@@ -3,11 +3,14 @@ import {api} from 'writer'
 
 class YoutubeEmbedComponent extends Component {
 
-    didMount() {
-        api.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+    constructor(...args) {
+        super(...args)
         api.document.triggerFetchResourceNode(this.props.node)
     }
 
+    didMount() {
+        api.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+    }
 
     dispose() {
         api.editorSession.off(this)
