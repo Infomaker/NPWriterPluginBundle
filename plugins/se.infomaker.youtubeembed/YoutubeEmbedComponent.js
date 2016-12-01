@@ -36,7 +36,7 @@ class YoutubeEmbedComponent extends Component {
             tagName: 'div',
             path: [this.props.node.id, 'start'],
             doc: this.props.doc
-        }).ref('startTime')
+        }).ref('startTime').addClass('start-time-editor')
 
         content.append(thumbnail)
         content.append($$(FontAwesomeIcon, {icon: 'fa-clock-o'}))

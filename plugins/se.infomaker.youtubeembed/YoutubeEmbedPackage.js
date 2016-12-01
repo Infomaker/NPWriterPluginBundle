@@ -6,6 +6,7 @@ import YoutubeEmbedNode from './YoutubeEmbedNode'
 import YoutubeEmbedComponent from './YoutubeEmbedComponent'
 import YoutubeEmbedConverter from './YoutubeEmbedConverter'
 import YoutubeEmbedMacro from './YoutubeEmbedMacro'
+import YoutubeEmbedValidation from './YoutubeEmbedValidation'
 
 export default {
     id: 'se.infomaker.youtubeembed',
@@ -19,6 +20,8 @@ export default {
 
         // Add component
         config.addComponent('youtubeembed', YoutubeEmbedComponent)
+
+        config.addValidator(YoutubeEmbedValidation)
 
         // Add Command
         config.addCommand('youtubeembed', YoutubeEmbedCommand)
