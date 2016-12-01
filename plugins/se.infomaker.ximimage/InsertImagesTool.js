@@ -4,6 +4,7 @@ class XimimageTool extends Tool {
 
     render($$) {
         var el = $$('div')
+        el.attr('title', this.getLabel('Upload image'))
 
         el.append(
             $$('button').addClass('se-tool').append(

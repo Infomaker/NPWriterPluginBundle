@@ -21,5 +21,10 @@ export default {
         config.addDragAndDrop(DropPdfFile)
         config.addDragAndDrop(DropPdfUri)
         config.addMacro(XimpdfMacro)
+
+        config.addLabel('Insert PDF document', {
+            en: 'Insert PDF document',
+            sv: 'Infoga PDF dokument'
+        })
     }
 }

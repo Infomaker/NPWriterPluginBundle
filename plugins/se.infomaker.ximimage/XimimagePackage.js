@@ -26,5 +26,10 @@ export default {
         config.addIcon('image', { 'fontawesome': 'fa-image' })
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })
         config.addIcon('upload', { 'fontawesome': 'fa-upload' })
+
+        config.addLabel('Upload image', {
+            en: 'Upload image',
+            sv: 'Ladda upp bild'
+        })
     }
 }
