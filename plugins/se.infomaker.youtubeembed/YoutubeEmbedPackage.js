@@ -27,9 +27,5 @@ export default {
 
         config.addMacro(YoutubeEmbedMacro)
 
-        config.addLabel('insert-youtube-id', {
-            en: 'Insert Youtube Id',
-            sv: 'Infoga Youtube Id'
-        })
     }
 }
