@@ -16,7 +16,7 @@ class YoutubeEmbedComponent extends Component {
 
     render($$) {
         const node = this.props.node
-        const el = $$('div').addClass('im-blocknode__container')
+        const el = $$('div').addClass('im-blocknode__container im-youtube')
 
         el.append(this.renderHeader($$))
         el.append(this.renderContent($$))
