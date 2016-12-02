@@ -140,9 +140,9 @@ class LocationDetailComponent extends Component {
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.put(url, conceptItem)
+                return this.context.api.router.put(url, {body: conceptItem})
             case "POST":
-                return this.context.api.router.post(url, conceptItem)
+                return this.context.api.router.post(url, {body: conceptItem})
         }
 
     }
