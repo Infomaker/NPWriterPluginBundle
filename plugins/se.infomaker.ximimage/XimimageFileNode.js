@@ -37,10 +37,12 @@ class XimimageFileNode extends FileNode {
 
 XimimageFileNode.define({
     type: 'ximimagefile',
+    imageNodeId: 'string',
     uuid: {type: 'string', optional: true},
     url: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
-    data: {type: 'object|string', optional: true},
+    sourceFile: {type: 'object', optional: true},
+    sourceUrl: {type: 'string', optional: true},
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
     crops: {type: 'object', default: []}

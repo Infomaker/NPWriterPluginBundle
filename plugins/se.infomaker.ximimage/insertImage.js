@@ -1,3 +1,5 @@
+import {idGenerator} from 'writer'
+
 /*
     Insert an image via file or uri.
 
@@ -8,6 +10,7 @@
 
 export default function(tx, data) {
     let isFile = data instanceof File,
+        nodeId = idGenerator(),
         mimeType
 
     if (isFile) {
@@ -24,15 +27,17 @@ export default function(tx, data) {
 
     // Create file node for the image
     let imageFile = tx.create({
+        imageNodeId: nodeId,
         type: 'ximimagefile',
         fileType: 'image',
         mimeType: mimeType,
         sourceFile: isFile ? data: '',
-        sourceurl: !isFile ? data : ''
+        sourceUrl: !isFile ? data : ''
     })
 
     // Inserts image at current cursor pos
     tx.insertBlockNode({
+        id: nodeId,
         type: 'ximimage',
         imageFile: imageFile.id
     })
