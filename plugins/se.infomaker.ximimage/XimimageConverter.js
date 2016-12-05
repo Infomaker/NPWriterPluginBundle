@@ -10,6 +10,8 @@ export default {
 
     import: function (el, node, converter) {
 
+        const objectElementId = el.attr('id')
+
         // Import link - base data
         var linkEl = el.find('links>link')
 
@@ -17,6 +19,7 @@ export default {
             id: idGenerator(),
             type: 'ximimagefile',
             fileType: 'image',
+            imageNodeId: objectElementId
         }
 
         if (el.attr('uuid')) {
