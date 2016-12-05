@@ -75,12 +75,13 @@ class PublicationchannelComponent extends Component {
             this.renderMainChannelSelect($$),
             $$('p').addClass('sc-sharedwith').append([
                 this.getLabel('publicationchannel-Shared_with'),
-                $$('a').addClass(checked).append(
-                    this.getLabel('publicationchannel-Choose_all')).on('click', (evt) => {
-                        this.toggleAllChannels(evt.target)
-                        return false
-                    }
-                )
+                // TODO: Enable and make configurable
+                // $$('a').addClass(checked).append(
+                //     this.getLabel('publicationchannel-Choose_all')).on('click', (evt) => {
+                //         this.toggleAllChannels(evt.target)
+                //         return false
+                //     }
+                // )
             ]),
 
         ])
