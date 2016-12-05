@@ -1,17 +1,11 @@
 import {Command, idGenerator} from 'substance'
 // import insertImage from './insertImage'
-import {api} from 'writer'
+import {api, WriterCommand} from 'writer'
 
 /*
     Insert multiple images based on a list of image files
 */
-class XimimageCommand extends Command {
-
-    getCommandState(params) {
-        return {
-            disabled: params.surface && params.surface.name === 'body' ? false : true
-        }
-    }
+class XimimageCommand extends WriterCommand {
 
     execute(params) {
         params.editorSession.transaction((tx) => {

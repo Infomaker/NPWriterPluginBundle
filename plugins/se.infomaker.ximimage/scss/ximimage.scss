@@ -1,5 +1,14 @@
 .sc-ximimage {
     padding-bottom: 10px;
+
+
+}
+.sc-isolated-node.sm-selected {
+    .sc-ximimage {
+        box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
+        background: rgba(222, 235, 255, 0.6);
+        margin-bottom:10px;
+    }
 }
 
 #x-im-image-fileupload {

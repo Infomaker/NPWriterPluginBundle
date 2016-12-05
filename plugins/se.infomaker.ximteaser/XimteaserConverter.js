@@ -104,7 +104,7 @@ export default {
         });
 
         if(node.title) {
-            el.attr('title', node.title);
+            el.attr('title',converter.annotatedText([node.id, 'title']));
         }
 
         // Data element
