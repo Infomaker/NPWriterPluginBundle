@@ -1,11 +1,11 @@
-import YoutubeEmbedTool from './YoutubeEmbedTool'
-import YoutubeEmbedEditTool from './YoutubeEmbedEditTool'
+import './scss/youtubeembed.scss'
+
 import YoutubeEmbedCommand from './YoutubeEmbedCommand'
-import YoutubeEmbedEditCommand from './YoutubeEmbedEditCommand'
 import YoutubeEmbedNode from './YoutubeEmbedNode'
 import YoutubeEmbedComponent from './YoutubeEmbedComponent'
 import YoutubeEmbedConverter from './YoutubeEmbedConverter'
 import YoutubeEmbedMacro from './YoutubeEmbedMacro'
+import YoutubeEmbedValidation from './YoutubeEmbedValidation'
 
 export default {
     id: 'se.infomaker.youtubeembed',
@@ -13,25 +13,19 @@ export default {
     configure: function(config) {
 
         // Add tool
-        config.addContentMenuTopTool('youtubeembed', YoutubeEmbedTool)
-        config.addTool('youtubeembededit', YoutubeEmbedEditTool)
-
         config.addConverter('newsml', YoutubeEmbedConverter)
 
         // Add component
         config.addComponent('youtubeembed', YoutubeEmbedComponent)
 
+        config.addValidator(YoutubeEmbedValidation)
+
         // Add Command
         config.addCommand('youtubeembed', YoutubeEmbedCommand)
-        config.addCommand('youtubeembededit', YoutubeEmbedEditCommand)
         // Add node
         config.addNode(YoutubeEmbedNode)
 
         config.addMacro(YoutubeEmbedMacro)
 
-        config.addLabel('insert-youtube-id', {
-            en: 'Insert Youtube Id',
-            sv: 'Infoga Youtube Id'
-        })
     }
 }

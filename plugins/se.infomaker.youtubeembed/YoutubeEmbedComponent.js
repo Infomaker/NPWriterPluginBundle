@@ -1,13 +1,16 @@
-import {Component} from 'substance'
+import {Component, FontAwesomeIcon, TextPropertyEditor} from 'substance'
 import {api} from 'writer'
 
 class YoutubeEmbedComponent extends Component {
 
-    didMount() {
-        api.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+    constructor(...args) {
+        super(...args)
         api.document.triggerFetchResourceNode(this.props.node)
     }
 
+    didMount() {
+        api.editorSession.onRender('document', this.rerender, this, { path: [this.props.node.id] })
+    }
 
     dispose() {
         api.editorSession.off(this)
@@ -16,12 +19,42 @@ class YoutubeEmbedComponent extends Component {
 
     render($$) {
         const node = this.props.node
-        const el = $$('div')
+        const el = $$('div').addClass('im-blocknode__container im-youtube')
 
-
-        el.append($$('div').append($$('img').attr('src', node.thumbnail_url).attr('style', 'width:100%')))
-        el.append($$('h2').append(node.title).attr('style', 'background-color: #efefef; padding: 10px 15px; font-size:1rem'))
+        el.append(this.renderHeader($$))
+        el.append(this.renderContent($$))
         return el
+    }
+
+
+
+    renderContent($$, node) {
+
+        const content = $$('div')
+            .addClass('im-blocknode__content full-width')
+
+        const thumbnail = $$('img').attr('src', this.props.node.thumbnail_url).attr('style', 'width:100%')
+
+        const startTimeEditor = $$(TextPropertyEditor, {
+            tagName: 'div',
+            path: [this.props.node.id, 'start'],
+            doc: this.props.doc
+        }).ref('startTime').addClass('start-time-editor')
+
+        content.append(thumbnail)
+        content.append($$(FontAwesomeIcon, {icon: 'fa-clock-o'}))
+        content.append(startTimeEditor)
+        return content
+    }
+
+
+    renderHeader($$) {
+        return $$('div')
+            .append([
+                $$(FontAwesomeIcon, {icon: 'fa-youtube'}),
+                $$('strong').append(this.getLabel('Youtube video') + ' - '+ this.props.node.title)
+            ])
+            .addClass('header')
     }
 }
 

@@ -1,24 +1,5 @@
-/*
- <object id="MjA5LDIxMiwxMTcsMTQ2"
- type="x-im/youtube"
- url="https://www.youtube.com/watch?v=7BXCMyPh_nI&amp;t=631s"
- uri="https://www.youtube.com/watch?v=7BXCMyPh_nI&amp;t=631s">
- <data>
- <start>0</start>
- </data>
- </object>
 
- type: 'youtubeembed',
- dataType: 'string',
- url: 'string',
- errorMessage: { type: 'string', optional: true },
- // Payload (after embed has been resolved)
- html: { type: 'string', optional: true },
- thumbnail_url: { type: 'string', default: ""},
- uri: { type: 'string', optional: true },
- linkType: { type: 'string', optional: true },
- title: { type: 'string', default: "" },
- */
+import {moment} from 'writer'
 
 export default {
     type: 'youtubeembed',
@@ -33,10 +14,19 @@ export default {
         node.url = el.attr('url')
         node.uri = el.attr('uri')
 
+        const startTimeEl = el.find('data > start')
+        let startTimeFromEl = 0
+        if(startTimeEl) {
+            startTimeFromEl = startTimeEl.text()
+        }
 
+        const startTime = moment.duration(parseInt(startTimeFromEl, 10), 'seconds');
+        node.start = startTime.minutes()+":"+startTime.seconds();
     },
 
-    export: function (node, el) {
+    export: function (node, el, converter) {
+        const $$ = converter.$$
+
         el.attr({
             id: node.id,
             type: node.dataType,
@@ -44,7 +34,19 @@ export default {
             uri: node.uri
         });
 
+        let seconds
+        if (node.start && node.start.indexOf(':') > -1) {
+            const startTime = node.start.split(':');
+            seconds = parseInt(startTime[0], 10) * 60 + parseInt(startTime[1], 10);
+        } else {
+            seconds = node.start;
+        }
+
+        const data = $$('data');
+        data.append($$('start').append(seconds));
+
         el.removeAttr('data-id');
+        el.append(data);
 
     }
 }

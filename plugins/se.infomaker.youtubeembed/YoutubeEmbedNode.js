@@ -15,7 +15,7 @@ class YoutubeEmbedNode extends BlockNode {
 
         var baseUrl = "http://youtube.com/oembed?url=";
         var apiUrl = baseUrl+this.url;
-        api.router.get('/api/proxy/', {url: apiUrl})
+        api.router.get('/api/resourceproxy/', {url: apiUrl})
             .then(response => response.json())
             .then(json => {
                 cb(null, {
@@ -47,6 +47,7 @@ YoutubeEmbedNode.define({
     type: 'youtubeembed',
     dataType: 'string',
     url: 'string',
+    start: { type: 'string', default: '00:00' },
     errorMessage: { type: 'string', optional: true },
     // Payload (after embed has been resolved)
     html: { type: 'string', optional: true },
