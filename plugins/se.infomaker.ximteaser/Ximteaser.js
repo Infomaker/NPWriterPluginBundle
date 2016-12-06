@@ -1,5 +1,5 @@
-const { BlockNode } = substance
-
+import {BlockNode} from 'substance'
+import {api} from 'writer'
 class Ximteaser extends BlockNode {
 
     getImageFile() {
@@ -14,6 +14,16 @@ class Ximteaser extends BlockNode {
         if (imageFile) {
             return imageFile.getUrl()
         }
+    }
+
+    handleDOMDocument(newsItemDOMDocument) {
+        const document = newsItemDOMDocument.documentElement
+        const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+
+        // Update PDFNode
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'uri'], uri)
+        }, {history: false})
     }
 }
 

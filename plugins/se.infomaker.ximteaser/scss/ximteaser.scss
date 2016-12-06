@@ -1,5 +1,19 @@
 .sc-ximteaser {
 
+    .fileinput {
+        .upload-button {
+            cursor: pointer;
+            float: right;
+            font-size:1rem;
+
+            .fa {
+                color:#565656
+            }
+        }
+        input[type="file"] {
+            display: none;
+        }
+    }
     .im-blocknode__content {
         div {
             margin-top: 10px;

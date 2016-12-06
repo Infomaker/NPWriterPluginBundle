@@ -17,19 +17,17 @@ class XimteaserInsertImageCommand extends WriterCommand {
         editorSession.transaction((tx) => {
             // Create file node for the image
             let imageFile = tx.create({
-                imageNodeId: teaserNode.id,
-                type: 'ximimagefile',
-                fileType: 'image',
+                parentNodeId: teaserNode.id,
+                type: 'npfile',
+                imType: 'x-im/image',
                 mimeType: file.type,
                 sourceFile: file
             })
 
-            doc.set([teaserNode.id, 'imageFile'], imageFile.id)
-            console.log("ImageFile", imageFile);
-
-
+            tx.set([teaserNode.id, 'imageFile'], imageFile.id)
         })
 
+        api.editorSession.fileManager.sync()
 
     }
 }

@@ -29,9 +29,7 @@ class XimteaserComponent extends Component {
         const el = $$('div').addClass('sc-ximteaser im-blocknode__container')
         const teaserFields = api.getConfigValue('se.infomaker.ximteaser', 'fields', [])
 
-
         el.append(this.renderHeader($$))
-        el.append(this.renderContent($$, teaserFields))
 
         if (this.props.node.imageFile) {
             el.append(
@@ -42,6 +40,11 @@ class XimteaserComponent extends Component {
                 }).ref('image')
             )
         }
+
+
+        el.append(this.renderContent($$, teaserFields))
+
+
 
         return el
     }
@@ -107,7 +110,7 @@ class XimteaserComponent extends Component {
      * @returns {?Component}
      */
     renderSubjectEditor($$) {
-        if (this.props.node.url || this.props.node.previewUrl) {
+        if (this.props.node.imageFile) {
             const subjectContainer = $$('div')
             const subjectEditor = $$(TextPropertyEditor, {
                 tagName: 'div',

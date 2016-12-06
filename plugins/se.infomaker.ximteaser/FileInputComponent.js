@@ -17,7 +17,7 @@ class FileInputComponent extends Component {
             .ref('fileInput')
             .on('change', this.props.onChange)
 
-        return $$('span').append([uploadbutton, fileInput])
+        return $$('span').addClass('fileinput').append([uploadbutton, fileInput])
     }
 
     triggerFileDialog(e) {

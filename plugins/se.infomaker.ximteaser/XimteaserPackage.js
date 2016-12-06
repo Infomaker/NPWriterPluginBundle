@@ -1,3 +1,4 @@
+import './scss/ximteaser.scss'
 import XimteaserComponent from './XimteaserComponent'
 import XimteaserConverter from './XimteaserConverter'
 import Ximteaser from './Ximteaser'
