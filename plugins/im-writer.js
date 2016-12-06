@@ -20,6 +20,7 @@ import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
+import XImStory from './se.infomaker.ximstory/index'
 
 (() => {
 
@@ -46,5 +47,6 @@ import XImPdf from './se.infomaker.ximpdf/index'
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
+    XImStory()
 
 })()
