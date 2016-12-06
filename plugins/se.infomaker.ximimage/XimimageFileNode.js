@@ -42,10 +42,7 @@ XimimageFileNode.define({
     url: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
     sourceFile: {type: 'object', optional: true},
-    sourceUrl: {type: 'string', optional: true},
-    width: {type: 'number', optional: true},
-    height: {type: 'number', optional: true},
-    crops: {type: 'object', default: []}
+    sourceUrl: {type: 'string', optional: true}
 })
 
 export default XimimageFileNode

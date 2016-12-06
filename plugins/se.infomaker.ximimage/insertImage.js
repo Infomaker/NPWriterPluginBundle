@@ -39,6 +39,10 @@ export default function(tx, data) {
     tx.insertBlockNode({
         id: nodeId,
         type: 'ximimage',
-        imageFile: imageFile.id
+        imageFile: imageFile.id,
+        caption: '',
+        alttext: '',
+        credit: '',
+        alignment: ''
     })
 }

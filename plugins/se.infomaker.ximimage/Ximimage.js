@@ -1,4 +1,5 @@
 const { BlockNode } = substance
+import {api} from 'writer'
 
 class Ximimage extends BlockNode {
 
@@ -16,7 +17,9 @@ class Ximimage extends BlockNode {
     }
 
     setAlignment(alignment) {
-        this.document.set([this.id, 'alignment'], alignment);
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'alignment'], alignment)
+        })
     }
 }
 

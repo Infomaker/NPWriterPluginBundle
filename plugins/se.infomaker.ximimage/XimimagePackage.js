@@ -27,6 +27,9 @@ export default {
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })
         config.addIcon('upload', { 'fontawesome': 'fa-upload' })
 
+        // TODO: Add scripts for crop dialog
+        // config.addExternalScript()
+
         config.addLabel('Upload image', {
             en: 'Upload image',
             sv: 'Ladda upp bild'
