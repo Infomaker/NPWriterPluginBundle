@@ -25,7 +25,6 @@ Ximteaser.define({
     title: {type: 'string', optional: false, default: '' },
     subject: {type: 'string', optional: false, default: '' },
     text: {type: 'string', optional: false, default: '' },
-    imageType: {type: 'string', optional: true },
 
     // ATTENTION: progress should not be part of the model
     // progress: {type: 'number', default: 100 },

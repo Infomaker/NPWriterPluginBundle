@@ -19,25 +19,18 @@ class XimteaserCommand extends WriterCommand {
 
     }
 
+    /**
+     * Insert an empty teaser at top of the document
+     * @param params
+     */
     insertTeaserAtTop(params) {
-        const surface = params.surface
         const editorSession = params.editorSession
         const doc = editorSession.getDocument()
-        let result
 
         editorSession.transaction((tx, args) => {
 
+            // Select the first node to the selection
             const firstNodeId = doc.getNodes()['body'].nodes[0];
-            //
-            // args.selection = doc.createSelection({
-            //     type: 'property',
-            //     containerId: 'body',
-            //     path: [firstNodeId, 'content'],
-            //     startOffset: 0
-            // });
-            // args.node = this.getEmptyTeaserNode();
-            // args.containerId = 'body';
-            // result = surface.insertNode(tx, args);
 
             tx.selection = doc.createSelection({
                 type: 'property',
@@ -48,25 +41,26 @@ class XimteaserCommand extends WriterCommand {
             tx.insertBlockNode(this.getEmptyTeaserNode())
 
         })
-
-        // var inserted = doc.getNodes()['body'].nodes[0];
-        // var node = doc.get(inserted);
-        // api.document.deleteNode('ximteaser', node);
-
     }
 
-    insertTeaserAtBottom(data) {
 
-        var surface = this.context.controller.getFocusedSurface();
-        surface.transaction(function (tx) {
-            var body = tx.get('body');
-            var node = tx.create(data);
+    /**
+     * Insert an empty teaser at bottom of the document
+     * @param params
+     */
+    insertTeaserAtBottom(params) {
+        const editorSession = params.editorSession
+        editorSession.transaction((tx) => {
+            const body = tx.get('body');
+            const node = tx.create(this.getEmptyTeaserNode());
             body.show(node.id);
-        });
-
-        return data.id;
+        })
     }
 
+    /**
+     * Get an empty object for a ximteaser node
+     * @returns {{type: string, dataType: string, id: *, uuid: string, url: string, previewUrl: string, imageType: string, title: string, text: string}}
+     */
     getEmptyTeaserNode() {
 
         return {

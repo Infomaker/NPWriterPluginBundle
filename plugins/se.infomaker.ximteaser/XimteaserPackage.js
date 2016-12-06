@@ -3,6 +3,8 @@ import XimteaserConverter from './XimteaserConverter'
 import Ximteaser from './Ximteaser'
 import XimteaserTool from './XimteaserTool'
 import XimteaserCommand from './XimteaserCommand'
+import XimteaserInsertImageCommand from './XimteaserInsertImageCommand'
+
 import {platform} from 'substance'
 export default {
     name: 'ximteaser',
@@ -14,6 +16,8 @@ export default {
 
         config.addContentMenuTopTool('ximteaser', XimteaserTool)
         config.addCommand('ximteaser', XimteaserCommand, pluginConfig)
+
+        config.addCommand('ximteaserinsertimage', XimteaserInsertImageCommand, pluginConfig)
 
         config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
 

@@ -1,6 +1,7 @@
 import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 import ImageDisplay from '../se.infomaker.ximimage/ImageDisplay'
+import FileInputComponent from './FileInputComponent'
 
 class XimteaserComponent extends Component {
 
@@ -30,7 +31,7 @@ class XimteaserComponent extends Component {
 
 
         el.append(this.renderHeader($$))
-        el.append(this.renderContent($$))
+        el.append(this.renderContent($$, teaserFields))
 
         if (this.props.node.imageFile) {
             el.append(
@@ -56,33 +57,54 @@ class XimteaserComponent extends Component {
         return $$('div')
             .append([
                 $$(FontAwesomeIcon, {icon: 'fa-newspaper-o'}),
-                $$('strong').append(this.getLabel('Teaser'))
+                $$('strong').append(this.getLabel('Teaser')),
+                $$(FileInputComponent, {onChange: this.triggerFileUpload.bind(this)})
             ])
             .addClass('header')
     }
 
 
+    triggerFileUpload(ev) {
+        const editorSession = api.editorSession
+        editorSession.executeCommand('ximteaserinsertimage', {
+            type: 'file',
+            data: ev.target.files,
+            context: {node: this.props.node}
+        });
+    }
+
     /**
      * Render content and all text property editors
      * @param $$
+     * @param teaserFields
      * @returns {*}
      */
 
-    renderContent($$) {
+    renderContent($$, teaserFields) {
         const content = $$('div')
             .addClass('im-blocknode__content full-width')
 
-        content.append(this.renderSubjectEditor($$))
+        // If 'subject' is specified in the config it should be rendered
+        if (teaserFields.indexOf('subject') >= 0) {
+            content.append(this.renderSubjectEditor($$))
+        }
+
+        // Render title editor
         content.append(this.renderTitleEditor($$))
-        content.append(this.renderTextEditor($$))
+
+        // If 'text' is specified in the config it should be rendered
+        if (teaserFields.indexOf('text') >= 0) {
+            content.append(this.renderTextEditor($$))
+        }
 
         return content
     }
 
+
     /**
      * Render text editor for subject if an image exist
      * @param $$
-     * @returns {*}
+     * @returns {?Component}
      */
     renderSubjectEditor($$) {
         if (this.props.node.url || this.props.node.previewUrl) {
