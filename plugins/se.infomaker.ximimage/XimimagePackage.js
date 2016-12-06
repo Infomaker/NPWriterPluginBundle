@@ -1,11 +1,11 @@
 import XimimageComponent from './XimimageComponent'
 import XimimageConverter from './XimimageConverter'
 import Ximimage from './Ximimage'
-import XimimageFileNode from './XimimageFileNode'
 import InsertImagesTool from './InsertImagesTool'
 import InsertImagesCommand from './InsertImagesCommand'
 import DropImageFile from './DropImageFile'
 import DropImageUri from './DropImageUri'
+import XimimageFileProxy from './XimimageFileProxy'
 
 export default {
     name: 'ximimage',
@@ -17,8 +17,6 @@ export default {
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
 
-        config.addNode(XimimageFileNode)
-
         config.addConverter('newsml', XimimageConverter)
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
@@ -26,6 +24,11 @@ export default {
         config.addIcon('image', { 'fontawesome': 'fa-image' })
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })
         config.addIcon('upload', { 'fontawesome': 'fa-upload' })
+
+        config.addFileProxy(XimimageFileProxy)
+
+        // TODO: Add scripts for crop dialog
+        // config.addExternalScript()
 
         config.addLabel('Upload image', {
             en: 'Upload image',
