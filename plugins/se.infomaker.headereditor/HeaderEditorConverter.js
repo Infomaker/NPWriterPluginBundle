@@ -23,7 +23,6 @@ module.exports = {
         let oldPreserveValue;
 
         oldPreserveValue = converter.state.preserveWhitespace;
-        converter.state.preserveWhitespace = true;
 
         node.id = 'headereditor';
 
@@ -33,6 +32,7 @@ module.exports = {
         headerFields.forEach((field) => {
             var element = this.findElementForType(el, field);
             if (element) {
+                converter.state.preserveWhitespace = true;
                 node[field] = converter.annotatedText(element, ['headereditor', field]);
             }
         });
