@@ -7,6 +7,7 @@ import InsertPdfsCommand from './InsertPdfsCommand'
 import DropPdfFile from './DropPdfFile'
 import DropPdfUri from './DropPdfUri'
 import XimpdfMacro from './XimpdfMacro'
+import XimpdfFileProxy from './XimpdfFileProxy'
 
 export default {
     name: 'ximpdf',
@@ -21,7 +22,7 @@ export default {
         config.addDragAndDrop(DropPdfFile)
         config.addDragAndDrop(DropPdfUri)
         config.addMacro(XimpdfMacro)
-
+        config.addFileProxy(XimpdfFileProxy)
         config.addLabel('Insert PDF document', {
             en: 'Insert PDF document',
             sv: 'Infoga PDF dokument'
