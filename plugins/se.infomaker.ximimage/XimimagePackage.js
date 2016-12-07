@@ -6,6 +6,7 @@ import InsertImagesCommand from './InsertImagesCommand'
 import DropImageFile from './DropImageFile'
 import DropImageUri from './DropImageUri'
 import XimimageFileProxy from './XimimageFileProxy'
+import InsertImageUrlCommand from './InsertImageUrlCommand'
 
 export default {
     name: 'ximimage',
@@ -16,6 +17,7 @@ export default {
         config.addConverter('newsml', XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
+        config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
 
         config.addConverter('newsml', XimimageConverter)
         config.addDragAndDrop(DropImageFile)
