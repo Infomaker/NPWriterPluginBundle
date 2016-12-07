@@ -21,6 +21,7 @@ import DefaultvalidationPackage from './se.infomaker.defaultvalidation/Defaultva
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
 import ContentProfile from './se.infomaker.ximcontentprofile/index'
+import XImStory from './se.infomaker.ximstory/index'
 
 (() => {
 
@@ -48,5 +49,6 @@ import ContentProfile from './se.infomaker.ximcontentprofile/index'
     ChannelSelector()
     PublicationChannel()
     ContentProfile()
+    XImStory()
 
 })()

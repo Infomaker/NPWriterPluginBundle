@@ -36,6 +36,7 @@ class XimpdfFileNode extends FileNode {
                     text = document.querySelector('itemMeta > fileName').textContent
                 }
 
+
                 // Update PDFNode
                 api.editorSession.transaction((tx) => {
                     tx.set([this.pdfNodeId, 'uri'], uri)

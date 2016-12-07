@@ -1,4 +1,5 @@
 const { BlockNode } = substance
+import {api} from 'writer'
 
 class Ximimage extends BlockNode {
 
@@ -16,7 +17,21 @@ class Ximimage extends BlockNode {
     }
 
     setAlignment(alignment) {
-        this.document.set([this.id, 'alignment'], alignment);
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'alignment'], alignment)
+        })
+    }
+
+    handleDOMDocument(newsItemDOMDocument) {
+
+        //@TODO: Finish update the node
+        const document = newsItemDOMDocument.documentElement
+        const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'uri'], uri)
+        }, {history: false})
+
     }
 }
 
@@ -24,6 +39,7 @@ class Ximimage extends BlockNode {
 Ximimage.define({
     type: 'ximimage',
     uuid: { type: 'string', optional: true},
+    uri: { type: 'string', optional: true},
     imageFile: { type: 'file' },
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},

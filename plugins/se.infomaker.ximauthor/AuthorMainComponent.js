@@ -16,7 +16,7 @@ class AuthorMainComponent extends Component {
     getInitialState() {
         return {
             existingAuthors: api.newsItem.getAuthors()
-        };
+        }
     }
 
     reloadAuthors() {

@@ -25,7 +25,6 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
 
-
         el.append(
             $$(ImageDisplay, {
                 node: node,
@@ -80,7 +79,7 @@ class XimimageComponent extends Component {
                     })
                     .on('click', () => {
                         if (option.name !== this.props.node.alignment) {
-                            // this.props.node.setAlignment(option.name)
+                            this.props.node.setAlignment(option.name)
                             this.rerender()
                         }
                         return false

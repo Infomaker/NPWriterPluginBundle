@@ -1,17 +1,11 @@
-import {Command} from 'substance'
+import { WriterCommand } from 'writer'
 import insertPdfCommand from './InsertPdfCommand'
 import {api} from 'writer'
 
 /*
  Insert multiple pdf files
  */
-class XimpdfCommand extends Command {
-
-    getCommandState(params) {
-        return {
-            disabled: params.surface && params.surface.name === 'body' ? false : true
-        }
-    }
+class XimpdfCommand extends WriterCommand {
 
     execute(params) {
         if (typeof params.files === 'string') {
