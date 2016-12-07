@@ -32,6 +32,11 @@ export default (pluginId) => {
             en: 'Search areas',
             sv: 'Sök områden'
         })
+
+        config.addLabel('ximplace-error-save', {
+            en: 'Error saving place: ',
+            sv: 'Fel vid sparande av plats: '
+        });
     }
 
 
