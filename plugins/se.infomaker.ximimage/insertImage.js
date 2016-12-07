@@ -27,10 +27,9 @@ export default function(tx, data) {
 
     // Create file node for the image
     let imageFile = tx.create({
-        imageNodeId: nodeId,
-        type: 'ximimagefile',
-        fileType: 'image',
-        mimeType: mimeType,
+        parentNodeId: nodeId,
+        type: 'npfile',
+        imType: 'x-im/image',
         sourceFile: isFile ? data: '',
         sourceUrl: !isFile ? data : ''
     })
@@ -39,6 +38,10 @@ export default function(tx, data) {
     tx.insertBlockNode({
         id: nodeId,
         type: 'ximimage',
-        imageFile: imageFile.id
+        imageFile: imageFile.id,
+        caption: '',
+        alttext: '',
+        credit: '',
+        alignment: ''
     })
 }

@@ -1,13 +1,8 @@
-import { Command } from 'substance'
+import { WriterCommand } from 'writer'
 import insertEmbed from './insertEmbed'
 
-class YoutubeEmbedCommand extends Command {
+class YoutubeEmbedCommand extends WriterCommand {
 
-    getCommandState(params) {
-        return {
-            disabled: params.surface && params.surface.name === 'body' ? false : true
-        }
-    }
 
     execute(params) {
         params.editorSession.transaction((tx) => {

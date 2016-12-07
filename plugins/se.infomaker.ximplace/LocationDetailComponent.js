@@ -25,10 +25,6 @@ class LocationDetailComponent extends Component {
     }
 
     dispose() {
-        // TODO Abort on fetch method?
-        // if (this.ajaxRequest) {
-        //     this.ajaxRequest.abort()
-        // }
         super.dispose()
     }
 
@@ -40,14 +36,11 @@ class LocationDetailComponent extends Component {
     }
 
     createLocation() {
-        var location = this.state.location,
-            url = '/api/newsitem'
+        const location = this.state.location
 
         this.createIdForObject()
 
-        this.saveLocation(url, 'POST')
-            .then(response => this.context.api.router.checkForOKStatus(response))
-            .then(response => response.text())
+        this.saveLocation(null, 'POST')
             .then(uuid => {
                 // Update tag in newsItem
                 this.context.api.newsItem.addLocation(this.name, {
@@ -56,23 +49,23 @@ class LocationDetailComponent extends Component {
                     uuid: uuid,
                     type: this.getLocationType()
                 })
-
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.error(err))
+            })
+            .catch(() => this.setState({error: true}))
     }
 
     updateLocation() {
-        var location = this.state.location;
-        var uuid = location['@guid'] ? location['@guid'] : null
+        const location = this.state.location;
+        const uuid = location['@guid'] ? location['@guid'] : null
         if (!uuid) {
             throw new Error("ConceptItem has no UUID to update")
         }
-        var url = '/api/newsitem/' + uuid
 
-        this.saveLocation(url, 'PUT')
-            .then(response => this.context.api.router.checkForOKStatus(response))
-            .then(response => response.text())
+        this.saveLocation(uuid, 'PUT')
             .then(() => {
                 // Update tag in newsItem
                 this.context.api.newsItem.updateLocation(this.name, {
@@ -81,13 +74,17 @@ class LocationDetailComponent extends Component {
                     uuid: uuid,
                     type: this.getLocationType()
                 })
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.error(err));
+            })
+            .catch(() => this.setState({error: true}))
     }
 
     getGeometryObject() {
-        var geometry = findAttribute(this.state.location, 'geometry')
+        const geometry = findAttribute(this.state.location, 'geometry')
         if (geometry) {
             return {
                 position: this.state.location.concept.metadata.object.data.geometry
@@ -104,10 +101,11 @@ class LocationDetailComponent extends Component {
      * @param {string} role The definition type, drol:short or drol:long
      */
     setDescription(inputValue, role) {
-        var currentDescription = this.context.api.concept.getDefinitionForType(this.state.location.concept.definition, role)
+        const currentDescription = this.context.api.concept.getDefinitionForType(this.state.location.concept.definition, role)
         if (inputValue.length > 0 && !currentDescription) {
-            var longDesc = {'@role': role, keyValue: inputValue}
-            this.state.location.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.state.location.concept.definition, longDesc)
+            const longDesc = {'@role': role, keyValue: inputValue}
+            this.state.location.concept.definition = this.context.api.concept.setDefinitionDependingOnArrayOrObject(this.state.location.concept.definition,
+                longDesc)
         } else if (inputValue.length >= 0 && currentDescription) {
             currentDescription['keyValue'] = inputValue
         }
@@ -116,16 +114,16 @@ class LocationDetailComponent extends Component {
 
     /**
      * Method that saves conceptItem to backend
-     * @param {string} url
+     * @param {string} id The ID of the concept item
      * @param {string} method POST, PUT
      * @returns {*} Returns jQuery ajax promise
      */
-    saveLocation(url, method) {
-        var location = this.state.location
+    saveLocation(id, method) {
+        const location = this.state.location
         location.concept.name = this.refs.locationNameInput.val().length > 0 ? this.refs.locationNameInput.val() : location.concept.name
 
-        var shortDescriptionInputValue = this.refs.locationShortDescInput.val()
-        var longDescriptionInputValue = this.refs.locationLongDescText.val()
+        const shortDescriptionInputValue = this.refs.locationShortDescInput.val()
+        const longDescriptionInputValue = this.refs.locationLongDescText.val()
 
         // Check if definition exists
         if (!location.concept.definition) {
@@ -136,13 +134,13 @@ class LocationDetailComponent extends Component {
         this.setDescription(longDescriptionInputValue, 'drol:long')
 
         this.xmlDoc = jxon.unbuild(location, null, 'conceptItem')
-        var conceptItem = this.xmlDoc.documentElement.outerHTML
+        const conceptItem = this.xmlDoc.documentElement.outerHTML
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.put(url, {body: conceptItem})
+                return this.context.api.router.updateConceptItem(id, conceptItem)
             case "POST":
-                return this.context.api.router.post(url, {body: conceptItem})
+                return this.context.api.router.createConceptItem(conceptItem)
         }
 
     }
@@ -187,12 +185,12 @@ class LocationDetailComponent extends Component {
      * Updates the marker on the map by setting props on MapComponent
      */
     updateMapPosition() {
-        var latlng = this.getLatLngFromLoadedLocation()
+        const latlng = this.getLatLngFromLoadedLocation()
         this.refs.mapComponent.setProps({googleLatLng: new this.google.maps.LatLng(latlng.lat, latlng.lng)})
     }
 
     updateMapPositionPolygon() {
-        var wktPolygon = this.state.location.concept.metadata.object.data.geometry
+        const wktPolygon = this.state.location.concept.metadata.object.data.geometry
         try {
             this.refs.mapComponent.setProps({isPolygon: true, wktString: wktPolygon})
         } catch (e) {
@@ -206,7 +204,7 @@ class LocationDetailComponent extends Component {
      * @returns {{lat: *, lng: *}}
      */
     getLatLngFromLoadedLocation() {
-        var geometry = findAttribute(this.state.location.concept, 'geometry')
+        const geometry = findAttribute(this.state.location.concept, 'geometry')
 
         if (!geometry) {
             return {
@@ -215,7 +213,7 @@ class LocationDetailComponent extends Component {
             }
         }
 
-        var latLongString = /POINT\((\-?[0-9\.\s]+)\)/.exec(geometry)[1].split(' ')
+        const latLongString = /POINT\((\-?[0-9\.\s]+)\)/.exec(geometry)[1].split(' ')
         return {
             lat: latLongString[1],
             lng: latLongString[0]
@@ -230,7 +228,7 @@ class LocationDetailComponent extends Component {
     }
 
     getDescription(descriptionType) {
-        var locationConcept = this.state.location.concept
+        const locationConcept = this.state.location.concept
         if (!locationConcept.definition) {
             return undefined
         }
@@ -386,6 +384,12 @@ class LocationDetailComponent extends Component {
         const mapComponent = $$(MapComponent, {pluginId: this.props.plugin.id}).ref('mapComponent')
         el.append(mapComponent)
 
+        if (this.state.error) {
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
+                this.context.i18n.t("ximplace-error-save") + ": " + this.props.item.concept.name)))
+
+        }
+
         return el
     }
 
@@ -404,9 +408,9 @@ class LocationDetailComponent extends Component {
     }
 
     getLocationType() {
-        var useGeometryType = this.context.api.getConfigValue('se.infomaker.ximplace', 'useGeometryType')
+        const useGeometryType = this.context.api.getConfigValue('se.infomaker.ximplace', 'useGeometryType')
         if (useGeometryType) {
-            var locationType = ''
+            let locationType = ''
             try {
                 if (typeof(this.state.location.concept.metadata.object['@type']) !== 'undefined') {
                     locationType = this.state.location.concept.metadata.object['@type']
@@ -432,7 +436,7 @@ class LocationDetailComponent extends Component {
 
 
 function findAttribute(object, attribute) {
-    var match
+    let match
 
     function iterateObject(target, name) {
         Object.keys(target).forEach(function (key) {

@@ -1,11 +1,11 @@
-import { Component, Button, FontAwesomeIcon } from 'substance'
+import {Component, Button, FontAwesomeIcon} from 'substance'
 import ImageCropper from './ImageCropper'
 import ImageMetadata from './ImageMetadata'
 
 /*
-  Intended to be used in Ximimage and Ximteaser and other content types
-  that include an imageFile property.
-*/
+ Intended to be used in Ximimage and Ximteaser and other content types
+ that include an imageFile property.
+ */
 class ImageDisplay extends Component {
     didMount() {
         this.handleActions({
@@ -13,11 +13,29 @@ class ImageDisplay extends Component {
         })
     }
 
+    _onDragStart(e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+    }
+
     render($$) {
-        let imgContainer = $$('div').addClass('se-image-container'),
+        let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer'),
             imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
+
+            if(this.props.isInTeaser) {
+                const deleteButton = $$(Button, {icon: 'remove'})
+                    .addClass('remove-image__button')
+                    .attr('title', this.getLabel('remove-image-button-title'))
+                    .on('click', () => {
+                        this.props.removeImage()
+                    })
+
+                imgContainer.append(deleteButton)
+            }
+
             imgContainer.append(
                 $$('img', {
                     src: imgSrc
@@ -28,7 +46,7 @@ class ImageDisplay extends Component {
                 $$(FontAwesomeIcon, {
                     icon: 'fa-picture-o'
                 })
-                .attr('style', 'font-size:25rem;color:#efefef')
+                    .attr('style', 'font-size:25rem;color:#efefef')
             )
         }
 

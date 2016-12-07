@@ -1,6 +1,7 @@
-const { BlockNode } = substance
-
+import {BlockNode} from 'substance'
+import {api} from 'writer'
 class Ximteaser extends BlockNode {
+
     getImageFile() {
         if (this.imageFile) {
             return this.document.get(this.imageFile)
@@ -14,16 +15,28 @@ class Ximteaser extends BlockNode {
             return imageFile.getUrl()
         }
     }
+
+    handleDOMDocument(newsItemDOMDocument) {
+        const document = newsItemDOMDocument.documentElement
+        const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+
+        // Update PDFNode
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'uri'], uri)
+        }, {history: false})
+    }
 }
 
 Ximteaser.define({
     type: 'ximteaser',
     dataType: {type: 'string', optional: false},
-    imageFile: { type: 'file' },
+    imageFile: { type: 'file', optional: true },
+    uri: { type: 'string', optional: true },
+
     title: {type: 'string', optional: false, default: '' },
     subject: {type: 'string', optional: false, default: '' },
     text: {type: 'string', optional: false, default: '' },
-    imageType: {type: 'string', optional: true },
+
     // ATTENTION: progress should not be part of the model
     // progress: {type: 'number', default: 100 },
     width: {type: 'number', optional: true },
