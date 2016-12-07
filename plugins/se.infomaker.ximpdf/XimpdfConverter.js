@@ -15,9 +15,9 @@ export default {
 
         let pdfFile = {
             id: idGenerator(),
-            type: 'ximpdffile',
-            fileType: 'pdf',
-            pdfNodeId: node.id
+            type: 'npfile',
+            imType: 'x-im/pdf',
+            parentNodeId: node.id
         }
 
         if (el.attr('uuid')) {
