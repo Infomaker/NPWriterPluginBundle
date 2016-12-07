@@ -13,14 +13,6 @@ class XimteaserComponent extends Component {
         this.parent.attr('draggable', false)
         this.attr('draggable', false)
 
-        this.el.addEventListener('dragstart', (e) => {
-            console.log("e", e);
-            e.stopPropagation()
-            e.preventDefault()
-        })
-        this.el.on('dragstart', (e) => {
-
-        })
     }
 
     dispose() {
