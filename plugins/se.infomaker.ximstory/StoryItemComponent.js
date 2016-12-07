@@ -1,157 +1,142 @@
-'use strict';
+import {Component, FontAweseomeIcon} from 'substance/ui/Component'
+import {jxon, lodash as _} from 'writer'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-var jxon = require('jxon/index');
-var find = require('lodash/find');
-var _ = require('lodash');
+class StoryItemComponent extends Component {
 
-function StoryItemComponent() {
-    StoryItemComponent.super.apply(this, arguments);
+    constructor(...args) {
+        super(...args)
+        this.name = 'ximstory'
+    }
 
-    this.name = 'conceptstory';
-
-}
-
-StoryItemComponent.Prototype = function () {
-
-    this.loadTag = function () {
-        this.ajaxRequest = this.context.api.router.ajax('GET', 'xml', '/api/newsitem/' + this.props.item.uuid, {imType: this.props.item.type});
-        this.ajaxRequest
-            .done(function (data) {
-                var conceptXML = data.querySelector('conceptItem');
-                var conceptItemJSON = jxon.build(conceptXML);
+    loadTag() {
+        api.router.getConceptItem(this.props.item.uuid, this.props.item.type)
+            .then(xml => {
+                const conceptXML = xml.querySelector('conceptItem')
+                const conceptItemJSON = jxon.build(conceptXML)
                 this.setState({
                     loadedItem: conceptItemJSON,
                     isLoaded: true
-                });
-            }.bind(this))
-            .error(function () {
+                })
+            })
+            .catch(() => {
                 this.setState({
                     couldNotLoad: true,
                     isLoaded: true
-                });
-            }.bind(this));
-    };
+                })
+            })
+    }
 
 
-    /**
-     * Render method
-     * @returns {Component}
-     */
-    this.render = function () {
-        var item = this.props.item;
+    render($$) {
+        const item = this.props.item
 
-        var tagItem = $$('li').addClass('tag-list__item').ref('tagItem').attr('title', 'Story');
-        var displayNameEl = $$('span'),
-            displayName;
+        const tagItem = $$('li').addClass('tag-list__item').ref('tagItem').attr('title', 'Story')
+        const displayNameEl = $$('span')
+        let displayName
 
         if (!this.state.isLoaded) {
-            this.loadTag();
+            this.loadTag()
         } else {
             if (this.state.couldNotLoad) {
                 displayNameEl.addClass('tag-item__title  tag-item__title--no-avatar tag-item__title--notexisting')
                     .append(item.title)
-                    .attr('title', this.context.i18n.t('This item could not be loaded. UUID: ')+item.uuid);
-                displayName = item.title;
+                    .attr('title', this.getLabel('ximstory-could_not_load_uuid') + item.uuid)
+                displayName = item.title
             } else {
-                displayName = this.state.loadedItem.concept.name;
-                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName);
-                displayNameEl.on('click', function () {
-                    this.showStory(displayName);
-                }.bind(this));
+                displayName = this.state.loadedItem.concept.name
+                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName)
+                displayNameEl.on('click', () => {
+                    this.showStory(displayName)
+                })
             }
 
-            displayNameEl.attr('title', displayName);
-            this.updateTagItemName(displayNameEl, this.state.loadedItem);
+            displayNameEl.attr('title', displayName)
+            this.updateTagItemName(displayNameEl, this.state.loadedItem)
 
             displayNameEl.attr('data-toggle', 'tooltip')
                 .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual');
+                .attr('data-trigger', 'manual')
 
-            displayNameEl.on('mouseenter', this.toggleTooltip);
-            displayNameEl.on('mouseout', this.hideTooltip);
+            // TODO Tooltip
+            // displayNameEl.on('mouseenter', this.toggleTooltip)
+            // displayNameEl.on('mouseout', this.hideTooltip)
 
-            tagItem.append(displayNameEl);
+            tagItem.append(displayNameEl)
 
-            var deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
+            const deleteButton = $$('span').append($$(FontAwesomeIcoon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
-                .attr('title', this.context.i18n.t('Remove from article')))
-                .on('click', function () {
-                    this.removeTag(item);
-                }.bind(this));
+                .attr('title', this.getLabel('ximstory-remove_from_article')))
+                .on('click', () => {
+                    this.removeTag(item)
+                })
 
-            tagItem.append(deleteButton);
-            tagItem.append($$(Icon, {icon: 'fa-circle'}).addClass('tag-icon'));
+            tagItem.append(deleteButton)
+            tagItem.append($$(FontAwesomeIcoon, {icon: 'fa-circle'}).addClass('tag-icon'))
         }
-        return tagItem;
-    };
+        return tagItem
+    }
 
-    this.toggleTooltip = function (ev) {
-        $(ev.target).tooltip('toggle');
-        ev.target.timeout = window.setTimeout(function () {
-            this.hideTooltip(ev)
-        }.bind(this), 3000)
-    };
+    // TODO Tooltip
+    // toggleTooltip = function (ev) {
+    //     $(ev.target).tooltip('toggle')
+    //     ev.target.timeout = window.setTimeout(function () {
+    //         this.hideTooltip(ev)
+    //     }.bind(this), 3000)
+    // }
+    //
+    // hideTooltip = function (ev) {
+    //     if (ev.target.timeout) {
+    //         window.clearTimeout(ev.target.timeout)
+    //         ev.target.timeout = undefined
+    //     }
+    //     $(ev.target).tooltip('hide')
+    // }
 
-    this.hideTooltip = function (ev) {
-        if (ev.target.timeout) {
-            window.clearTimeout(ev.target.timeout);
-            ev.target.timeout = undefined;
-        }
-        $(ev.target).tooltip('hide');
-    };
 
-
-    this.updateTagItemName = function (tagItem, loadedTag) {
+    static updateTagItemName(tagItem, loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
-            var definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
-            for (var i = 0; i < definition.length; i++) {
-                var item = definition[i];
+            const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
+            for (let i = 0; i < definition.length; i++) {
+                const item = definition[i]
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
-                        tagItem.attr('title', item["keyValue"]);
-                        break;
+                        tagItem.attr('title', item["keyValue"])
+                        break
                     }
                 }
             }
         }
-    };
+    }
 
 
-    this.showStory = function (title) {
-        var storyEdit = require('./StoryEditComponent');
-        this.context.api.showDialog(storyEdit, {
+    showStory(title) {
+        const storyEdit = require('./StoryEditComponent')
+        api.ui.showDialog(storyEdit, {
                 item: this.state.loadedItem,
                 reload: this.closeFromDialog.bind(this)
             },
             {
                 title: title,
                 global: true
-            });
-    };
+            })
+    }
 
     /**
      * Called when edit and info dialog is closed
      */
-    this.closeFromDialog = function () {
-        this.loadTag(); // Reload new changes
-        this.props.reload();
-    };
+    closeFromDialog() {
+        this.loadTag() // Reload new changes
+        this.props.reload()
+    }
 
     /**
      * Remove tag after fading item away
      * @param tag
      */
-    this.removeTag = function (tag) {
-        this.$el.first().fadeOut(300, function () {
-            this.props.removeItem(tag);
-        }.bind(this));
+    removeTag = function (tag) {
+        this.props.removeItem(tag)
+    }
 
-    };
+}
 
-};
-
-Component.extend(StoryItemComponent);
-module.exports = StoryItemComponent;
+export default StoryItemComponent

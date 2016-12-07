@@ -37,7 +37,7 @@ class StoryMainComponent extends Component {
             searchUrl: searchUrl+'/api/search/concepts/stories?q=',
             onSelect: this.addStory.bind(this),
             onCreate: this.createStory.bind(this),
-            placeholderText: this.context.i18n.t('Search stories'),
+            placeholderText: this.getLabel('ximstory-search_stories'),
             createAllowed: true
         }).ref('searchComponent')
 
@@ -67,7 +67,7 @@ class StoryMainComponent extends Component {
             api.newsItem.addStory(this.name, { uuid: story.uuid, title: story.name[0] })
             this.reload()
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
     }
 
@@ -76,22 +76,18 @@ class StoryMainComponent extends Component {
         const item = jxon.build(storyXML);
         item.concept.name = searchItem.inputValue;
 
-        // TODO Continue here
-
-        api.showDialog(StoryEditCompoment, {
+        api.ui.showDialog(StoryEditCompoment, {
             item: item,
             exists: exists,
             newLocation: true,
             close: this.closeFromDialog.bind(this),
             reload: this.reload.bind(this)
         }, {
-            primary: this.context.i18n.t('Save'),
-            title: $$('span').append(" " + this.context.i18n.t('Create ') + " " + searchItem.inputValue),
+            primary: this.getLabel('ximstory-Save'),
+            title: $$('span').append(" " + this.getLabel('ximstory-create') + " " + searchItem.inputValue),
             global: true
-        });
-
-    };
-
+        })
+    }
 
     closeFromDialog() {
         this.reload()

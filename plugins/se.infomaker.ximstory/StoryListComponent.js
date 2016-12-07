@@ -1,39 +1,34 @@
-'use strict';
+import {Component} from 'substance/ui/Component'
+import StoryItem from './StoryItemComponent'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var StoryItem = require('./StoryItemComponent');
+class StoryListComponent extends Component {
 
-function StoryListComponent() {
-    StoryListComponent.super.apply(this, arguments);
-
-    this.name = 'conceptstory';
-}
-
-StoryListComponent.Prototype = function () {
-
-    this.render = function () {
-        var items = this.props.items;
-        var tagList = $$('ul').addClass('tag-list');
-        var tagEls = items.map(function (item) {
+    constructor(...args) {
+        super(...args)
+        this.name = 'ximstory'
+    }
+    
+    render($$) {
+        const items = this.props.items
+        const tagList = $$('ul').addClass('tag-list')
+        const tagEls = items.map(function (item) {
             return $$(StoryItem, {
                 item: item,
                 removeItem: this.removeItem.bind(this),
                 reload: this.props.reload.bind(this)
-            }).ref('tag-'+item.uuid);
-        }, this);
-        //
-        tagList.append(tagEls);
+            }).ref('tag-'+item.uuid)
+        }, this)
+        
+        tagList.append(tagEls)
 
-        return tagList;
-    };
+        return tagList
+    }
 
-    this.removeItem = function(tag) {
-        delete this.refs['tag-'+tag.uuid];
-        this.props.removeItem(tag);
-    };
+    removeItem(tag) {
+        delete this.refs['tag-'+tag.uuid]
+        this.props.removeItem(tag)
+    }
+}
 
-};
+export default StoryListComponent
 
-Component.extend(StoryListComponent);
-module.exports = StoryListComponent;

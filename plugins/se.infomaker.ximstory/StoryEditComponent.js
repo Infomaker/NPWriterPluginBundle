@@ -1,53 +1,59 @@
-'use strict';
+import {Component} from 'substance'
+import {jxon} from 'writer'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var jxon = require('jxon/index');
-var ConceptUtil = require('vendor/infomaker.se/utils/ConceptUtil');
+class StoryEditComponent {
 
-function StoryEditComponent() {
-    StoryEditComponent.super.apply(this, arguments);
+    constructor(...args) {
+        super(...args)
+    }
 
-    this.conceptUtil = new ConceptUtil();
-}
+    createLocation() {
+        const story = this.props.item
 
-StoryEditComponent.Prototype = function () {
+        this.saveLocation(null, 'POST')
+            .done((data) => {
+                //Update tag in newsItem
+                api.newsItem.addStory(this.name, {
+                    title: story.concept.name,
+                    uuid: data
+                })
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
+                this.props.reload()
+                this.send('close')
+            })
+            .catch(() => {
+                this.setState({error: true})
+            })
+    }
 
+    updateLocation() {
 
-    this.createLocation = function () {
-        var story = this.props.item,
-            url = '/api/newsitem';
-        this.saveLocation(url, 'POST').done(function (data) {
-            //Update tag in newsItem
-            this.context.api.addStory(this.name, {
-                title: story.concept.name,
-                uuid: data
-            });
+        const story = this.props.item,
+            uuid = story['@guid'] ? story['@guid'] : null
 
-            this.props.reload();
-            this.send('close');
-        }.bind(this));
-    };
-
-    this.updateLocation = function () {
-
-        var story = this.props.item;
-        var uuid = story['@guid'] ? story['@guid'] : null;
         if (!uuid) {
-            throw new Error("ConceptItem has no UUID to update");
+            throw new Error("ConceptItem has no UUID to update")
         }
-        var url = '/api/newsitem/' + uuid;
 
-        this.saveLocation(url, 'PUT').done(function () {
-            //Update tag in newsItem
-            this.context.api.updateStory(this.name, {
-                title: story.concept.name,
-                uuid: uuid
-            });
-            this.props.reload();
-            this.send('close');
-        }.bind(this));
-    };
+        this.saveLocation(uuid, 'PUT')
+            .done(() => {
+                //Update tag in newsItem
+                this.context.api.updateStory(this.name, {
+                    title: story.concept.name,
+                    uuid: uuid
+                })
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
+                this.props.reload()
+                this.send('close')
+            })
+            .catch(() => {
+                this.setState({error: true});
+            })
+    }
 
     /**
      * Sets the definition description
@@ -55,15 +61,15 @@ StoryEditComponent.Prototype = function () {
      * @param {string} inputValue The form value filled in by user
      * @param {string} role The definition type, drol:short or drol:long
      */
-    this.setDescription = function(inputValue, role) {
-        var currentDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, role);
-        if(inputValue.length > 0 && !currentDescription) {
-            var longDesc = {'@role': role, keyValue: inputValue};
-            this.props.item.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(this.props.item.concept.definition, longDesc);
-        } else if( inputValue.length >= 0 && currentDescription) {
-            currentDescription['keyValue'] = inputValue;
+    setDescription = function (inputValue, role) {
+        const currentDescription = api.concept.getDefinitionForType(this.props.item.concept.definition, role)
+        if (inputValue.length > 0 && !currentDescription) {
+            const longDesc = {'@role': role, keyValue: inputValue}
+            this.props.item.concept.definition = api.concept.setDefinitionDependingOnArrayOrObject(this.props.item.concept.definition, longDesc)
+        } else if (inputValue.length >= 0 && currentDescription) {
+            currentDescription['keyValue'] = inputValue
         }
-    };
+    }
 
     /**
      * Method that saves conceptItem to backend
@@ -71,155 +77,167 @@ StoryEditComponent.Prototype = function () {
      * @param {string} method POST, PUT
      * @returns {*} Returns jQuery ajax promise
      */
-    this.saveLocation = function (url, method) {
-        var location = this.props.item;
-        location.concept.name = this.refs.storyNameInput.val().length > 0 ? this.refs.storyNameInput.val() : location.concept.name;
+    saveLocation(id, method) {
+        const location = this.props.item
+        location.concept.name = this.refs.storyNameInput.val().length > 0 ? this.refs.storyNameInput.val() : location.concept.name
 
-        var shortDescriptionInputValue = this.refs.storyShortDescInput.val();
-        var longDescriptionInputValue = this.refs.storyLongDescText.val();
+        const shortDescriptionInputValue = this.refs.storyShortDescInput.val()
+        const longDescriptionInputValue = this.refs.storyLongDescText.val()
 
         // Check if definition exists
-        if(!location.concept.definition) {
-            location.concept.definition = [];
+        if (!location.concept.definition) {
+            location.concept.definition = []
         }
 
-        this.setDescription(shortDescriptionInputValue, 'drol:short');
-        this.setDescription(longDescriptionInputValue, 'drol:long');
+        this.setDescription(shortDescriptionInputValue, 'drol:short')
+        this.setDescription(longDescriptionInputValue, 'drol:long')
 
-        this.xmlDoc = jxon.unbuild(location, null, 'conceptItem');
-        var conceptItem = this.xmlDoc.documentElement.outerHTML;
+        this.xmlDoc = jxon.unbuild(location, null, 'conceptItem')
+        const conceptItem = this.xmlDoc.documentElement.outerHTML
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.put(url, conceptItem);
-                break;
+                return this.context.api.router.updateConceptItem(id, conceptItem)
             case "POST":
-                return this.context.api.router.post(url, conceptItem);
-                break;
+                return this.context.api.router.createConceptItem(conceptItem)
         }
 
-    };
+    }
 
 
-    this.render = function () {
+    render($$) {
 
-        var el = $$('div').addClass('tag-edit-base');
+        const el = $$('div').addClass('tag-edit-base')
 
-        var formContainer = $$('form').addClass('concept-story__container clearfix').ref('formContainer').on('submit', function (e) {
-            e.preventDefault();
-            if (this.refs['storyNameInput'].val() !== "") {
-                this.onClose('save');
-            }
-        }.bind(this));
+        const formContainer = $$('form')
+            .addClass('concept-story__container clearfix')
+            .ref('formContainer')
+            .on('submit', (e) => {
+                e.preventDefault()
+                if (this.refs['storyNameInput'].val() !== "") {
+                    this.onClose('save')
+                }
+            })
 
-        var hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'});
-        formContainer.append(hiddenSubmitButtonToEnableEnterSubmit);
+        const hiddenSubmitButtonToEnableEnterSubmit = $$('input')
+            .attr({type: 'submit', style: 'display:none'})
+        formContainer.append(hiddenSubmitButtonToEnableEnterSubmit)
 
-        formContainer.append(this.renderNameInput());
-        formContainer.append(this.renderShortDescription());
-        formContainer.append(this.renderLongDescription());
+        formContainer.append(this.renderNameInput($$))
+        formContainer.append(this.renderShortDescription($$))
+        formContainer.append(this.renderLongDescription($$))
 
 
-        el.append(formContainer);
+        el.append(formContainer)
 
         if (this.props.exists) {
-            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(this.context.i18n.t("Please note that this name is already in use") + ": " + this.props.item.concept.name)))
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
+                this.addLabel('ximstory-name_already_in_use') + ": " + this.props.item.concept.name)))
         }
 
-        return el;
-    };
+        if (this.state.error) {
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
+                this.context.i18n.t("ximstory-error-save") + ": " + this.props.item.concept.name)))
+        }
+
+        return el
+    }
 
 
-    this.renderNameInput = function() {
+    renderNameInput($$) {
         // Name
-        var nameInput = $$('input').attr({
-                type: 'text',
-                id: 'storyNameInput'
-            })
+        const nameInput = $$('input').attr({
+            type: 'text',
+            id: 'storyNameInput'
+        })
             .addClass('form-control').val(this.props.item.concept.name)
-            .ref('storyNameInput');
+            .ref('storyNameInput')
 
-        nameInput.on('change', function(){
+        nameInput.on('change', function () {
             if (this.refs['storyNameInput'].val() === "") {
-                this.send("dialog:disablePrimaryBtn");
+                this.send("dialog:disablePrimaryBtn")
             } else {
-                this.send("dialog:enablePrimaryBtn");
+                this.send("dialog:enablePrimaryBtn")
             }
-        }.bind(this));
+        }.bind(this))
 
-        var formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName');
-        formGroup.append($$('label').attr('for', 'storyNameInput').append(this.context.i18n.t('Name')));
-        formGroup.append(nameInput);
-        return formGroup;
-    };
+        const formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
+        formGroup.append($$('label').attr('for', 'storyNameInput').append(this.getLabel('ximstory-Name')))
+        formGroup.append(nameInput)
+        return formGroup
+    }
 
 
     /**
      * Render a short description form fieldset
      * @returns {Component}
      */
-    this.renderShortDescription = function() {
-        var shortDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:short');
-        var shortDescriptionValue = "";
-        if(shortDescription) {
-            shortDescriptionValue = shortDescription['keyValue'];
+    renderShortDescription($$) {
+        const shortDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:short')
+        let shortDescriptionValue = ""
+        if (shortDescription) {
+            shortDescriptionValue = shortDescription['keyValue']
         }
 
         // Short Desc
-        var shortDescInput = $$('input').attr({
-                id: 'storyShortDescInput'
-            })
+        const shortDescInput = $$('input').attr({ id: 'storyShortDescInput'})
             .addClass('form-control')
             .val(shortDescriptionValue)
-            .ref('storyShortDescInput');
+            .ref('storyShortDescInput')
 
-        var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc');
-        formGroupShortDesc.append($$('label').attr('for', 'storyShortDescInput').append(this.context.i18n.t('Short description')));
-        formGroupShortDesc.append(shortDescInput);
+        const formGroupShortDesc = $$('fieldset')
+            .addClass('form-group col-xs-6')
+            .ref('formGroupShortDesc')
+        formGroupShortDesc.append($$('label')
+            .attr('for', 'storyShortDescInput')
+            .append(this.getLabel('ximstory-short_description')))
+        formGroupShortDesc.append(shortDescInput)
 
-        return formGroupShortDesc;
-    };
+        return formGroupShortDesc
+    }
 
 
     /**
      * Render form group for long description
      * @returns {*}
      */
-    this.renderLongDescription = function() {
+    renderLongDescription($$) {
 
-        var longDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:long'),
-            longDescriptionValue = "";
-        if(longDescription) {
-            longDescriptionValue = longDescription.keyValue;
+        const longDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:long')
+        let longDescriptionValue = ""
+
+        if (longDescription) {
+            longDescriptionValue = longDescription.keyValue
         }
-        var longDescText = $$('textarea').attr({
-                id: 'storyLongDescText'
-            })
+        const longDescText = $$('textarea').attr({
+            id: 'storyLongDescText'
+        })
             .addClass('form-control')
             .val(longDescriptionValue)
-            .ref('storyLongDescText');
+            .ref('storyLongDescText')
 
-        var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc');
-        formGroupLongDesc.append($$('label').attr('for', 'storyLongDescText').append(this.context.i18n.t('Long description')));
-        formGroupLongDesc.append(longDescText);
-        return formGroupLongDesc;
-    };
+        const formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
+        formGroupLongDesc.append($$('label')
+            .attr('for', 'storyLongDescText')
+            .append(this.getLabel('ximstory-long_description')))
+        formGroupLongDesc.append(longDescText)
+        return formGroupLongDesc
+    }
 
-    this.onClose = function (status) {
+    onClose(status) {
         if ('cancel' === status) {
-            return true;
+            return true
         }
 
         if (this.props.newLocation) {
-            this.createLocation();
+            this.createLocation()
         } else {
-            this.updateLocation();
+            this.updateLocation()
         }
 
-        return false;
+        return false
+    }
 
-    };
+}
 
-};
-Component.extend(StoryEditComponent);
-module.exports = StoryEditComponent;
+export default StoryEditComponent
