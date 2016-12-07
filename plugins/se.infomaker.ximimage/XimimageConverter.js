@@ -17,9 +17,9 @@ export default {
 
         let imageFile = {
             id: idGenerator(),
-            type: 'ximimagefile',
-            fileType: 'image',
-            imageNodeId: objectElementId
+            type: 'npfile',
+            imType: 'x-im/image',
+            parentNodeId: objectElementId
         }
 
         if (el.attr('uuid')) {
@@ -27,7 +27,7 @@ export default {
         }
 
         if (linkEl.attr('uri')) {
-            imageFile.uri = linkEl.attr('uri')
+            node.uri = linkEl.attr('uri')
         }
 
         if (linkEl.attr('url')) {
@@ -192,7 +192,7 @@ export default {
         var link = $$('link').attr({
             rel: 'self',
             type: 'x-im/image',
-            uri: fileNode.uri ? fileNode.uri : '',
+            uri: node.uri ? node.uri : '',
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 

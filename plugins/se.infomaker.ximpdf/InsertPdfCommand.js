@@ -9,12 +9,12 @@ import {idGenerator} from 'writer'
  */
 export default function (tx, data) {
 
-    const pdfNodeId = idGenerator()
+    const parentNodeId = idGenerator()
 
     const pdfFileNode = {
-        type: 'ximpdffile',
-        pdfNodeId: pdfNodeId,
-        fileType: 'pdf'
+        type: 'npfile',
+        parentNodeId: parentNodeId,
+        imType: 'x-im/pdf'
     }
 
     let isFile = data instanceof File
@@ -31,7 +31,7 @@ export default function (tx, data) {
 
     // Inserts image at current cursor pos
     tx.insertBlockNode({
-        id: pdfNodeId,
+        id: parentNodeId,
         type: 'ximpdf',
         pdfFile: pdfFile.id
     })

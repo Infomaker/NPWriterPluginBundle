@@ -9,36 +9,43 @@ export default {
         return el.is('object') && el.attr('type') === 'x-im/teaser'
     },
 
+
     import: function (el, node, converter) { // jshint ignore:line
         // x-im/image attributes
+
+        const nodeId = el.attr('id')
         node.title = el.attr('title');
         node.dataType = el.attr('type');
 
-        var linkEl = el.find('links>link');
+        const linkEl = el.find('links>link');
         if (linkEl) {
+
             node.imageType = linkEl.attr('type');
 
             let imageFile = {
                 id: idGenerator(),
-                type: 'ximimagefile',
-                fileType: 'image'
+                type: 'npfile',
+                imType: 'x-im/image',
+                parentNodeId:nodeId
             }
-            if (el.attr('uuid')) {
-                imageFile.uuid = el.attr('uuid')
+
+            if (linkEl.attr('uuid')) {
+                imageFile.uuid = linkEl.attr('uuid')
             }
             if (linkEl.attr('uri')) {
-                imageFile.uri = linkEl.attr('uri')
+                node.uri = linkEl.attr('uri')
             }
             if (linkEl.attr('url')) {
                 imageFile.url = linkEl.attr('url')
             }
+
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
 
         }
 
         // Import data
-        var dataEl = el.find('data')
+        const dataEl = el.find('data')
         node.crops = {}
 
         if (dataEl) {
@@ -92,10 +99,28 @@ export default {
         }
     },
 
-
+    /**
+     *
+     *  <object id="mb2" type="x-im/teaser" title="50-åring häktad för barnporrbrott">
+     <data>
+     <text>
+     En man i 50-årsåldern som är anställd på en skola i Västerås häktades i dag på sannolika skäl
+     misstänkt för utnyttjande av barn för sexuell posering, sexuellt ofredande och
+     barnpornografibrott, rapporterar P4 Västmanland. Brotten omfattar sammanlagt fe
+     </text>
+     <subject>hnjnjnjnj</subject>
+     </data>
+     <links>
+     <link rel="image" type="x-im/image" uri="im://image/oaVeImm6yCsoihzsKNAuFUAsOpY.jpg" uuid="631c8997-36c8-5d0d-9acd-68cc1856f87c"/>
+     </links>
+     </object>
+     * @param el
+     * @param node
+     * @param converter
+     */
 
     export: function (node, el, converter) {
-        var $$ = converter.$$;
+        const $$ = converter.$$;
 
         el.removeAttr('data-id');
         el.attr({
@@ -104,11 +129,11 @@ export default {
         });
 
         if(node.title) {
-            el.attr('title', node.title);
+            el.attr('title',converter.annotatedText([node.id, 'title']));
         }
 
         // Data element
-        var data = $$('data');
+        const data = $$('data');
         if (node.text) {
             data.append($$('text').append(
                 converter.annotatedText([node.id, 'text'])
@@ -150,13 +175,15 @@ export default {
 
 
 
+        let fileNode = node.document.get(node.imageFile)
+
         // Links
-        if (node.uuid !== '' && node.uri) {
-            var link = $$('link').attr({
+        if (fileNode && fileNode.uuid !== '' && node.uri) {
+            const link = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',
                 uri: node.uri,
-                uuid: node.uuid
+                uuid: fileNode.uuid
             });
 
             el.append($$('links').append(link));
