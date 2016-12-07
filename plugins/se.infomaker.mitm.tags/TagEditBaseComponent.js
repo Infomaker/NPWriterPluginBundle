@@ -1,94 +1,92 @@
-'use strict';
+'use strict'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-var jxon = require('jxon/index');
-var replace = require('lodash/replace');
-var find = require('lodash/find');
+import {Component, FontAwesomeIcon} from 'substance'
+import {jxon, lodash} from 'writer'
+const find = lodash.find
 
-function TagEditBaseComponent() {
-    TagEditBaseComponent.super.apply(this, arguments);
-    this.name = 'tags';
-}
+class TagEditBaseComponent extends Component {
 
-TagEditBaseComponent.Prototype = function () {
+    constructor(...args) {
+        super(...args)
+        this.name = 'mmtags'
+    }
 
+    saveConcept(uuid, newsItem) {
+        return this.context.api.router.updateConceptItem(uuid, newsItem)
 
-    this.saveConcept = function (uuid, newsItem) {
-        return this.context.api.router.put('/api/newsitem/' + uuid, newsItem);
+    }
 
-    };
-
-    this.createConcept = function (newsItem) {
-        return this.context.api.router.post('/api/newsitem/', newsItem);
-    };
+    createConcept(newsItem) {
+        return this.context.api.router.createConceptItem(newsItem)
+    }
 
 
     /**
      * Creates, updates or delete an facebook link
      * @param facebookInputValue
      */
-    this.updateFacebook = function (facebookInputValue) {
-        var facebookNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="x-im/social+facebook"]');
+    updateFacebook(facebookInputValue) {
+        const facebookNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="x-im/social+facebook"]')
         if (facebookInputValue.length > 0 && !facebookNode) {
             this.createLinkNode(this.xmlDoc, {
                 type: 'x-im/social+facebook',
                 rel: 'irel:seeAlso',
                 url: facebookInputValue
-            });
+            })
         } else if (facebookNode && facebookInputValue.length > 0) {
-            facebookNode.setAttribute('url', facebookInputValue);
+            facebookNode.setAttribute('url', facebookInputValue)
         } else if (facebookInputValue.length === 0 && facebookNode) {
-            facebookNode.parentElement.removeChild(facebookNode);
+            facebookNode.parentElement.removeChild(facebookNode)
         }
-    };
+    }
 
 
     /**
      * Creates, updates or delete a twitter link
      * @param twitterInputValue
      */
-    this.updateTwitter = function (twitterInputValue) {
-        var twitterNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="x-im/social+twitter"]');
+    updateTwitter(twitterInputValue) {
+        const twitterNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="x-im/social+twitter"]')
         if (twitterInputValue.length > 0 && !twitterNode) {
             this.createLinkNode(this.xmlDoc, {
                 type: 'x-im/social+twitter',
                 rel: 'irel:seeAlso',
                 url: twitterInputValue
-            });
+            })
         } else if (twitterNode && twitterInputValue.length > 0) {
-            twitterNode.setAttribute('url', twitterInputValue);
+            twitterNode.setAttribute('url', twitterInputValue)
         } else if (twitterInputValue.length === 0 && twitterNode) {
-            twitterNode.parentElement.removeChild(twitterNode);
+            twitterNode.parentElement.removeChild(twitterNode)
         }
-    };
+    }
 
     /**
      * Creates, updates or delete a website link
      * @param websiteInputValue
      */
-    this.updateWebsite = function (websiteInputValue) {
-        var websiteNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="text/html"]');
+    updateWebsite(websiteInputValue) {
+        const websiteNode = this.xmlDoc.documentElement.querySelector('itemMeta links link[rel="irel:seeAlso"][type="text/html"]')
         if (websiteInputValue.length > 0 && !websiteNode) {
-            this.createLinkNode(this.xmlDoc, {type: 'text/html', rel: 'irel:seeAlso', url: websiteInputValue});
+            this.createLinkNode(this.xmlDoc, {type: 'text/html', rel: 'irel:seeAlso', url: websiteInputValue})
         } else if (websiteNode && websiteInputValue.length > 0) {
-            websiteNode.setAttribute('url', websiteInputValue);
+            websiteNode.setAttribute('url', websiteInputValue)
         } else if (websiteInputValue.length === 0 && websiteNode) {
-            websiteNode.parentElement.removeChild(websiteNode);
+            websiteNode.parentElement.removeChild(websiteNode)
         }
-    };
+    }
 
 
-    this.createLinkNode = function (xmlDoc, attributes) {
-        var linkNode = xmlDoc.createElement('link');
-        for (var key in attributes) {
-            linkNode.setAttribute(key, attributes[key]);
+    createLinkNode(xmlDoc, attributes) {
+        const linkNode = xmlDoc.createElement('link')
+        for (let key in attributes) {
+            if (attributes.hasOwnProperty(key)) {
+                linkNode.setAttribute(key, attributes[key])
+            }
         }
-        xmlDoc.documentElement.querySelector('itemMeta links').appendChild(linkNode);
+        xmlDoc.documentElement.querySelector('itemMeta links').appendChild(linkNode)
 
-        return linkNode;
-    };
+        return linkNode
+    }
 
 
     /**
@@ -96,109 +94,122 @@ TagEditBaseComponent.Prototype = function () {
      * @param key
      * @returns {*}
      */
-    this.getItemMetaExtProperty = function (key) {
-        var result = find(this.props.tag.itemMeta.itemMetaExtProperty, function (item) {
-            return item['@type'] === key;
-        });
-        return result;
-    };
+    getItemMetaExtProperty(key) {
+        return find(this.props.tag.itemMeta.itemMetaExtProperty, (item) => item['@type'] === key)
+    }
 
-    this.getConceptDefinition = function (key) {
-        var result = find(this.props.tag.concept.definition, function (item) {
-            return item['@role'] === key;
-        });
-        return result;
-    };
+    getConceptDefinition(key) {
+        return find(this.props.tag.concept.definition, (item) => item['@role'] === key)
+    }
 
-    this.getSeeAlsoLinkByType = function (type) {
-        return find(this.props.tag.itemMeta.links.link, function (link) {
-            return link['@type'] === type && link['@rel'] === 'irel:seeAlso';
-        });
-    };
+    getSeeAlsoLinkByType(type) {
+        return find(this.props.tag.itemMeta.links.link, (link) => link['@type'] === type && link['@rel'] === 'irel:seeAlso')
+    }
 
-    this.render = function () {
+    render($$) {
 
-        var el = $$('div').addClass('tag-edit tag-edit-base');
+        const el = $$('div').addClass('tag-edit tag-edit-base')
 
-        var personBtn = $$('button').append($$(Icon, {icon: 'fa-user'})).append($$('span').append(this.context.i18n.t('Person'))).on('click', this.createPerson);
-        var organisationBtn = $$('button').append($$(Icon, {icon: 'fa-sitemap'})).append($$('span').append(this.context.i18n.t('Organisation'))).on('click', this.createOrganisation);
-        var topicBtn = $$('button').append($$(Icon, {icon: 'fa-tags'})).append($$('span').append(this.context.i18n.t('Topic'))).on('click', this.createTopic);
-        el.append($$('small').addClass('text-muted').append(this.context.i18n.t('What kind of concept do you want to create?')));
-        el.append([personBtn, organisationBtn, topicBtn]);
+        const personBtn = $$('button')
+            .append($$(Icon, {icon: 'fa-user'}))
+            .append($$('span')
+                .append(this.getLabel('mmtags-Person')))
+            .on('click', this.createPerson)
+
+        const organisationBtn = $$('button')
+            .append($$(Icon, {icon: 'fa-sitemap'}))
+            .append($$('span')
+                .append(this.getLabel('mm-Organization')))
+            .on('click', this.createOrganisation)
+
+        const topicBtn = $$('button')
+            .append($$(Icon, {icon: 'fa-tags'}))
+            .append($$('span')
+                .append(this.getLabel('mm-Topic')))
+            .on('click', this.createTopic)
+
+        el.append($$('small').addClass('text-muted').append(this.getLabel('mmtags-type-question-label')))
+        el.append([personBtn, organisationBtn, topicBtn])
 
         if (this.props.exists) {
-            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(this.context.i18n.t("Please note that this name is already in use") + ": " + this.props.tag.value)))
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
+                this.getLabel("mmtags-name_already_in_use") + ": " + this.props.tag.value)))
         }
 
-        return el;
-    };
+        if (this.state.error) {
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
+                this.getLabel("mmtags-error-save"))))
+        }
 
-    this.createPerson = function () {
-        this.send('close');
-        this.props.createPerson(this.props.tag.inputValue);
-    };
+        return el
+    }
 
-    this.createOrganisation = function () {
-        this.send('close');
-        this.props.createOrganisation(this.props.tag.inputValue);
-    };
+    createPerson() {
+        this.send('close')
+        this.props.createPerson(this.props.tag.inputValue)
+    }
 
-    this.createTopic = function () {
-        this.send('close');
-        this.props.createTopic(this.props.tag.inputValue);
-    };
+    createOrganisation() {
+        this.send('close')
+        this.props.createOrganisation(this.props.tag.inputValue)
+    }
 
-    this.closeAndReload = function () {
+    createTopic() {
+        this.send('close')
+        this.props.createTopic(this.props.tag.inputValue)
+    }
+
+    closeAndReload() {
         this.props.close(); // Let the TagItemComponent know that save is done
         this.send('close'); // Close the modal
-    };
+    }
 
 
-    this.renderElement = function (refName, label, inputValue, fullWidth, inputType) {
-        var cssClass = fullWidth ? 'col-xs-12' : 'col-xs-12 col-sm-6';
-        var input;
+    renderElement($$, refName, label, inputValue, fullWidth, inputType) {
+        const cssClass = fullWidth ? 'col-xs-12' : 'col-xs-12 col-sm-6'
+        let input
         switch (inputType) {
             case 'textarea':
-                input = this.getTextAreaElement();
-                break;
+                input = this.getTextAreaElement($$)
+                break
             default:
-                input = this.getTextInputElement();
-                break;
+                input = this.getTextInputElement($$)
+                break
         }
-        var formGroup = $$('fieldset').addClass('form-group').addClass(cssClass);
-        formGroup.append($$('label').append(label));
-        formGroup.append(input.val(inputValue).ref(refName));
-        return formGroup;
-    };
+        const formGroup = $$('fieldset').addClass('form-group').addClass(cssClass)
+        formGroup.append($$('label').append(label))
+        formGroup.append(input.val(inputValue).ref(refName))
+        return formGroup
+    }
 
     /**
      * Generate an input of type text
      * @returns {*|this}
      */
-    this.getTextInputElement = function () {
-        return $$('input').attr('type', 'text').addClass('form-control');
-    };
+    getTextInputElement($$) {
+        return $$('input').attr('type', 'text').addClass('form-control')
+    }
 
 
     /**
      * Generate a textarea form
      * @returns {component}
      */
-    this.getTextAreaElement = function () {
-        return $$('textarea').attr('rows', '4').addClass('form-control');
-    };
+    getTextAreaElement($$) {
+        return $$('textarea').attr('rows', '4').addClass('form-control')
+    }
 
-    this.onClose = function (status) {
+    onClose(status) {
 
         if (status === "cancel") {
-            return;
+            return
         } else if (status === "save") {
-            this.save();
-            return false;
+            this.save()
+            return false
         }
 
-    };
+    }
 
-};
-Component.extend(TagEditBaseComponent);
-module.exports = TagEditBaseComponent;
+}
+
+export default TagEditBaseComponent

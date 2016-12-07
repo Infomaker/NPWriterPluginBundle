@@ -1,11 +1,11 @@
-import './scss/publicationchannel.scss'
+import './scss/tags.scss'
 
-import PublicationChannel from './Publicationchannel'
+import TagsPackage from './TagsPackage'
 const { registerPlugin } = writer
 
 export default () => {
     if (registerPlugin) {
-        registerPlugin(PublicationChannel)
+        registerPlugin(TagsPackage)
     } else {
         console.info("Register method not yet available");
     }

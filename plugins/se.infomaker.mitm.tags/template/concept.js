@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     personTemplate: '<conceptItem conformance="power" standard="NewsML-G2" standardversion="2.20" version="1">' +
         '<catalogRef href="http://www.iptc.org/std/catalog/catalog.IPTC-G2-Standards_27.xml"/>' +
         '<catalogRef href="http://infomaker.se/spec/catalog/catalog.infomaker.g2.1_0.xml"/>' +
@@ -95,4 +95,4 @@ module.exports = {
         '<contentModified></contentModified>' +
         '</contentMeta>' +
         '</conceptItem>'
-};
+}

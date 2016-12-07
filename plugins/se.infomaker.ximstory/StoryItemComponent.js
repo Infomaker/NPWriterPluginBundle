@@ -14,13 +14,13 @@ class StoryItemComponent extends Component {
             .then(xml => {
                 const conceptXML = xml.querySelector('conceptItem')
                 const conceptItemJSON = jxon.build(conceptXML)
-                this.setState({
+                this.extendState({
                     loadedItem: conceptItemJSON,
                     isLoaded: true
                 })
             })
             .catch(() => {
-                this.setState({
+                this.extendState({
                     couldNotLoad: true,
                     isLoaded: true
                 })

@@ -82,7 +82,7 @@ TagEditCompanyComponent.Prototype = function () {
         var tag = this.props.tag;
         var el = $$('div').addClass('tag-edit tag-edit-person').addClass('row');
 
-        var name = this.renderElement("nameInput", 'Name', tag.concept.name, true, 'input'),
+        var name = this.renderElement($$, "nameInput", 'Name', tag.concept.name, true, 'input'),
             shortDesc = this.renderElement('shortDescInput', this.context.i18n.t('Short description'), this.getConceptDefinition('drol:short').keyValue, true, 'input'),
             longDesc = this.renderElement('longDescTextarea', this.context.i18n.t('Long description'), this.getConceptDefinition('drol:long').keyValue, true, 'textarea');
 

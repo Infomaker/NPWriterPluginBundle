@@ -1,98 +1,96 @@
-'use strict';
+import {Component, FontAwesomeIcon} from 'substance'
+import {jxon} from 'writer'
+import TagsList from './TagsListComponent'
+import TagEditBaseComponent from './TagEditBaseComponent'
+import TagEditPersonComponent from './TagEditPersonComponent'
+import TagEditCompanyComponent from './TagEditCompanyComponent'
+import TagEditTopicComponent from './TagEditTopicComponent'
+import TagsTemplate from './template/concept'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var SearchComponent = require('writer/components/form-search/FormSearchComponent');
-var TagsList = require('./TagsListComponent');
-var jxon = require('jxon/index');
-var Icon = require('substance/ui/FontAwesomeIcon');
+class TagsMainComponent extends Component {
 
-function TagsMainComponent() {
-    TagsMainComponent.super.apply(this, arguments);
-    this.name = 'tags';
+    constructor(...args) {
+        super(...args)
+        this.name = 'mmtags'
+    }
 
-}
 
-TagsMainComponent.Prototype = function () {
 
-    this.getTagTypes = function() {
+    static getTagTypes() {
         return [
             'x-im/organisation',
             'x-im/person',
             'x-im/topic'
-        ];
-    };
+        ]
+    }
 
-    this.getInitialState = function () {
+    getInitialState() {
         return {
-            existingTags: this.context.api.getLinksByType(this.name, this.getTagTypes(), "subject")
-        };
-    };
+            existingTags: this.context.api.newsItem.getLinksByType(this.name, TagsMainComponent.getTagTypes(), "subject")
+        }
+    }
 
 
-    this.reload = function () {
+    reload() {
         this.extendState({
-            existingTags: this.context.api.getLinksByType(this.name, this.getTagTypes(), "subject")
-        });
-    };
+            existingTags: this.context.api.newsItem.getLinksByType(this.name, TagsMainComponent.getTagTypes(), "subject")
+        })
+    }
 
-    this.render = function () {
+    render($$) {
 
-        this.context.api.getTags();
+        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append('mmtags-title'))
 
-        var el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append('Organisationer/personer/ämnen'));
+        const searchUrl = this.context.api.router.getEndpoint()
 
-        var searchUrl = this.context.api.router.getEndpoint();
+        const SearchComponent = this.context.componentRegistry.get('form-search')
 
-        var searchComponent = $$(SearchComponent, {
+        const searchComponent = $$(SearchComponent, {
             existingItems: this.state.existingTags,
             searchUrl: searchUrl+'/api/search/concepts/tags?q=',
             onSelect: this.addTag.bind(this),
             onCreate: this.createTag.bind(this),
-            placeholderText: "Sök Organisationer/personer/ämnen",
+            placeholderText: this.getLabel('mmtags-search_placeholder'),
             createAllowed: true
-        }).ref('searchComponent');
+        }).ref('searchComponent')
 
-        var tagList = $$(TagsList, {
+        const tagList = $$(TagsList, {
             tags: this.state.existingTags,
             removeTag: this.removeTag.bind(this),
             reload: this.reload.bind(this)
-        }).ref('tagList');
+        }).ref('tagList')
 
-        el.append(tagList);
-        el.append(searchComponent);
+        el.append(tagList)
+        el.append(searchComponent)
 
-        return el;
+        return el
 
-    };
+    }
 
     /**
      * @param tag
      */
-    this.removeTag = function (tag) {
+    removeTag(tag) {
         try {
-            this.context.api.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject');
-            this.reload();
+            this.context.api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
+            this.reload()
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
-    };
+    }
 
-    this.addTag = function (tag) {
+    addTag(tag) {
         try {
-            console.log("Add this tag", tag);
-            this.context.api.addTag(this.name, tag);
-            this.reload();
+            this.context.api.newsItem.addTag(this.name, tag)
+            this.reload()
         } catch (e) {
-
+            console.log(e)
         }
-    };
+    }
 
-    this.createTag = function (tag, exists) {
+    createTag(tag, exists) {
         try {
-            var tagEdit = require('./TagEditBaseComponent');
-
-            this.context.api.showDialog(tagEdit, {
+            this.context.api.showDialog(TagEditBaseComponent, {
                 tag: tag,
                 exists: exists,
                 close: this.closeFromDialog.bind(this),
@@ -101,85 +99,86 @@ TagsMainComponent.Prototype = function () {
                 createTopic: this.createTopic.bind(this)
             }, {
                 primary: false,
-                title: this.context.i18n.t('Create') + " " + tag.inputValue,
+                title: this.context.i18n.t('mmtags-create') + " " + tag.inputValue,
                 global: true
-            });
+            })
 
         } catch (e) {
-            console.log("E", e);
+            console.log("E", e)
         }
-    };
+    }
 
 
-    this.createPerson = function(inputValue) {
-        var newName = inputValue.split(' ');
-        var tagEdit = require('./TagEditPersonComponent');
-        var tagXMLTemplate = require('./template/concept');
-        var tagXML = $.parseXML(tagXMLTemplate.personTemplate).firstChild;
+    createPerson(inputValue) {
+        const newName = inputValue.split(' ')
+
+        const parser = new DOMParser();
+        const tagXML = parser.parseFromString(TagsTemplate.personTemplate, 'text/xml').firstChild
 
         // Prepopulate the TAG with user input from form
-        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:firstName"]').setAttribute('value', newName[0]);
-        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:lastName"]').setAttribute('value', newName[1] ? newName[1] : '');
-        var loadedTag = jxon.build(tagXML);
+        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:firstName"]').setAttribute('value', newName[0])
+        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:lastName"]').setAttribute('value', newName[1] ? newName[1] : '')
 
-        this.context.api.showDialog(tagEdit, {
+        const loadedTag = jxon.build(tagXML)
+
+        this.context.api.ui.showDialog(TagEditPersonComponent, {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.context.i18n.t('Save'),
-            title: $$('span').append($$(Icon, {icon:'fa-user'})).append(" " + this.context.i18n.t('Create ') + " " + inputValue),
+            primary: this.getLabel('mmtags-save'),
+            title: this.getLabel('mmtags-create') + " " + inputValue,
+            icon: 'fa-user',
             global: true
-        });
+        })
 
 
-    };
+    }
 
-    this.createOrganisation = function(inputValue) {
-        var tagEdit = require('./TagEditCompanyComponent');
-        var tagXMLTemplate = require('./template/concept');
-        var tagXML = $.parseXML(tagXMLTemplate.organisationTemplate).firstChild;
+    createOrganisation(inputValue) {
+
+        const parser = new DOMParser();
+        const tagXML = parser.parseFromString(TagsTemplate.organisationTemplate, 'text/xml').firstChild
 
         // Prepopulate the TAG with user input from form
-        tagXML.querySelector('concept name').textContent = inputValue;
-        var loadedTag = jxon.build(tagXML);
+        tagXML.querySelector('concept name').textContent = inputValue
+        const loadedTag = jxon.build(tagXML)
 
-        this.context.api.showDialog(tagEdit, {
+        this.context.api.ui.showDialog(TagEditCompanyComponent, {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.context.i18n.t('Save'),
-            title: $$('span').append($$(Icon, {icon:'fa-sitemap'})).append(" " + this.context.i18n.t('Create ') + " " + inputValue),
+            primary: this.getLabel('mmtags-save'),
+            title: this.getLabel('mmtags-create') + " " + inputValue,
+            icon: 'fa-sitemap',
             global: true
-        });
+        })
 
-    };
+    }
 
-    this.createTopic = function(inputValue) {
-        var tagEdit = require('./TagEditTopicComponent');
-        var tagXMLTemplate = require('./template/concept');
-        var tagXML = $.parseXML(tagXMLTemplate.topicTemplate).firstChild;
+    createTopic(inputValue) {
+        const parser = new DOMParser();
+        const tagXML = parser.parseFromString(TagsTemplate.topicTemplate, 'text/xml').firstChild
 
         // Prepopulate the TAG with user input from form
-        tagXML.querySelector('concept name').textContent = inputValue;
-        var loadedTag = jxon.build(tagXML);
+        tagXML.querySelector('concept name').textContent = inputValue
+        const loadedTag = jxon.build(tagXML)
 
-        this.context.api.showDialog(tagEdit, {
+        this.context.api.ui.showDialog(TagEditTopicComponent, {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.context.i18n.t('Save'),
-            title: $$('span').append($$(Icon, {icon:'fa-tags'})).append(" " + this.context.i18n.t('Create ') + " " + inputValue),
+            primary: this.getLabel('mmtags-save'),
+            title: this.getLabel('mmtags-create') + " " + inputValue,
+            icon:'fa-tags',
             global: true
-        });
+        })
 
-    };
+    }
 
 
-    this.closeFromDialog = function() {
-        this.reload();
+    closeFromDialog() {
+        this.reload()
+    }
+}
 
-    };
-};
-
-Component.extend(TagsMainComponent);
-module.exports = TagsMainComponent;
+export default TagsMainComponent
