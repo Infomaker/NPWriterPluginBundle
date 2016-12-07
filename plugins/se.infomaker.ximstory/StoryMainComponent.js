@@ -13,14 +13,14 @@ class StoryMainComponent extends Component {
 
     getInitialState() {
         return {
-            existingItems: api.newsItem.getStories(this.name)
+            existingItems: this.context.api.newsItem.getStories(this.name)
         }
     }
 
 
     reload() {
         this.extendState({
-            existingItems: api.newsItem.getStories(this.name)
+            existingItems: this.context.api.newsItem.getStories(this.name)
         })
     }
 
@@ -55,7 +55,7 @@ class StoryMainComponent extends Component {
 
     removeItem(tag) {
         try {
-            api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
+            this.context.api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
             this.reload()
         } catch (e) {
             console.log(e)
@@ -64,7 +64,7 @@ class StoryMainComponent extends Component {
 
     addStory(story) {
         try {
-            api.newsItem.addStory(this.name, { uuid: story.uuid, title: story.name[0] })
+            this.context.api.newsItem.addStory(this.name, { uuid: story.uuid, title: story.name[0] })
             this.reload()
         } catch (e) {
             console.log(e)
@@ -72,11 +72,13 @@ class StoryMainComponent extends Component {
     }
 
     createStory(searchItem, exists) {
-        const storyXML = $.parseXML(StoryTemplate.story).firstChild;
+        const parser = new DOMParser();
+        const storyXML = parser.parseFromString(StoryTemplate.story, 'text/xml').firstChild
+
         const item = jxon.build(storyXML);
         item.concept.name = searchItem.inputValue;
 
-        api.ui.showDialog(StoryEditCompoment, {
+        this.context.api.ui.showDialog(StoryEditCompoment, {
             item: item,
             exists: exists,
             newLocation: true,
@@ -84,7 +86,7 @@ class StoryMainComponent extends Component {
             reload: this.reload.bind(this)
         }, {
             primary: this.getLabel('ximstory-Save'),
-            title: $$('span').append(" " + this.getLabel('ximstory-create') + " " + searchItem.inputValue),
+            title:  this.getLabel('ximstory-create') + " " + searchItem.inputValue,
             global: true
         })
     }

@@ -1,4 +1,4 @@
-import {Component, FontAweseomeIcon} from 'substance/ui/Component'
+import {Component, FontAwesomeIcon} from 'substance'
 import {jxon, lodash as _} from 'writer'
 
 class StoryItemComponent extends Component {
@@ -9,7 +9,7 @@ class StoryItemComponent extends Component {
     }
 
     loadTag() {
-        api.router.getConceptItem(this.props.item.uuid, this.props.item.type)
+        this.context.api.router.getConceptItem(this.props.item.uuid, this.props.item.type)
             .then(xml => {
                 const conceptXML = xml.querySelector('conceptItem')
                 const conceptItemJSON = jxon.build(conceptXML)
@@ -63,7 +63,7 @@ class StoryItemComponent extends Component {
 
             tagItem.append(displayNameEl)
 
-            const deleteButton = $$('span').append($$(FontAwesomeIcoon, {icon: 'fa-times'})
+            const deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
                 .attr('title', this.getLabel('ximstory-remove_from_article')))
                 .on('click', () => {
@@ -71,7 +71,7 @@ class StoryItemComponent extends Component {
                 })
 
             tagItem.append(deleteButton)
-            tagItem.append($$(FontAwesomeIcoon, {icon: 'fa-circle'}).addClass('tag-icon'))
+            tagItem.append($$(FontAwesomeIcon, {icon: 'fa-circle'}).addClass('tag-icon'))
         }
         return tagItem
     }
@@ -111,7 +111,8 @@ class StoryItemComponent extends Component {
 
     showStory(title) {
         const storyEdit = require('./StoryEditComponent')
-        api.ui.showDialog(storyEdit, {
+        this.context.api.ui.showDialog(storyEdit,
+            {
                 item: this.state.loadedItem,
                 reload: this.closeFromDialog.bind(this)
             },
@@ -133,7 +134,7 @@ class StoryItemComponent extends Component {
      * Remove tag after fading item away
      * @param tag
      */
-    removeTag = function (tag) {
+    removeTag(tag) {
         this.props.removeItem(tag)
     }
 

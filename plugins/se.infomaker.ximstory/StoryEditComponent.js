@@ -1,7 +1,7 @@
 import {Component} from 'substance'
 import {jxon} from 'writer'
 
-class StoryEditComponent {
+class StoryEditComponent extends Component{
 
     constructor(...args) {
         super(...args)
@@ -13,7 +13,7 @@ class StoryEditComponent {
         this.saveLocation(null, 'POST')
             .done((data) => {
                 //Update tag in newsItem
-                api.newsItem.addStory(this.name, {
+                this.context.api.newsItem.addStory(this.name, {
                     title: story.concept.name,
                     uuid: data
                 })
@@ -61,11 +61,11 @@ class StoryEditComponent {
      * @param {string} inputValue The form value filled in by user
      * @param {string} role The definition type, drol:short or drol:long
      */
-    setDescription = function (inputValue, role) {
-        const currentDescription = api.concept.getDefinitionForType(this.props.item.concept.definition, role)
+    setDescription(inputValue, role) {
+        const currentDescription = this.context.api.concept.getDefinitionForType(this.props.item.concept.definition, role)
         if (inputValue.length > 0 && !currentDescription) {
             const longDesc = {'@role': role, keyValue: inputValue}
-            this.props.item.concept.definition = api.concept.setDefinitionDependingOnArrayOrObject(this.props.item.concept.definition, longDesc)
+            this.props.item.concept.definition = this.context.api.concept.setDefinitionDependingOnArrayOrObject(this.props.item.concept.definition, longDesc)
         } else if (inputValue.length >= 0 && currentDescription) {
             currentDescription['keyValue'] = inputValue
         }
@@ -180,7 +180,7 @@ class StoryEditComponent {
         }
 
         // Short Desc
-        const shortDescInput = $$('input').attr({ id: 'storyShortDescInput'})
+        const shortDescInput = $$('input').attr({id: 'storyShortDescInput'})
             .addClass('form-control')
             .val(shortDescriptionValue)
             .ref('storyShortDescInput')
