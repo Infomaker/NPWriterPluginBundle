@@ -1,7 +1,7 @@
 import {Component} from 'substance'
 import {jxon} from 'writer'
 
-class StoryEditComponent extends Component{
+class StoryEditComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -11,7 +11,7 @@ class StoryEditComponent extends Component{
         const story = this.props.item
 
         this.saveLocation(null, 'POST')
-            .done((data) => {
+            .then((data) => {
                 //Update tag in newsItem
                 this.context.api.newsItem.addStory(this.name, {
                     title: story.concept.name,
@@ -38,9 +38,9 @@ class StoryEditComponent extends Component{
         }
 
         this.saveLocation(uuid, 'PUT')
-            .done(() => {
+            .then(() => {
                 //Update tag in newsItem
-                this.context.api.updateStory(this.name, {
+                this.context.api.newsItem.updateStory(this.name, {
                     title: story.concept.name,
                     uuid: uuid
                 })
@@ -50,7 +50,7 @@ class StoryEditComponent extends Component{
                 this.props.reload()
                 this.send('close')
             })
-            .catch(() => {
+            .catch((e) => {
                 this.setState({error: true});
             })
     }
@@ -137,7 +137,7 @@ class StoryEditComponent extends Component{
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.context.i18n.t("ximstory-error-save") + ": " + this.props.item.concept.name)))
+                this.getLabel("ximstory-error-save") + ": " + this.props.item.concept.name)))
         }
 
         return el
@@ -173,7 +173,7 @@ class StoryEditComponent extends Component{
      * @returns {Component}
      */
     renderShortDescription($$) {
-        const shortDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:short')
+        const shortDescription = this.context.api.concept.getDefinitionForType(this.props.item.concept.definition, 'drol:short')
         let shortDescriptionValue = ""
         if (shortDescription) {
             shortDescriptionValue = shortDescription['keyValue']
@@ -203,7 +203,7 @@ class StoryEditComponent extends Component{
      */
     renderLongDescription($$) {
 
-        const longDescription = this.conceptUtil.getDefinitionForType(this.props.item.concept.definition, 'drol:long')
+        const longDescription = this.context.api.concept.getDefinitionForType(this.props.item.concept.definition, 'drol:long')
         let longDescriptionValue = ""
 
         if (longDescription) {

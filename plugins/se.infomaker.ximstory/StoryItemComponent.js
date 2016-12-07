@@ -1,5 +1,6 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {jxon, lodash as _} from 'writer'
+import StoryEditComponent from './StoryEditComponent'
 
 class StoryItemComponent extends Component {
 
@@ -93,7 +94,7 @@ class StoryItemComponent extends Component {
     // }
 
 
-    static updateTagItemName(tagItem, loadedTag) {
+    updateTagItemName(tagItem, loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
             const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (let i = 0; i < definition.length; i++) {
@@ -110,8 +111,7 @@ class StoryItemComponent extends Component {
 
 
     showStory(title) {
-        const storyEdit = require('./StoryEditComponent')
-        this.context.api.ui.showDialog(storyEdit,
+        this.context.api.ui.showDialog(StoryEditComponent,
             {
                 item: this.state.loadedItem,
                 reload: this.closeFromDialog.bind(this)

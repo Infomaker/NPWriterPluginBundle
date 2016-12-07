@@ -26,7 +26,7 @@ class StoryMainComponent extends Component {
 
     render($$) {
 
-        const el = $$('div').ref('tagContainer').addClass('stories').append($$('h2').append(this.context.i18n.t('Story')))
+        const el = $$('div').ref('tagContainer').addClass('stories').append($$('h2').append(this.getLabel('ximstory-story')))
 
         const searchUrl = this.context.api.router.getEndpoint()
 

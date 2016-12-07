@@ -17,7 +17,7 @@ export default {
             sv: 'Sök storys'
         })
 
-        config.addLabel('ximstory-save', {
+        config.addLabel('ximstory-Save', {
             en: 'Save',
             sv: 'Spara'
         })
@@ -55,6 +55,11 @@ export default {
         config.addLabel('ximstory-long_description', {
             en: 'Long description',
             sv: 'Lång beskrivning'
+        })
+
+        config.addLabel('ximstory-story', {
+            en: 'Story',
+            sv: 'Story'
         })
 
         config.addComponentToSidebarWithTabId(this.id, 'main', StoryMainComponent)
