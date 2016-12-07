@@ -24,6 +24,18 @@ class ImageDisplay extends Component {
             imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
+
+            if(this.props.isInTeaser) {
+                const deleteButton = $$(Button, {icon: 'remove'})
+                    .addClass('remove-image__button')
+                    .attr('title', this.getLabel('remove-image-button-title'))
+                    .on('click', () => {
+                        this.props.removeImage()
+                    })
+
+                imgContainer.append(deleteButton)
+            }
+
             imgContainer.append(
                 $$('img', {
                     src: imgSrc

@@ -11,6 +11,16 @@ class XimteaserComponent extends Component {
         // @TODO, how to prevent drag correctly??
         this.parent.parent.attr('draggable', false)
         this.parent.attr('draggable', false)
+        this.attr('draggable', false)
+
+        this.el.addEventListener('dragstart', (e) => {
+            console.log("e", e);
+            e.stopPropagation()
+            e.preventDefault()
+        })
+        this.el.on('dragstart', (e) => {
+
+        })
     }
 
     dispose() {
@@ -36,19 +46,29 @@ class XimteaserComponent extends Component {
                 $$(ImageDisplay, { // Pass property to images if used in teaser and if drag should be disabled
                     node: node,
                     isolatedNodeState: this.props.isolatedNodeState,
-                    isInTeaser: true
+                    isInTeaser: true,
+                    removeImage: this.removeImage.bind(this)
                 }).ref('image')
             )
         }
-
-
         el.append(this.renderContent($$, teaserFields))
-
-
 
         return el
     }
 
+    /**
+     * Remove reference to fileNode from teaser node
+     * Set subject property on teaser to null
+     */
+    removeImage() {
+
+        api.editorSession.transaction((tx) => {
+            const node = this.props.node
+            tx.set([node.id, 'imageFile'], null)
+            tx.set([node.id, 'subject'], '')
+            // tx.delete(node.imageFile)
+        })
+    }
 
     /**
      * Render component header with icon

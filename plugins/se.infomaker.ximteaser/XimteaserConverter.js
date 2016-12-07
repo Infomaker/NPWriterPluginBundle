@@ -178,7 +178,7 @@ export default {
         let fileNode = node.document.get(node.imageFile)
 
         // Links
-        if (fileNode.uuid !== '' && node.uri) {
+        if (fileNode && fileNode.uuid !== '' && node.uri) {
             const link = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',

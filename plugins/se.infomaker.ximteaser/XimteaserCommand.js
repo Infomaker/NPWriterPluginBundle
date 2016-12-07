@@ -7,6 +7,15 @@ class XimteaserCommand extends WriterCommand {
         const id = this.config.id
         const teaserPosition = context.api.getConfigValue(this.config.id, 'teaserPosition', 'bottom')
 
+        const nodes = api.document.getDocumentNodes()
+        const existingTeaser = nodes.filter((node) => {
+            return node.dataType === 'x-im/teaser'
+        })
+        if(existingTeaser.length > 0) {
+            api.ui.showNotification('se.infomaker.ximteaser', api.getLabel('A teaser already exist'), api.getLabel('There is already a teaser in this document'))
+            return false
+        }
+
         switch (teaserPosition) {
             case 'top':
                 this.insertTeaserAtTop(params)

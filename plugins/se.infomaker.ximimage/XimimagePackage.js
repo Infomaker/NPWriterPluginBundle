@@ -24,6 +24,7 @@ export default {
         config.addIcon('image', { 'fontawesome': 'fa-image' })
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })
         config.addIcon('upload', { 'fontawesome': 'fa-upload' })
+        config.addIcon('remove', { 'fontawesome': 'fa-times' })
 
         config.addFileProxy(XimimageFileProxy)
 
@@ -33,6 +34,10 @@ export default {
         config.addLabel('Upload image', {
             en: 'Upload image',
             sv: 'Ladda upp bild'
+        })
+        config.addLabel('remove-image-button-title', {
+            en: 'Remove image',
+            sv: 'Ta bort bild'
         })
     }
 }

@@ -1,19 +1,21 @@
 .sc-ximteaser {
 
     .fileinput {
+        display: none;
         .upload-button {
             cursor: pointer;
             float: right;
-            font-size:1rem;
+            font-size: 1rem;
 
             .fa {
-                color:#565656
+                color: #565656
             }
         }
         input[type="file"] {
             display: none;
         }
     }
+
     .im-blocknode__content {
         div {
             margin-top: 10px;
@@ -22,15 +24,21 @@
             width: 20px;
             float: left;
             color: #b4b4b4;
-            line-height:24px;
+            line-height: 24px;
             margin-right: 10px;
         }
     }
-
 
     .se-title {
         padding: 10px 20px;
         background: #eee;
         padding-bottom: 20px;
+    }
+}
+.sm-ximteaser {
+    &.sm-selected {
+        .fileinput {
+            display: inline;
+        }
     }
 }

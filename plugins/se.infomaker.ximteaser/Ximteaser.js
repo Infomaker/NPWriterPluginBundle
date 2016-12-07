@@ -31,6 +31,7 @@ Ximteaser.define({
     type: 'ximteaser',
     dataType: {type: 'string', optional: false},
     imageFile: { type: 'file', optional: true },
+    uri: { type: 'string', optional: true },
 
     title: {type: 'string', optional: false, default: '' },
     subject: {type: 'string', optional: false, default: '' },
