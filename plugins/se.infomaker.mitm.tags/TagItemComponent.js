@@ -26,7 +26,7 @@ class TagsItemComponent extends Component {
             })
         } else if (_.isObject(this.state.loadedTag.itemMeta.itemMetaExtProperty)) {
             if (this.state.loadedTag.itemMeta.itemMetaExtProperty['@type'] === type) {
-                return this.loadedTag.itemMeta.itemMetaExtProperty;
+                return this.state.loadedTag.itemMeta.itemMetaExtProperty;
             }
         }
     }

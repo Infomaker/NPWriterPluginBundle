@@ -48,7 +48,7 @@ export default {
             sv: 'Organisation'
         })
 
-        config.addLabel('mm-Topic', {
+        config.addLabel('mmtags-Topic', {
             en: 'Topic',
             sv: 'Ämne'
         })

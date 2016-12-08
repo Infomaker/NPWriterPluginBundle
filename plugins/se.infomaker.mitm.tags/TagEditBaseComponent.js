@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {jxon, lodash} from 'writer'
+import {lodash} from 'writer'
 const find = lodash.find
 
 class TagEditBaseComponent extends Component {
@@ -117,13 +117,13 @@ class TagEditBaseComponent extends Component {
         const organisationBtn = $$('button')
             .append($$(Icon, {icon: 'fa-sitemap'}))
             .append($$('span')
-                .append(this.getLabel('mm-Organization')))
+                .append(this.getLabel('mmtags-Organization')))
             .on('click', this.createOrganisation)
 
         const topicBtn = $$('button')
             .append($$(Icon, {icon: 'fa-tags'}))
             .append($$('span')
-                .append(this.getLabel('mm-Topic')))
+                .append(this.getLabel('mmtags-Topic')))
             .on('click', this.createTopic)
 
         el.append($$('small').addClass('text-muted').append(this.getLabel('mmtags-type-question-label')))

@@ -88,7 +88,7 @@ class TagsMainComponent extends Component {
 
     createTag(tag, exists) {
         try {
-            this.context.api.showDialog(TagEditBaseComponent, {
+            this.context.api.ui.showDialog(TagEditBaseComponent, {
                 tag: tag,
                 exists: exists,
                 close: this.closeFromDialog.bind(this),
@@ -97,7 +97,7 @@ class TagsMainComponent extends Component {
                 createTopic: this.createTopic.bind(this)
             }, {
                 primary: false,
-                title: this.context.i18n.t('mmtags-create') + " " + tag.inputValue,
+                title: this.getLabel('mmtags-create') + " " + tag.inputValue,
                 global: true
             })
 
