@@ -150,7 +150,7 @@ class SocialembedNode extends BlockNode {
      * Load vimeo Oembed
      */
     _loadVimeo(url, context, cb) {
-        const vimeoBase = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}&format=json`
+        const vimeoBase = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}&format=json&omitscript=true`
 
         api.router.get('/api/resourceproxy', {url: vimeoBase})
             .then(response => api.router.checkForOKStatus(response))
@@ -176,7 +176,7 @@ class SocialembedNode extends BlockNode {
      * Load soundcloud Oembed
      */
     _loadSoundcloud(url, context, cb) {
-        const soundcloudBase = `http://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`
+        const soundcloudBase = `http://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}&omitscript=true`
         const oembedURL = encodeURIComponent(soundcloudBase)
 
         api.router.get('/api/resourceproxy', {url: oembedURL})
