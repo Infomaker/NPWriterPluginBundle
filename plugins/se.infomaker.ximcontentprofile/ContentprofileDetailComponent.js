@@ -19,20 +19,25 @@ class ContentprofileDetailComponent extends Component {
 
     createContentProfile() {
         const contentProfile = this.props.contentProfile
-        const url = '/api/newsitem'
 
-        this.saveContentProfile(url, 'POST')
-            .then(response => this.context.api.router.checkForOKStatus(response))
-            .then(response => response.text())
-            .then(uuid => {
+        this.saveContentProfile(null, 'POST')
+            .then((uuid) => {
+                // Create link in newsItem
                 this.context.api.newsItem.addConceptProfile(this.name, {
                     title: contentProfile.concept.name,
                     uuid: uuid
                 })
 
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
+
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.error(err))
+            })
+            .catch(() => {
+                this.setState({error: true})
+            })
     }
 
     updateContentProfile() {
@@ -43,24 +48,29 @@ class ContentprofileDetailComponent extends Component {
             throw new Error("ConceptItem has no UUID to update")
         }
 
-        const url = '/api/newsitem/' + uuid
         const shouldUpdateNewsItem = this.refs.contentProfileNameInput.val() !== contentProfile.concept.name
 
-        this.saveContentProfile(url, 'PUT')
-            .then(response => this.context.api.router.checkForOKStatus(response))
-            .then(response => response.text())
+        // TODO: Handle response of PUT as in StoryEditComponent...
+        this.saveContentProfile(uuid, 'PUT')
             .then(() => {
                 if (shouldUpdateNewsItem) {
-                    // Update newsItem
+                    // Update link in newsItem
                     this.context.api.newsItem.updateConceptProfile(this.name, {
                         title: contentProfile.concept.name,
                         uuid: uuid
                     })
                 }
 
+                if (this.state.error) {
+                    this.setState({error: false})
+                }
+
                 this.props.reload()
                 this.send('close')
-            }).catch(err => console.error(err));
+            })
+            .catch((e) => {
+                this.setState({error: true});
+            })
     }
 
     setDescription(inputValue, role) {
@@ -82,7 +92,7 @@ class ContentprofileDetailComponent extends Component {
         }
     }
 
-    saveContentProfile(url, method) {
+    saveContentProfile(id, method) {
         let contentProfile = this.props.contentProfile
 
         contentProfile.concept.name = this.refs.contentProfileNameInput.val().length > 0 ?
@@ -105,9 +115,9 @@ class ContentprofileDetailComponent extends Component {
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.put(url, {body: conceptItem})
+                return this.context.api.router.updateConceptItem(id, conceptItem)
             case "POST":
-                return this.context.api.router.post(url, {body: conceptItem})
+                return this.context.api.router.createConceptItem(conceptItem)
         }
     }
 
