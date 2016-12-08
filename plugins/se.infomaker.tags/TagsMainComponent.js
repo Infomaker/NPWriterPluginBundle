@@ -1,25 +1,26 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component} from 'substance'
 import {jxon} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
 import TagEditPersonComponent from './TagEditPersonComponent'
 import TagEditCompanyComponent from './TagEditCompanyComponent'
-import TagEditTopicComponent from './TagEditTopicComponent'
 import TagsTemplate from './template/concept'
 
 class TagsMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'mmtags'
+        this.name = 'ximtags'
     }
 
     getInitialState() {
         return {
             existingTags: this.context.api.newsItem.getTags([
-                'x-im/organisation',
                 'x-im/person',
-                'x-im/topic'
+                'x-im/organisation',
+                'x-cmbr/channel',
+                'x-im/channel',
+                'x-im/category'
             ])
         }
     }
@@ -27,16 +28,18 @@ class TagsMainComponent extends Component {
     reload() {
         this.extendState({
             existingTags: this.context.api.newsItem.getTags([
-                'x-im/organisation',
                 'x-im/person',
-                'x-im/topic'
+                'x-im/organisation',
+                'x-cmbr/channel',
+                'x-im/channel',
+                'x-im/category'
             ])
         })
     }
 
     render($$) {
 
-        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('mmtags-title')))
+        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('ximtags-title')))
 
         const SearchComponent = this.context.componentRegistry.get('form-search')
 
@@ -45,7 +48,7 @@ class TagsMainComponent extends Component {
             searchUrl: '/api/search/concepts/tags?q=',
             onSelect: this.addTag.bind(this),
             onCreate: this.createTag.bind(this),
-            placeholderText: this.getLabel('mmtags-search_placeholder'),
+            placeholderText: this.getLabel('ximtags-search_placeholder'),
             createAllowed: true
         }).ref('searchComponent')
 
@@ -90,11 +93,10 @@ class TagsMainComponent extends Component {
                 exists: exists,
                 close: this.closeFromDialog.bind(this),
                 createPerson: this.createPerson.bind(this),
-                createOrganisation: this.createOrganisation.bind(this),
-                createTopic: this.createTopic.bind(this)
+                createOrganisation: this.createOrganisation.bind(this)
             }, {
                 primary: false,
-                title: this.getLabel('mmtags-create') + " " + tag.inputValue,
+                title: this.getLabel('ximtags-create') + " " + tag.inputValue,
                 global: true
             })
 
@@ -120,8 +122,8 @@ class TagsMainComponent extends Component {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.getLabel('mmtags-save'),
-            title: this.getLabel('mmtags-create') + " " + inputValue,
+            primary: this.getLabel('ximtags-save'),
+            title: this.getLabel('ximtags-create') + " " + inputValue,
             icon: 'fa-user',
             global: true
         })
@@ -142,29 +144,9 @@ class TagsMainComponent extends Component {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.getLabel('mmtags-save'),
-            title: this.getLabel('mmtags-create') + " " + inputValue,
+            primary: this.getLabel('ximtags-save'),
+            title: this.getLabel('ximtags-create') + " " + inputValue,
             icon: 'fa-sitemap',
-            global: true
-        })
-
-    }
-
-    createTopic(inputValue) {
-        const parser = new DOMParser();
-        const tagXML = parser.parseFromString(TagsTemplate.topicTemplate, 'text/xml').firstChild
-
-        // Prepopulate the TAG with user input from form
-        tagXML.querySelector('concept name').textContent = inputValue
-        const loadedTag = jxon.build(tagXML)
-
-        this.context.api.ui.showDialog(TagEditTopicComponent, {
-            tag: loadedTag,
-            close: this.closeFromDialog.bind(this)
-        }, {
-            primary: this.getLabel('mmtags-save'),
-            title: this.getLabel('mmtags-create') + " " + inputValue,
-            icon:'fa-tags',
             global: true
         })
 

@@ -18,6 +18,7 @@ import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
+import XimTags from './se.infomaker.tags'
 
 (() => {
 
@@ -41,4 +42,5 @@ import XImPdf from './se.infomaker.ximpdf/index'
     XImPdf()
     DefaultvalidationPackage()
     ChannelSelector()
+    XimTags()
 })()
