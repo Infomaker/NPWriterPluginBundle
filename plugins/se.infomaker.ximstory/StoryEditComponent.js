@@ -18,13 +18,13 @@ class StoryEditComponent extends Component {
                     uuid: data
                 })
                 if (this.state.error) {
-                    this.setState({error: false})
+                    this.extendState({error: false})
                 }
                 this.props.reload()
                 this.send('close')
             })
             .catch(() => {
-                this.setState({error: true})
+                this.extendState({error: true})
             })
     }
 
@@ -45,13 +45,13 @@ class StoryEditComponent extends Component {
                     uuid: uuid
                 })
                 if (this.state.error) {
-                    this.setState({error: false})
+                    this.extendState({error: false})
                 }
                 this.props.reload()
                 this.send('close')
             })
             .catch((e) => {
-                this.setState({error: true});
+                this.extendState({error: true});
             })
     }
 
@@ -137,7 +137,7 @@ class StoryEditComponent extends Component {
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.getLabel("ximstory-error-save") + ": " + this.props.item.concept.name)))
+                this.getLabel("ximstory-error-save"))))
         }
 
         return el

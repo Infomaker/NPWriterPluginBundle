@@ -7,25 +7,25 @@ class StoryListComponent extends Component {
         super(...args)
         this.name = 'ximstory'
     }
-    
+
     render($$) {
-        const items = this.props.items
-        const tagList = $$('ul').addClass('tag-list')
-        const tagEls = items.map(function (item) {
-            return $$(StoryItem, {
-                item: item,
-                removeItem: this.removeItem.bind(this),
-                reload: this.props.reload.bind(this)
-            }).ref('tag-'+item.uuid)
-        }, this)
-        
+        const items = this.props.items,
+            tagList = $$('ul').addClass('tag-list'),
+            tagEls = items.map((item) => {
+                return $$(StoryItem, {
+                    item: item,
+                    removeItem: this.removeItem.bind(this),
+                    reload: this.props.reload.bind(this)
+                }).ref('tag-' + item.uuid)
+            }, this)
+
         tagList.append(tagEls)
 
         return tagList
     }
 
     removeItem(tag) {
-        delete this.refs['tag-'+tag.uuid]
+        delete this.refs['tag-' + tag.uuid]
         this.props.removeItem(tag)
     }
 }

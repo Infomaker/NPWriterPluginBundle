@@ -17,6 +17,7 @@ import ContentRelations from './se.infomaker.contentrelations/index'
 import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
+import MitmTags from './se.infomaker.mitm.tags/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
@@ -59,6 +60,7 @@ import HeadlinePackage from './textstyles/se.infomaker.headline/HeadlinePackage'
     PublicationChannel()
     ContentProfile()
     XImStory()
+    MitmTags()
 
     // Textstyles
     BlockQuotePackage()
