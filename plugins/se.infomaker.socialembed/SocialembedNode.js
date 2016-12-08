@@ -21,6 +21,12 @@ class SocialembedNode extends BlockNode {
             case 'facebook':
                 this._loadFacebook(url, context, cb)
                 break;
+            case 'vimeo':
+                this._loadVimeo(url, context, cb)
+                break;
+            case 'soundcloud':
+                this._loadSoundcloud(url, context, cb)
+                break;
             default:
                 cb(new Error('Could not resolve an embed for this url'))
         }
@@ -138,6 +144,59 @@ class SocialembedNode extends BlockNode {
                 cb(error)
             })
 
+    }
+
+    /**
+     * Load vimeo Oembed
+     */
+    _loadVimeo(url, context, cb) {
+        const vimeoBase = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}&format=json`
+
+        api.router.get('/api/resourceproxy', {url: vimeoBase})
+            .then(response => api.router.checkForOKStatus(response))
+            .then(response => api.router.toJson(response))
+            .then(json => {
+                cb(null, {
+                    author: json.author_url,
+                    html: json.html,
+                    uri: `im://vimeo/${json.video_id}`,
+                    url: url,
+                    title: json.title,
+                    linkType: 'x-im/vimeo',
+                    socialChannel: 'Vimeo',
+                    socialChannelIcon: 'fa-vimeo'
+                })
+            })
+            .catch((error) => {
+                cb(error)
+            })
+    }
+
+    /**
+     * Load soundcloud Oembed
+     */
+    _loadSoundcloud(url, context, cb) {
+        const soundcloudBase = `http://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`
+        const oembedURL = encodeURIComponent(soundcloudBase)
+
+        api.router.get('/api/resourceproxy', {url: oembedURL})
+            .then(response => api.router.checkForOKStatus(response))
+            .then(response => api.router.toJson(response))
+            .then(json => {
+                cb(null, {
+                    author: json.author_url,
+                    html: json.html,
+                    uri: `im://soundcloud/${encodeURIComponent(json.author_name + '.' + json.title)}`,
+                    url: url,
+                    title: json.title,
+                    linkType: 'x-im/soundcloud',
+                    socialChannel: 'Soundcloud',
+                    socialChannelIcon: 'fa-soundcloud'
+                })
+            })
+            .catch((error) => {
+                cb(error)
+            })
     }
 }
 

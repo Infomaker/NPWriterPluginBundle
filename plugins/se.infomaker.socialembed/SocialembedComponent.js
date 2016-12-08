@@ -1,6 +1,4 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {api} from 'writer'
-
 
 class SocialembedComponent extends Component {
 

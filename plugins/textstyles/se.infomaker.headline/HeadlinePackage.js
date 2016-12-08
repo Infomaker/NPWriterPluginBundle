@@ -22,6 +22,7 @@ const headlinePackage = {
         }
         config.addLabel('headline.content', headlineLbl)
         config.addLabel('headline', headlineLbl)
+
     }
 };
 
