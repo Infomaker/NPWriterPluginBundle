@@ -13,7 +13,7 @@ class ImageCropper extends Component {
             'ximimage__softcrop',
             {
                 autocrop: true,
-                detectWorkerUrl: 'node_modules/cropjs/dist/js/imcrop.worker.detect.js',
+                detectWorkerUrl: null, // FIXME: Use 'node_modules/cropjs/dist/js/imcrop.worker.detect.js',
                 detectThreshold: 30,
                 detectStepSize: 3,
                 debug: false

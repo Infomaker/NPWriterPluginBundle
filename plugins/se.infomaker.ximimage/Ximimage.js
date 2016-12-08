@@ -23,13 +23,33 @@ class Ximimage extends BlockNode {
     }
 
     handleDOMDocument(newsItemDOMDocument) {
-
-        //@TODO: Finish update the node
-        const document = newsItemDOMDocument.documentElement
-        const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
+        const dom = newsItemDOMDocument.documentElement,
+            uuid = dom.getAttribute('guid'),
+            uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]'),
+            authors = dom.querySelectorAll('itemMeta > links > link[rel="author"]'),
+            text = dom.querySelector('contentMeta > metadata > object > data > text'),
+            credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
+            width = dom.querySelector('contentMeta > metadata > object > data > width'),
+            height = dom.querySelector('contentMeta > metadata > object > data > height')
+// debugger
+//     this.node.setInitialMetaData(
+//         uuid,
+//         uri ? uri.attributes['value'].value : '',
+//         imageUrl,
+//         text ? text.textContent : '',
+//         credit ? credit.textContent : '',
+//         width ? width.textContent : null,
+//         width ? height.textContent : null,
+//         authors
+    // );
 
         api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'uri'], uri)
+            debugger
+            tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
+            tx.set([this.id, 'text'], text ? text.textContent : '')
+            tx.set([this.id, 'credit'], credit ? credit.textContent : '')
+            tx.set([this.id, 'width'], width ? width.textContent : '')
+            tx.set([this.id, 'height'], height ? height.textContent : '')
         }, {history: false})
 
     }

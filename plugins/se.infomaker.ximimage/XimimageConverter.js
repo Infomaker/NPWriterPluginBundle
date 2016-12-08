@@ -62,6 +62,7 @@ export default {
         node.alignment = ''
 
         if (dataEl) {
+            debugger
             dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
                     node.caption = converter.annotatedText(child, [node.id, 'caption']);
@@ -170,7 +171,7 @@ export default {
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
-            
+
             if (!node[obj.name]) {
                 data.append($$(name).append(''))
             }

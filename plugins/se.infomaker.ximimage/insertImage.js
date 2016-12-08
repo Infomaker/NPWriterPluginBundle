@@ -39,6 +39,8 @@ export default function(tx, data) {
         caption: '',
         alttext: '',
         credit: '',
-        alignment: ''
+        alignment: '',
+        width: 0,
+        height: 0
     })
 }

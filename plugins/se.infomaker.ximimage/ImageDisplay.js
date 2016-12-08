@@ -82,10 +82,39 @@ class ImageDisplay extends Component {
     }
 
     _openCropper() {
-        this.setState({
-            DialogClass: ImageCropper,
-            src: this.props.node.getUrl()
-        })
+        let tertiary = false;
+        if (this.props.node.crops) {
+            tertiary = [{
+                caption: this.getLabel('Remove'),
+                callback: () => {
+                    debugger
+                    // FIXME: Implement: this.props.node.setSoftcropData([]);
+                    return true;
+                }
+            }];
+        }
+
+        api.ui.showDialog(
+            ImageCropper,
+            {
+                src: this.props.node.getUrl(),
+                width: this.props.node.width,
+                height: this.props.node.height,
+                crops: this.props.node.crops,
+                callback: (softCropData) => {
+                    debugger
+                    // FIXME: Implement: this.props.node.setSoftcropData(softcropData)
+                }
+            },
+            {
+                tertiary: tertiary
+            }
+        )
+
+        // this.setState({
+        //     DialogClass: ImageCropper,
+        //     src: this.props.node.getUrl()
+        // })
     }
 }
 
