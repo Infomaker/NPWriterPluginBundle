@@ -104,7 +104,7 @@ class TagsItemComponent extends Component {
                 })
 
             tagItem.append(deleteButton)
-            const iconComponent = this.getIconForTag(tag)
+            const iconComponent = this.getIconForTag($$, tag)
             if (iconComponent) {
                 tagItem.append(iconComponent)
             }
@@ -124,8 +124,8 @@ class TagsItemComponent extends Component {
                 secondary: false,
                 title: title,
                 global: true
-            });
-    };
+            })
+    }
 
     /**
      * Shows a edit component in dialoag
@@ -177,16 +177,16 @@ class TagsItemComponent extends Component {
         this.props.removeTag(tag);
     }
 
-    getIconForTag(tag) {
+    getIconForTag($$, tag) {
         if (!tag.type) {
-            return this.getDefaultIconForTag();
+            return this.getDefaultIconForTag($$);
         }
 
         const tagConfig = Config.types[tag.type];
         if (tagConfig) {
             return $$(Icon, {icon: tagConfig.icon}).addClass('tag-icon');
         } else {
-            this.getDefaultIconForTag();
+            this.getDefaultIconForTag($$);
         }
     }
 
@@ -200,7 +200,7 @@ class TagsItemComponent extends Component {
         }
     }
 
-    updateTagItemName = function (tagItem, loadedTag) {
+    updateTagItemName(tagItem, loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
             const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
             for (let i = 0; i < definition.length; i++) {
@@ -215,7 +215,7 @@ class TagsItemComponent extends Component {
         }
     }
 
-    getDefaultIconForTag() {
+    getDefaultIconForTag($$) {
         return $$(Icon, {icon: 'fa-tag'}).addClass('tag-icon')
     }
 

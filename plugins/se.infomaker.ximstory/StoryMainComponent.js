@@ -28,13 +28,11 @@ class StoryMainComponent extends Component {
 
         const el = $$('div').ref('tagContainer').addClass('stories').append($$('h2').append(this.getLabel('ximstory-story')))
 
-        const searchUrl = this.context.api.router.getEndpoint()
-
         const SearchComponent = this.context.componentRegistry.get('form-search')
 
         const searchComponent = $$(SearchComponent, {
             existingItems: this.state.existingItems,
-            searchUrl: searchUrl+'/api/search/concepts/stories?q=',
+            searchUrl: '/api/search/concepts/stories?q=',
             onSelect: this.addStory.bind(this),
             onCreate: this.createStory.bind(this),
             placeholderText: this.getLabel('ximstory-search_stories'),

@@ -1,7 +1,7 @@
 export default {
 
     isTagEditable: function(tag) {
-        return !!this.types[tag.type].editable
+        return Boolean(this.types[tag.type].editable)
     },
 
     types: {

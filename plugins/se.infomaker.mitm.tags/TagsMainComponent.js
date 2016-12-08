@@ -39,15 +39,13 @@ class TagsMainComponent extends Component {
 
     render($$) {
 
-        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append('mmtags-title'))
-
-        const searchUrl = this.context.api.router.getEndpoint()
+        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('mmtags-title')))
 
         const SearchComponent = this.context.componentRegistry.get('form-search')
 
         const searchComponent = $$(SearchComponent, {
             existingItems: this.state.existingTags,
-            searchUrl: searchUrl+'/api/search/concepts/tags?q=',
+            searchUrl: '/api/search/concepts/tags?q=',
             onSelect: this.addTag.bind(this),
             onCreate: this.createTag.bind(this),
             placeholderText: this.getLabel('mmtags-search_placeholder'),

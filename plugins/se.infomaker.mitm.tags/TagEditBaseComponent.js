@@ -1,6 +1,4 @@
-'use strict'
-
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component, FontAwesomeIcon as Icon} from 'substance'
 import {jxon, lodash} from 'writer'
 const find = lodash.find
 

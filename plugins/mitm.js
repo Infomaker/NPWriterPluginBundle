@@ -21,6 +21,7 @@ import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
+import MitmTags from './se.infomaker.mitm.tags'
 
 (() => {
 
@@ -43,9 +44,9 @@ import XImPdf from './se.infomaker.ximpdf/index'
     YoutubeEmbed()
     ContentRelations()
     History()
-    XImPdf()
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
+    MitmTags()
 
 })()
