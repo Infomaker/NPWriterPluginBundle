@@ -21,6 +21,7 @@ import MitmTags from './se.infomaker.mitm.tags/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
+import ContentProfile from './se.infomaker.ximcontentprofile/index'
 import XImStory from './se.infomaker.ximstory/index'
 
 /**
@@ -57,6 +58,7 @@ import HeadlinePackage from './textstyles/se.infomaker.headline/HeadlinePackage'
     DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
+    ContentProfile()
     XImStory()
     MitmTags()
 

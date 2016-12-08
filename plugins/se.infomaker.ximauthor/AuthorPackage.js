@@ -11,6 +11,12 @@ export default {
             en: 'No author specified',
             sv: 'Ingen författare är vald'
         })
+        config.addLabel('Search authors', {
+            sv: 'Sök författare'
+        })
+        config.addLabel('Authors', {
+            sv: 'Författare'
+        })
         config.addValidator(AuthorValidation)
         config.addComponentToSidebarWithTabId(this.id, 'main', AuthorMainComponent)
     }

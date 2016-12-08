@@ -14,7 +14,7 @@ export default {
 
         config.addLabel('ximstory-search_stories', {
             en: 'Search stories',
-            sv: 'Sök storys'
+            sv: 'Sök stories'
         })
 
         config.addLabel('ximstory-Save', {
