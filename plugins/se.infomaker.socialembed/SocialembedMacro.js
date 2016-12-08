@@ -22,6 +22,10 @@ export default {
             hasMatch = true
         } else if (url.indexOf('facebook') > 0) {
             hasMatch = true
+        } else if (url.indexOf('vimeo') > 0) {
+            hasMatch = true
+        } else if (url.indexOf('soundcloud') > 0) {
+            hasMatch = true
         }
 
         if(hasMatch) {
