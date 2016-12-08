@@ -12,8 +12,9 @@ class StoryItemComponent extends Component {
     loadTag() {
         this.context.api.router.getConceptItem(this.props.item.uuid, this.props.item.type)
             .then(xml => {
-                const conceptXML = xml.querySelector('conceptItem')
-                const conceptItemJSON = jxon.build(conceptXML)
+                const conceptXML = xml.querySelector('conceptItem'),
+                    conceptItemJSON = jxon.build(conceptXML)
+
                 this.extendState({
                     loadedItem: conceptItemJSON,
                     isLoaded: true
@@ -21,25 +22,25 @@ class StoryItemComponent extends Component {
             })
             .catch(() => {
                 this.extendState({
-                    couldNotLoad: true,
-                    isLoaded: true
+                    isLoaded: true,
+                    couldNotLoad: true
                 })
             })
     }
 
 
     render($$) {
-        const item = this.props.item
+        const item = this.props.item,
+            tagItem = $$('li').addClass('tag-list__item').ref('tagItem').attr('title', 'Story'),
+            displayNameEl = $$('span')
 
-        const tagItem = $$('li').addClass('tag-list__item').ref('tagItem').attr('title', 'Story')
-        const displayNameEl = $$('span')
         let displayName
 
         if (!this.state.isLoaded) {
             this.loadTag()
         } else {
             if (this.state.couldNotLoad) {
-                displayNameEl.addClass('tag-item__title  tag-item__title--no-avatar tag-item__title--notexisting')
+                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar tag-item__title--notexisting')
                     .append(item.title)
                     .attr('title', this.getLabel('ximstory-could_not_load_uuid') + item.uuid)
                 displayName = item.title

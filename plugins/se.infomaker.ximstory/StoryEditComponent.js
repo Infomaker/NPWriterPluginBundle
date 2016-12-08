@@ -137,7 +137,7 @@ class StoryEditComponent extends Component {
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.getLabel("ximstory-error-save") + ": " + this.props.item.concept.name)))
+                this.getLabel("ximstory-error-save"))))
         }
 
         return el

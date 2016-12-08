@@ -1,10 +1,7 @@
-'use stricy';
-
-module.exports = {
+export default {
 
     isTagEditable: function(tag) {
-        return !!this.types[tag.type].editable;
-
+        return !!this.types[tag.type].editable
     },
 
     types: {
@@ -25,5 +22,4 @@ module.exports = {
         }
 
     }
-
-};
+}

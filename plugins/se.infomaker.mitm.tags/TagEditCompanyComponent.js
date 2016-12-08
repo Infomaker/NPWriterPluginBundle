@@ -1,126 +1,142 @@
-'use strict';
+import TagEditBaseComponent from './TagEditBaseComponent'
+import {jxon} from 'writer'
 
-var TagEditComponent = require('./TagEditBaseComponent');
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var jxon = require('jxon/index');
-var replace = require('lodash/replace');
-var find = require('lodash/find');
+class TagEditCompanyComponent extends TagEditBaseComponent {
 
-function TagEditCompanyComponent() {
-    TagEditCompanyComponent.super.apply(this, arguments);
-    this.name = 'tags';
-}
-
-TagEditCompanyComponent.Prototype = function () {
+    constructor(...args) {
+        super(...args)
+        this.name = 'mmtags'
+    }
 
 
-    this.save = function () {
-        var tag = this.props.tag;
-
-
-        var name = this.refs.nameInput.val(),
+    save() {
+        const tag = this.props.tag,
+            name = this.refs.nameInput.val(),
             shortDesc = this.refs.shortDescInput.val(),
-            longDesc = this.refs.longDescTextarea.val();
+            longDesc = this.refs.longDescTextarea.val(),
+            uuid = tag['@guid'] ? tag['@guid'] : null
 
-        var uuid = tag['@guid'] ? tag['@guid'] : null;
-
-        // Set name
-        tag.concept.name = name;
+        tag.concept.name = name
 
         // Make JSON to XML
-        var xmlTag = jxon.unbuild(tag, null, 'conceptItem');
-        this.xmlDoc = xmlTag;
+        const xmlTag = jxon.unbuild(tag, null, 'conceptItem')
+        this.xmlDoc = xmlTag
 
         // Description
-        var shortDescNode = xmlTag.documentElement.querySelector('concept definition[role="drol:short"]');
-        var longDescNode = xmlTag.documentElement.querySelector('concept definition[role="drol:long"]');
-        shortDescNode.textContent = shortDesc;
-        longDescNode.textContent = longDesc;
+        const shortDescNode = TagEditBaseComponent.getShortDescription(xmlTag),
+            longDescNode = TagEditBaseComponent.getLongDescription(xmlTag)
+        shortDescNode.textContent = shortDesc
+        longDescNode.textContent = longDesc
 
 
         // Social
-        this.updateWebsite(this.refs.urlInput.val());
-        this.updateTwitter(this.refs.twitterInput.val());
-        this.updateFacebook(this.refs.facebookInput.val());
+        this.updateWebsite(this.refs.urlInput.val())
+        this.updateTwitter(this.refs.twitterInput.val())
+        this.updateFacebook(this.refs.facebookInput.val())
+
         if (uuid === null) {
-            var ajax = this.createConcept(xmlTag.documentElement.outerHTML);
-            ajax.done(function (uuid) {
-                tag['@guid'] = uuid;
-                tag.type = {};
-                tag.type['@value'] = 'x-im/organisation';
+            this.createConcept(xmlTag.documentElement.outerHTML)
+                .then((uuid) => {
 
-                this.xmlDoc.querySelector('conceptItem').setAttribute('guid', uuid);
-                this.context.api.addTag(this.name, {
-                    uuid: uuid,
-                    name: [name],
-                    type: ['organisation'],
-                    imType: ['x-im/organisation']
-                });
-
-                this.closeAndReload();
-            }.bind(this));
+                    this.xmlDoc.querySelector('conceptItem').setAttribute('guid', uuid)
+                    this.context.api.newsItem.addTag(this.name, {
+                        uuid: uuid,
+                        name: [name],
+                        type: ['organisation'],
+                        imType: ['x-im/organisation']
+                    })
+                    if (this.state.error) {
+                        this.extendState({error: false})
+                    }
+                    this.closeAndReload()
+                })
+                .catch(() => this.extendState({error: true}))
 
         } else {
-            var createAjax = this.saveConcept(uuid, xmlTag.documentElement.outerHTML);
-            createAjax.done(function () {
-                // If save is done, update the tag in article newsitem
-                this.context.api.updateTag(this.name, uuid, {
-                    name: [name],
-                    imType: [tag.type['@value']]
-                });
-                this.closeAndReload();
+            this.saveConcept(uuid, xmlTag.documentElement.outerHTML)
+                .then(() => {
+                    // If save is done, update the tag in article newsitem
+                    this.context.api.newsItem.updateTag(this.name, uuid, {
+                        name: [name],
+                        imType: [tag.type['@value']]
+                    })
+                    if (this.state.error) {
+                        this.extendState({error: false})
+                    }
+                    this.closeAndReload()
 
-            }.bind(this)).error(function (error, xhr, text) {
-                console.log("", error, xhr, text);
-            });
+                })
+                .catch(() => this.extendState({error: true}))
         }
-    };
+    }
 
 
-    this.render = function () {
-        var tag = this.props.tag;
-        var el = $$('div').addClass('tag-edit tag-edit-person').addClass('row');
+    render($$) {
+        const tag = this.props.tag,
+            el = $$('div').addClass('tag-edit tag-edit-person').addClass('row'),
 
-        var name = this.renderElement($$, "nameInput", 'Name', tag.concept.name, true, 'input'),
-            shortDesc = this.renderElement('shortDescInput', this.context.i18n.t('Short description'), this.getConceptDefinition('drol:short').keyValue, true, 'input'),
-            longDesc = this.renderElement('longDescTextarea', this.context.i18n.t('Long description'), this.getConceptDefinition('drol:long').keyValue, true, 'textarea');
+            name = this.renderElement($$, "nameInput", 'Name', tag.concept.name, true, 'input'),
+            shortDesc = this.renderElement('shortDescInput',
+                this.getLabel('mmtags-Short_description'),
+                this.getConceptDefinition('drol:short').keyValue,
+                true,
+                'input'),
+            longDesc = this.renderElement('longDescTextarea',
+                this.getLabel('mmtags-Long_description'),
+                this.getConceptDefinition('drol:long').keyValue,
+                true,
+                'textarea'),
 
-        var websiteUrl = this.getSeeAlsoLinkByType('text/html'),
-            websiteUrlEl = this.renderElement('urlInput', this.context.i18n.t('Website url'), websiteUrl ? websiteUrl['@url'] : '', true, 'input');
+            websiteUrl = this.getSeeAlsoLinkByType('text/html'),
+            websiteUrlEl = this.renderElement('urlInput',
+                this.getLabel('mmtags-Website_url'),
+                websiteUrl ? websiteUrl['@url'] : '',
+                true,
+                'input'),
 
-        var twitterUrl = this.getSeeAlsoLinkByType('x-im/social+twitter'),
-            twitterEl = this.renderElement('twitterInput', this.context.i18n.t('Twitter url'), twitterUrl ? twitterUrl['@url'] : '', false, 'input');
+            twitterUrl = this.getSeeAlsoLinkByType('x-im/social+twitter'),
+            twitterEl = this.renderElement('twitterInput',
+                this.getLabel('mmtags-Twitter_url'),
+                twitterUrl ? twitterUrl['@url'] : '',
+                false,
+                'input'),
 
-        var facebook = this.getSeeAlsoLinkByType('x-im/social+facebook'),
-            facebookEl = this.renderElement('facebookInput', this.context.i18n.t('Facebook url'), facebook ? facebook['@url'] : '', false, 'input');
+            facebook = this.getSeeAlsoLinkByType('x-im/social+facebook'),
+            facebookEl = this.renderElement('facebookInput',
+                this.getLabel('mmtags-Facebook_url'),
+                facebook ? facebook['@url'] : '',
+                false,
+                'input')
 
-
-        name.on('change', function(){
+        name.on('change', () => {
             if (this.refs['nameInput'].val() === "") {
-                this.send("dialog:disablePrimaryBtn");
+                this.send("dialog:disablePrimaryBtn")
             } else {
-                this.send("dialog:enablePrimaryBtn");
+                this.send("dialog:enablePrimaryBtn")
             }
-        }.bind(this));
+        })
 
+        el.append([name, shortDesc, longDesc, websiteUrlEl, twitterEl, facebookEl])
 
-        el.append([name, shortDesc, longDesc, websiteUrlEl, twitterEl, facebookEl]);
-        return el;
-    };
+        if (this.state.error) {
+            el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
+                this.getLabel("mmtags-error-save"))))
+        }
 
+        return el
+    }
 
-    this.onClose = function (status) {
+    onClose(status) {
 
         if (status === "cancel") {
-            return;
+            return
         } else if (status === "save") {
-            this.save();
-            return false;
+            this.save()
+            return false
         }
 
-    };
+    }
 
-};
-TagEditComponent.extend(TagEditCompanyComponent);
-module.exports = TagEditCompanyComponent;
+}
+
+export default TagEditCompanyComponent

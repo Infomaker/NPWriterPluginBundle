@@ -199,6 +199,14 @@ class TagEditBaseComponent extends Component {
         return $$('textarea').attr('rows', '4').addClass('form-control')
     }
 
+    static getShortDescription(xmlTag) {
+        return xmlTag.documentElement.querySelector('concept definition[role="drol:short"]')
+    }
+
+    static getLongDescription(xmlTag) {
+        return xmlTag.documentElement.querySelector('concept definition[role="drol:long"]')
+    }
+
     onClose(status) {
 
         if (status === "cancel") {

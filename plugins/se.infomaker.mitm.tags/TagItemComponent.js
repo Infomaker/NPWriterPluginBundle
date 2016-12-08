@@ -1,234 +1,210 @@
-'use strict';
+import {Component, FontAwesomeIcon as Icon} from 'substance'
+import {jxon, lodash as _} from 'writer'
+import Config from './config/Config'
+import TagInfoComponent from './TagInfoComponent'
+import TagEditCompanyComponent from './TagEditCompanyComponent'
+import TagEditPersonComponent from './TagEditPersonComponent'
+import TagEditTopicComponent from './TagEditTopicComponent'
 
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-var jxon = require('jxon/index');
-var Config = require('./config/Config');
-var find = require('lodash/find');
-var _ = require('lodash');
-var Avatar = require('writer/components/avatar/AvatarComponent');
+class TagsItemComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+        this.name = 'mmtags'
+    }
 
-function TagsItemComponent() {
-    TagsItemComponent.super.apply(this, arguments);
-
-    this.name = 'tags';
-
-    this.handleActions({
-        'avatarLoaded': this.avatarLoaded
-    });
-}
-
-TagsItemComponent.Prototype = function () {
-
-    this.avatarLoaded = function (avatar) {
-        if (avatar.useDummyAvatar) {
-            this.addClass('tag-item--dummy-avatar');
-        } else {
-            this.removeClass('tag-item--dummy-avatar');
-        }
-    };
-
-    //this.getInitialState = function() {
-    //return {
-    //    useDummyAvatar: false
-    //};
-    //};
 
     /**
      * Get itemMetaExtension property in itemMeta section.
      * @param type
      * @returns {*}
      */
-    this.getItemMetaExtPropertyByType = function (type) {
-        if (_.isArray(this.loadedTag.itemMeta.itemMetaExtProperty)) {
-            return find(this.loadedTag.itemMeta.itemMetaExtProperty, function (itemMeta) {
+    getItemMetaExtPropertyByType(type) {
+        if (_.isArray(this.state.loadedTag.itemMeta.itemMetaExtProperty)) {
+            return _.find(this.state.loadedTag.itemMeta.itemMetaExtProperty, function (itemMeta) {
                 return itemMeta['@type'] === type;
-            });
-        } else if (_.isObject(this.loadedTag.itemMeta.itemMetaExtProperty)) {
-            if (this.loadedTag.itemMeta.itemMetaExtProperty['@type'] === type) {
+            })
+        } else if (_.isObject(this.state.loadedTag.itemMeta.itemMetaExtProperty)) {
+            if (this.state.loadedTag.itemMeta.itemMetaExtProperty['@type'] === type) {
                 return this.loadedTag.itemMeta.itemMetaExtProperty;
             }
         }
-    };
+    }
 
-    this.loadTag = function () {
-        this.ajaxRequest = this.context.api.router.ajax('GET', 'xml',
-            '/api/newsitem/' + this.props.tag.uuid, {imType: this.props.tag.type});
-        this.ajaxRequest
-            .done(function (data) {
-                var conceptXML = data.querySelector('conceptItem');
-                this.loadedTag = jxon.build(conceptXML);
+    loadTag() {
+        this.context.api.router.getConceptItem(this.props.tag.uuid, this.props.tag.type)
+            .then(xml => {
+                const conceptXML = xml.querySelector('conceptItem'),
+                    conceptItemJSON = jxon.build(conceptXML)
+
+                this.extendState({
+                    loadedTag: conceptItemJSON,
+                    isLoaded: true
+                })
 
                 //Add tagType to loaded tag
-                this.loadedTag.type = this.getItemMetaExtPropertyByType('imext:type');
-                this.isLoaded = true;
-                this.rerender();
-            }.bind(this))
-            .error(function () {
-                this.isLoaded = true;
-                this.couldNotLoad = true;
-                this.rerender();
-            }.bind(this));
-    };
+                this.state.loadedTag.type = this.getItemMetaExtPropertyByType('imext:type');
+            })
+            .catch(() => {
+                this.extendState({
+                    isLoaded: true,
+                    couldNotLoad: true
+                })
+            })
+    }
 
-    this.render = function () {
-        var tag = this.props.tag;
 
-        var tagItem = $$('li').addClass('tag-list__item').ref('tagItem');
-        var displayNameEl = $$('span'),
-            displayName;
+    render($$) {
+        const tag = this.props.tag,
+            tagItem = $$('li').addClass('tag-list__item').ref('tagItem'),
+            displayNameEl = $$('span')
 
-        displayNameEl.attr('title', this.getNameForTag(tag));
+        let displayName
 
-        if (!this.isLoaded) {
-            this.loadTag();
+        displayNameEl.attr('title', TagsItemComponent.getNameForTag(tag));
+
+        if (!this.state.isLoaded) {
+            this.loadTag()
         } else {
-            if (this.couldNotLoad) {
-                displayNameEl.addClass(
-                    'tag-item__title tag-item__title--no-avatar tag-item__title--notexisting')
+            if (this.state.couldNotLoad) {
+                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar tag-item__title--notexisting')
                     .append(tag.title)
-                    .attr('title',
-                        this.context.i18n.t('This item could not be loaded. UUID: ') + tag.uuid);
-                displayName = tag.title;
+                    .attr('title', this.getLabel('mmtags-could_not_load_uuid') + tag.uuid)
+                displayName = tag.title
             } else {
-                displayNameEl.addClass('tag-item__title').append(this.loadedTag.concept.name);
-                displayName = this.loadedTag.concept.name;
-                this.updateTagItemName(displayNameEl, this.loadedTag);
+                displayName = this.state.loadedTag.concept.name
+                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName)
+                this.updateTagItemName(displayNameEl, this.state.loadedTag)
 
-                displayNameEl.attr('data-toggle', 'tooltip')
-                    .attr('data-placement', 'bottom')
-                    .attr('data-trigger', 'manual');
-
-                displayNameEl.on('click', function (ev) {
-                    $(ev.target).tooltip('hide');
+                displayNameEl.on('click', () => {
+                    // $(ev.target).tooltip('hide');
                     if (Config.isTagEditable(tag)) {
-                        this.editTag(displayName);
+                        this.editTag(displayName)
                     } else {
-                        this.showTag(displayName);
+                        this.showTag(displayName)
                     }
-                }.bind(this));
-                displayNameEl.on('mouseenter', this.toggleTooltip);
-                displayNameEl.on('mouseout', this.hideTooltip);
-
-
-                tagItem.append(
-                    $$(Avatar, {author: this.loadedTag, links: this.loadedTag.itemMeta.links}));
+                })
             }
 
-            tagItem.append(displayNameEl);
+            displayNameEl.attr('data-toggle', 'tooltip')
+                .attr('data-placement', 'bottom')
+                .attr('data-trigger', 'manual')
 
-            var deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
+            // TODO Tooltip
+            // displayNameEl.on('mouseenter', this.toggleTooltip)
+            // displayNameEl.on('mouseout', this.hideTooltip)
+
+            tagItem.append(displayNameEl)
+
+            const deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
-                .attr('title', this.context.i18n.t('Remove from article')))
-                .on('click', function () {
-                    this.removeTag(tag);
-                }.bind(this));
+                .attr('title', this.getLabel('mmtags-Remove_from_article')))
+                .on('click', () => {
+                    this.removeTag(tag)
+                })
 
-            tagItem.append(deleteButton);
-            var iconComponent = this.getIconForTag(tag);
+            tagItem.append(deleteButton)
+            const iconComponent = this.getIconForTag(tag)
             if (iconComponent) {
-                tagItem.append(iconComponent);
+                tagItem.append(iconComponent)
             }
         }
-        return tagItem;
-    };
+        return tagItem
+    }
 
-    this.showTag = function (title) {
-        var tagInfo = require('./TagInfoComponent');
-        this.context.api.showDialog(tagInfo, {
-            tag: this.loadedTag,
-            close: this.closeFromDialog.bind(this),
-            couldNotLoad: this.couldNotLoad
-        }, {
-            secondary: false,
-            title: title,
-            global: true
-        });
+
+    showTag(title) {
+        this.context.api.ui.showDialog(TagInfoComponent,
+            {
+                tag: this.state.loadedTag,
+                close: this.closeFromDialog.bind(this),
+                couldNotLoad: this.state.couldNotLoad
+            },
+            {
+                secondary: false,
+                title: title,
+                global: true
+            });
     };
 
     /**
      * Shows a edit component in dialoag
      * @param title
      */
-    this.editTag = function (title) {
-        var tagEdit;
+    editTag(title) {
+        let tagEdit;
 
-        switch (this.loadedTag.type['@value']) {
+        switch (this.state.loadedTag.type['@value']) {
             case 'x-im/organisation':
-                tagEdit = require('./TagEditCompanyComponent');
+                tagEdit = TagEditCompanyComponent
                 break;
             case 'x-im/person':
-                tagEdit = require('./TagEditPersonComponent');
+                tagEdit = TagEditPersonComponent
                 break;
             case 'x-im/topic':
-                tagEdit = require('./TagEditTopicComponent');
+                tagEdit = TagEditTopicComponent
                 break;
             default:
                 break;
         }
 
-        this.context.api.showDialog(tagEdit, {
-            tag: this.loadedTag,
-            close: this.closeFromDialog.bind(this),
-            couldNotLoad: this.couldNotLoad
-        }, {
-            primary: this.context.i18n.t('Save'),
-            title: this.context.i18n.t('Edit') + " " + title,
-            global: true
-        });
-    };
+        this.context.api.ui.showDialog(tagEdit,
+            {
+                tag: this.state.loadedTag,
+                close: this.closeFromDialog.bind(this),
+                couldNotLoad: this.state.couldNotLoad
+            },
+            {
+                primary: this.getLabel('mmtags-save'),
+                title: this.getLabel('mmtags-edit') + " " + title,
+                global: true
+            })
+    }
 
     /**
      * Called when edit and info dialog is closed
      */
-    this.closeFromDialog = function () {
-        this.loadTag(); // Reload new changes
-        this.props.reload();
-    };
+    closeFromDialog() {
+        this.loadTag() // Reload new changes
+        this.props.reload()
+    }
 
     /**
      * Remove tag after fading item away
      * @param tag
      */
-    this.removeTag = function (tag) {
-        this.$el.first().fadeOut(300, function () {
-            this.props.removeTag(tag);
-        }.bind(this));
+    removeTag(tag) {
+        this.props.removeTag(tag);
+    }
 
-    };
-
-    this.getIconForTag = function (tag) {
+    getIconForTag(tag) {
         if (!tag.type) {
             return this.getDefaultIconForTag();
         }
 
-        var tagConfig = Config.types[tag.type];
+        const tagConfig = Config.types[tag.type];
         if (tagConfig) {
             return $$(Icon, {icon: tagConfig.icon}).addClass('tag-icon');
         } else {
             this.getDefaultIconForTag();
         }
+    }
 
-    };
-
-    this.getNameForTag = function (tag) {
+    static getNameForTag(tag) {
         if (!tag.type) {
-            return;
+            return undefined;
         }
-        var tagConfig = Config.types[tag.type];
+        const tagConfig = Config.types[tag.type];
         if (tagConfig) {
             return tagConfig.name;
         }
+    }
 
-    };
-
-    this.updateTagItemName = function (tagItem, loadedTag) {
+    updateTagItemName = function (tagItem, loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
-            var definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
-            for (var i = 0; i < definition.length; i++) {
-                var item = definition[i];
+            const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
+            for (let i = 0; i < definition.length; i++) {
+                const item = definition[i];
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
                         tagItem.attr('title', item["keyValue"]);
@@ -237,32 +213,29 @@ TagsItemComponent.Prototype = function () {
                 }
             }
         }
-    };
+    }
 
-    this.getDefaultIconForTag = function () {
-        return $$(Icon, {icon: 'fa-tag'}).addClass('tag-icon');
-    };
+    getDefaultIconForTag() {
+        return $$(Icon, {icon: 'fa-tag'}).addClass('tag-icon')
+    }
 
-    this.openTag = function (tag) {
-        console.log("Open", tag);
-    };
+// TODO Tooltip
+// toggleTooltip = function (ev) {
+//     $(ev.target).tooltip('toggle');
+//     ev.target.timeout = window.setTimeout(function () {
+//         this.hideTooltip(ev)
+//     }.bind(this), 3000)
+// };
+//
+// hideTooltip = function (ev) {
+//     if (ev.target.timeout) {
+//         window.clearTimeout(ev.target.timeout);
+//         ev.target.timeout = undefined;
+//     }
+//     $(ev.target).tooltip('hide');
+// };
 
-    this.toggleTooltip = function (ev) {
-        $(ev.target).tooltip('toggle');
-        ev.target.timeout = window.setTimeout(function () {
-            this.hideTooltip(ev)
-        }.bind(this), 3000)
-    };
+}
 
-    this.hideTooltip = function (ev) {
-        if (ev.target.timeout) {
-            window.clearTimeout(ev.target.timeout);
-            ev.target.timeout = undefined;
-        }
-        $(ev.target).tooltip('hide');
-    };
 
-};
-
-Component.extend(TagsItemComponent);
-module.exports = TagsItemComponent;
+export default TagsItemComponent

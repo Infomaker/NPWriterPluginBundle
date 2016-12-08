@@ -8,6 +8,11 @@ export default {
 
     configure: function(config) {
 
+        config.addLabel('mmtags-could_not_load_uuid', {
+            en: 'This item could not be loaded. UUID: ',
+            sv: 'Detta objekt kunde inte laddas in. UUID: '
+        })
+
         config.addLabel('mmtags-title',{
             sv: 'Organisationer/personer/ämnen',
             en: 'Organizations/persons/topics'
@@ -26,6 +31,11 @@ export default {
         config.addLabel('mmtags-save',{
             en: 'Save',
             sv: 'Spara'
+        })
+
+        config.addLabel('mmtags-edit',{
+            en: 'Edit',
+            sv: 'Redigera'
         })
 
         config.addLabel('mmtags-Person',{
@@ -54,8 +64,38 @@ export default {
         })
 
         config.addLabel('mmtags-error-save', {
-            en: 'Error when saving story: ',
-            sv: 'Fel vid sparande av story: '
+            en: 'Error when saving tag',
+            sv: 'Fel vid sparande av tag'
+        })
+
+        config.addLabel('mmtags-Short_description', {
+            en: 'Short description',
+            sv: 'Kort beskrivning'
+        })
+
+        config.addLabel('mmtags-Long_description', {
+            en: 'Long description',
+            sv: 'Lång beskrivning'
+        })
+
+        config.addLabel('mmtags-Website_url', {
+            en: 'Website url',
+            sv: 'Länk till webbsida'
+        })
+
+        config.addLabel('mmtags-Twitter_url', {
+            en: 'Twitter url',
+            sv: 'Länk till Twitter'
+        })
+
+        config.addLabel('mmtags-Facebook_url', {
+            en: 'Facebook url',
+            sv: 'Länk till Facebook'
+        })
+
+        config.addLabel('mmtags-Remove_from_article', {
+            en: 'Remove from article',
+            sv: 'Ta bort från artikel'
         })
 
 
