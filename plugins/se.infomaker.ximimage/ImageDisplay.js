@@ -1,18 +1,12 @@
 import {Component, Button, FontAwesomeIcon} from 'substance'
+import {api} from 'writer'
 import ImageCropper from './ImageCropper'
-import ImageMetadata from './ImageMetadata'
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
  that include an imageFile property.
  */
 class ImageDisplay extends Component {
-    didMount() {
-        this.handleActions({
-            closeModal: this._closeDialog
-        })
-    }
-
     _onDragStart(e) {
         e.preventDefault()
         e.stopPropagation()
@@ -65,30 +59,25 @@ class ImageDisplay extends Component {
         el.addClass('sm-' + this.props.isolatedNodeState)
         el.append(imgContainer)
 
-        if (this.state.DialogClass) {
-            el.append(
-                $$(this.getComponent('modal'), {
-                    width: 'medium',
-                    textAlign: 'center'
-                }).append(
-                    $$(this.state.DialogClass, {
-                        node: this.props.node
-                    })
-                )
-            )
-        }
         return el
     }
 
-    _closeDialog() {
-        this.setState({
-            DialogClass: null
-        })
-    }
-
     _openMetaData() {
-        this.setState({
-            DialogClass: ImageMetadata
+        api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
+        .then(response => {
+            api.ui.showDialog(
+                this.getComponent('dialog-image'),
+                {
+                    node: this.props.node,
+                    newsItem: response
+                },
+                {
+                    title: this.getLabel('Image archive information'),
+                    global: true,
+                    primary: this.getLabel('Update'),
+                    secondary: this.getLabel('Cancel')
+                }
+            )
         })
     }
 
