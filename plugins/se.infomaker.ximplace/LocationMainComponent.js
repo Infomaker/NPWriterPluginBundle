@@ -83,7 +83,7 @@ class LocationMainComponent extends Component {
         const LocationSearchComponent = this.context.componentRegistry.get('form-search')
         const searchComponent = $$(LocationSearchComponent, {
             existingItems: this.state.existingLocations,
-            searchUrl: api.router.getEndpoint() + '/api/search/concepts/locations?' + query,
+            searchUrl: '/api/search/concepts/locations?' + query,
             onSelect: this.addLocation.bind(this),
             onCreate: this.createMap.bind(this),
             createAllowed: (this.features !== 'polygon'),
