@@ -90,7 +90,8 @@ class TagsMainComponent extends Component {
                 exists: exists,
                 close: this.closeFromDialog.bind(this),
                 createPerson: this.createPerson.bind(this),
-                createOrganisation: this.createOrganisation.bind(this)
+                createOrganisation: this.createOrganisation.bind(this),
+                createTopic: this.createTopic.bind(this)
             }, {
                 primary: false,
                 title: this.getLabel('mmtags-create') + " " + tag.inputValue,
@@ -144,6 +145,26 @@ class TagsMainComponent extends Component {
             primary: this.getLabel('mmtags-save'),
             title: this.getLabel('mmtags-create') + " " + inputValue,
             icon: 'fa-sitemap',
+            global: true
+        })
+
+    }
+
+    createTopic(inputValue) {
+        const parser = new DOMParser();
+        const tagXML = parser.parseFromString(TagsTemplate.topicTemplate, 'text/xml').firstChild
+
+        // Prepopulate the TAG with user input from form
+        tagXML.querySelector('concept name').textContent = inputValue
+        const loadedTag = jxon.build(tagXML)
+
+        this.context.api.ui.showDialog(TagEditTopicComponent, {
+            tag: loadedTag,
+            close: this.closeFromDialog.bind(this)
+        }, {
+            primary: this.getLabel('mmtags-save'),
+            title: this.getLabel('mmtags-create') + " " + inputValue,
+            icon:'fa-tags',
             global: true
         })
 

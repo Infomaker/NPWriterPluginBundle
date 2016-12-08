@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component} from 'substance'
 import {jxon} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
@@ -13,11 +13,6 @@ class TagsMainComponent extends Component {
         this.name = 'ximtags'
     }
 
-    'x-im/person'
-    'x-im/organisation'
-    'x-cmbr/channel'
-    'x-im/channel'
-    'x-im/category'
     getInitialState() {
         return {
             existingTags: this.context.api.newsItem.getTags([
@@ -156,27 +151,6 @@ class TagsMainComponent extends Component {
         })
 
     }
-
-    createTopic(inputValue) {
-        const parser = new DOMParser();
-        const tagXML = parser.parseFromString(TagsTemplate.topicTemplate, 'text/xml').firstChild
-
-        // Prepopulate the TAG with user input from form
-        tagXML.querySelector('concept name').textContent = inputValue
-        const loadedTag = jxon.build(tagXML)
-
-        this.context.api.ui.showDialog(TagEditTopicComponent, {
-            tag: loadedTag,
-            close: this.closeFromDialog.bind(this)
-        }, {
-            primary: this.getLabel('ximtags-save'),
-            title: this.getLabel('ximtags-create') + " " + inputValue,
-            icon:'fa-tags',
-            global: true
-        })
-
-    }
-
 
     closeFromDialog() {
         this.reload()

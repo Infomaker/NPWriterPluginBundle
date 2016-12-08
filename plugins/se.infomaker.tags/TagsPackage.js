@@ -14,8 +14,8 @@ export default {
         })
 
         config.addLabel('ximtags-title',{
-            sv: 'Organisationer/personer/ämnen',
-            en: 'Organizations/persons/topics'
+            sv: 'Taggar',
+            en: 'Tags'
         })
 
         config.addLabel('ximtags-search_placeholder',{
