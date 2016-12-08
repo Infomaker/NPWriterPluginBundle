@@ -39,9 +39,18 @@ export default {
             en: 'Upload image',
             sv: 'Ladda upp bild'
         })
+
         config.addLabel('remove-image-button-title', {
             en: 'Remove image',
             sv: 'Ta bort bild'
         })
+
+        config.addLabel('Image archive information', {
+            sv: 'Arkivinformation om bild'
+        })
+
+        // config.addLabel('', {
+        //     sv: ''
+        // })
     }
 }
