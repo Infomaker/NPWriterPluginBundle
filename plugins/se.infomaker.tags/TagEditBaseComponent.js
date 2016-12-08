@@ -6,7 +6,7 @@ class TagEditBaseComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'mmtags'
+        this.name = 'ximtags'
     }
 
     saveConcept(uuid, newsItem) {
@@ -111,32 +111,26 @@ class TagEditBaseComponent extends Component {
         const personBtn = $$('button')
             .append($$(Icon, {icon: 'fa-user'}))
             .append($$('span')
-                .append(this.getLabel('mmtags-Person')))
+                .append(this.getLabel('ximtags-Person')))
             .on('click', this.createPerson)
 
         const organisationBtn = $$('button')
             .append($$(Icon, {icon: 'fa-sitemap'}))
             .append($$('span')
-                .append(this.getLabel('mmtags-Organization')))
+                .append(this.getLabel('ximtags-Organization')))
             .on('click', this.createOrganisation)
 
-        const topicBtn = $$('button')
-            .append($$(Icon, {icon: 'fa-tags'}))
-            .append($$('span')
-                .append(this.getLabel('mmtags-Topic')))
-            .on('click', this.createTopic)
-
-        el.append($$('small').addClass('text-muted').append(this.getLabel('mmtags-type-question-label')))
-        el.append([personBtn, organisationBtn, topicBtn])
+        el.append($$('small').addClass('text-muted').append(this.getLabel('ximtags-type-question-label')))
+        el.append([personBtn, organisationBtn])
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
-                this.getLabel("mmtags-name_already_in_use") + ": " + this.props.tag.value)))
+                this.getLabel("ximtags-name_already_in_use") + ": " + this.props.tag.value)))
         }
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.getLabel("mmtags-error-save"))))
+                this.getLabel("ximtags-error-save"))))
         }
 
         return el
