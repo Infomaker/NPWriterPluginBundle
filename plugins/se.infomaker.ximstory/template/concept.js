@@ -10,17 +10,13 @@ export default {
     '<firstCreated>2015-12-07T15:03:42+00:00</firstCreated> ' +
     '<pubStatus qcode="stat:usable"/> ' +
     '<itemMetaExtProperty type="imext:type" value="x-im/story"/> ' +
-    '<links xmlns="http://www.infomaker.se/newsml/1.0">' +
-    '</links> ' +
     '</itemMeta> ' +
     '<concept> ' +
     '<conceptId/> ' +
-    '<type qcode="cpnat:poi"/>' +
+    '<type qcode="cpnat:abstract"/>' +
     '<name>Template</name>' +
     '<definition role="drol:long"></definition> ' +
     '<definition role="drol:short"></definition> ' +
-    '<metadata xmlns="http://www.infomaker.se/newsml/1.0"> ' +
-    '</metadata> ' +
     '</concept> ' +
     '</conceptItem>'
 }
