@@ -29,13 +29,11 @@ class ContentprofileMainComponent extends Component {
             .append($$('h2')
                 .append(this.getLabel('Content profile tags')))
 
-        const contentProfileSearchUrl = api.router.getEndpoint()
-
         const ContentProfileSearchComponent = this.context.componentRegistry.get('form-search')
 
         const searchComponent = $$(ContentProfileSearchComponent, {
             existingItems: this.state.existingContentProfiles,
-            searchUrl: contentProfileSearchUrl + '/api/search/concepts/contentprofiles?q=',
+            searchUrl: '/api/search/concepts/contentprofiles?q=',
             onSelect: this.addContentProfile.bind(this),
             onCreate: this.saveContentProfile.bind(this),
             createAllowed: true,
