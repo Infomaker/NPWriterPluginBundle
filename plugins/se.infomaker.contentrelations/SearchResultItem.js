@@ -146,7 +146,7 @@ class SearchResultItem extends Component {
      * @returns {Promise.<T>|*|Promise}
      */
     fetchImageURLForUUID(uuid) {
-        return api.router.get('/api/binary/url/' + uuid + '/50?imType=x-im/image&width=50')
+        return api.router.get('/api/binary/url/' + uuid + '/40?imType=x-im/image&height=40')
 
             .then(response => response.text())
 

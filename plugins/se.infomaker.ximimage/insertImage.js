@@ -10,29 +10,26 @@ import {idGenerator} from 'writer'
 
 export default function(tx, data) {
     let isFile = data instanceof File,
-        nodeId = idGenerator(),
-        mimeType
+        nodeId = idGenerator()
 
-    if (isFile) {
-        mimeType = data.type
-    }
-    else if (typeof data === 'string') {
-        let ext = data.split('.').pop()
-        // Extract use file extension
-        mimeType = 'image/' + ext
-    }
-    else {
+    if (!typeof data === 'string' && !isFile) {
         throw new Error('Unsupported data. Must be File or String')
     }
 
-    // Create file node for the image
-    let imageFile = tx.create({
+    const imageFileNode = {
         parentNodeId: nodeId,
         type: 'npfile',
-        imType: 'x-im/image',
-        sourceFile: isFile ? data: '',
-        sourceUrl: !isFile ? data : ''
-    })
+        imType: 'x-im/image'
+    }
+
+    if(isFile) {
+        imageFileNode['sourceFile'] = data
+    } else if(typeof data === 'string') {
+        imageFileNode['sourceUrl'] = data
+    }
+
+    // Create file node for the image
+    let imageFile = tx.create(imageFileNode)
 
     // Inserts image at current cursor pos
     tx.insertBlockNode({

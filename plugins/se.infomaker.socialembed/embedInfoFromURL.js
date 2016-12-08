@@ -16,6 +16,10 @@ export default function embedInfoFromURL(url) {
         result.socialChannel = 'instagram'
     } else if (url.indexOf('facebook') > 0) {
         result.socialChannel = 'facebook'
+    } else if (url.indexOf('vimeo') > 0) {
+        result.socialChannel = 'vimeo'
+    } else if (url.indexOf('soundcloud') > 0) {
+        result.socialChannel = 'soundcloud'
     } else {
         result.isEmbed = false
     }

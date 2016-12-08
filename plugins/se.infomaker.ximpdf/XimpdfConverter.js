@@ -60,7 +60,7 @@ export default {
 
         // Data element
         const data = $$('data').append([
-            $$('text').append(String(node.text))
+            $$('text').append( converter.annotatedText([node.id, 'text']))
         ])
 
         el.attr('uuid', fileNode.uuid)

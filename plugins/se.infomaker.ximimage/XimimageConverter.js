@@ -8,7 +8,14 @@ export default {
         return el.is('object') && el.attr('type') === 'x-im/image'
     },
 
-    import: function (el, node, converter) {
+    /**
+     *
+     * @param el
+     * @param node
+     * @param {NewsMLImporter} converter
+     * @param {bool} newsItemConversion If the converter is used to convert a newsItem for a image (metadata from repository)
+     */
+    import: function (el, node, converter, newsItemConversion) {
 
         const objectElementId = el.attr('id')
 
@@ -26,11 +33,11 @@ export default {
             imageFile.uuid = el.attr('uuid')
         }
 
-        if (linkEl.attr('uri')) {
+        if (linkEl && linkEl.attr('uri')) {
             node.uri = linkEl.attr('uri')
         }
 
-        if (linkEl.attr('url')) {
+        if (linkEl && linkEl.attr('url')) {
             imageFile.url = linkEl.attr('url')
         }
 
@@ -38,8 +45,17 @@ export default {
         node.imageFile = imageFile.id
         node.uuid = el.attr('uuid')
 
+        let dataEl
+        if(newsItemConversion) {
+            dataEl = el.find('data')
+        } else {
+            dataEl = linkEl.find('data')
+        }
         // Import data
-        var dataEl = linkEl.find('data')
+
+
+
+
         node.caption = ''
         node.alttext = ''
         node.credit = ''
@@ -111,7 +127,13 @@ export default {
 
         // Import author links
         node.authors = []
-        var authorLinks = linkEl.find('links')
+        let authorLinks
+        if(newsItemConversion) {
+            authorLinks = el.find('links')
+        } else {
+            authorLinks = linkEl.find('links')
+        }
+
         if (authorLinks) {
             authorLinks.children.forEach(function (authorLinkEl) {
                 if ("author" === authorLinkEl.getAttribute('rel')) {

@@ -5,7 +5,9 @@ import InsertImagesTool from './InsertImagesTool'
 import InsertImagesCommand from './InsertImagesCommand'
 import DropImageFile from './DropImageFile'
 import DropImageUri from './DropImageUri'
+import DropImageUUID from './DropImageUUID'
 import XimimageFileProxy from './XimimageFileProxy'
+import InsertImageUrlCommand from './InsertImageUrlCommand'
 
 export default {
     name: 'ximimage',
@@ -16,10 +18,12 @@ export default {
         config.addConverter('newsml', XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
+        config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
 
         config.addConverter('newsml', XimimageConverter)
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
+        config.addDragAndDrop(DropImageUUID)
 
         config.addIcon('image', { 'fontawesome': 'fa-image' })
         config.addIcon('crop', { 'fontawesome': 'fa-crop' })

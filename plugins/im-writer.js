@@ -1,5 +1,5 @@
 import TextAnalyzer from './se.infomaker.textanalyzer/index'
-import Preamble from './se.infomaker.preamble/Preamble'
+import Preamble from './textstyles/se.infomaker.preamble/Preamble'
 import PublishFlow from './se.infomaker.publishflow/index'
 import SocialEmbed from './se.infomaker.socialembed/index'
 import NewsPriority from './se.infomaker.newspriority/index'
@@ -7,11 +7,11 @@ import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
 import XImPlace from './se.infomaker.ximplace/index'
 import XImAuthor from './se.infomaker.ximauthor/index'
-import Madmansrow from './se.infomaker.madmansrow/Madmansrow'
-import Drophead from './se.infomaker.drophead/Drophead'
-import Pagedateline from './se.infomaker.pagedateline/Pagedateline'
-import Dateline from './se.infomaker.dateline/Dateline'
-import Preleadin from './se.infomaker.preleadin/Preleadin'
+import Madmansrow from './textstyles/se.infomaker.madmansrow/Madmansrow'
+import Drophead from './textstyles/se.infomaker.drophead/Drophead'
+import Pagedateline from './textstyles/se.infomaker.pagedateline/Pagedateline'
+import Dateline from './textstyles/se.infomaker.dateline/Dateline'
+import Preleadin from './textstyles/se.infomaker.preleadin/Preleadin'
 import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 import ContentRelations from './se.infomaker.contentrelations/index'
 import History from './se.infomaker.history/index'
@@ -22,6 +22,15 @@ import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
 import ContentProfile from './se.infomaker.ximcontentprofile/index'
 import XImStory from './se.infomaker.ximstory/index'
+
+/**
+ * Text styles
+ */
+
+import BlockQuotePackage from './textstyles/se.infomaker.blockquote/BlockquotePackage'
+import ParagraphPackage from './textstyles/se.infomaker.paragraph/ParagraphPackage'
+import SubheadlinePackage from './textstyles/se.infomaker.subheadline/SubheadlinePackage'
+import HeadlinePackage from './textstyles/se.infomaker.headline/HeadlinePackage'
 
 (() => {
 
@@ -51,4 +60,9 @@ import XImStory from './se.infomaker.ximstory/index'
     ContentProfile()
     XImStory()
 
+    // Textstyles
+    BlockQuotePackage()
+    ParagraphPackage()
+    HeadlinePackage()
+    SubheadlinePackage()
 })()

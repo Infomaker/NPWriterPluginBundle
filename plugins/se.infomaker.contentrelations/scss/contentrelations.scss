@@ -38,6 +38,12 @@ img.product-icon {
         -ms-user-select: none;
         user-select: none;
 
+        &:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
         &.image {
             img {
                 float: left;
