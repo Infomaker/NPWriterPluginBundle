@@ -38,8 +38,8 @@ export default {
         })
 
         config.addLabel('ximstory-error-save', {
-            en: 'Error when saving story: ',
-            sv: 'Fel vid sparande av story: '
+            en: 'Error when saving story',
+            sv: 'Fel vid sparande av story'
         })
 
         config.addLabel('ximstory-Name', {

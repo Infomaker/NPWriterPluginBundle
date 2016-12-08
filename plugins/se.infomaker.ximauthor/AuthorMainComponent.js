@@ -28,13 +28,11 @@ class AuthorMainComponent extends Component {
     render($$) {
         var el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
 
-        var authorSearchUrl = api.router.getEndpoint();
-
         const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
 
         var searchComponent = $$(AuthorSearchComponent, {
             existingItems: this.state.existingAuthors,
-            searchUrl: authorSearchUrl + '/api/search/concepts/authors?q=',
+            searchUrl: '/api/search/concepts/authors?q=',
             onSelect: this.addAuthor.bind(this),
             onCreate: this.createAuthor.bind(this),
             createAllowed: true,

@@ -34,8 +34,8 @@ export default (pluginId) => {
         })
 
         config.addLabel('ximplace-error-save', {
-            en: 'Error saving place: ',
-            sv: 'Fel vid sparande av plats: '
+            en: 'Error saving place',
+            sv: 'Fel vid sparande av plats'
         });
     }
 
