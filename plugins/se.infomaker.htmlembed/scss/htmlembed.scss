@@ -1,0 +1,56 @@
+$im-embedhtml-border-color: #ddd;
+
+a.im-embedhtml {
+    border: 1px solid $im-embedhtml-border-color;
+    border-left: 6px solid $im-embedhtml-border-color;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: block;
+    text-decoration: none;
+    color: #222;
+    cursor: default;
+    
+    div.header {
+        display: none;
+        position: relative;
+        float: right;
+
+        .remove-button {
+            position: absolute;
+            right: -5px;
+            top: -12px;
+            color: #d9534f;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            position: absolute;
+            right: 20px;
+            top: -11px;
+            cursor: pointer;
+            color: #333;
+
+            &:hover {
+                color: #000;
+            }
+        }
+    }
+
+    &:hover {
+        div.header {
+            display: block;
+        }
+    }
+}
+
+.embed-dialog {
+    padding: 0 15px;
+
+    textarea {
+        padding: 10px;
+        width:100%;
+        height: 120px;
+        font-size:0.9rem;
+        border: 1px solid #ddd;
+    }
+}
