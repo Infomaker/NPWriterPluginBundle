@@ -152,6 +152,11 @@ class TagEditBaseComponent extends Component {
         this.props.createOrganisation(this.props.tag.inputValue)
     }
 
+    createTopic() {
+        this.send('close')
+        this.props.createTopic(this.props.tag.inputValue)
+    }
+
     closeAndReload() {
         this.props.close(); // Let the TagItemComponent know that save is done
         this.send('close'); // Close the modal
