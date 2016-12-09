@@ -6,17 +6,15 @@ module.exports = {
             '<itemMeta> ' +
                 '<itemClass qcode="cinat:concept"/> ' +
                 '<provider literal=""/>' +
-                '<versionCreated>2015-12-07T15:03:42+00:00</versionCreated> ' +
-                '<firstCreated>2015-12-07T15:03:42+00:00</firstCreated> ' +
+                '<firstCreated />' +
+                '<versionCreated/>' +
                 '<pubStatus qcode="stat:usable"/> ' +
                 '<itemMetaExtProperty type="imext:type" value="x-im/place"/> ' +
-                '<links xmlns="http://www.infomaker.se/newsml/1.0">' +
-                '</links> ' +
             '</itemMeta> ' +
         '<concept> ' +
-            '<conceptId/> ' +
+            '<conceptId uri="im://place/"/> ' +
             '<type qcode="cpnat:poi"/>' +
-            '<name>Template</name>' +
+            '<name></name>' +
             '<definition role="drol:long"></definition> ' +
             '<definition role="drol:short"></definition> ' +
             '<metadata xmlns="http://www.infomaker.se/newsml/1.0"> ' +

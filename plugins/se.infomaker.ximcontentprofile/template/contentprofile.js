@@ -5,16 +5,16 @@ module.exports = {
         '<catalogRef href="http://infomaker.se/spec/catalog/catalog.infomaker.g2.1_0.xml"/> ' +
         '<itemMeta> ' +
         '    <itemClass qcode="cinat:concept"/> ' +
-        '    <provider literal="Newspilot Writer"/> ' +
-        '    <versionCreated>2015-12-07T15:03:42+00:00</versionCreated> ' +
-        '    <firstCreated>2015-12-07T15:03:42+00:00</firstCreated> ' +
+        '    <provider literal=""/> ' +
+        '    <firstCreated />' +
+        '    <versionCreated/>' +
         '    <pubStatus qcode="stat:usable"/> ' +
         '    <itemMetaExtProperty type="imext:type" value="x-im/content-profile"/> ' +
         '</itemMeta> ' +
         '<concept> ' +
-        '    <conceptId/> ' +
+        '    <conceptId uri="im://content-profile/"/> ' +
         '    <type qcode="cpnat:object"/> ' +
-        '    <name>Template</name> ' +
+        '    <name></name> ' +
         '    <definition role="drol:long"></definition> ' +
         '    <definition role="drol:short"></definition> ' +
         '</concept> ' +

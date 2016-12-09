@@ -4,28 +4,23 @@ export default {
         '<catalogRef href="http://infomaker.se/spec/catalog/catalog.infomaker.g2.1_0.xml"/>' +
         '<itemMeta>' +
         '<itemClass qcode="cinat:concept"/>' +
-        '<provider literal="testdata-1.0"/>' +
-        '<versionCreated></versionCreated>' +
-        '<firstCreated> 01:00</firstCreated>' +
+        '<provider literal=""/>' +
+        '<firstCreated />' +
+        '<versionCreated/>' +
         '<pubStatus qcode="stat:usable"/>' +
         '<edNote/>' +
         '<itemMetaExtProperty type="imext:type" value="x-im/person"/>' +
         '<itemMetaExtProperty type="imext:firstName" value=""/>' +
         '<itemMetaExtProperty type="imext:lastName" value=""/>' +
-        '<links xmlns="http://www.infomaker.se/newsml/1.0">' +
-        '<link rel="creator" type="x-im/user" title="Writer"/>' +
-        '</links>' +
+        '<links xmlns="http://www.infomaker.se/newsml/1.0" />' +
         '</itemMeta>' +
         '<concept>' +
-        '<conceptId/>' +
+        '<conceptId uri="im://person/"/>' +
         '<type qcode="cpnat:person"/>' +
         '<name></name>' +
         '<definition role="drol:long"></definition>' +
         '<definition role="drol:short"></definition>' +
         '</concept>' +
-        '<contentMeta>' +
-        '<contentModified></contentModified>' +
-        '</contentMeta>' +
         '</conceptItem>',
 
     organisationTemplate: '<conceptItem conformance="power" standard="NewsML-G2" standardversion="2.20" version="1">' +
@@ -33,17 +28,15 @@ export default {
         '<catalogRef href="http://infomaker.se/spec/catalog/catalog.infomaker.g2.1_0.xml"/>' +
         '<itemMeta>' +
         '<itemClass qcode="cinat:concept"/>' +
-        '<provider literal="testdata-1.0"/>' +
-        '<versionCreated></versionCreated>' +
-        '<firstCreated></firstCreated>' +
+        '<provider literal=""/>' +
+        '<firstCreated />' +
+        '<versionCreated/>' +
         '<pubStatus qcode="stat:usable"/>' +
         '<itemMetaExtProperty type="imext:type" value="x-im/organisation"/>' +
-        '<links xmlns="http://www.infomaker.se/newsml/1.0">' +
-        '<link rel="creator" title="Writer" type="x-im/user" />' +
-        '</links>' +
+        '<links xmlns="http://www.infomaker.se/newsml/1.0" />' +
         '</itemMeta>' +
         '<concept>' +
-        '<conceptId/>' +
+        '<conceptId uri="im://organisation/"/>' +
         '<type qcode="cpnat:organisation"/>' +
         '<name></name>' +
         '<definition role="drol:long"></definition>' +
@@ -61,10 +54,6 @@ export default {
         '</object>' +
         '</metadata>' +
         '</concept>' +
-        '<contentMeta>' +
-        '<contentModified></contentModified>' +
-        '</contentMeta>' +
-        '<type type="imext:type" value="x-im/organisation"/>' +
         '</conceptItem>'
 
 }

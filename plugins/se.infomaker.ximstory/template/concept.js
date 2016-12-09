@@ -6,15 +6,15 @@ export default {
     '<itemMeta> ' +
     '<itemClass qcode="cinat:concept"/> ' +
     '<provider literal=""/>' +
-    '<versionCreated>2015-12-07T15:03:42+00:00</versionCreated> ' +
-    '<firstCreated>2015-12-07T15:03:42+00:00</firstCreated> ' +
+    '<firstCreated />' +
+    '<versionCreated/>' +
     '<pubStatus qcode="stat:usable"/> ' +
     '<itemMetaExtProperty type="imext:type" value="x-im/story"/> ' +
     '</itemMeta> ' +
     '<concept> ' +
-    '<conceptId/> ' +
+    '<conceptId uri="im://story/"/> ' +
     '<type qcode="cpnat:abstract"/>' +
-    '<name>Template</name>' +
+    '<name></name>' +
     '<definition role="drol:long"></definition> ' +
     '<definition role="drol:short"></definition> ' +
     '</concept> ' +
