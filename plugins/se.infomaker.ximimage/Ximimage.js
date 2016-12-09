@@ -31,17 +31,6 @@ class Ximimage extends BlockNode {
             credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
             width = dom.querySelector('contentMeta > metadata > object > data > width'),
             height = dom.querySelector('contentMeta > metadata > object > data > height')
-// debugger
-//     this.node.setInitialMetaData(
-//         uuid,
-//         uri ? uri.attributes['value'].value : '',
-//         imageUrl,
-//         text ? text.textContent : '',
-//         credit ? credit.textContent : '',
-//         width ? width.textContent : null,
-//         width ? height.textContent : null,
-//         authors
-    // );
 
         api.editorSession.transaction((tx) => {
             debugger

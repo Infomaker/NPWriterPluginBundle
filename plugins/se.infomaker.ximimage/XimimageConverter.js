@@ -62,7 +62,6 @@ export default {
         node.alignment = ''
 
         if (dataEl) {
-            debugger
             dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
                     node.caption = converter.annotatedText(child, [node.id, 'caption']);
