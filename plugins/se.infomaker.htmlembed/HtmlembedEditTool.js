@@ -1,28 +1,17 @@
-'use strict';
+import {Tool, Component, FontAwesomeIcon} from 'substance'
 
-
-var SurfaceTool = require('substance/ui/SurfaceTool');
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
-
-function HtmlembedEditComponent() {
-    Component.apply(this, arguments);
-}
-
-HtmlembedEditComponent.Prototype = function() {
-
-    this.insertEmbed = function() {
+class HtmlembedEditTool extends Tool {
+    insertEmbed() {
         this.getCommand().insertEmbedhtml(
             this.refs.embedcode.val()
-        );
+        )
 
         this.send('close');
-    };
+    }
 
-    this.render = function() {
-        var el = $$('div').addClass('embed-dialog');
-        var embed = $$('textarea')
+    render($$) {
+        const el = $$('div').addClass('embed-dialog');
+        const embed = $$('textarea')
             .addClass('textarea')
             .attr('spellcheck', false)
             .ref('embedcode');
@@ -32,20 +21,20 @@ HtmlembedEditComponent.Prototype = function() {
         }
         el.append(embed);
         return el;
-    };
+    }
 
-    this.didMount = function() {
+    didMount() {
         this.refs.embedcode.focus();
-    };
+    }
 
     /**
      * Called when user clicks close or save
      * @param status
      * @returns {boolean} Return false if we want to prevent dialog close
      */
-    this.onClose = function(status) {
+    onClose(status) {
         if (status === "cancel") {
-            return;
+
         }
         else if (status === "save") {
             if (typeof(this.props.text) !== 'undefined') {
@@ -60,12 +49,7 @@ HtmlembedEditComponent.Prototype = function() {
             return true;
         }
 
-    };
-};
+    }
+}
 
-SurfaceTool.extend(HtmlembedEditComponent);
-
-HtmlembedEditComponent.static.name = 'htmlembededit';
-HtmlembedEditComponent.static.command = 'htmlembed';
-
-module.exports = HtmlembedEditComponent;
+export default HtmlembedEditTool

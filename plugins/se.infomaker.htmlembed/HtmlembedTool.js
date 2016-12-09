@@ -1,38 +1,36 @@
-'use strict';
+import {Component, Tool} from 'substance'
+import HtmlembedEditTool from './HtmlembedEditTool'
+import {api} from 'writer'
 
-var SurfaceTool = require('substance/ui/SurfaceTool');
-var Component = require('substance/ui/Component');
-var $$ = Component.$$;
+class HtmlembedTool extends Tool {
 
-function HtmlembedTool() {
-    HtmlembedTool.super.apply(this, arguments);
+    insertEmbedhtml() {
+
+        api.editorSession.executeCommand('htmlembed', {
+
+        })
+
+        // api.ui.showDialog(
+        //     HtmlembedEditTool,
+        //     {
+        //         myProps: 'Insert HTML'
+        //     },
+        //     {
+        //         title: "Embed HTML"
+        //     }
+        // );
+    }
+
+    render($$) {
+
+        const el = $$('button')
+            .attr('title', this.getLabel('Insert HTML embed'))
+            .addClass('se-tool')
+            .append($$('i').addClass('fa fa-code'))
+            .on('click', this.insertEmbedhtml);
+
+        return el
+    }
+
 }
-
-HtmlembedTool.Prototype = function () {
-
-    this.insertEmbedhtml = function () {
-        this.context.api.showDialog(
-            require('./HtmlembedEditTool'),
-            {
-                myProps: 'Insert HTML'
-            },
-            {
-                title: "Embed HTML"
-            }
-        );
-    };
-
-    this.render = function () {
-        var el = $$('button').addClass('se-tool').append(
-            $$('i').addClass('fa fa-code')
-        ).on('click', this.insertEmbedhtml);
-        return el;
-    };
-};
-
-SurfaceTool.extend(HtmlembedTool);
-
-HtmlembedTool.static.name = 'htmlembed';
-HtmlembedTool.static.command = 'htmlembed';
-
-module.exports = HtmlembedTool;
+export default HtmlembedTool

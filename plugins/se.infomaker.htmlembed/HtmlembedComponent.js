@@ -1,61 +1,106 @@
-'use strict';
+import {Component, FontAwesomeIcon, TextPropertyEditor} from 'substance'
+import {api} from 'writer'
+import HtmlembedEditTool from './HtmlembedEditTool'
 
-var Component = require('substance/ui/Component');
-var TextProperty = require('substance/ui/TextPropertyComponent');
-var $$ = Component.$$;
-var Icon = require('substance/ui/FontAwesomeIcon');
+class HtmlembedComponent extends Component {
 
-function HtmlembedComponent() {
-    Component.apply(this, arguments);
-}
+    didMount() {
+        this.resize()
+        this.el.el.focus()
+        this.el.el.addEventListener('paste', (e) => {
+            console.log("Paste", e);
+        })
+        // observe(text, 'cut',/**/     delayedResize);
+        // observe(text, 'paste',   delayedResize);
+        // observe(text, 'drop',    delayedResize);
+    }
 
-HtmlembedComponent.Prototype = function() {
-    this.render = function() {
-        var el = $$('a').append([
-            $$('div').addClass('header').append([
-                $$('span').addClass('remove-button').append(
-                    $$(Icon, {icon: 'fa-remove'})
-                ).on('click', this.removeEmbedhtml).attr('title', this.context.i18n.t('Remove from article')),
-                $$('span').addClass('edit-button').append(
-                    $$(Icon, {icon: 'fa-pencil-square-o'})
-                ).on('click', this.editEmbedhtml).attr('title', this.context.i18n.t('Edit'))
-            ]),
-            $$(TextProperty, {
-                tagName: 'div',
-                path: [this.props.node.id, 'text']
-            })
-        ])
-        .addClass('im-embedhtml')
-        .attr('contentEditable', false);
+    render($$) {
+        const el = $$('div').addClass('im-blocknode__container im-htmlembed')
 
-        this.context.api.handleDrag(
-            el,
-            this.props.node
-        );
+        el.append(this.renderHeader($$))
+        el.append(this.renderContent($$))
 
         return el;
-    };
+    }
 
-    this.removeEmbedhtml = function() {
-        this.context.api.deleteNode('htmlembed', this.props.node);
-    };
+    renderHeader($$) {
+        return $$('div')
+            .append([
+                $$(FontAwesomeIcon, {icon: 'fa-code'}),
+                $$('strong').append(this.getLabel('HTML Embed')).attr('contenteditable', false),
 
-    this.editEmbedhtml = function() {
-        this.context.api.showDialog(
-            require('./HtmlembedEditTool'),
+                $$('span').addClass('edit-button').append(
+                    $$(FontAwesomeIcon, {icon: 'fa-pencil-square-o'})
+                ).on('click', this.editEmbedhtml).attr('title', this.getLabel('Edit'))
+
+            ])
+            .addClass('header')
+            .attr('contenteditable', false)
+    }
+
+    renderContent($$) {
+        const content = $$('div').ref('embedContent')
+            .addClass('im-blocknode__content full-width')
+
+        const textarea = $$('textarea')
+            .addClass('html-embed-content')
+            .on('change', this.htmlChanged)
+            .on('keydown', this.resize)
+            .ref('htmlarea')
+            .val(this.props.node.text)
+
+        content.append(textarea)
+
+        return content
+    }
+
+    didUpdate() {
+        console.log("Did update");
+        this.el.el.focus()
+        this.resize()
+    }
+
+    resize() {
+        const htmlTexarea = this.refs.htmlarea.el.el
+
+        htmlTexarea.style.height = 'auto'
+        htmlTexarea.style.height = htmlTexarea.scrollHeight+'px'
+    }
+
+    htmlChanged(e) {
+        const editorSession = api.editorSession
+
+        editorSession.transaction((tx) => {
+            tx.set([this.props.node.id, 'text'], this.refs.htmlarea.val())
+        })
+    }
+
+    removeEmbedhtml() {
+
+        api.document.deleteNode('htmlembed', this.props.node);
+    }
+
+    editEmbedhtml() {
+        api.ui.showDialog(
+            HtmlembedEditTool,
             {
                 text: this.props.node.text,
-                update: function(text) {
-                    this.props.doc.set([this.props.node.id, 'text'], text);
-                }.bind(this)
+                update: this.updateHTMLOnNode.bind(this)
             },
             {
                 title: "Embed HTML"
             }
         );
-    };
-};
+    }
 
-Component.extend(HtmlembedComponent);
+    updateHTMLOnNode(html) {
+        api.editorSession.transaction((tx) => {
+            tx.set([this.props.node.id, 'text'], html);
+        })
+        // this.rerender()
+    }
 
-module.exports = HtmlembedComponent;
+}
+
+export default HtmlembedComponent

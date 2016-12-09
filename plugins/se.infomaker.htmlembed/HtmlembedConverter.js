@@ -1,11 +1,9 @@
-'use strict';
-
-var HtmlembedConverter = {
+const HtmlembedConverter = {
     type: 'htmlembed',
     tagName: 'object',
 
     matchElement: function(el) {
-        return el.is('object') && el.attr('type') == 'x-im/htmlembed';
+        return el.is('object') && el.attr('type') === 'x-im/htmlembed';
     },
 
     import: function(el, node, converter) { // jshint ignore:line
@@ -15,40 +13,46 @@ var HtmlembedConverter = {
 
         node.id = el.attr('id');
 
-        node.contentType = el.attr('type');
+        node.dataType = el.attr('type');
 
-        var dataEl = el.find('data');
+        const dataEl = el.find('data');
         dataEl.children.forEach(function(child) {
-            if (child.tagName == 'text') {
+            if (child.tagName === 'text') {
+                // let html =  child.text().replace('<![CDATA[', '')
+                // html.replace()
                 node.text = child.text();
             }
 
-            if (child.tagName == 'format') {
+            if (child.tagName === 'format') {
                 node.format = child.text();
             }
         });
     },
 
     export: function(node, el, converter) {
+        const $$ = converter.$$
+
         if (node.uuid) {
             el.attr('uuid', node.uuid);
         }
 
-        el.attr('type', node.contentType);
+        el.attr('type', node.dataType);
         el.attr('id', node.id);
         el.removeAttr('data-id');
 
-        el.append(
-            converter.$$('data').append([
-                converter.$$('text').append(
-                    '<![CDATA[' + node.text.replace(']]>', ']]&gt;') + ']]>'
-                ),
-                converter.$$('format').append(
-                    converter.annotatedText([node.id, 'format'])
-                )]
-            )
-        );
+        const data = $$('data')
+
+        const text = $$('text')
+        const html = '<![CDATA[' + node.text.replace(']]>', ']]&gt;') + ']]>'
+        text.innerHTML = html
+
+        const format = $$('format')
+        format.append(converter.annotatedText([node.id, 'format']))
+
+        data.append([text, format])
+        el.append(data)
+
     }
 };
 
-module.exports = HtmlembedConverter;
+export default HtmlembedConverter

@@ -1,45 +1,20 @@
 $im-embedhtml-border-color: #ddd;
 
-a.im-embedhtml {
-    border: 1px solid $im-embedhtml-border-color;
-    border-left: 6px solid $im-embedhtml-border-color;
-    padding: 20px;
-    margin-bottom: 20px;
-    display: block;
-    text-decoration: none;
-    color: #222;
-    cursor: default;
-    
-    div.header {
-        display: none;
-        position: relative;
-        float: right;
+.im-htmlembed {
 
-        .remove-button {
-            position: absolute;
-            right: -5px;
-            top: -12px;
-            color: #d9534f;
-            cursor: pointer;
-        }
+    .html-embed-content {
+        width: 100%;
+        height: auto;
 
-        .edit-button {
-            position: absolute;
-            right: 20px;
-            top: -11px;
-            cursor: pointer;
-            color: #333;
-
-            &:hover {
-                color: #000;
-            }
-        }
+        font-size:0.9rem;
+        border:1px solid #fff;
+        font-family: Consolas, Monaco, Lucida Console, Liberation Mono, serif;
     }
 
-    &:hover {
-        div.header {
-            display: block;
-        }
+}
+.sm-selected {
+    .html-embed-content {
+        border: 1px solid #ddd;
     }
 }
 
