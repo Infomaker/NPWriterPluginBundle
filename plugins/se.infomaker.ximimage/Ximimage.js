@@ -22,6 +22,11 @@ class Ximimage extends BlockNode {
         })
     }
 
+    setSoftcropData(data) {
+        this.document.set([this.id, 'crops'], data);
+        this.emit('ximimage:changed');
+    }
+
     handleDOMDocument(newsItemDOMDocument) {
         const dom = newsItemDOMDocument.documentElement,
             uuid = dom.getAttribute('guid'),
@@ -33,7 +38,6 @@ class Ximimage extends BlockNode {
             height = dom.querySelector('contentMeta > metadata > object > data > height')
 
         api.editorSession.transaction((tx) => {
-            debugger
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
             tx.set([this.id, 'text'], text ? text.textContent : '')
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')

@@ -7,8 +7,6 @@ const {api} = writer
 */
 class ImageCropper extends Component {
     didMount() {
-        debugger
-        // let div = this.refs['cropper'].el
         this.cropEditor = new IMSoftcrop.Editor( // eslint-disable-line
             'ximimage__softcrop',
             {
@@ -26,19 +24,14 @@ class ImageCropper extends Component {
             this.props.src,
             () => {
                 let selected = true
-                // definedCrops.forEach(crop => {
-                //     this.createCrop(crop.name, selected, crop)
-                //     selected = false
-                // })
-
                 for(var name in definedCrops) {
                     if (this.props.crops) {
-                        this.addCrop(name, selected, definedCrops[name], this.props.crops);
+                        this.addCrop(name, selected, definedCrops[name], this.props.crops)
                     }
                     else {
-                        this.createCrop(name, selected, definedCrops[name]);
+                        this.createCrop(name, selected, definedCrops[name])
                     }
-                    selected = false;
+                    selected = false
                 }
             }
         )
@@ -53,17 +46,17 @@ class ImageCropper extends Component {
         )
     }
 
+    // FIXME: Does not work with existing crops already on the image
     addCrop(name, selected, definedCrop, existingCrops) {
         var existingCrop = null
-        for (var n = 0; n < existingCrops.crops.length; n++) {
-            if (existingCrops.crops[n].name === name) {
-                existingCrop = existingCrops.crops[n]
-                break;
+        for (var n = 0; n < existingCrops.length; n++) {
+            if (existingCrops[n].name === name) {
+                existingCrop = existingCrops[n]
+                break
             }
         }
 
         if (!existingCrop) {
-            console.warn('Existing crop ' + name + ' not defined in configuration. Ignoring!')
             this.createCrop(name, selected, definedCrop)
             return
         }
@@ -92,10 +85,29 @@ class ImageCropper extends Component {
             .attr('id', 'ximimage__softcrop')
             .addClass('sc-image-cropper')
             .ref('cropper')
-            .append('cool')
+    }
 
-        // el.append('TODO: Implement image cropper here')
-        // return el
+    onClose(status) {
+        if (status === "cancel") {
+            return
+        }
+
+        let data = this.cropEditor.getSoftcropData(),
+            crops = []
+
+        data.crops.forEach( (crop) => {
+            crops.push({
+                name: crop.id,
+                x: crop.x / data.width,
+                y: crop.y / data.height,
+                width: crop.width / data.width,
+                height: crop.height / data.height
+            })
+        })
+
+        this.props.callback({
+            crops: crops
+        });
     }
 }
 

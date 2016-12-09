@@ -87,8 +87,7 @@ class ImageDisplay extends Component {
             tertiary = [{
                 caption: this.getLabel('Remove'),
                 callback: () => {
-                    debugger
-                    // FIXME: Implement: this.props.node.setSoftcropData([]);
+                    this.props.node.setSoftcropData([]);
                     return true;
                 }
             }];
@@ -101,20 +100,14 @@ class ImageDisplay extends Component {
                 width: this.props.node.width,
                 height: this.props.node.height,
                 crops: this.props.node.crops,
-                callback: (softCropData) => {
-                    debugger
-                    // FIXME: Implement: this.props.node.setSoftcropData(softcropData)
+                callback: (crops) => {
+                    this.props.node.setSoftcropData(crops)
                 }
             },
             {
                 tertiary: tertiary
             }
         )
-
-        // this.setState({
-        //     DialogClass: ImageCropper,
-        //     src: this.props.node.getUrl()
-        // })
     }
 }
 
