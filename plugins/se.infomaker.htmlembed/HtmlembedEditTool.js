@@ -1,12 +1,41 @@
 import {Tool, Component, FontAwesomeIcon} from 'substance'
+import {api} from 'writer'
 
 class HtmlembedEditTool extends Tool {
-    insertEmbed() {
-        this.getCommand().insertEmbedhtml(
-            this.refs.embedcode.val()
-        )
 
-        this.send('close');
+    didMount() {
+        this.resize()
+
+        const textarea = this.refs.embedcode
+        textarea.el.el.focus();
+
+        // Listen for event to calculate new size on the textarea
+        textarea.el.on('keydown', () => {
+            this.resize()
+        })
+        textarea.el.el.addEventListener('paste', (e) => {
+            this.resize()
+        })
+        textarea.el.el.addEventListener('cut', (e) => {
+            this.resize()
+        })
+    }
+
+    // Insert or update the embed
+    insertEmbed() {
+        api.editorSession.executeCommand('htmlembededit', {
+            text: this.refs.embedcode.val()
+        })
+    }
+
+    resize() {
+        const htmlTexarea = this.refs.embedcode.el.el
+        // Wait some time before change height so the scroll height is updated when pasting
+        setTimeout(() => {
+            htmlTexarea.style.height = 'auto'
+            htmlTexarea.style.height = htmlTexarea.scrollHeight +20+ 'px'
+        }, 100)
+
     }
 
     render($$) {
@@ -23,9 +52,6 @@ class HtmlembedEditTool extends Tool {
         return el;
     }
 
-    didMount() {
-        this.refs.embedcode.focus();
-    }
 
     /**
      * Called when user clicks close or save

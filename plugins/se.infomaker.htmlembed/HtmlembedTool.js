@@ -1,24 +1,12 @@
 import {Component, Tool} from 'substance'
-import HtmlembedEditTool from './HtmlembedEditTool'
 import {api} from 'writer'
 
 class HtmlembedTool extends Tool {
 
     insertEmbedhtml() {
 
-        api.editorSession.executeCommand('htmlembed', {
+        api.editorSession.executeCommand('htmlembed', {})
 
-        })
-
-        // api.ui.showDialog(
-        //     HtmlembedEditTool,
-        //     {
-        //         myProps: 'Insert HTML'
-        //     },
-        //     {
-        //         title: "Embed HTML"
-        //     }
-        // );
     }
 
     render($$) {

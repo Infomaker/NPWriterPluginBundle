@@ -1,17 +1,12 @@
 import {WriterCommand, api} from 'writer'
+import OpenEmbedDialog from './openEmbedDialog'
 
 class HtmlembedCommand extends WriterCommand {
 
     execute(params) {
 
-        const data = {
-            type: 'htmlembed',
-            dataType: 'x-im/htmlembed',
-            text: params.text,
-            format: 'html',
-        }
+        OpenEmbedDialog({})
 
-        return api.document.insertBlockNode(data.type, data);
     }
 }
 

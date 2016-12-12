@@ -1,19 +1,8 @@
-import {Component, FontAwesomeIcon, TextPropertyEditor} from 'substance'
+import {Component, FontAwesomeIcon, TextPropertyComponent} from 'substance'
 import {api} from 'writer'
 import HtmlembedEditTool from './HtmlembedEditTool'
-
+import OpenEmbedDialog from './openEmbedDialog'
 class HtmlembedComponent extends Component {
-
-    didMount() {
-        this.resize()
-        this.el.el.focus()
-        this.el.el.addEventListener('paste', (e) => {
-            console.log("Paste", e);
-        })
-        // observe(text, 'cut',/**/     delayedResize);
-        // observe(text, 'paste',   delayedResize);
-        // observe(text, 'drop',    delayedResize);
-    }
 
     render($$) {
         const el = $$('div').addClass('im-blocknode__container im-htmlembed')
@@ -30,9 +19,11 @@ class HtmlembedComponent extends Component {
                 $$(FontAwesomeIcon, {icon: 'fa-code'}),
                 $$('strong').append(this.getLabel('HTML Embed')).attr('contenteditable', false),
 
-                $$('span').addClass('edit-button').append(
-                    $$(FontAwesomeIcon, {icon: 'fa-pencil-square-o'})
-                ).on('click', this.editEmbedhtml).attr('title', this.getLabel('Edit'))
+                $$('span').addClass('edit-button')
+                    .append(
+                        $$(FontAwesomeIcon, {icon: 'fa-pencil-square-o'})
+                    )
+                    .on('click', this.editEmbedhtml).attr('title', this.getLabel('Edit embed code'))
 
             ])
             .addClass('header')
@@ -41,64 +32,38 @@ class HtmlembedComponent extends Component {
 
     renderContent($$) {
         const content = $$('div').ref('embedContent')
-            .addClass('im-blocknode__content full-width')
+            .addClass('im-blocknode__content')
 
-        const textarea = $$('textarea')
-            .addClass('html-embed-content')
-            .on('change', this.htmlChanged)
-            .on('keydown', this.resize)
-            .ref('htmlarea')
-            .val(this.props.node.text)
+        const textarea = $$(TextPropertyComponent, {
+            tagName: 'div',
+            path: [this.props.node.id, 'text']
+        })
+        textarea.ref('htmlarea')
+        textarea.append(this.props.node.text)
+        textarea.on('dblclick', (e) => {
+            this.editEmbedhtml()
+        })
 
         content.append(textarea)
 
         return content
     }
 
-    didUpdate() {
-        console.log("Did update");
-        this.el.el.focus()
-        this.resize()
-    }
-
-    resize() {
-        const htmlTexarea = this.refs.htmlarea.el.el
-
-        htmlTexarea.style.height = 'auto'
-        htmlTexarea.style.height = htmlTexarea.scrollHeight+'px'
-    }
-
-    htmlChanged(e) {
-        const editorSession = api.editorSession
-
-        editorSession.transaction((tx) => {
-            tx.set([this.props.node.id, 'text'], this.refs.htmlarea.val())
-        })
-    }
-
-    removeEmbedhtml() {
-
-        api.document.deleteNode('htmlembed', this.props.node);
-    }
 
     editEmbedhtml() {
-        api.ui.showDialog(
-            HtmlembedEditTool,
-            {
-                text: this.props.node.text,
-                update: this.updateHTMLOnNode.bind(this)
-            },
-            {
-                title: "Embed HTML"
-            }
-        );
+
+        const props = {
+            text: this.props.node.text,
+            update: this.updateHTMLOnNode.bind(this)
+        }
+        OpenEmbedDialog(props)
     }
 
     updateHTMLOnNode(html) {
         api.editorSession.transaction((tx) => {
             tx.set([this.props.node.id, 'text'], html);
         })
-        // this.rerender()
+        this.rerender()
     }
 
 }

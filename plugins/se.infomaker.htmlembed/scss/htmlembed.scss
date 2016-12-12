@@ -1,18 +1,31 @@
 $im-embedhtml-border-color: #ddd;
 
 .im-htmlembed {
+    .edit-button {
+        float: right;
+        cursor: pointer;
+        font-size:1rem;
+        display: none;
 
-    .html-embed-content {
+        .fa {
+            color: #565656;
+        }
+    }
+}
+.im-htmlembed-modal {
+    .textarea {
         width: 100%;
         height: auto;
-
         font-size:0.9rem;
         border:1px solid #fff;
         font-family: Consolas, Monaco, Lucida Console, Liberation Mono, serif;
     }
-
 }
 .sm-selected {
+    .edit-button {
+        display: inline;
+
+    }
     .html-embed-content {
         border: 1px solid #ddd;
     }
