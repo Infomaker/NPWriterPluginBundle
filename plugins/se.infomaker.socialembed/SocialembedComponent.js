@@ -59,7 +59,7 @@ class SocialembedComponent extends Component {
 
     renderContent($$, node) {
         return $$('div').ref('embedContent')
-            .addClass('im-blocknode__content')
+            .addClass('im-blocknode__content full-width')
             .html(node.html)
     }
 

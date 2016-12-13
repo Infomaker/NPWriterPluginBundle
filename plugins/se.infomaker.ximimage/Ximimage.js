@@ -27,6 +27,11 @@ class Ximimage extends BlockNode {
         this.emit('ximimage:changed');
     }
 
+    /**
+     * This method is called from NPFile when file is uploaded.
+     *
+     * @param {DOMDoucment} newsItemDOMDocument
+     */
     handleDOMDocument(newsItemDOMDocument) {
         const dom = newsItemDOMDocument.documentElement,
             uuid = dom.getAttribute('guid'),
@@ -47,6 +52,11 @@ class Ximimage extends BlockNode {
 
     }
 
+    /**
+     * Fetchpayload is used when inserting an existing image with an UUID.
+     * @param context
+     * @param cb
+     */
     fetchPayload(context, cb) {
         const doc = api.editorSession.getDocument()
         const fileNode = this.getImageFile()

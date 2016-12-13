@@ -12,7 +12,7 @@ export default {
         '<itemMetaExtProperty type="imext:type" value="x-im/person"/>' +
         '<itemMetaExtProperty type="imext:firstName" value=""/>' +
         '<itemMetaExtProperty type="imext:lastName" value=""/>' +
-        '<links xmlns="http://www.infomaker.se/newsml/1.0"/>' +
+        '<links xmlns="http://www.infomaker.se/newsml/1.0" />' +
         '</itemMeta>' +
         '<concept>' +
         '<conceptId uri="im://person/"/>' +
@@ -32,9 +32,8 @@ export default {
         '<firstCreated />' +
         '<versionCreated/>' +
         '<pubStatus qcode="stat:usable"/>' +
-        '<edNote/>' +
         '<itemMetaExtProperty type="imext:type" value="x-im/organisation"/>' +
-        '<links xmlns="http://www.infomaker.se/newsml/1.0"/>' +
+        '<links xmlns="http://www.infomaker.se/newsml/1.0" />' +
         '</itemMeta>' +
         '<concept>' +
         '<conceptId uri="im://organisation/"/>' +
@@ -55,29 +54,6 @@ export default {
         '</object>' +
         '</metadata>' +
         '</concept>' +
-        '</conceptItem>',
-
-    topicTemplate: '<conceptItem conformance="power" standard="NewsML-G2" standardversion="2.20" version="1">' +
-        '<catalogRef href="http://www.iptc.org/std/catalog/catalog.IPTC-G2-Standards_27.xml"/>' +
-        '<catalogRef href="http://infomaker.se/spec/catalog/catalog.infomaker.g2.1_0.xml"/>' +
-        '<itemMeta>' +
-        '<itemClass qcode="cinat:concept"/>' +
-        '<provider literal=""/>' +
-        '<pubStatus qcode="stat:usable"/>' +
-        '<firstCreated />' +
-        '<versionCreated/>' +
-        '<edNote/>' +
-        '<itemMetaExtProperty type="imext:type" value="x-im/topic"/>' +
-        '<itemMetaExtProperty type="imext:firstName" value=""/>' +
-        '<itemMetaExtProperty type="imext:lastName" value=""/>' +
-        '<links xmlns="http://www.infomaker.se/newsml/1.0"/>' +
-        '</itemMeta>' +
-        '<concept>' +
-        '<conceptId />' +
-        '<type qcode="cpnat:object"/>' +
-        '<name></name>' +
-        '<definition role="drol:long"></definition>' +
-        '<definition role="drol:short"></definition>' +
-        '</concept>' +
         '</conceptItem>'
+
 }
