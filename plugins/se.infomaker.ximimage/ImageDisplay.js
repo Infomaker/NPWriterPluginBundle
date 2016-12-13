@@ -99,7 +99,7 @@ class ImageDisplay extends Component {
                 src: this.props.node.getUrl(),
                 width: this.props.node.width,
                 height: this.props.node.height,
-                crops: this.props.node.crops,
+                crops: this.props.node.crops.crops || [],
                 callback: (crops) => {
                     this.props.node.setSoftcropData(crops)
                 }

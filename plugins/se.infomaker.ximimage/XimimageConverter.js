@@ -189,12 +189,12 @@ export default {
         })
 
         // Add crops to data
-        if (fileNode.crops && fileNode.crops) {
+        if (node.crops && node.crops) {
             let crops = $$('crops')
 
-            for (var x in fileNode.crops.crops) {
-                if (fileNode.crops.crops.hasOwnProperty(x)) {
-                    var origCrop = fileNode.crops.crops[x];
+            for (var x in node.crops.crops) {
+                if (node.crops.crops.hasOwnProperty(x)) {
+                    var origCrop = node.crops.crops[x];
 
                     crops.append(
                         $$('crop').attr('name', origCrop.name).append([
