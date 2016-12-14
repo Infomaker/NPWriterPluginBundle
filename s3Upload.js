@@ -22,6 +22,8 @@ function getContentTypeForExtension(extension) {
         return 'text/css'
     } else if (extension === 'js') {
         return 'application/javascript'
+    } else if (extension == 'json') {
+	return 'application/json'
     }
 }
 
@@ -61,7 +63,7 @@ fs.readdir(distFolder, (err, files) => {
                     if (err) {
                         console.error("Something is fishy for file " + fileName + ": " + err)
                     } else {
-                        console.log(fileName + " uploaded: " + data);
+                        console.log(fileName + " uploaded");
                     }
                 })
             })
