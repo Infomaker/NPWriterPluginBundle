@@ -4,7 +4,7 @@ const path = require('path')
 
 const bucketName = process.env.AWS_S3_BUCKET_NAME
 
-if(!bucketName) {
+if (!bucketName) {
     throw new Error("No bucket specified")
     process.exitCode(1)
 }
@@ -31,6 +31,7 @@ function getContentTypeForExtension(extension) {
  * uploads to se
  */
 fs.readdir(distFolder, (err, files) => {
+    let s3 = new aws.S3();
 
     files
         .map((file) => {
@@ -43,30 +44,26 @@ fs.readdir(distFolder, (err, files) => {
             const fileName = path.basename(file)
             const fileType = path.extname(file).split('.').pop()
 
-            let fileStreamJs = fs.createReadStream(file);
-            fileStreamJs.on('error', function (err) {
+
+            fs.readFile(file, (err, fileData) => {
+
                 if (err) {
                     throw err;
                 }
-            })
 
-            let s3 = new aws.S3();
-
-            let uploadFileObject = {
-                Bucket: bucketName,
-                Key: fileName,
-                Body: fileStreamJs,
-                ContentType: getContentTypeForExtension(fileType)
-            }
-
-            fileStreamJs.on('open', () => {
-                s3.putObject(uploadFileObject, (err) => {
+                let uploadFileObject = {
+                    Bucket: bucketName,
+                    Key: fileName,
+                    Body: fileData,
+                    ContentType: getContentTypeForExtension(fileType)
+                }
+                s3.putObject(uploadFileObject, (err, data) => {
                     if (err) {
-                        throw err;
+                        console.error("Something is fishy for file " + fileName + ": " + err)
+                    } else {
+                        console.log(fileName + " uploaded: " + data);
                     }
                 })
             })
-
         })
-
 })
