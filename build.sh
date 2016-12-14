@@ -40,10 +40,10 @@ if [[ $? -ne 0 ]]; then
 fi
 
 echo "Publishing plugins to $awsbucketname"
+echo "{\"Plugins\": \"#$(git rev-parse --short HEAD)\"}" > dist/versions.json
 
 AWS_ACCESS_KEY_ID=$awsaccesskey  AWS_SECRET_ACCESS_KEY=$awssecretkey AWS_S3_BUCKET_NAME=$awsbucketname node s3Upload.js
 
 
 
-#echo "{\"Plugins\": \"#$(git rev-parse --short HEAD)\"}" > dist/versions.json
 
