@@ -19,7 +19,7 @@ console.log(" Plugin development build ")
 console.log(" ----------------------------\n")
 
 module.exports = {
-    entry: "./plugins/index.js",
+    entry: "./plugins/im-writer.js",
     output: {
         filename: "index.js",
         path: "dist",
@@ -50,7 +50,7 @@ module.exports = {
               test: /\.js?$/,
               exclude: /(node_modules)/,
               loaders: [
-                  'babel?presets[]=stage-0,presets[]=es2015'
+                  'babel?presets[]=stage-0,presets[]=es2015-node6'
               ]
           }
         ],

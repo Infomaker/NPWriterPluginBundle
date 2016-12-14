@@ -14,24 +14,23 @@ class LocationItemComponent extends Component {
     }
 
     loadLocation() {
-        var api = this.context.api;
+        const api = this.context.api;
         api.router.getConceptItem(this.props.location.uuid, this.props.location.type)
             .then(xml => {
-                var conceptXML = xml.querySelector('conceptItem')
+                const conceptXML = xml.querySelector('conceptItem')
                 try {
                     this.setState({
                         loadedLocation: jxon.build(conceptXML),
                         isLoaded: true
                     });
                 } catch (e) {
-                    console.log("Error parsing location", e);
                     this.setState({
                         isLoaded: true,
                         couldNotLoad: true
                     })
                 }
             })
-            .catch(e => {
+            .catch(() => {
                 this.setState({
                     isLoaded: true,
                     couldNotLoad: true
@@ -41,12 +40,12 @@ class LocationItemComponent extends Component {
 
     render($$) {
 
-        var location = this.props.location
+        const location = this.props.location
 
-        var locItem = $$('li').addClass('tag-list__item')
-        var displayNameEl = $$('span')
+        const locItem = $$('li').addClass('tag-list__item')
+        const displayNameEl = $$('span')
 
-        var locationType = 'position'
+        let locationType = 'position'
 
         if (!this.state.isLoaded) {
             displayNameEl.addClass('tag-item__title tag-item__title--loading').append(location.title)
@@ -89,7 +88,7 @@ class LocationItemComponent extends Component {
 
             locItem.append(displayNameEl)
 
-            var deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
+            const deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
                 .attr('title', this.getLabel('Remove from article')))
                 .on('click', function () {
@@ -97,7 +96,7 @@ class LocationItemComponent extends Component {
                 }.bind(this))
             locItem.append(deleteButton)
 
-            var icon = 'fa-map-marker'
+            let icon = 'fa-map-marker'
             if (locationType === 'x-im/polygon') {
                 icon = 'fa-map'
             }
@@ -132,11 +131,11 @@ class LocationItemComponent extends Component {
     // }
 
 
-    updateTagItemName(tagItem, loadedTag) {
+    static updateTagItemName(tagItem, loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
-            var definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
-            for (var i = 0; i < definition.length; i++) {
-                var item = definition[i]
+            const definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
+            for (let i = 0; i < definition.length; i++) {
+                const item = definition[i]
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
                         tagItem.attr('title', item["keyValue"])

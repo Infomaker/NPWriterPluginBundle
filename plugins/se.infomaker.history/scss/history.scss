@@ -1,0 +1,118 @@
+.tooltip {
+    z-index: 1000000 !important;
+}
+.icon-delete {
+    float:right;
+    cursor: pointer;
+    margin-top:5px;
+}
+.all-unsaved-articles {
+    font-size: 1rem;
+    cursor: pointer;
+    float: right;
+}
+
+.restore-history-dialog {
+    padding:1rem;
+    p {
+        margin-bottom:1rem;
+    }
+}
+.history-article {
+    margin-bottom:15px;
+
+    h4 {
+        font-weight: bold;
+        font-size: 1rem;
+        margin-bottom:1rem;
+    }
+}
+.history-version-item {
+    background: #fbfbfb;
+    color: #fff;
+    border: 1px solid #ddd;
+    line-height:1.3rem;
+
+    &>i.fa {
+        color: #666;
+    }
+
+    &:hover {
+        border: 1px solid #bbb;
+        cursor: pointer;
+    }
+    padding: 9px 10px 10px 18px;
+    border-radius: 3px;
+    cursor: default;
+    margin-bottom: 5px;
+    width: 100%;
+
+    transition-property: background, height, padding, margin, opacity;
+    transition-duration: 1s;
+    transition-timing-function: ease-out;
+
+    &>i.fa {
+        float: left;
+        line-height: inherit;
+        margin: 0 0 0 -0.3rem;
+        font-size: 90%;
+    }
+
+    &:hover {
+        border: 1px solid #bbb;
+        cursor: pointer;
+    }
+
+    &>div {
+        padding-left: 25px;
+        font-size: 90%;
+        color: #333;
+
+        &.saved {
+            font-weight: bold;
+            color: #000;
+        }
+
+        &>strong:first-child {
+            display: block;
+            color: #fff;
+            border-bottom: 1px solid #eee;
+            margin: -9px -10px 10px -43px;
+            padding: 0 0 0 43px;
+            line-height: 2.5rem;
+        }
+
+        &>a {
+            color: #eee;
+            font-size: 95%;
+        }
+    }
+}
+
+.sc-np-popover {
+    .imc-history {
+        min-width:300px;
+        padding:1rem;
+    }
+}
+.imc-history {
+    height: 300px;
+
+    .sc-scroll-pane {
+        top: 80px;
+        left: 15px;
+        right: 15px;
+        background-color: #fff;
+        border:none;
+        padding:1rem;
+    }
+    p {
+        line-height: 1.4rem;
+        margin-top: 0.7rem;
+        margin-bottom:1rem;
+        color: #777;
+
+    }
+
+
+}

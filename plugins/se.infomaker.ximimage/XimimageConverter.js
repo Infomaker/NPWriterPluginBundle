@@ -1,4 +1,4 @@
-import {api, NilUUID, idGenerator} from 'writer'
+import {NilUUID, idGenerator, api} from 'writer'
 
 export default {
     type: 'ximimage',
@@ -8,7 +8,16 @@ export default {
         return el.is('object') && el.attr('type') === 'x-im/image'
     },
 
-    import: function (el, node, converter) { // jshint ignore:line
+    /**
+     *
+     * @param el
+     * @param node
+     * @param {NewsMLImporter} converter
+     * @param {bool} newsItemConversion If the converter is used to convert a newsItem for a image (metadata from repository)
+     */
+    import: function (el, node, converter, newsItemConversion) {
+
+        const objectElementId = el.attr('id')
 
         // Import link - base data
         var linkEl = el.find('links>link')
@@ -16,29 +25,41 @@ export default {
         let imageFile = {
             id: idGenerator(),
             type: 'npfile',
-            fileType: 'image'
+            imType: 'x-im/image',
+            parentNodeId: objectElementId
         }
+
         if (el.attr('uuid')) {
             imageFile.uuid = el.attr('uuid')
         }
-        if (linkEl.attr('uri')) {
-            imageFile.uri = linkEl.attr('uri')
+
+        if (linkEl && linkEl.attr('uri')) {
+            node.uri = linkEl.attr('uri')
         }
-        if (linkEl.attr('url')) {
+
+        if (linkEl && linkEl.attr('url')) {
             imageFile.url = linkEl.attr('url')
         }
+
         converter.createNode(imageFile)
         node.imageFile = imageFile.id
-
         node.uuid = el.attr('uuid')
 
+        let dataEl
+        if(newsItemConversion) {
+            dataEl = el.find('data')
+        } else {
+            dataEl = linkEl.find('data')
+        }
         // Import data
-        var dataEl = linkEl.find('data')
+
+
+
+
         node.caption = ''
         node.alttext = ''
         node.credit = ''
         node.alignment = ''
-        node.crops = {}
 
         if (dataEl) {
             dataEl.children.forEach(function (child) {
@@ -98,7 +119,7 @@ export default {
                     });
 
                     if (crops.crops.length) {
-                        node.crops.original = crops;
+                        node.crops = crops;
                     }
                 }
             })
@@ -106,7 +127,13 @@ export default {
 
         // Import author links
         node.authors = []
-        var authorLinks = linkEl.find('links')
+        let authorLinks
+        if(newsItemConversion) {
+            authorLinks = el.find('links')
+        } else {
+            authorLinks = linkEl.find('links')
+        }
+
         if (authorLinks) {
             authorLinks.children.forEach(function (authorLinkEl) {
                 if ("author" === authorLinkEl.getAttribute('rel')) {
@@ -125,23 +152,29 @@ export default {
     export: function (node, el, converter) {
         var $$ = converter.$$;
 
+        let fileNode = node.document.get(node.imageFile)
+
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
-            uuid: node.uuid,
-            type: 'x-im/image'
+            type: 'x-im/image',
+            uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         })
+
 
         var data = $$('data').append([
             $$('width').append(String(node.width)),
             $$('height').append(String(node.height))
         ])
 
-        var fields = window.writer.api.getConfigValue('se.infomaker.ximimage', 'fields') || []
+        let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
             let name = (obj.name === 'caption' ? 'text' : obj.name)
 
-            if (obj.type === 'option') {
+            if (!node[obj.name]) {
+                data.append($$(name).append(''))
+            }
+            else if (obj.type === 'option') {
                 data.append(
                     $$(name).append(node[obj.name])
                 )
@@ -156,16 +189,14 @@ export default {
         })
 
         // Add crops to data
-        var crops = []
-        if (node.crops && node.crops.original) {
-            var originalCrops = $$('crops')
+        if (node.crops && node.crops) {
+            let crops = $$('crops')
 
-            for (var x in node.crops.original.crops) {
+            for (var x in node.crops.crops) {
+                if (node.crops.crops.hasOwnProperty(x)) {
+                    var origCrop = node.crops.crops[x];
 
-                if (node.crops.original.crops.hasOwnProperty(x)) {
-                    var origCrop = node.crops.original.crops[x];
-
-                    originalCrops.append(
+                    crops.append(
                         $$('crop').attr('name', origCrop.name).append([
                             $$('x').append(origCrop.x),
                             $$('y').append(origCrop.y),
@@ -174,22 +205,16 @@ export default {
                         ])
                     )
                 }
-
-
             }
 
-            crops.push(originalCrops);
+            data.append(crops)
         }
 
-        if (crops.length) {
-            data.append(crops);
-        }
 
-        let fileNode = node.document.get(node.imageFile)
         var link = $$('link').attr({
             rel: 'self',
             type: 'x-im/image',
-            uri: fileNode.uri ? fileNode.uri : '',
+            uri: node.uri ? node.uri : '',
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 
@@ -219,4 +244,3 @@ export default {
         )
     }
 }
-

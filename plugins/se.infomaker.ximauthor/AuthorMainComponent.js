@@ -16,7 +16,7 @@ class AuthorMainComponent extends Component {
     getInitialState() {
         return {
             existingAuthors: api.newsItem.getAuthors()
-        };
+        }
     }
 
     reloadAuthors() {
@@ -28,17 +28,15 @@ class AuthorMainComponent extends Component {
     render($$) {
         var el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
 
-        var authorSearchUrl = api.router.getEndpoint();
-
         const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
 
         var searchComponent = $$(AuthorSearchComponent, {
             existingItems: this.state.existingAuthors,
-            searchUrl: authorSearchUrl + '/api/search/concepts/authors?q=',
+            searchUrl: '/api/search/concepts/authors?q=',
             onSelect: this.addAuthor.bind(this),
             onCreate: this.createAuthor.bind(this),
             createAllowed: true,
-            placeholderText: 'Add author'
+            placeholderText: this.getLabel('Search authors')
         }).ref('authorSearchComponent')
 
         var existingAuthorsList = $$(AuthorListComponent, {
@@ -61,7 +59,7 @@ class AuthorMainComponent extends Component {
             }
             this.reloadAuthors();
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     }
 
@@ -70,7 +68,7 @@ class AuthorMainComponent extends Component {
             api.newsItem.addAuthor(this.name, author);
             this.reloadAuthors();
         } catch (e) {
-            console.log("e", e);
+            console.error("e", e);
         }
     }
 

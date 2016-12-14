@@ -53,6 +53,20 @@ class SkeletonComponent extends Component {
 
     }
 
+    fetchUrl() {
+        const urlToFetch = 'http://api.krisinformation.se/v1/capmessage?format=json'
+
+        api.router.get('/api/proxy/', {url: urlToFetch})
+            .then(response => this.context.api.router.checkForOKStatus(response))
+            .then(response => response.json())
+            .then(json => {
+                console.log("Response is", json)
+            })
+            .catch((e) => {
+                console.error(e)
+            })
+    }
+
 
     /**
      * Render method is called whenever there's a change in state or props
@@ -94,8 +108,9 @@ class SkeletonComponent extends Component {
                 }
             ]
 
+            this.fetchUrl()
             // api.ui.showMessageDialog(messages, () => {}, () => {})
-            api.ui.showDialog(Test, {}, {primary:"Go", secondary: "Cancel", tertiary: third})
+            // api.ui.showDialog(Test, {}, {primary:"Go", secondary: "Cancel", tertiary: third})
         }).append('Open dialog')
 
         el.append(button)

@@ -19,11 +19,17 @@ console.log(" Plugin production build ")
 console.log(" ----------------------------\n")
 
 module.exports = {
-    entry: "./plugins/index.js",
-    output: {
-        filename: "index.js",
-        path: "dist",
+    entry: {
+        'im-writer': './plugins/im-writer',
+        'fd': './plugins/fd',
+        'mitm': './plugins/mitm',
+        'sds': './plugins/sds'
     },
+    output: {
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js"
+    },
+
     postcss: [
         autoprefixer({
             browsers: ['last 2 versions']
@@ -47,7 +53,7 @@ module.exports = {
                 test: /\.js?$/,
                 exclude: /(node_modules)/,
                 loaders: [
-                    'babel?presets[]=stage-0,presets[]=es2015'
+                    'babel?presets[]=stage-0,presets[]=es2015-node6'
                 ]
             }
         ],
@@ -80,20 +86,10 @@ module.exports = {
                 // ...
             });
         },
-        new ExtractTextPlugin("style.css"),
+        new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
-            }
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            sourceMap: false,
-            output: {
-                comments: false
-            },
-            compress: {
-                warnings: false
             }
         })
     ]

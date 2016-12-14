@@ -1,41 +1,51 @@
-import { Component } from 'substance'
+import {Component, Button, FontAwesomeIcon} from 'substance'
+import {api} from 'writer'
 import ImageCropper from './ImageCropper'
-import ImageMetadata from './ImageMetadata'
 
 /*
-  Intended to be used in Ximimage and Ximteaser and other content types
-  that include an imageFile property.
-*/
+ Intended to be used in Ximimage and Ximteaser and other content types
+ that include an imageFile property.
+ */
 class ImageDisplay extends Component {
-    didMount() {
-        this.handleActions({
-            closeModal: this._closeDialog
-        })
+    _onDragStart(e) {
+        e.preventDefault()
+        e.stopPropagation()
+
     }
 
     render($$) {
-        let node = this.props.node
-        let el = $$('div').addClass('sc-image-display')
-        el.addClass('sm-'+this.props.isolatedNodeState)
-        let imgSrc = node.getUrl()
-        let Button = this.getComponent('button')
-        let Modal = this.getComponent('modal')
-        let DialogClass = this.state.DialogClass
-
-        let imgContainer = $$('div').addClass('se-image-container')
+        let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer'),
+            imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
+
+            if(this.props.isInTeaser) {
+                const deleteButton = $$(Button, {icon: 'remove'})
+                    .addClass('remove-image__button')
+                    .attr('title', this.getLabel('remove-image-button-title'))
+                    .on('click', () => {
+                        this.props.removeImage()
+                    })
+
+                imgContainer.append(deleteButton)
+            }
+
             imgContainer.append(
-                $$('img', { src: imgSrc })
+                $$('img', {
+                    src: imgSrc
+                }).ref('img')
+            )
+        } else {
+            imgContainer.append(
+                $$(FontAwesomeIcon, {
+                    icon: 'fa-picture-o'
+                })
+                    .attr('style', 'font-size:25rem;color:#efefef')
             )
         }
 
-        // Actions
         imgContainer.append(
             $$('div').addClass('se-actions').append(
-                $$(Button, {
-                    icon: 'upload'
-                }).on('click', this._replaceImage),
                 $$(Button, {
                     icon: 'image'
                 }).on('click', this._openMetaData),
@@ -45,70 +55,60 @@ class ImageDisplay extends Component {
             )
         )
 
+        let el = $$('div').addClass('sc-image-display')
+        el.addClass('sm-' + this.props.isolatedNodeState)
         el.append(imgContainer)
 
-        /* Invisible file input element */
-        el.append(
-            $$('input')
-                .attr('type', 'file')
-                .ref('fileInput')
-                .on('change', this._onFileSelected)
-        )
-
-        // Render dialog if open
-        if (DialogClass) {
-            el.append(
-                $$(Modal, {
-                    width: 'medium',
-                    textAlign: 'center'
-                }).append(
-                    $$(DialogClass, {
-                        node: node
-                    })
-                )
-            )
-        }
         return el
     }
 
-    _replaceImage() {
-        this.refs.fileInput.click()
-    }
-
-    _onFileSelected(e) {
-        let file = e.currentTarget.files[0]
-        let nodeId = this.props.node.id
-        let oldFileId = this.props.node.imageFile
-        this.context.editorSession.transaction((tx) => {
-            // create a new file node and replace the old one
-            var newFile = tx.create({
-                type: 'npfile',
-                fileType: 'image',
-                data: file
-            })
-            tx.set([nodeId, 'imageFile'], newFile.id)
-            tx.delete(oldFileId)
-        })
-    }
-
-    _closeDialog() {
-        this.setState({
-            DialogClass: null
-        })
-    }
-
     _openMetaData() {
-        this.setState({
-            DialogClass: ImageMetadata
+        api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
+        .then(response => {
+            api.ui.showDialog(
+                this.getComponent('dialog-image'),
+                {
+                    node: this.props.node,
+                    newsItem: response
+                },
+                {
+                    title: this.getLabel('Image archive information'),
+                    global: true,
+                    primary: this.getLabel('Save'),
+                    secondary: this.getLabel('Cancel')
+                }
+            )
         })
     }
 
     _openCropper() {
-        this.setState({
-            DialogClass: ImageCropper
-        })
+        let tertiary = false;
+        if (this.props.node.crops) {
+            tertiary = [{
+                caption: this.getLabel('Remove'),
+                callback: () => {
+                    this.props.node.setSoftcropData([]);
+                    return true;
+                }
+            }];
+        }
+
+        api.ui.showDialog(
+            ImageCropper,
+            {
+                src: this.props.node.getUrl(),
+                width: this.props.node.width,
+                height: this.props.node.height,
+                crops: this.props.node.crops.crops || [],
+                callback: (crops) => {
+                    this.props.node.setSoftcropData(crops)
+                }
+            },
+            {
+                tertiary: tertiary
+            }
+        )
     }
 }
 
 export default ImageDisplay
-

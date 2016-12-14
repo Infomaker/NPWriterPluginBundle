@@ -9,7 +9,7 @@ export default {
             this.id + '_1',
             {
                 icon: 'fa-ellipsis-h',
-                button: true,
+                button: 'Save',
                 align: 'right'
             },
             PublishFlowComponent

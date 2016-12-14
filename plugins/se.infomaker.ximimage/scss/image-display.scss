@@ -3,6 +3,29 @@
     > .se-image-container {
         position: relative;
 
+        .remove-image__button {
+            display: none;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            background: rgba(255,255,255,0.7);
+            color: #d9534f;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            -webkit-border-radius:15px;
+            -moz-border-radius:15px;
+            border-radius:15px;
+            text-align: center;
+            line-height:10px;
+
+            .fa {
+                font-size:15px;
+                line-height:19px;
+            }
+
+        }
+
         > img {
             width: 100%;
             display: block;
@@ -35,8 +58,12 @@
     }
 
     /* Show actions depending on isolated node state */
-    &.sm-selected > .se-image-container > .se-actions,
-    &.sm-selected > .se-image-container > .se-actions {
-        display: block;
+    &.sm-selected > .se-image-container  {
+        .remove-image__button {
+            display: inline;
+        }
+        > .se-actions {
+            display: block;
+        }
     }
 }

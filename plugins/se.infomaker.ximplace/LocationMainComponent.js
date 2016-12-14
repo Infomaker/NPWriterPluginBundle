@@ -1,7 +1,9 @@
 import {Component} from 'substance'
-import {api} from 'writer'
+import {api, jxon} from 'writer'
 import LocationListComponent from './LocationListComponent'
 import LocationDetailComponent from './LocationDetailComponent'
+import LocationTemplate from './template/concept'
+
 
 class LocationMainComponent extends Component {
 
@@ -11,7 +13,7 @@ class LocationMainComponent extends Component {
     }
 
     configureFeatures() {
-        const features = api.getConfigValue(this.props.panel.id, 'features');
+        const features = api.getConfigValue(this.props.pluginConfigObject.id, 'features');
 
         switch (features) {
             case 'position':
@@ -40,7 +42,7 @@ class LocationMainComponent extends Component {
 
 
         this.polygonIsEditable = api.getConfigValue(
-            this.props.panel.id,
+            this.props.pluginConfigObject.id,
             'polygon.editable',
             true
         )
@@ -61,27 +63,27 @@ class LocationMainComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').addClass('location-main').append(
+        const el = $$('div').addClass('location-main').append(
             $$('h2').append(
                 this.t.title
             )
-        );
+        )
 
-        var locationList = $$(LocationListComponent, {
+        const locationList = $$(LocationListComponent, {
             locations: this.state.existingLocations,
             openMap: this.openMap.bind(this),
             removeLocation: this.removeLocation.bind(this)
         }).ref('locationList');
 
-        var query = 'q=';
+        let query = 'q=';
         if (this.features !== 'all') {
             query = 'f=' + this.features + '&q=';
         }
 
         const LocationSearchComponent = this.context.componentRegistry.get('form-search')
-        var searchComponent = $$(LocationSearchComponent, {
+        const searchComponent = $$(LocationSearchComponent, {
             existingItems: this.state.existingLocations,
-            searchUrl: api.router.getEndpoint() + '/api/search/concepts/locations?' + query,
+            searchUrl: '/api/search/concepts/locations?' + query,
             onSelect: this.addLocation.bind(this),
             onCreate: this.createMap.bind(this),
             createAllowed: (this.features !== 'polygon'),
@@ -95,13 +97,20 @@ class LocationMainComponent extends Component {
     }
 
     createMap(selectedItem, exists) {
-        var properties = {
+
+        const parser = new DOMParser();
+        const placeXML = parser.parseFromString(LocationTemplate.place, 'text/xml').firstChild
+        const location = jxon.build(placeXML)
+
+
+        const properties = {
             newLocation: true,
             exists: exists,
             query: selectedItem.inputValue,
             reload: this.reload.bind(this),
             editable: true,
-            plugin: this.props.plugin
+            plugin: this.props.pluginConfigObject,
+            location: location
         };
 
         api.ui.showDialog(LocationDetailComponent, properties, {
@@ -113,14 +122,14 @@ class LocationMainComponent extends Component {
 
     addLocation(item) {
         // Use location "sub-type" as type for link
-        var useGeometryType = api.getConfigValue(this.props.panel.id, 'useGeometryType');
+        const useGeometryType = api.getConfigValue(this.props.pluginConfigObject.id, 'useGeometryType');
 
         // Validate that writer config corresponds with concept backend config
         if (useGeometryType === true && !item.hasOwnProperty('geometryType')) {
             throw new Error('Writer configured to use geometry type for locations but no geometry type provided by concept backend');
         }
 
-        var location = {
+        const location = {
             title: item.name[0],
             uuid: item.uuid,
             data: item.location ? {position: item.location[0]} : {},
@@ -137,18 +146,18 @@ class LocationMainComponent extends Component {
     }
 
     openMap(item) {
-        var editable = true;
+        let editable = true;
         if (item.concept.metadata.object['@type'] === 'x-im/polygon' && false === this.polygonIsEditable) {
             editable = false;
         }
 
-        var properties = {
+        const properties = {
             newLocation: false,
             query: item.inputValue,
             location: item,
             reload: this.reload.bind(this),
             editable: editable,
-            plugin: this.props.plugin
+            plugin: this.props.pluginConfigObject
         };
 
         api.ui.showDialog(LocationDetailComponent, properties, {
@@ -156,6 +165,7 @@ class LocationMainComponent extends Component {
             global: true,
             primary: editable ? this.getLabel('Save') : this.getLabel('Close'),
             secondary: editable ? this.getLabel('Cancel') : false
+
         })
     }
 

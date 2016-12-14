@@ -22,6 +22,14 @@ class PublishFlowComponent extends Component {
         api.events.on(pluginId, event.DOCUMENT_SAVE_FAILED, () => {
             this._onDocumentSaveFailed()
         })
+
+        api.events.on(pluginId, event.USERACTION_CANCEL_SAVE, () => {
+            this._onDocumentSaveFailed()
+        })
+
+        api.events.on(pluginId, event.USERACTION_SAVE, () => {
+            this.defaultAction()
+        });
     }
 
     dispose() {
@@ -65,7 +73,7 @@ class PublishFlowComponent extends Component {
         let el = $$('div').addClass('sc-np-publish-body'),
             actions = this.renderAllowedActions($$)
 
-        switch(this.state.status.qcode) {
+        switch (this.state.status.qcode) {
             case 'imext:draft':
                 el.append([
                     $$('h2').append(
@@ -187,7 +195,7 @@ class PublishFlowComponent extends Component {
             .addClass('sc-np-publish-actions')
 
         this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(action => {
-            switch(action) {
+            switch (action) {
                 case 'imext:draft':
                     actionsEl.append(this.renderActionDraft($$))
                     break
@@ -216,11 +224,11 @@ class PublishFlowComponent extends Component {
                 this.getLabel('Save as draft')
             )
         ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToDraft()
+            .on('click', () => {
+                this._save(() => {
+                    this.publishFlowMgr.setToDraft()
+                })
             })
-        })
     }
 
     renderActionDone($$) {
@@ -230,11 +238,11 @@ class PublishFlowComponent extends Component {
                 this.getLabel('Ready for approval')
             )
         ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToDone()
+            .on('click', () => {
+                this._save(() => {
+                    this.publishFlowMgr.setToDone()
+                })
             })
-        })
 
     }
 
@@ -250,15 +258,15 @@ class PublishFlowComponent extends Component {
                     this.getLabel('Schedule for publish')
                 )
             ])
-            .addClass('more')
-            .on('click', () => {
-                if (this.refs['pfc-withheld'].hasClass('active')) {
-                    this.refs['pfc-withheld'].removeClass('active')
-                }
-                else {
-                    this.refs['pfc-withheld'].addClass('active')
-                }
-            })
+                .addClass('more')
+                .on('click', () => {
+                    if (this.refs['pfc-withheld'].hasClass('active')) {
+                        this.refs['pfc-withheld'].removeClass('active')
+                    }
+                    else {
+                        this.refs['pfc-withheld'].addClass('active')
+                    }
+                })
         )
 
         let fromVal = '',
@@ -311,26 +319,26 @@ class PublishFlowComponent extends Component {
                                 .append(
                                     this.getLabel('Save')
                                 )
-                            )
-                            .on('click', () => {
-                                try {
-                                    var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
-                                        toVal = this.refs['pfc-lbl-withheld-to'].val()
-                                    this._save(() => {
-                                        this.publishFlowMgr.setToWithheld(
-                                            fromVal,
-                                            toVal
-                                        )
-                                    })
-                                }
-                                catch(ex) {
-                                    this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
-                                    window.setTimeout(() => {
-                                        this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
-                                    }, 500)
-                                    return false
-                                }
-                            })
+                        )
+                        .on('click', () => {
+                            try {
+                                var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
+                                    toVal = this.refs['pfc-lbl-withheld-to'].val()
+                                this._save(() => {
+                                    this.publishFlowMgr.setToWithheld(
+                                        fromVal,
+                                        toVal
+                                    )
+                                })
+                            }
+                            catch (ex) {
+                                this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
+                                window.setTimeout(() => {
+                                    this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
+                                }, 500)
+                                return false
+                            }
+                        })
 
                 ])
         )
@@ -374,21 +382,20 @@ class PublishFlowComponent extends Component {
                 this.getLabel('Unpublish article')
             )
         ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToCanceled()
+            .on('click', () => {
+                this._save(() => {
+                    this.publishFlowMgr.setToCanceled()
+                })
             })
-        })
     }
 
     /**
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
+        api.newsItem.save()
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
-
-        api.newsItem.save()
     }
 
     /**
@@ -424,7 +431,13 @@ class PublishFlowComponent extends Component {
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
+        if (!this.state.previousState) {
+            this._updateStatus(false)
+            return
+        }
+
         api.newsItem.setPubStatus(pluginId, this.state.previousState.pubStatus)
+
         if (this.state.previousState.pubStart) {
             api.newsItem.setPubStart(pluginId, this.state.previousState.pubStart)
         }
