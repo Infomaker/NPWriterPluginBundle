@@ -44,16 +44,25 @@ class ImageDisplay extends Component {
             )
         }
 
-        imgContainer.append(
-            $$('div').addClass('se-actions').append(
+        const actionsEl = $$('div').addClass('se-actions')
+
+        if (api.getConfigValue('se.infomaker.ximimage', 'imageinfo')) {
+            actionsEl.append(
                 $$(Button, {
                     icon: 'image'
-                }).on('click', this._openMetaData),
+                }).on('click', this._openMetaData)
+            )
+        }
+
+        if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
+            actionsEl.append(
                 $$(Button, {
                     icon: 'crop'
                 }).on('click', this._openCropper)
             )
-        )
+        }
+
+        imgContainer.append(actionsEl)
 
         let el = $$('div').addClass('sc-image-display')
         el.addClass('sm-' + this.props.isolatedNodeState)
@@ -69,7 +78,8 @@ class ImageDisplay extends Component {
                 this.getComponent('dialog-image'),
                 {
                     node: this.props.node,
-                    newsItem: response
+                    newsItem: response,
+                    disablebylinesearch: !api.getConfigValue('se.infomaker.ximimage', 'bylinesearch')
                 },
                 {
                     title: this.getLabel('Image archive information'),
