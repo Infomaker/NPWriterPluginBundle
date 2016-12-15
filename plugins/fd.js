@@ -1,3 +1,4 @@
+import PublishFlow from './se.infomaker.publishflow/index'
 import SocialEmbed from './se.infomaker.socialembed/index'
 import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
@@ -11,6 +12,8 @@ import Preamble from './textstyles/se.infomaker.preamble/Preamble'
 import SubheadlinePackage from './textstyles/se.infomaker.subheadline/SubheadlinePackage'
 import ParagraphPackage from './textstyles/se.infomaker.paragraph/ParagraphPackage'
 (() => {
+    // TODO Remove when their version if finished
+    PublishFlow()
 
     HeadlinePackage()
     Preamble()
