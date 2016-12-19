@@ -66,10 +66,15 @@ export default {
                     node.height = parseInt(child.text(), 10);
                 }
 
-                if (child.tagName === 'crops') {
-                    var crops = {crops: []};
+                if (child.tagName === 'crops' && child.children.length > 0) {
+                    let crops = {crops: []}
 
                     child.children.forEach(function(crop) {
+                        if (crop.children.length === 0) {
+                            // Sanity check
+                            return;
+                        }
+
                         if (crop.tagName === 'width') {
                             crops.width = crop.text();
                         }
@@ -92,7 +97,9 @@ export default {
                         }
                     });
 
-                    node.crops.original = crops;
+                    if (crops.crops.length) {
+                        node.crops = crops;
+                    }
                 }
 
             });
@@ -126,35 +133,38 @@ export default {
         el.attr({
             id: node.id,
             type: 'x-im/teaser'
-        });
+        })
 
         if(node.title) {
             el.attr('title',converter.annotatedText([node.id, 'title']));
         }
 
         // Data element
-        const data = $$('data');
+        const data = $$('data').append([
+            $$('width').append(String(node.width)),
+            $$('height').append(String(node.height))
+        ])
+
         if (node.text) {
             data.append($$('text').append(
                 converter.annotatedText([node.id, 'text'])
-            ));
+            ))
         }
 
         if (node.subject) {
             data.append($$('subject').append(
                 converter.annotatedText([node.id, 'subject'])
-            ));
+            ))
         }
 
         // Add crops to data
-        var crops = [];
-        if (node.crops && node.crops.original) {
-            var originalCrops = $$('crops');
+        if (node.crops) {
+            let crops = $$('crops');
 
-            for (var x in node.crops.original.crops) { // eslint-disable-line
-                var origCrop = node.crops.original.crops[x];
+            for (var x in node.crops.crops) { // eslint-disable-line
+                var origCrop = node.crops.crops[x];
 
-                originalCrops.append(
+                crops.append(
                     $$('crop').attr('name', origCrop.name).append([
                         $$('x').append(origCrop.x),
                         $$('y').append(origCrop.y),
@@ -164,16 +174,10 @@ export default {
                 );
             }
 
-            crops.push(originalCrops);
-        }
-
-        if (crops.length) {
-            data.append(crops);
+            data.append(crops)
         }
 
         el.append(data);
-
-
 
         let fileNode = node.document.get(node.imageFile)
 

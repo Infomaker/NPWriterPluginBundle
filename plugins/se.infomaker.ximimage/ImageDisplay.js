@@ -18,8 +18,7 @@ class ImageDisplay extends Component {
             imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
-
-            if(this.props.isInTeaser) {
+            if(this.props.removeImage) {
                 const deleteButton = $$(Button, {icon: 'remove'})
                     .addClass('remove-image__button')
                     .attr('title', this.getLabel('remove-image-button-title'))
@@ -35,7 +34,8 @@ class ImageDisplay extends Component {
                     src: imgSrc
                 }).ref('img')
             )
-        } else {
+        }
+        else {
             imgContainer.append(
                 $$(FontAwesomeIcon, {
                     icon: 'fa-picture-o'
@@ -46,7 +46,7 @@ class ImageDisplay extends Component {
 
         const actionsEl = $$('div').addClass('se-actions')
 
-        if (api.getConfigValue('se.infomaker.ximimage', 'imageinfo')) {
+        if (api.getConfigValue(this.props.parentId, 'imageinfo')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
@@ -54,7 +54,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
+        if (api.getConfigValue(this.props.parentId, 'softcrop')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'crop'
@@ -79,7 +79,7 @@ class ImageDisplay extends Component {
                 {
                     node: this.props.node,
                     newsItem: response,
-                    disablebylinesearch: !api.getConfigValue('se.infomaker.ximimage', 'bylinesearch')
+                    disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
                 },
                 {
                     title: this.getLabel('Image archive information'),
@@ -102,7 +102,7 @@ class ImageDisplay extends Component {
                 }
             }];
         }
-
+        
         api.ui.showDialog(
             ImageCropper,
             {

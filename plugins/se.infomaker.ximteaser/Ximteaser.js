@@ -16,13 +16,24 @@ class Ximteaser extends BlockNode {
         }
     }
 
-    handleDOMDocument(newsItemDOMDocument) {
-        const document = newsItemDOMDocument.documentElement
-        const uri = document.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value')
-
-        // Update PDFNode
+    setSoftcropData(data) {
         api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'crops'], data);
+        })
+    }
+
+    handleDOMDocument(newsItemDOMDocument) {
+        const dom = newsItemDOMDocument.documentElement,
+            uuid = dom.getAttribute('guid'),
+            uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]').getAttribute('value'),
+            width = dom.querySelector('contentMeta > metadata > object > data > width'),
+            height = dom.querySelector('contentMeta > metadata > object > data > height')
+
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'uuid'], uuid)
             tx.set([this.id, 'uri'], uri)
+            tx.set([this.id, 'width'], width ? width.textContent : '')
+            tx.set([this.id, 'height'], height ? height.textContent : '')
         }, {history: false})
     }
 }
@@ -31,6 +42,7 @@ Ximteaser.define({
     type: 'ximteaser',
     dataType: {type: 'string', optional: false},
     imageFile: { type: 'file', optional: true },
+    uuid: {type: 'string', optional: true},
     uri: { type: 'string', optional: true },
 
     title: {type: 'string', optional: false, default: '' },
@@ -45,4 +57,3 @@ Ximteaser.define({
 })
 
 export default Ximteaser
-

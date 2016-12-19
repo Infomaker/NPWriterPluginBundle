@@ -36,9 +36,9 @@ class XimteaserComponent extends Component {
         if (this.props.node.imageFile) {
             el.append(
                 $$(ImageDisplay, { // Pass property to images if used in teaser and if drag should be disabled
+                    parentId: 'se.infomaker.ximteaser',
                     node: node,
                     isolatedNodeState: this.props.isolatedNodeState,
-                    isInTeaser: true,
                     removeImage: this.removeImage.bind(this)
                 }).ref('image')
             )

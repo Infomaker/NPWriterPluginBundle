@@ -68,7 +68,7 @@ class XimteaserCommand extends WriterCommand {
 
     /**
      * Get an empty object for a ximteaser node
-     * @returns {{type: string, dataType: string, id: *, uuid: string, url: string, previewUrl: string, imageType: string, title: string, text: string}}
+     * @returns {{type: string, dataType: string, id: *, uuid: string, url: string, imageType: string, title: string, text: string}}
      */
     getEmptyTeaserNode() {
 
@@ -78,10 +78,10 @@ class XimteaserCommand extends WriterCommand {
             id: idGenerator(),
             uuid: '',
             url: '',
-            previewUrl: '',
             imageType: 'x-im/image',
             title: '',
-            text: ''
+            text: '',
+            crops: []
         }
 
     }
