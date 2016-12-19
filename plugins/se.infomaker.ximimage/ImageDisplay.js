@@ -102,7 +102,7 @@ class ImageDisplay extends Component {
                 }
             }];
         }
-        
+
         api.ui.showDialog(
             ImageCropper,
             {

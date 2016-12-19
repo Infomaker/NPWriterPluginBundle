@@ -18,6 +18,7 @@ export default {
         node.dataType = el.attr('type');
 
         const linkEl = el.find('links>link');
+
         if (linkEl) {
 
             node.imageType = linkEl.attr('type');
@@ -41,7 +42,7 @@ export default {
 
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
-
+            node.uuid = linkEl.attr('uuid')
         }
 
         // Import data
