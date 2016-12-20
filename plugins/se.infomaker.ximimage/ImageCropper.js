@@ -18,10 +18,11 @@ class ImageCropper extends Component {
             }
         )
 
-        let definedCrops = api.getConfigValue('se.infomaker.ximimage', 'crops', [])
+        let definedCrops = api.getConfigValue('se.infomaker.ximimage', 'crops', []),
+            encodedSrc = encodeURIComponent(this.props.src)
 
         this.cropEditor.addImage(
-            this.props.src,
+            '/api/resourceproxy?url=' + encodedSrc,
             () => {
                 let selected = true
                 for(var name in definedCrops) {
