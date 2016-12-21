@@ -106,6 +106,7 @@ class ImageDisplay extends Component {
         api.ui.showDialog(
             ImageCropper,
             {
+                parentId: this.props.parentId,
                 src: this.props.node.getUrl(),
                 width: this.props.node.width,
                 height: this.props.node.height,
