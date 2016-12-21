@@ -44,9 +44,10 @@ class ImageDisplay extends Component {
             )
         }
 
+        const imageFile = this.context.doc.get(this.props.node.imageFile)
         const actionsEl = $$('div').addClass('se-actions')
 
-        if (api.getConfigValue(this.props.parentId, 'imageinfo')) {
+        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
@@ -54,7 +55,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (api.getConfigValue(this.props.parentId, 'softcrop')) {
+        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'crop'
