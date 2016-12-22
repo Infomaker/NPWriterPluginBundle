@@ -10,18 +10,19 @@ class ImageCropper extends Component {
         this.cropEditor = new IMSoftcrop.Editor( // eslint-disable-line
             'ximimage__softcrop',
             {
-                autocrop: true,
-                detectWorkerUrl: null, // FIXME: Use 'node_modules/cropjs/dist/js/imcrop.worker.detect.js',
-                detectThreshold: 30,
-                detectStepSize: 3,
+                autocrop: false,
+                //detectWorkerUrl: false, // FIXME: Use 'node_modules/cropjs/dist/js/imcrop.worker.detect.js',
+                //detectThreshold: 30,
+                //detectStepSize: 3,
                 debug: false
             }
         )
 
-        let definedCrops = api.getConfigValue('se.infomaker.ximimage', 'crops', [])
+        let definedCrops = api.getConfigValue(this.props.parentId, 'crops', []),
+            encodedSrc = encodeURIComponent(this.props.src)
 
         this.cropEditor.addImage(
-            this.props.src,
+            '/api/resourceproxy?url=' + encodedSrc,
             () => {
                 let selected = true
                 for(var name in definedCrops) {

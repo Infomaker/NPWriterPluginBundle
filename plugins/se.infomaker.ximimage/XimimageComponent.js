@@ -27,6 +27,7 @@ class XimimageComponent extends Component {
 
         el.append(
             $$(ImageDisplay, {
+                parentId: 'se.infomaker.ximimage',
                 node: node,
                 isolatedNodeState: this.props.isolatedNodeState
             }).ref('image')

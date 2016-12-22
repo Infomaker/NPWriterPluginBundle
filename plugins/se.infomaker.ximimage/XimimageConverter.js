@@ -189,7 +189,7 @@ export default {
         })
 
         // Add crops to data
-        if (node.crops && node.crops) {
+        if (node.crops) {
             let crops = $$('crops')
 
             for (var x in node.crops.crops) {
