@@ -39,7 +39,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "cropjs": "^1.0.3",
+    "cropjs": "^1.0.4",
     "google-maps-api-loader": "^0.3.0"
   }
 }
