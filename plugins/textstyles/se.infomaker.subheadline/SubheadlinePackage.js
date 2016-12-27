@@ -16,11 +16,13 @@ const subheadlinePackage = {
         })
 
         config.addLabel('subheadline', {
+            nl: 'Subkop',
             en: 'Subheadline',
             de: 'Subheadline',
             sv: 'Underrubrik'
         })
         config.addLabel('subheadline.content', {
+            nl: 'Subkop',
             en: 'Subheadline',
             de: 'Subheadline',
             sv: 'Underrubrikrik'
