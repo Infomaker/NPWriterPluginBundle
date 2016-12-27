@@ -30,6 +30,7 @@ export default {
         }
 
         config.addLabel('Insert Teaser', {
+            nl: 'Teaser invoegen',
             en: 'Insert Teaser',
             sv: 'Infoga puff'
         })
