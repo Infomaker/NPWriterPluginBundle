@@ -16,10 +16,12 @@ const paragraphPackage = {
             data: {type: 'paragraph'}
         })
         config.addLabel('paragraph', {
+            nl: 'Paragraaf',
             en: 'Paragraph',
             de: 'Paragraph'
         })
         config.addLabel('paragraph.content', {
+            nl: 'Paragraaf',
             en: 'Paragraph',
             de: 'Paragraph'
         })
