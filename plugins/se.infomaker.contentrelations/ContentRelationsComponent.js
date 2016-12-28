@@ -3,18 +3,17 @@ import {Component, FontAwesomeIcon} from 'substance'
 class ContentRelationsComponent extends Component {
 
     render($$) {
-
         const el = $$('div').addClass('im-blocknode__container')
 
         el.append(this.renderHeader($$))
-
         el.append(this.renderContent($$))
         el.addClass('x-im-contentrelations')
         el.attr('contentEditable', false)
+        
         return el
     }
 
-    renderContent($$, node) {
+    renderContent($$) {
 
         const content = $$('div')
             .addClass('im-blocknode__content')
@@ -30,7 +29,6 @@ class ContentRelationsComponent extends Component {
         return content
     }
 
-
     renderHeader($$) {
         return $$('div')
             .append([
@@ -41,4 +39,5 @@ class ContentRelationsComponent extends Component {
             .attr('contenteditable', false)
     }
 }
+
 export default ContentRelationsComponent

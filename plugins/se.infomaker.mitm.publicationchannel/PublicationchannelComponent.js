@@ -64,11 +64,14 @@ class PublicationchannelComponent extends Component {
 
     /**
      * Render and return a virtual dom element
+     *
+     * @todo Figure out if "check all" functionality should be implemented or not
+     *
      * @returns {VirtualDomElement}
      */
     render($$) {
-        var el = $$('div').addClass('sc-publicationchannel'),
-            checked = this.state.channels.length === this.state.activeChannelCount ? 'checked' : ''
+        var el = $$('div').addClass('sc-publicationchannel')
+        //    checked = this.state.channels.length === this.state.activeChannelCount ? 'checked' : ''
 
         el.append([
             $$('h2').append(this.getLabel('publicationchannel-Channels')),

@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component} from 'substance'
 import {jxon} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
@@ -69,8 +69,9 @@ class TagsMainComponent extends Component {
         try {
             this.context.api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
             this.reload()
-        } catch (e) {
-            console.log(e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
@@ -78,8 +79,9 @@ class TagsMainComponent extends Component {
         try {
             this.context.api.newsItem.addTag(this.name, tag)
             this.reload()
-        } catch (e) {
-            console.log(e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
@@ -98,8 +100,9 @@ class TagsMainComponent extends Component {
                 global: true
             })
 
-        } catch (e) {
-            console.log("E", e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 

@@ -1,5 +1,4 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {moment} from 'writer'
 
 import HistoryItemComponent from './HistoryItemComponent'
 
@@ -19,7 +18,7 @@ class ArticleItem extends Component {
             }.bind(this));
 
         el.append(deleteButton)
-        let latestVersion = article.versions.reverse()[0];
+        // let latestVersion = article.versions.reverse()[0];
         let title = article.id;
 
         el.append($$('h4').append(title));
@@ -43,4 +42,5 @@ class ArticleItem extends Component {
 
 
 }
+
 export default ArticleItem

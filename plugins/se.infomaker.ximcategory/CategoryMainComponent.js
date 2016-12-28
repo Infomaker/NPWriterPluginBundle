@@ -59,7 +59,7 @@ class CategoryMainComponent extends Component {
             this.reload()
         }
         catch (e) {
-            console.err(e)
+            // FIXME: Implement exception handling
         }
     }
 
@@ -69,7 +69,7 @@ class CategoryMainComponent extends Component {
             this.reload()
         }
         catch (e) {
-            console.err(e)
+            // FIXME: Implement exception handling
         }
     }
 

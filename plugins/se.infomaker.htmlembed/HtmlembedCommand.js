@@ -1,12 +1,9 @@
-import {WriterCommand, api} from 'writer'
+import {WriterCommand} from 'writer'
 import OpenEmbedDialog from './openEmbedDialog'
 
 class HtmlembedCommand extends WriterCommand {
-
-    execute(params) {
-
+    execute() {
         OpenEmbedDialog({})
-
     }
 }
 

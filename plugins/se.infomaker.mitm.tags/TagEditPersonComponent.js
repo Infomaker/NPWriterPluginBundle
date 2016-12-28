@@ -8,7 +8,6 @@ class TagEditPersonComponent extends TagEditBaseComponent {
         this.name = 'mmtags'
     }
 
-
     save() {
         const tag = this.props.tag,
             firstName = this.refs.firstNameInput.val(),
@@ -60,7 +59,8 @@ class TagEditPersonComponent extends TagEditBaseComponent {
                 })
                 .catch(() => this.extendState({error: true}))
 
-        } else {
+        }
+        else {
             this.saveConcept(uuid, xmlTag.documentElement.outerHTML)
                 .then(() => {
                     // If save is done, update the tag in article newsitem
@@ -80,8 +80,7 @@ class TagEditPersonComponent extends TagEditBaseComponent {
 
 
     render($$) {
-        const tag = this.props.tag,
-            el = $$('div').addClass('tag-edit tag-edit-person').addClass('row'),
+        const el = $$('div').addClass('tag-edit tag-edit-person').addClass('row'),
 
             firstName = this.renderElement($$, "firstNameInput", 'First name', this.getItemMetaExtProperty('imext:firstName')['@value'], false, 'input'),
             lastName = this.renderElement($$, "lastNameInput", 'Last name', this.getItemMetaExtProperty('imext:lastName')['@value'], false, 'input'),
@@ -143,9 +142,7 @@ class TagEditPersonComponent extends TagEditBaseComponent {
             this.save()
             return false
         }
-
     }
-
 }
 
 export default TagEditPersonComponent

@@ -16,9 +16,7 @@ class YoutubeEmbedComponent extends Component {
         api.editorSession.off(this)
     }
 
-
     render($$) {
-        const node = this.props.node
         const el = $$('div').addClass('im-blocknode__container im-youtube')
 
         el.append(this.renderHeader($$))
@@ -26,10 +24,7 @@ class YoutubeEmbedComponent extends Component {
         return el
     }
 
-
-
-    renderContent($$, node) {
-
+    renderContent($$) {
         const content = $$('div')
             .addClass('im-blocknode__content full-width')
 

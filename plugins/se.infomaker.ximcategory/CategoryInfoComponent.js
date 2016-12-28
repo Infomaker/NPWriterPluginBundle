@@ -67,7 +67,7 @@ class ContentprofileDetailComponent extends Component {
                 this.props.reload()
                 this.send('close')
             })
-            .catch((e) => {
+            .catch(() => {
                 this.setState({error: true});
             })
     }

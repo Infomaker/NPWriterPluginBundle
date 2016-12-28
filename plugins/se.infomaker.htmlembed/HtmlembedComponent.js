@@ -1,6 +1,5 @@
 import {Component, FontAwesomeIcon, TextPropertyComponent} from 'substance'
 import {api} from 'writer'
-import HtmlembedEditTool from './HtmlembedEditTool'
 import OpenEmbedDialog from './openEmbedDialog'
 class HtmlembedComponent extends Component {
 
@@ -40,7 +39,7 @@ class HtmlembedComponent extends Component {
         })
         textarea.ref('htmlarea')
         textarea.append(this.props.node.text)
-        textarea.on('dblclick', (e) => {
+        textarea.on('dblclick', () => {
             this.editEmbedhtml()
         })
 

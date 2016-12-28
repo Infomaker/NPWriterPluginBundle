@@ -1,4 +1,4 @@
-import {NilUUID, idGenerator, api} from 'writer'
+import {NilUUID, idGenerator} from 'writer'
 
 export default {
     type: 'ximpdf',
@@ -81,4 +81,3 @@ export default {
         )
     }
 }
-

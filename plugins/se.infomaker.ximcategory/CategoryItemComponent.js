@@ -93,14 +93,20 @@ class CategoryItemComponent extends Component {
         return tagItem;
     }
 
-    toggleTooltip(ev) {
+    /**
+     * @todo Implement
+     */
+    toggleTooltip(/* ev */) {
         // $(ev.target).tooltip('toggle')
         // ev.target.timeout = window.setTimeout(function () {
         //     this.hideTooltip(ev)
         // }.bind(this), 3000)
     }
 
-    hideTooltip(ev) {
+    /**
+     * @todo Implement
+     */
+    hideTooltip(/* ev */) {
         // if (ev.target.timeout) {
         //     window.clearTimeout(ev.target.timeout)
         //     ev.target.timeout = undefined

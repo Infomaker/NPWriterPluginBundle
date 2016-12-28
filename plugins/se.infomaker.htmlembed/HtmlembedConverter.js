@@ -6,7 +6,7 @@ const HtmlembedConverter = {
         return el.is('object') && el.attr('type') === 'x-im/htmlembed';
     },
 
-    import: function(el, node, converter) { // jshint ignore:line
+    import: function(el, node) {
         if (el.attr('uuid')) {
             node.uuid = el.attr('uuid');
         }

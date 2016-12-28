@@ -1,4 +1,4 @@
-import {Component, Tool} from 'substance'
+import {Tool} from 'substance'
 import {api} from 'writer'
 
 class HtmlembedTool extends Tool {

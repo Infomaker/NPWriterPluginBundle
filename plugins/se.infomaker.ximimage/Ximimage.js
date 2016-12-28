@@ -31,13 +31,16 @@ class Ximimage extends BlockNode {
     /**
      * This method is called from NPFile when file is uploaded.
      *
+     * @todo Implement support for authors/byline
+     *
      * @param {DOMDoucment} newsItemDOMDocument
      */
     handleDOMDocument(newsItemDOMDocument) {
         const dom = newsItemDOMDocument.documentElement,
             uuid = dom.getAttribute('guid'),
             uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]'),
-            authors = dom.querySelectorAll('itemMeta > links > link[rel="author"]'),
+            // TODO: Implement support for authors/byline
+            // authors = dom.querySelectorAll('itemMeta > links > link[rel="author"]'),
             text = dom.querySelector('contentMeta > metadata > object > data > text'),
             credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
             width = dom.querySelector('contentMeta > metadata > object > data > width'),
@@ -60,7 +63,7 @@ class Ximimage extends BlockNode {
      * @param cb
      */
     fetchPayload(context, cb) {
-        const doc = api.editorSession.getDocument()
+        // const doc = api.editorSession.getDocument()
         const fileNode = this.getImageFile()
 
         // If the fileNode contains a sourceUUID it's an existing item
@@ -109,7 +112,6 @@ class Ximimage extends BlockNode {
                     cb(null, node)
                 })
                 .catch((e) => {
-                    console.log("error", e);
                     cb(e)
                 })
         }

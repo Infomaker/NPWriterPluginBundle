@@ -1,7 +1,5 @@
 import {Component} from 'substance'
-import {jxon} from 'writer'
-import {idGenerator} from 'writer'
-import {lodash} from 'writer'
+import {lodash, jxon} from 'writer'
 
 const isArray = lodash.isArray
 const isObject = lodash.isObject
@@ -68,7 +66,7 @@ class ContentprofileDetailComponent extends Component {
                 this.props.reload()
                 this.send('close')
             })
-            .catch((e) => {
+            .catch(() => {
                 this.setState({error: true});
             })
     }

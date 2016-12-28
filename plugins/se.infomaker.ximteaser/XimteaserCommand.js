@@ -4,13 +4,12 @@ class XimteaserCommand extends WriterCommand {
 
 
     execute(params, context) {
-        const id = this.config.id
         const teaserPosition = context.api.getConfigValue(this.config.id, 'teaserPosition', 'bottom')
-
         const nodes = api.document.getDocumentNodes()
         const existingTeaser = nodes.filter((node) => {
             return node.dataType === 'x-im/teaser'
         })
+
         if(existingTeaser.length > 0) {
             api.ui.showNotification('se.infomaker.ximteaser', api.getLabel('A teaser already exist'), api.getLabel('There is already a teaser in this document'))
             return false
@@ -36,7 +35,7 @@ class XimteaserCommand extends WriterCommand {
         const editorSession = params.editorSession
         const doc = editorSession.getDocument()
 
-        editorSession.transaction((tx, args) => {
+        editorSession.transaction((tx) => {
 
             // Select the first node to the selection
             const firstNodeId = doc.getNodes()['body'].nodes[0];
@@ -47,8 +46,8 @@ class XimteaserCommand extends WriterCommand {
                 path: [firstNodeId, 'content'],
                 startOffset: 0
             })
-            tx.insertBlockNode(this.getEmptyTeaserNode())
 
+            tx.insertBlockNode(this.getEmptyTeaserNode())
         })
     }
 

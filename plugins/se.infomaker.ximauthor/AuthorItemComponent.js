@@ -44,7 +44,8 @@ class AuthorItemComponent extends Component {
                     loadedAuthor: {name: this.props.author.title}
                 })
             }.bind(this), 1)
-        } else {
+        }
+        else {
             this.context.api.router.getConceptItem(this.props.author.uuid, this.props.author.type)
                 .then(function (dom) {
                     var conceptXML = dom.querySelector('concept')
@@ -161,7 +162,10 @@ class AuthorItemComponent extends Component {
                 .append(deleteButton))
     }
 
-    toggleTooltip(ev) {
+    /**
+     * @todo Implement
+     */
+    toggleTooltip(/* ev */) {
         // $(ev.target).tooltip('toggle')
         //
         // ev.target.timeout = window.setTimeout(function () {
@@ -169,7 +173,10 @@ class AuthorItemComponent extends Component {
         // }.bind(this), 3000)
     }
 
-    hideTooltip(ev) {
+    /**
+     * @todo Implement
+     */
+    hideTooltip(/* ev */) {
         // if (ev.target.timeout) {
         //     window.clearTimeout(ev.target.timeout)
         //     ev.target.timeout = undefined
