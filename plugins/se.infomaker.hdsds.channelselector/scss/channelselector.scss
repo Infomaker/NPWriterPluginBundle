@@ -7,12 +7,9 @@
 .sc-productlist {
     max-height: 112px;
     overflow-y: scroll;
-
     border-radius: 0.25rem;
-
     background-color: #fff;
     border: 1px solid #ddd;
-
 }
 
 .list-group-item {
@@ -34,9 +31,35 @@
     }
 }
 
-.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
-    color: #373a3c;
+.list-group-item {
+    &::before {
+        font-family: FontAwesome;
+        content: "\f10c";
+        padding-right: 10px;
+        font-weight: 300;
+        opacity: 0.6;
+    }
+
+    &:hover {
+        &::before {
+            opacity: 1;
+        }
+    }
+}
+
+.list-group-item.active {
     background-color: #f5f5f5;
-    font-weight:700;
-    border-color: darken(#f5f5f5, 10%);
+
+    &::before {
+        content: "\f05d";
+        opacity: 1;
+    }
+
+    &:focus, &:hover {
+        background-color: #f5f5f5;
+
+        &::before {
+            opacity: 0.6;
+        }
+    }
 }
