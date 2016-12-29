@@ -1,260 +1,246 @@
+'use strict';
 import {Component} from 'substance'
-import {jxon} from 'writer'
-import {lodash} from 'writer'
+import {api, jxon} from 'writer'
+// var ConceptUtil = require('vendor/infomaker.se/utils/ConceptUtil');
 
-const isArray = lodash.isArray
-const isObject = lodash.isObject
-const find = lodash.find
-
-class ContentprofileDetailComponent extends Component {
+class ContentProfileInfoComponent extends Component{
 
     constructor(...args) {
         super(...args)
+        // this.conceptUtil = new ConceptUtil()
     }
 
-    dispose() {
-        super.dispose()
-    }
+    // createContentProfile() {
+    //     var conceptProfile = this.props.item,
+    //         url = '/api/newsitem';
+    //
+    //     this.saveContentProfile(url, 'POST').done(function (data) {
+    //         this.context.api.addConceptProfile(
+    //             this.name, {
+    //                 uuid: data,
+    //                 title: conceptProfile.concept.name
+    //             }
+    //         );
+    //
+    //         this.props.reload();
+    //         this.send('close');
+    //     }.bind(this));
+    // }
+    //
+    // updateContentProfile() {
+    //     var conceptProfile = this.props.item;
+    //     var uuid = conceptProfile['@guid'] ? conceptProfile['@guid'] : null;
+    //     if (!uuid) {
+    //         throw new Error("ConceptItem has no UUID to update");
+    //     }
+    //     var url = '/api/newsitem/' + uuid;
+    //
+    //     this.saveContentProfile(url, 'PUT').done(function () {
+    //         this.context.api.updateConceptProfile(this.name, {
+    //             uuid: uuid,
+    //             title: conceptProfile.concept.name
+    //         });
+    //
+    //         this.props.reload();
+    //         this.send('close');
+    //     }.bind(this));
+    // }
 
-    createContentProfile() {
-        const contentProfile = this.props.contentProfile
+    /**
+     * Sets the definition description
+     *
+     * @param {string} inputValue The form value filled in by user
+     * @param {string} role The definition type, drol:short or drol:long
+     */
+    // setDescription(inputValue, role) {
+    //     var currentDescription = api.concept.getDefinitionForType(this.props.item.concept.definition, role);
+    //     if (inputValue.length > 0 && !currentDescription) {
+    //         const longDesc = {'@role': role, keyValue: inputValue};
+    //         this.props.item.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(
+    //             this.props.item.concept.definition,
+    //             longDesc
+    //         );
+    //     }
+    //     else if(inputValue.length >= 0 && currentDescription) {
+    //         currentDescription['keyValue'] = inputValue;
+    //     }
+    // }
 
-        this.saveContentProfile(null, 'POST')
-            .then((uuid) => {
-                // Create link in newsItem
-                this.context.api.newsItem.addConceptProfile(this.name, {
-                    title: contentProfile.concept.name,
-                    uuid: uuid
-                })
+    /**
+     * Method that saves conceptItem to backend
+     * @param {string} url
+     * @param {string} method POST, PUT
+     * @returns {*} Returns jQuery ajax promise
+     */
+    saveContentProfile(url, method) {
+        var contentProfile = this.props.item;
 
-                if (this.state.error) {
-                    this.setState({error: false})
-                }
-
-                this.props.reload()
-                this.send('close')
-            })
-            .catch(() => {
-                this.setState({error: true})
-            })
-    }
-
-    updateContentProfile() {
-        const contentProfile = this.props.contentProfile;
-        const uuid = contentProfile['@guid'] ? contentProfile['@guid'] : null
-
-        if (!uuid) {
-            throw new Error("ConceptItem has no UUID to update")
-        }
-
-        const shouldUpdateNewsItem = this.refs.contentProfileNameInput.val() !== contentProfile.concept.name
-
-        // TODO: Handle response of PUT as in StoryEditComponent...
-        this.saveContentProfile(uuid, 'PUT')
-            .then(() => {
-                if (shouldUpdateNewsItem) {
-                    // Update link in newsItem
-                    this.context.api.newsItem.updateConceptProfile(this.name, {
-                        title: contentProfile.concept.name,
-                        uuid: uuid
-                    })
-                }
-
-                if (this.state.error) {
-                    this.setState({error: false})
-                }
-
-                this.props.reload()
-                this.send('close')
-            })
-            .catch(() => {
-                this.setState({error: true});
-            })
-    }
-
-    setDescription(inputValue, role) {
-        let currentDescription = this.context.api.concept.getDefinitionForType(
-            this.props.contentProfile.concept.definition, role
-        )
-
-        if (inputValue.length > 0 && !currentDescription) {
-            const longDesc = {
-                '@role': role,
-                keyValue: inputValue
-            }
-
-            this.props.contentProfile.concept.definition = this.conceptUtil.setDefinitionDependingOnArrayOrObject(
-                this.props.contentProfile.concept.definition, longDesc
-            )
-        } else if (inputValue.length >= 0 && currentDescription) {
-            currentDescription['keyValue'] = inputValue
-        }
-    }
-
-    saveContentProfile(id, method) {
-        let contentProfile = this.props.contentProfile
-
-        contentProfile.concept.name = this.refs.contentProfileNameInput.val().length > 0 ?
-            this.refs.contentProfileNameInput.val() : contentProfile.concept.name
-
-        var shortDescriptionInputValue = this.refs.contentProfileShortDescInput.val()
-        var longDescriptionInputValue = this.refs.contentProfileLongDescText.val()
+        var shortDescriptionInputValue = this.refs.storyShortDescInput.val();
+        var longDescriptionInputValue = this.refs.storyLongDescText.val();
 
         // Check if definition exists
         if (!contentProfile.concept.definition) {
-            contentProfile.concept.definition = []
+            contentProfile.concept.definition = [];
         }
 
-        this.setDescription(shortDescriptionInputValue, 'drol:short')
-        this.setDescription(longDescriptionInputValue, 'drol:long')
+        this.setDescription(shortDescriptionInputValue, 'drol:short');
+        this.setDescription(longDescriptionInputValue, 'drol:long');
 
-        this.xmlDoc = jxon.unbuild(contentProfile, null, 'conceptItem')
-
-        const conceptItem = this.xmlDoc.documentElement.outerHTML
+        this.xmlDoc = jxon.unbuild(contentProfile, null, 'conceptItem');
+        var conceptItem = this.xmlDoc.documentElement.outerHTML;
 
         switch (method) {
             case "PUT":
-                return this.context.api.router.updateConceptItem(id, conceptItem)
+                return this.context.api.router.put(url, conceptItem);
+
             case "POST":
-                return this.context.api.router.createConceptItem(conceptItem)
-        }
-    }
-
-    getDescription(descriptionType) {
-        const contentProfile = this.props.contentProfile.concept
-
-        if (!contentProfile.definition) {
-            return undefined
+                return this.context.api.router.post(url, conceptItem);
         }
 
-        if (isArray(contentProfile.definition)) {
-            return find(contentProfile.definition, function (definition) {
-                return definition['@role'] === descriptionType
-            })
-        } else if (isObject(contentProfile.definition)) {
-            return contentProfile.definition['@role'] === descriptionType ? contentProfile.definition : undefined
-        }
-    }
-
-    getNameForContentProfile() {
-        return this.props.contentProfile.concept.name
     }
 
     render($$) {
-        const name = this.getNameForContentProfile()
+        var el = $$('div').addClass('tag-edit-base');
 
-        let shortDesc = this.getDescription('drol:short')
-        let longDesc = this.getDescription('drol:long')
+        var formContainer = $$('form').addClass('concept-story__container clearfix').ref('formContainer').on('submit', (e) => {
+            e.preventDefault();
+            this.onClose('save');
+        })
 
-        const el = $$('div')
+        // Add hidden submit button to enable enter submit
+        formContainer.append(
+            $$('input')
+                .attr({
+                    type: 'submit',
+                    style: 'display:none'
+                })
+        )
 
-        // TODO: scss classes?
-        const formContainer = $$('form')
-            .addClass('location-form__container clearfix').ref('formContainer')
-            .on('submit', (e) => {
-                e.preventDefault()
+        formContainer.append(this.renderNameInput($$));
+        formContainer.append(this.renderShortDescription($$));
+        formContainer.append(this.renderLongDescription($$));
 
-                if (this.refs['contentProfileNameInput'].val() !== "") {
-                    this.onClose('save')
+        return el.append(formContainer);
+    }
+
+
+    // renderConceptObject() {
+    //
+    //     var paragraph = $$('p');
+    //     if(this.props.item.concept.metadata && this.props.item.concept.metadata.object) {
+    //         var object = this.props.item.concept.metadata.object;
+    //         paragraph.append([
+    //             $$('span').addClass('title').append(object['@title']),
+    //             $$('span').addClass('type').append("(" + object['@type'] + ")")
+    //         ]);
+    //     }
+    //     return paragraph;
+    // }
+
+    /**
+     * Render a short description form fieldset
+     * @returns {Component}
+     */
+    renderNameInput($$) {
+        var nameInput = $$('input')
+            .attr({
+                type: 'text',
+                id: 'storyNameInput'
+            })
+            .addClass('form-control').val(this.props.item.concept.name)
+            .ref('nameInput')
+            .on('change', () => {
+                if (this.refs['nameInput'].val() === "") {
+                    this.send("dialog:disablePrimaryBtn");
+                }
+                else {
+                    this.send("dialog:enablePrimaryBtn");
                 }
             })
 
-        const hiddenSubmitButtonToEnableEnterSubmit = $$('input').attr({type: 'submit', style: 'display:none'})
-        formContainer.append(hiddenSubmitButtonToEnableEnterSubmit)
+        var formGroup = $$('fieldset')
+            .addClass('form-group col-xs-6')
+            .ref('formGroupName')
 
-        // Name
-        const formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
-        formGroup.append($$('label').attr('for', 'contentProfileNameInput').append(this.getLabel('Name')))
-
-        if (this.props.editable) {
-            const contentProfileName = $$('input').attr(
-                {
-                    type: 'text',
-                    id: 'contentProfileNameInput'
-                }
-            ).addClass('form-control').val(name).ref('contentProfileNameInput')
-
-            contentProfileName.on('change', function () {
-                if (this.refs['contentProfileNameInput'].val() === "") {
-                    this.send("dialog:disablePrimaryBtn")
-                } else {
-                    this.send("dialog:enablePrimaryBtn")
-                }
-            }.bind(this))
-
-            formGroup.append(contentProfileName)
-        }
-        else {
-            formGroup.append(
-                $$('p').append(name).ref('contentProfileNameP')
+        formGroup.append(
+            $$('label').attr('for', 'nameInput')
+                .append(this.getLabel('Name')
             )
-        }
-
-        formContainer.append(formGroup)
-
-        // Short description
-        const formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
-        formGroupShortDesc.append(
-            $$('label').attr('for', 'contentProfileShortDescInput')
-                .append(this.getLabel('Short description'))
         )
 
-        if (this.props.editable) {
-            formGroupShortDesc.append(
-                $$('input').attr(
-                    {
-                        id: 'contentProfileShortDescInput'
-                    }
-                ).addClass('form-control').val(shortDesc['keyValue']).ref('contentProfileShortDescInput')
-            )
-        }
-        else {
-            formGroupShortDesc.append(
-                $$('p').append(shortDesc['keyValue']).ref('contentProfileShortDescP')
-            )
-        }
-        formContainer.append(formGroupShortDesc)
-
-        // Long description
-        const formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
-        formGroupLongDesc.append(
-            $$('label').attr('for', 'contentProfileLongDescText')
-                .append(this.getLabel('Long description'))
-        )
-
-        if (this.props.editable) {
-            formGroupLongDesc.append(
-                $$('textarea').attr(
-                    {
-                        id: 'contentProfileLongDescText'
-                    }
-                ).addClass('form-control').val(longDesc['keyValue']).ref('contentProfileLongDescText')
-            )
-        }
-        else {
-            formGroupLongDesc.append(
-                $$('p').append(longDesc['keyValue']).ref('contentProfileLongDescP')
-            )
-        }
-        formContainer.append(formGroupLongDesc)
-
-        el.append(formContainer)
-        return el
+        return formGroup.append(nameInput)
     }
 
-    onClose(status) {
-        if ('cancel' === status || this.props.editable === false) {
-            return true
+
+    /**
+     * Render a short description form fieldset
+     * @returns {Component}
+     */
+    renderShortDescription($$) {
+        var shortDescription = api.concept.getDefinitionForType(this.props.item.concept.definition, 'drol:short');
+        var shortDescriptionValue = "";
+        if (shortDescription) {
+            shortDescriptionValue = shortDescription['keyValue'];
         }
 
-        if (this.props.exists) {
-            this.updateContentProfile()
-        } else {
-            this.createContentProfile()
+        // Short Desc
+        var shortDescInput = $$('input')
+            .attr({
+                id: 'storyShortDescInput'
+            })
+            .addClass('form-control')
+            .val(shortDescriptionValue)
+            .ref('storyShortDescInput');
+
+        var formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc');
+        formGroupShortDesc.append($$('label').attr('for', 'storyShortDescInput').append(this.getLabel('Short description')));
+        formGroupShortDesc.append(shortDescInput);
+
+        return formGroupShortDesc;
+    }
+
+
+    /**
+     * Render form group for long description
+     * @returns {*}
+     */
+    renderLongDescription($$) {
+
+        var longDescription = api.concept.getDefinitionForType(this.props.item.concept.definition, 'drol:long'),
+            longDescriptionValue = "";
+
+        if (longDescription) {
+            longDescriptionValue = longDescription.keyValue;
         }
 
-        return false
+        var longDescText = $$('textarea')
+            .attr({
+                id: 'storyLongDescText'
+            })
+            .addClass('form-control')
+            .val(longDescriptionValue)
+            .ref('storyLongDescText');
+
+        var formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc');
+        formGroupLongDesc.append($$('label').attr('for', 'storyLongDescText').append(this.getLabel('Long description')));
+        formGroupLongDesc.append(longDescText);
+        return formGroupLongDesc;
+    }
+
+    onClose(/* status */) {
+        return true; // Always return true for now. Remove line and enable seconary button to have edit capabilities
+        // if ('cancel' === status) {
+        //     return true;
+        // }
+        //
+        // if (this.props.newContentProfile) {
+        //     this.createContentProfile();
+        // } else {
+        //     this.updateContentProfile();
+        // }
+        //
+        // return false;
     }
 }
 
-export default ContentprofileDetailComponent
+export default ContentProfileInfoComponent

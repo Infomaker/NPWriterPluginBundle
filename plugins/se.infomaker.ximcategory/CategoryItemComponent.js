@@ -2,9 +2,6 @@ import {Component, FontAwesomeIcon as Icon} from 'substance'
 import {api, jxon, lodash as _} from 'writer'
 import CategoryInfo from './CategoryInfoComponent';
 
-// var Icon = require('substance/ui/FontAwesomeIcon');
-// var jxon = require('jxon/index');
-
 class CategoryItemComponent extends Component {
 
     constructor(...args) {
@@ -12,83 +9,82 @@ class CategoryItemComponent extends Component {
         this.name = 'conceptcategory'
     }
 
-    loadTag() {
-        this.ajaxRequest = this.context.api.router.ajax(
-            'GET',
-            'xml',
-            '/api/newsitem/' + this.props.item.uuid, {imType: this.props.item.type}
+    loadTag(item) {
+        api.router.getConceptItem(
+            item.uuid,
+            item.type
         )
+        .then(xml => {
+            const conceptXML = xml.querySelector('conceptItem'),
+                conceptItemJSON = jxon.build(conceptXML)
 
-        this.ajaxRequest
-            .done(function(data) {
-                var conceptXML = data.querySelector('conceptItem')
-                var conceptItemJSON = jxon.build(conceptXML)
-
-                this.setState({
-                    loadedItem: conceptItemJSON,
-                    isLoaded: true
-                })
-            }.bind(this))
-            .error(function () {
-                this.setState({
-                    couldNotLoad: true,
-                    isLoaded: true
-                })
-            }.bind(this))
+            this.extendState({
+                loadedItem: conceptItemJSON,
+                isLoaded: true
+            })
+        })
+        .catch(() => {
+            this.extendState({
+                isLoaded: true,
+                couldNotLoad: true
+            })
+        })
     }
 
     render($$) {
-        var item = this.props.item
-
-        var tagItem = $$('li').addClass('tag-list__item').ref('tagItem')
-        var displayNameEl = $$('span'),
-            displayName
-
-        displayNameEl.attr('title', 'Story')
+        const tagItem = $$('li')
+                .addClass('tag-list__item')
+                .ref('tagItem'),
+            displayNameEl = $$('span')
+                .addClass('tag-item__title tag-item__title--no-avatar')
+                .attr('title', this.getLabel('Category'))
 
         if (!this.state.isLoaded) {
-            this.loadTag();
+            this.loadTag(this.props.item)
+
+            return tagItem.append(
+                displayNameEl
+                    .addClass('tag-item__title--notexisting')
+                    .append(this.props.item.title)
+            )
+        }
+
+        if (this.state.couldNotLoad) {
+            displayNameEl
+                .addClass('tag-item__title--notexisting')
+                .append(this.props.item.title)
         }
         else {
-            if (this.state.couldNotLoad) {
-                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar tag-item__title--notexisting').append(item.title)
-                displayName = item.title
-            }
-            else {
-                displayName = item.title
-                displayNameEl.addClass('tag-item__title tag-item__title--no-avatar')
-                    .append(displayName)
+            let displayName = this.props.item.title
 
-                displayNameEl.attr('title', displayName)
+            displayNameEl
+                .append(displayName)
+                .attr('title', displayName)
 
-                this.updateTagItemName(displayNameEl, this.state.loadedItem)
+            this.updateTagItemName(displayNameEl, this.state.loadedItem)
 
-                displayNameEl
-                    .attr('data-toggle', 'tooltip')
-                    .attr('data-placement', 'bottom')
-                    .attr('data-trigger', 'manual')
-
-
-                displayNameEl.on('click', function() {
+            displayNameEl
+                .attr('data-toggle', 'tooltip')
+                .attr('data-placement', 'bottom')
+                .attr('data-trigger', 'manual')
+                .on('click', () => {
                     this.showInfo(displayName)
-                }.bind(this))
-
-                displayNameEl.on('mouseenter', this.toggleTooltip)
-                displayNameEl.on('mouseout', this.hideTooltip)
-            }
-
-            tagItem.append(displayNameEl)
-
-            var deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
-                .addClass('tag-icon tag-icon--delete')
-                .attr('title', this.context.i18n.t('Remove from article')))
-                .on('click', function () {
-                    this.removeTag(item)
-                }.bind(this))
-
-            tagItem.append(deleteButton)
-            tagItem.append($$(Icon, {icon: 'fa-folder'}).addClass('tag-icon'))
+                })
+                // .on('mouseenter', this.toggleTooltip)
+                // .on('mouseout', this.hideTooltip)
         }
+
+        tagItem.append([
+            displayNameEl,
+            $$('span').append($$(Icon, {icon: 'fa-times'})
+                .addClass('tag-icon tag-icon--delete')
+                .attr('title', this.getLabel('Remove from article')))
+                .on('click', () => {
+                    this.removeTag(this.props.item)
+                }),
+            $$(Icon, {icon: 'fa-folder'})
+                .addClass('tag-icon')
+        ])
 
         return tagItem;
     }
@@ -96,24 +92,24 @@ class CategoryItemComponent extends Component {
     /**
      * @todo Implement
      */
-    toggleTooltip(/* ev */) {
-        // $(ev.target).tooltip('toggle')
-        // ev.target.timeout = window.setTimeout(function () {
-        //     this.hideTooltip(ev)
-        // }.bind(this), 3000)
-    }
+    // toggleTooltip(ev) {
+    //     $(ev.target).tooltip('toggle')
+    //     ev.target.timeout = window.setTimeout(function () {
+    //         this.hideTooltip(ev)
+    //     }.bind(this), 3000)
+    // }
 
     /**
      * @todo Implement
      */
-    hideTooltip(/* ev */) {
-        // if (ev.target.timeout) {
-        //     window.clearTimeout(ev.target.timeout)
-        //     ev.target.timeout = undefined
-        // }
-        //
-        // $(ev.target).tooltip('hide')
-    }
+    // hideTooltip(ev) {
+    //     if (ev.target.timeout) {
+    //         window.clearTimeout(ev.target.timeout)
+    //         ev.target.timeout = undefined
+    //     }
+    //
+    //     $(ev.target).tooltip('hide')
+    // }
 
     updateTagItemName(tagItem, loadedTag) {
         if (!loadedTag.concept || loadedTag.concept.definition) {
@@ -134,7 +130,7 @@ class CategoryItemComponent extends Component {
     }
 
     showInfo(title) {
-        api.showDialog(
+        api.ui.showDialog(
             CategoryInfo, {
                 item: this.state.loadedItem,
                 reload: this.closeFromDialog.bind(this)
@@ -151,7 +147,7 @@ class CategoryItemComponent extends Component {
      * Called when edit and info dialog is closed
      */
     closeFromDialog() {
-        this.loadTag() // Reload new changes
+        this.loadTag(this.props.item) // Reload new changes
         this.props.reload()
     }
 
@@ -160,9 +156,7 @@ class CategoryItemComponent extends Component {
      * @param tag
      */
     removeTag(tag) {
-        this.$el.first().fadeOut(300, function () {
-            this.props.removeItem(tag)
-        }.bind(this))
+        this.props.removeItem(tag)
     }
 }
 

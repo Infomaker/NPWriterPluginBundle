@@ -22,7 +22,7 @@ class CategoryMainComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').ref('tagContainer')
+        const el = $$('div').ref('tagContainer')
             .append(
                 $$('h2').append(
                     this.getLabel('Categories')
@@ -30,15 +30,15 @@ class CategoryMainComponent extends Component {
             )
 
         const SearchComponent = this.context.componentRegistry.get('form-search')
-        var searchComponent = $$(SearchComponent, {
+        const searchComponent = $$(SearchComponent, {
             existingItems: this.state.existingItems,
-            searchUrl: api.router.getEndpoint() + '/api/search/concepts/categories?q=',
+            searchUrl: '/api/search/concepts/categories?q=',
             onSelect: this.addItem.bind(this),
             placeholderText: "Search categories",
             createAllowed: false
         }).ref('searchComponent')
 
-        var list = $$(CategoryList, {
+        const list = $$(CategoryList, {
             items: this.state.existingItems,
             removeItem: this.removeItem.bind(this),
             reload: this.reload.bind(this)
