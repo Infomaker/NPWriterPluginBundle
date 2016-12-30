@@ -13,6 +13,7 @@ import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
 import XimTags from './se.infomaker.tags'
+import Channel from './se.infomaker.ximchannel/index'
 
 import BlockQuotePackage from './textstyles/se.infomaker.blockquote/BlockquotePackage'
 import ParagraphPackage from './textstyles/se.infomaker.paragraph/ParagraphPackage'
@@ -52,4 +53,5 @@ import Preamble from './textstyles/se.infomaker.preamble/Preamble'
     DefaultvalidationPackage()
     ChannelSelector()
     XimTags()
+    Channel()
 })()

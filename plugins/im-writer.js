@@ -21,6 +21,7 @@ import XImPdf from './se.infomaker.ximpdf/index'
 import ContentProfile from './se.infomaker.ximcontentprofile/index'
 import XImStory from './se.infomaker.ximstory/index'
 import Category from './se.infomaker.ximcategory/index'
+import Channel from './se.infomaker.ximchannel/index'
 
 /**
  * Text styles
@@ -66,6 +67,7 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
     MitmTags()
     XimTags()
     Category()
+    Channel()
     
     // Textstyles
     BlockQuotePackage()

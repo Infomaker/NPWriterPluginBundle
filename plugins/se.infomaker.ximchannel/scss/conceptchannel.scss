@@ -1,0 +1,35 @@
+.concept-channel__item {
+    line-height: normal;
+    padding: 0.3rem 0.6rem;
+    &:hover {
+        background-color: #f5f5f5;
+    }
+    .fa {
+        float: left;
+        color: #d0d0d0;
+        line-height: 20px;
+    }
+}
+
+.concept-channel__name {
+    font-size: 1.05rem;
+    color: rgba(0, 0, 0, 0.74902);
+    vertical-align: top;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-block;
+    float:left;
+}
+.button--delete {
+    float: right;
+    margin-right: 10px;
+    display: none;
+    .fa {
+        color: #d9534f;
+    }
+
+    &.active {
+        display: inline;
+
+    }
+}
