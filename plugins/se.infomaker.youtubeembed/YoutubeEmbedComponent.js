@@ -5,7 +5,7 @@ class YoutubeEmbedComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        api.document.triggerFetchResourceNode(this.props.node)
+        api.document.triggerFetchResourceNode(this.props.node, {history: false})
     }
 
     didMount() {

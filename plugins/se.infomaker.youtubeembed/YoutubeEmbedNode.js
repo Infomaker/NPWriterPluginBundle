@@ -18,12 +18,18 @@ class YoutubeEmbedNode extends BlockNode {
         api.router.get('/api/resourceproxy/', {url: apiUrl})
             .then(response => response.json())
             .then(json => {
-                cb(null, {
-                    html:json.html,
-                    uri:url,
-                    thumbnail_url: json.thumbnail_url,
-                    title: json.title
-                })
+                cb(
+                    null,
+                    {
+                        html:json.html,
+                        uri:url,
+                        thumbnail_url: json.thumbnail_url,
+                        title: json.title
+                    },
+                    {
+                        history: false
+                    }
+                )
             })
             .catch((e) => {
                 cb(e)
