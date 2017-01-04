@@ -14,6 +14,7 @@ import DefaultvalidationPackage from './se.infomaker.defaultvalidation/Defaultva
 import XImPdf from './se.infomaker.ximpdf/index'
 import XimTags from './se.infomaker.tags'
 import Channel from './se.infomaker.ximchannel/index'
+import XImStory from './se.infomaker.ximstory/index'
 
 import BlockQuotePackage from './textstyles/se.infomaker.blockquote/BlockquotePackage'
 import ParagraphPackage from './textstyles/se.infomaker.paragraph/ParagraphPackage'
@@ -38,7 +39,7 @@ import Preamble from './textstyles/se.infomaker.preamble/Preamble'
     Preleadin()
     Preamble()
 
-    XImPlace()
+    XImPlace('position')
     TextAnalyzer()
     XImimage()
     SocialEmbed()
@@ -54,4 +55,5 @@ import Preamble from './textstyles/se.infomaker.preamble/Preamble'
     ChannelSelector()
     XimTags()
     Channel()
+    XImStory()
 })()
