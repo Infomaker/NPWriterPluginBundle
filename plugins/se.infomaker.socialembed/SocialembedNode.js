@@ -124,9 +124,8 @@ class SocialembedNode extends BlockNode {
 
         const twitterBase = `https://api.twitter.com/1/statuses/oembed.json?url=${encodeURIComponent(url)}&hide_media=false&omit_script=true`
         const twitterPostId = /status*\/(\d+)/.exec(url) // TODO maybe improve this regex
-        const oembedURL = encodeURIComponent(twitterBase)
 
-        api.router.get('/api/resourceproxy', {url: oembedURL})
+        api.router.get('/api/resourceproxy', {url: twitterBase})
             .then(response => api.router.checkForOKStatus(response))
             .then(response => api.router.toJson(response))
             .then(json => {
