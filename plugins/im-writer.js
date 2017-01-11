@@ -22,6 +22,7 @@ import ContentProfile from './se.infomaker.ximcontentprofile/index'
 import XImStory from './se.infomaker.ximstory/index'
 import Category from './se.infomaker.ximcategory/index'
 import Channel from './se.infomaker.ximchannel/index'
+import XImSection from './se.infomaker.ximsection/index'
 
 /**
  * Text styles
@@ -68,6 +69,7 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
     XimTags()
     Category()
     Channel()
+    XImSection()
     
     // Textstyles
     BlockQuotePackage()
