@@ -1,4 +1,17 @@
 # Author Plugin
+
+## Configuration
+In the `data` section of the plugin configuration,
+the `noSearch` entry may be set to true to disable search
+
+```json
+{
+  "data":{
+    "noSearch": true
+  }
+}
+```
+
 Documentation of "contract" between plugin and the backend used.
 
 ## Backend endpoints 

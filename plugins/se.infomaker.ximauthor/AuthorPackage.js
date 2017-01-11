@@ -17,6 +17,15 @@ export default {
         config.addLabel('Authors', {
             sv: 'Författare'
         })
+        config.addLabel('Enter author', {
+            sv: 'Ange författare'
+        })
+        config.addLabel('Add', {
+            sv: 'Lägg till'
+        })
+        config.addLabel('Add new', {
+            sv: 'Lägg till ny'
+        })
         config.addValidator(AuthorValidation)
         config.addComponentToSidebarWithTabId(this.id, 'main', AuthorMainComponent)
     }
