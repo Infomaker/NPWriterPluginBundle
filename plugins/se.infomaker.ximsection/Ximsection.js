@@ -7,8 +7,8 @@ export default {
     configure: function (config) {
 
         config.addLabel('ximsection-Sections', {
-            en: 'Sections',
-            sv: 'Avdelningar'
+            en: 'Section',
+            sv: 'Avdelning'
         })
 
         config.addLabel('ximsection-Choose_section', {
