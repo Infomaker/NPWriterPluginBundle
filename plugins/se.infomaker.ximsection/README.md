@@ -64,5 +64,5 @@ If article already has a section it will be removed and the new section added.
 }
  ```
  The qcode prefix of sections `imsection` is what identifies this as a section. If a section is configured with a 
- product, this is appended before the name of the section when rendering the plugin. If `product` is specified as
+ product, this is appended before the name of the section when rendering the plugin. The property `product` is specified as
  a "qcode" hence the prefix.
