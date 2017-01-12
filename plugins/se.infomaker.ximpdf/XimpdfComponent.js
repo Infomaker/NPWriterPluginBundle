@@ -35,7 +35,7 @@ class XimpdfComponent extends Component {
             .append('Loading...')
             .addClass('text-pdf')
 
-        if (node.text) {
+        if (fileNode.uuid) {
             el.append([this.renderHeader($$, fileNode), textEditor])
         } else {
             el.append([this.renderHeader($$, fileNode), loadingSpan])
