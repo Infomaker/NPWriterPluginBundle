@@ -35,12 +35,7 @@ class XimsectionComponent extends Component {
             )
 
         sections.forEach((section) => {
-            //noinspection RedundantIfStatementJS
-            if (currentSection && currentSection.qcode === section.qcode) {
-                section.active = true
-            } else {
-                section.active = false
-            }
+            section.active = this.isActive(currentSection, section)
         })
 
         return {
@@ -131,7 +126,12 @@ class XimsectionComponent extends Component {
         let sectionName = section.name
 
         if (section.product) {
-            sectionName = section.product + ' / ' + sectionName
+            // Build section name adding product name (after removing any
+            // qcode prefixes) as parent to actual section name
+            let qcodePrefixIndex = section.product.lastIndexOf(":")
+            let productName = section.product.substr(qcodePrefixIndex + 1)
+
+            sectionName = productName + ' / ' + sectionName
         }
 
         return sectionName
@@ -163,18 +163,36 @@ class XimsectionComponent extends Component {
             )
 
         sections.forEach((section) => {
-            //noinspection RedundantIfStatementJS
-            if (currentSection && currentSection.qcode === section.qcode) {
-                section.active = true
-            } else {
-                section.active = false
-            }
+            section.active = this.isActive(currentSection, section)
         })
 
         this.extendState({
             showSectionMenu: false,
             sections: this.state.sections
         })
+    }
+
+    /**
+     * Compare current section, i.e. section in article, to list section. If both
+     * qcode and product match section is considered "active".
+     *
+     * @param currentSection
+     * @param currentSection.qcode
+     * @param currentSection.pubconstraint
+     * @param configSection
+     * @param configSection.qcode
+     * @param configSection.product
+     * @return {boolean}
+     */
+    isActive(currentSection, configSection) {
+        if (currentSection && currentSection.qcode === configSection.qcode) {
+            const pubconstraint = currentSection.pubconstraint ? currentSection.pubconstraint : ""
+            const product = configSection.product ? configSection.product : ""
+
+            return pubconstraint === product
+        }
+
+        return false;
     }
 }
 
