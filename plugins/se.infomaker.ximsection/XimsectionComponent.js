@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {lodash, event, api} from 'writer'
+import {event, api} from 'writer'
 
 class XimsectionComponent extends Component {
 
@@ -44,7 +44,6 @@ class XimsectionComponent extends Component {
 
         return {
             showSectionMenu: false,
-            //sections: lodash.sortBy(sections, ['name']),
             sections: sections
         }
     }
@@ -175,7 +174,6 @@ class XimsectionComponent extends Component {
 
         this.extendState({
             showSectionMenu: false,
-            //sections: lodash.sortBy(this.state.sections, ['name']),
             sections: this.state.sections
         })
     }
