@@ -28,6 +28,12 @@ class Ximimage extends BlockNode {
         })
     }
 
+    setAuthors(authors) {
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'authors'], authors)
+        })
+    }
+
     /**
      * This method is called from NPFile when file is uploaded.
      *

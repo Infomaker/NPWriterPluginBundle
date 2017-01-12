@@ -1,12 +1,18 @@
-import {Component, Button, FontAwesomeIcon} from 'substance'
-import {api} from 'writer'
-import ImageCropper from './ImageCropper'
+import {Component, Button, FontAwesomeIcon} from "substance";
+import {api, NilUUID} from "writer";
+import ImageCropper from "./ImageCropper";
+import XimimageAddToBylineComponent from "./XimimageAddToBylineComponent";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
  that include an imageFile property.
  */
 class ImageDisplay extends Component {
+
+    constructor(...args) {
+        super(...args)
+    }
+
     _onDragStart(e) {
         e.preventDefault()
         e.stopPropagation()
@@ -18,7 +24,7 @@ class ImageDisplay extends Component {
             imgSrc = this.props.node.getUrl()
 
         if (imgSrc) {
-            if(this.props.removeImage) {
+            if (this.props.removeImage) {
                 const deleteButton = $$(Button, {icon: 'remove'})
                     .addClass('remove-image__button')
                     .attr('title', this.getLabel('remove-image-button-title'))
@@ -47,6 +53,14 @@ class ImageDisplay extends Component {
         const imageFile = this.context.doc.get(this.props.node.imageFile)
         const actionsEl = $$('div').addClass('se-actions')
 
+        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
+            actionsEl.append(
+                $$(Button, {
+                    icon: 'user-plus'
+                }).on('click', this._openAddToByline)
+            )
+        }
+
         if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
             actionsEl.append(
                 $$(Button, {
@@ -74,22 +88,46 @@ class ImageDisplay extends Component {
 
     _openMetaData() {
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
-        .then(response => {
-            api.ui.showDialog(
-                this.getComponent('dialog-image'),
-                {
-                    node: this.props.node,
-                    newsItem: response,
-                    disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
+            .then(response => {
+                api.ui.showDialog(
+                    this.getComponent('dialog-image'),
+                    {
+                        node: this.props.node,
+                        newsItem: response,
+                        disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
+                    },
+                    {
+                        title: this.getLabel('Image archive information'),
+                        global: true,
+                        primary: this.getLabel('Save'),
+                        secondary: this.getLabel('Cancel')
+                    }
+                )
+            })
+    }
+
+    _openAddToByline() {
+        api.ui.showDialog(
+            XimimageAddToBylineComponent,
+            {
+                authors: this.props.node.authors,
+                removeAuthor: () => (author) => {
+                    this.props.node.removeAuthor(author)
                 },
-                {
-                    title: this.getLabel('Image archive information'),
-                    global: true,
-                    primary: this.getLabel('Save'),
-                    secondary: this.getLabel('Cancel')
+                addAuthor: (author, cbDone) => {
+                    const authors = this.props.node.authors
+                    authors.push(author)
+
+                    this.props.node.setAuthors(authors)
                 }
-            )
-        })
+            },
+            {
+                title: this.getLabel('Add to image byline'),
+                global: true,
+                primary: this.getLabel('Close'),
+                secondary: false
+            }
+        )
     }
 
     _openCropper() {

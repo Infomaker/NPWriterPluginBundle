@@ -16,6 +16,101 @@
     display: none;
 }
 
+.dialog-image-authorlist {
+    display: flex;
+    padding-left: 0;
+    float: left;
+    margin: -6px;
+    line-height: 18px;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+}
+
+.dialog-image-authorlist li {
+    display: inline-block;
+    border-radius: 0.25rem;
+    padding: 3px 12px 4px 8px;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+}
+
+div.x-im-image-authors {
+    &::before {
+        font-family: FontAwesome;
+        opacity: 0.5;
+        float: left;
+    }
+
+    padding: 8px 8px 0 2px;
+    font-size: 90%;
+}
+
+div.x-im-image-authors {
+    margin-top: 5px;
+    padding-left: 24px;
+    height: 32px;
+
+    &::before {
+        content: "\f007";
+        width: 24px;
+        position: absolute;
+        left: 2px;
+        top: 2px;
+    }
+}
+
+
+.dialog-image-info.authors .dialog-image-authorlist li {
+    background-color: #f5f5f5;
+    margin: 0 8px 8px 0;
+}
+
+.dialog-image-authorlist li > div {
+    display: flex;
+}
+
+.dialog-image-authorlist li > div img {
+    margin: 0 8px 0 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 12px;
+}
+
+.dialog-image-authorlist li > div div strong,
+.dialog-image-authorlist li > div div em {
+    display: block;
+}
+
+.dialog-image-authorlist li > div div strong {
+    font-weight: 700;
+}
+
+.dialog-image-authorlist li > div div em {
+    color: #888;
+    font-style: normal;
+    font-size: 85%;
+}
+
+.dialog-image-authorlist li span {
+    width: 23px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;}
+
+.dialog-image-authorlist li span a {
+    display: none;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.dialog-image-authorlist li:hover span a {
+    display: inline;
+    color: #d9534f;
+}
+
 
 div.x-im-image-dynamic {
     padding: 8px 8px 0 30px;
