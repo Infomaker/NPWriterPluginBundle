@@ -12,6 +12,15 @@ The plugin adds selected section as a `service` with the following format;
     <name>Work and Money</name>
  </service>
 ```
+
+If selected section has a parent product this is reflected by attribute `pubconstraint`. E.g;
+
+```xml
+ <service qcode="imsection:work_and_money" pubconstraint="imchn:kkuriren.se">
+    <name>Work and Money</name>
+ </service>
+```
+
 If article already has a section it will be removed and the new section added.
 
 ## Plugin configuration
@@ -39,20 +48,21 @@ If article already has a section it will be removed and the new section added.
         {
             "qcode": "imsection:kalmar",
             "name": "kalmar",
-            "product": "site-x.se"
+            "product": "imchn:site-x.se"
         },
         {
             "qcode": "imsection:reviews",
             "name": "Reviews",
-            "product": "site-x.se"
+            "product": "imchn:site-x.se"
         },
         {
             "qcode": "imsection:evelina",
             "name": "Evelina",
-            "product": "site-y.se"
+            "product": "imchn:site-y.se"
         }
     ]}
 }
  ```
  The qcode prefix of sections `imsection` is what identifies this as a section. If a section is configured with a 
- product, this is appended before the name of the section when rendering the plugin.
+ product, this is appended before the name of the section when rendering the plugin. If `product` is specified as
+ a "qcode" hence the prefix.
