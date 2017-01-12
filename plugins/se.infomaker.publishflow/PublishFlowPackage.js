@@ -84,7 +84,7 @@ export default {
         })
 
         config.addLabel('Ready for approval', {
-            sv: 'Redo för godkännande'
+            sv: 'Klar för godkännande'
         })
 
         config.addLabel('Schedule for publish', {
@@ -110,7 +110,7 @@ export default {
 
         config.addLabel('imext:done', {
             en: 'Ready for approval',
-            sv: 'Redo för godkännande'
+            sv: 'Klar för godkännande'
         })
 
         config.addLabel('stat:withheld', {
