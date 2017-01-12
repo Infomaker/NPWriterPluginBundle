@@ -19,7 +19,12 @@ class PublicationchannelComponent extends Component {
             this.clearAllChannels()
         })
 
-        this.refs.dropdownButton.el.el.addEventListener('blur', () => {this.hideMenu()})
+        this.refs.dropdownButton.el.el.addEventListener('blur', (e) => {
+            setTimeout(() => {
+                this.hideMenu()
+            }, 50)
+
+        })
 
     }
 
@@ -117,7 +122,7 @@ class PublicationchannelComponent extends Component {
                         src: channel.icon
                     }),
                     channel.name
-                ]).on('click', () => {
+                ]).on('focus', () => {
                     this.toggleChannel(channel, true)
                 })
             )
@@ -229,7 +234,7 @@ class PublicationchannelComponent extends Component {
     }
 
     hideMenu() {
-        window.setTimeout(()=>{this.extendState({showChannelButtons: false})},50)
+        this.extendState({showChannelButtons: false})
     }
 
     /**
