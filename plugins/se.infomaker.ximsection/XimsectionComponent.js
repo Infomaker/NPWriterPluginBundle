@@ -14,10 +14,11 @@ class XimsectionComponent extends Component {
             }
         })
 
-        // TODO: This needs to be fixed somehow. As-is it will remove on('click') event in drop down menu...
-        // this.refs.dropdownButton.el.el.addEventListener('blur', () => {
-        //     this.hideMenu()
-        // })
+        this.refs.dropdownButton.el.el.addEventListener('blur', () => {
+            setTimeout(() => {
+                this.hideMenu()
+            }, 30)
+        })
     }
 
     /**
@@ -103,9 +104,9 @@ class XimsectionComponent extends Component {
 
         if (this.state.showSectionMenu) {
             const sectionElements = this.state.sections.map((section) => {
-                return $$('div').addClass('dropdown-item').append(
+                return $$('button').addClass('dropdown-item').append(
                     this.getSectionName(section)
-                ).on('click', () => {
+                ).on('focus', () => {
                     this.selectSection(section)
                 })
             })
@@ -148,9 +149,7 @@ class XimsectionComponent extends Component {
 
     // TODO: This does not work...
     hideMenu() {
-        window.setTimeout(() => {
-            this.extendState({showSectionMenu: false})
-        }, 500)
+        this.extendState({showSectionMenu: false})
     }
 
     /**
@@ -190,7 +189,6 @@ class XimsectionComponent extends Component {
             const pubconstraint = currentSection.pubconstraint ? currentSection.pubconstraint : ""
             const product = configSection.product ? configSection.product : ""
 
-            console.log('pubconstraint', pubconstraint, 'product', product)
             return pubconstraint === product
         }
 
