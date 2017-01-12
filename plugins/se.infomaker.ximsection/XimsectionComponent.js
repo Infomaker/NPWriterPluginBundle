@@ -190,7 +190,6 @@ class XimsectionComponent extends Component {
             const pubconstraint = currentSection.pubconstraint ? currentSection.pubconstraint : ""
             const product = configSection.product ? configSection.product : ""
 
-            console.log('pubconstraint', pubconstraint, 'product', product)
             return pubconstraint === product
         }
 
