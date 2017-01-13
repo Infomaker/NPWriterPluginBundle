@@ -139,7 +139,6 @@ class XimimageAddToBylineComponent extends Component {
 
     removeAuthor(author) {
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid
-        const el = this.refs['item-' + refid]
         delete this.refs['item-' + refid]
 
         this.props.removeAuthor(author)

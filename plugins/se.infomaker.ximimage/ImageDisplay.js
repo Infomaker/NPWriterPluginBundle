@@ -1,5 +1,5 @@
 import {Component, Button, FontAwesomeIcon} from "substance";
-import {api, NilUUID} from "writer";
+import {api} from "writer";
 import ImageCropper from "./ImageCropper";
 import XimimageAddToBylineComponent from "./XimimageAddToBylineComponent";
 
