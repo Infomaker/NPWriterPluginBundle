@@ -23,23 +23,16 @@ class XimimageAddToBylineComponent extends Component {
             .ref('authorContainer')
             .addClass('authors dialog-image-info clearfix')
 
-        let searchUrl = null
-
         const bylinesearch = this.context.api.getConfigValue(
             'se.infomaker.ximimage', 'bylinesearch')
-
-        if (bylinesearch) {
-            searchUrl = this.context.api.router.getEndpoint() + '/api/search/concepts/authors?q='
-        }
 
         let searchComponent
 
         if (bylinesearch) {
             const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
-
             searchComponent = $$(AuthorSearchComponent, {
                 existingItems: this.props.authors,
-                searchUrl: searchUrl,
+                searchUrl: '/api/search/concepts/authors?q=',
                 onSelect: this.addAuthor.bind(this),
                 onCreate: this.createAuthor.bind(this),
                 createAllowed: true,

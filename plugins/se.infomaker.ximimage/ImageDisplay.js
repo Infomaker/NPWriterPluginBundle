@@ -119,6 +119,8 @@ class ImageDisplay extends Component {
                     authors.push(author)
 
                     this.props.node.setAuthors(authors)
+
+                    cbDone();
                 }
             },
             {

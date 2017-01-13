@@ -49,11 +49,6 @@
 }
 
 div.x-im-image-authors {
-    &::before {
-        font-family: FontAwesome;
-        opacity: 0.5;
-        float: left;
-    }
 
     padding: 8px 8px 0 2px;
     font-size: 90%;
@@ -64,13 +59,19 @@ div.x-im-image-authors {
     padding-left: 24px;
     height: 32px;
 
+}
+
+span.x-im-image-author-token {
     &::before {
+        font-family: FontAwesome;
+        opacity: 0.5;
+        float: left;
         content: "\f007";
         width: 24px;
-        position: absolute;
-        left: 2px;
+        left: 50px;
         top: 2px;
     }
+
 }
 
 

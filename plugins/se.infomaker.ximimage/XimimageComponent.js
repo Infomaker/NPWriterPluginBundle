@@ -72,7 +72,7 @@ class XimimageComponent extends Component {
 
 
     renderAuthor($$, author) {
-        const avatar = $$('span')
+        const avatar = $$('span').addClass('x-im-image-author-token')
 
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
 
