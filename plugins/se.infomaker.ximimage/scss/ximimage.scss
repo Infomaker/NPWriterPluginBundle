@@ -1,14 +1,26 @@
 .sc-ximimage {
-    padding-bottom: 10px;
+    margin-bottom:10px;
 }
 
 /* Show actions depending on isolated node state */
 
-.sc-isolated-node.sm-selected {
+.sc-isolated-node:hover {
+    .sc-ximimage {
+        box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
+    }
+}
+
+.sc-isolated-node.sm-selected,
+.sc-isolated-node.sm-default-style.sm-focused {
     .sc-ximimage {
         box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
         background: rgba(222, 235, 255, 0.6);
-        margin-bottom:10px;
+    }
+}
+
+.sc-isolated-node.sm-default-style.sm-focused {
+    & > .se-container {
+        outline: none;
     }
 }
 
@@ -166,6 +178,24 @@ div.x-im-image-dynamic {
                 opacity: 1;
                 background: #ddd;
             }
+        }
+    }
+}
+
+.sc-isolated-node:hover {
+    .sc-ximimage {
+        div.x-im-image-dynamic:last-child {
+            padding-bottom: 13px;
+            border-bottom: none;
+        }
+    }
+}
+
+.sc-isolated-node.sm-selected {
+    .sc-ximimage {
+        div.x-im-image-dynamic:last-child {
+            padding-bottom: 13px;
+            border-bottom: none;
         }
     }
 }
