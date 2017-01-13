@@ -27,9 +27,14 @@ class MapComponent extends Component {
         var regex = /\(([^()]+)\)/g
         var wktRings = []
         var results
+
+        wktString = wktString.replace(/ +(?= )/g,'')
         do {
             results = regex.exec(wktString)
-            wktRings.push(results[1])
+            if(results) {
+                wktRings.push(results[1])
+            }
+
 
         } while (results)
 

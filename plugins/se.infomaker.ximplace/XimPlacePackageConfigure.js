@@ -37,6 +37,14 @@ export default (pluginId) => {
             en: 'Error saving place',
             sv: 'Fel vid sparande av plats'
         });
+        config.addLabel('Place', {
+            en: 'Place',
+            sv: 'Plats'
+        });
+        config.addLabel('Edit of polygons is not currently supported', {
+            en: 'Edit of polygons is not currently supported',
+            sv: 'Redigering av polygoner är för närvarande inte möjlig'
+        });
     }
 
 
