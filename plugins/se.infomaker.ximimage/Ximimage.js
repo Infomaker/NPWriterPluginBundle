@@ -55,7 +55,7 @@ class Ximimage extends BlockNode {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid ? uuid : '')
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
-            tx.set([this.id, 'text'], text ? text.textContent : '')
+            tx.set([this.id, 'caption'], text ? text.textContent : '')
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')
             tx.set([this.id, 'width'], width ? width.textContent : '')
             tx.set([this.id, 'height'], height ? height.textContent : '')
@@ -80,7 +80,6 @@ class Ximimage extends BlockNode {
                 .then(response => api.router.checkForOKStatus(response))
                 .then(response => response.text())
                 .then((xmlString) => {
-
                     // Create a newsML importer
                     const newsMLImporter = api.configurator.createImporter('newsml', {
                         api: api
