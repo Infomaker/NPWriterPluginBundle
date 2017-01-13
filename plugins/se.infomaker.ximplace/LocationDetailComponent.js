@@ -380,7 +380,7 @@ class LocationDetailComponent extends Component {
             el.append(searchComponent)
         }
         if (this.isPolygon) {
-            el.append($$('p').addClass('col-xs-12 not-supported').append(this.getLabel('Edit of polygons is not currently supported')))
+            el.append($$('p').addClass('col-12 not-supported').append(this.getLabel('Edit of polygons is not currently supported')))
         }
 
         const mapComponent = $$(MapComponent, {pluginId: this.props.plugin.id}).ref('mapComponent')
