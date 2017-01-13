@@ -62,7 +62,7 @@ class LocationItemComponent extends Component {
 
                 displayNameEl.attr('title', location.title)
 
-                this.updateTagItemName(displayNameEl, this.state.loadedLocation)
+                LocationItemComponent.updateTagItemName(displayNameEl, this.state.loadedLocation)
 
                 displayNameEl.attr('data-toggle', 'tooltip')
                     .attr('data-placement', 'bottom')
