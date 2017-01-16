@@ -176,9 +176,8 @@ class SocialembedNode extends BlockNode {
      */
     _loadSoundcloud(url, context, cb) {
         const soundcloudBase = `https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}&omitscript=true`
-        const oembedURL = encodeURIComponent(soundcloudBase)
 
-        api.router.get('/api/resourceproxy', {url: oembedURL})
+        api.router.get('/api/resourceproxy', {url: soundcloudBase})
             .then(response => api.router.checkForOKStatus(response))
             .then(response => api.router.toJson(response))
             .then(json => {
