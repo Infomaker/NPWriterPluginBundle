@@ -13,7 +13,8 @@ export default {
 
         if(url.indexOf('youtube') > 0) {
             editorSession.executeCommand('youtubeembed', {
-                url: url
+                url: url,
+                isPaste: true
             })
             return true
         }
