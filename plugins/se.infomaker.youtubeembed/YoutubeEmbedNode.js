@@ -13,7 +13,7 @@ class YoutubeEmbedNode extends BlockNode {
     fetchPayload(context, cb) {
         let url = this.url
 
-        var baseUrl = "http://youtube.com/oembed?url=";
+        var baseUrl = "https://youtube.com/oembed?url=";
         var apiUrl = baseUrl+this.url;
         api.router.get('/api/resourceproxy/', {url: apiUrl})
             .then(response => response.json())
