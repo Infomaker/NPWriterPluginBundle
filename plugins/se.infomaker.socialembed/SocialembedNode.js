@@ -58,6 +58,33 @@ class SocialembedNode extends BlockNode {
             .then(response => api.router.checkForOKStatus(response))
             .then(response => api.router.toJson(response))
             .then(json => {
+                let tplNode = document.createElement('template'),
+                    parentNode,
+                    oldImgNode,
+                    newImgNode
+
+
+                try {
+                    tplNode.innerHTML = json.html
+                    parentNode = tplNode.content.childNodes[0].querySelector('blockquote>div')
+                    oldImgNode = tplNode.content.childNodes[0].querySelector('blockquote>div>div')
+
+                    newImgNode = document.createElement('img')
+                    newImgNode.setAttribute('src', json.thumbnail_url)
+                    newImgNode.style.width = '100%'
+                    newImgNode.style.textAlign = 'center'
+
+                    tplNode.content.childNodes[0].style.boxShadow = null;
+                    parentNode.style.padding = 0;
+
+                    parentNode.removeChild(oldImgNode)
+                    parentNode.insertBefore(newImgNode, parentNode.firstChild)
+                    json.html = tplNode.innerHTML
+                }
+                catch(ex) {
+                    // FIXME: Maybe tell the user or log that this does not work no longer
+                }
+
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
@@ -67,6 +94,8 @@ class SocialembedNode extends BlockNode {
                     linkType: 'x-im/instagram',
                     socialChannel: 'Instagram',
                     socialChannelIcon: 'fa-instagram'
+                }, {
+                    history: false
                 })
             })
             .catch((error) => {
@@ -100,7 +129,6 @@ class SocialembedNode extends BlockNode {
             .then(response => api.router.toJson(response))
             .then(json => {
                 cb(null, {
-
                     author: json.author_url,
                     html: json.html,
                     uri: `im://facebook-post/${postId}`,
@@ -108,6 +136,8 @@ class SocialembedNode extends BlockNode {
                     linkType: 'x-im/facebook-post',
                     socialChannel: 'Facebook',
                     socialChannelIcon: 'fa-facebook'
+                }, {
+                    history: false
                 })
             })
             .catch((error) => {
@@ -137,6 +167,8 @@ class SocialembedNode extends BlockNode {
                     linkType: 'x-im/tweet',
                     socialChannel: 'Twitter',
                     socialChannelIcon: 'fa-twitter'
+                }, {
+                    history: false
                 })
             })
             .catch((error) => {
@@ -164,6 +196,8 @@ class SocialembedNode extends BlockNode {
                     linkType: 'x-im/vimeo',
                     socialChannel: 'Vimeo',
                     socialChannelIcon: 'fa-vimeo'
+                }, {
+                    history: false
                 })
             })
             .catch((error) => {
@@ -190,6 +224,8 @@ class SocialembedNode extends BlockNode {
                     linkType: 'x-im/soundcloud',
                     socialChannel: 'Soundcloud',
                     socialChannelIcon: 'fa-soundcloud'
+                }, {
+                    history: false
                 })
             })
             .catch((error) => {
