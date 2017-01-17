@@ -34,6 +34,9 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
      */
     isNpDroplink(params) {
         const npDropLinkRegex = api.getConfigValue('se.infomaker.contentrelations', 'npDropLinkMatcher')
+        if(!npDropLinkRegex) {
+            return false
+        }
         const re = new RegExp(npDropLinkRegex);
         const urlMatches = re.exec(params.uri)
 
