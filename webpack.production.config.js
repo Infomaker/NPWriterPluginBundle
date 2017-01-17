@@ -23,7 +23,8 @@ module.exports = {
         'im-writer': './plugins/im-writer',
         'fd': './plugins/fd',
         'mitm': './plugins/mitm',
-        'sds': './plugins/sds'
+        'sds': './plugins/sds',
+        'np-integration': './plugins/np-integration'
     },
     output: {
         path: path.join(__dirname, "dist"),
