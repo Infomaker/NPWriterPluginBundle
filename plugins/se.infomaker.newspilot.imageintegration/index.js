@@ -1,4 +1,4 @@
-import AuthorPackage from './AuthorPackage'
+import ImageIntegrationPackage from './ImageIntegrationPackage'
 import {registerPlugin} from 'writer'
 
 export default () => {
