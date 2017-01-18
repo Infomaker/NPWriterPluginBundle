@@ -1,7 +1,12 @@
 .sc-image-display {
 
+    .broken-image {
+        color: #d9534f;
+        padding-top:2rem;
+    }
     > .se-image-container {
         position: relative;
+        text-align: center;
 
         .remove-image__button {
             display: none;
