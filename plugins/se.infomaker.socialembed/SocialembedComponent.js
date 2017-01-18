@@ -4,7 +4,7 @@ class SocialembedComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this.rerender, this, {path: [this.props.node.id]})
-        this.context.api.document.triggerFetchResourceNode(this.props.node)
+        this.context.api.document.triggerFetchResourceNode(this.props.node, {history: false})
 
         /**
          *   // api.browser.addExternalScript('//platform.twitter.com/widgets.js').then(() => {
