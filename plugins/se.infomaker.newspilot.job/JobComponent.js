@@ -22,6 +22,10 @@ class JobComponent extends Component {
                 {
                     name: "Cthulhu C.jpg",
                     url: "http://img05.deviantart.net/067d/i/2014/177/6/2/cthulhu_by_glooh-d7o0g9p.jpg"
+                },
+                {
+                    name: "Some really long image name comes here... and here...",
+                    url: "http://wallpaperbackgrounds.com/Content/wallpapers/fantasy/cthulhu/189583-29777.jpg"
                 }
             ]
         }
@@ -32,13 +36,13 @@ class JobComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('jobimages')
+        const el = $$('div').addClass('npjob')
 
         const imageList = $$(JobImagesListComponent, {
             jobImages: this.state.jobImages
         }).ref('imageList')
 
-        el.append($$('h2').append(this.getLabel('Bilder')))
+        el.append($$('h2').append(this.getLabel('Images')))
         el.append(imageList)
 
         return el;

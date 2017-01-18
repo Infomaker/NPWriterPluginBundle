@@ -9,5 +9,9 @@ export default {
         config.addSidebarTab('npjob', 'Newspilot Jobb')
 
         config.addComponentToSidebarWithTabId('npjob', 'npjob', JobComponent)
+
+        config.addLabel('Images', {
+            sv: 'Bilder'
+        })
     }
 }

@@ -10,7 +10,7 @@ class JobImagesListComponent extends Component {
     render($$) {
         const jobImages = this.props.jobImages
 
-        const imageList = $$('ul').addClass('job__item-list')
+        const imageList = $$('div').addClass('container')
 
         const imageElements = jobImages.map((image) => {
             return $$(JobImageItem, {jobImage: image})
