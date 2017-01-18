@@ -1,7 +1,7 @@
 import {Component} from 'substance'
-import ImageIntegrationListComponent from './ImageIntegrationListComponent'
+import JobImagesListComponent from './JobImagesListComponent'
 
-class ImageIntegrationComponent extends Component {
+class JobComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -20,7 +20,7 @@ class ImageIntegrationComponent extends Component {
     render($$) {
         const el = $$('div').addClass('jobimages')
 
-        const imageList = $$(ImageIntegrationListComponent, {
+        const imageList = $$(JobImagesListComponent, {
             jobImages: this.state.jobImages
         }).ref('imageList')
 
@@ -31,4 +31,4 @@ class ImageIntegrationComponent extends Component {
     }
 }
 
-export default ImageIntegrationComponent
+export default JobComponent

@@ -1,9 +1,9 @@
-import ImageIntegrationPackage from './ImageIntegrationPackage'
+import JobPackage from './JobPackage'
 import {registerPlugin} from 'writer'
 
 export default () => {
     if (registerPlugin) {
-        registerPlugin(ImageIntegrationPackage)
+        registerPlugin(JobPackage)
     } else {
         console.info("Register method not yet available");
     }

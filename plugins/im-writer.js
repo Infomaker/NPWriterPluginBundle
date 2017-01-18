@@ -41,7 +41,7 @@ import HtmlembedPackage from "./se.infomaker.htmlembed/HtmlembedPackage";
 /**
  * Newspilot integration
  */
-import ImageIntegration from "./se.infomaker.newspilot.imageintegration/index";
+import NewspilotJob from "./se.infomaker.newspilot.job/index";
 
 
 (() => {
@@ -86,7 +86,7 @@ import ImageIntegration from "./se.infomaker.newspilot.imageintegration/index";
     // Enrichment
     HtmlembedPackage()
 
-    // Newspilot integration
-    ImageIntegration()
+    // Newspilot job
+    NewspilotJob()
 
 })()

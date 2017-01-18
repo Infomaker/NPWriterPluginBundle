@@ -1,6 +1,6 @@
-import ImageIntegration from './se.infomaker.newspilot.imageintegration/index'
+import NewspilotJob from './se.infomaker.newspilot.job/index'
 
 
 (() => {
-    ImageIntegration()
+    NewspilotJob()
 })()

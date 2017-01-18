@@ -1,6 +1,6 @@
 import {Component} from 'substance'
 
-class ImageIntegrationListComponent extends Component {
+class JobImagesListComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -26,5 +26,5 @@ class ImageIntegrationListComponent extends Component {
 
 }
 
-export default ImageIntegrationListComponent
+export default JobImagesListComponent
 
