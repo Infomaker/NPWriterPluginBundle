@@ -13,25 +13,26 @@ class JobImageItem extends Component {
     render($$) {
         const jobImage = this.props.jobImage
 
-        const listItem = $$('li')
-            .addClass('image')
+        const listItemLink = $$('a')
+            .attr('href', jobImage.url)
             .attr('draggable', true)
+            .on('click', function (evt) {
+                evt.stopPropagation()
+            })
             .on('dragstart', this._onDragStart, this)
 
+        const listItem = $$('li').addClass('image')
         const label = $$('span').addClass('title').append(jobImage.name)
-
         const icon = $$('img').attr('src', jobImage.url).addClass('image-icon')
 
         listItem.append([icon, label])
+        listItemLink.append(listItem)
 
-        return listItem
+        return listItemLink
     }
 
     _onDragStart(e) {
-        // TODO:
-        console.error('Drag and drop not implemented yet!')
-        // e.stopPropagation()
-        // e.dataTransfer.setData('text/uri-list', this.dropLink)
+        e.stopPropagation()
     }
 }
 
