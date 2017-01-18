@@ -1,4 +1,5 @@
 import {Component} from 'substance'
+import JobImageItem from './JobImageItem'
 
 class JobImagesListComponent extends Component {
 
@@ -8,15 +9,11 @@ class JobImagesListComponent extends Component {
 
     render($$) {
         const jobImages = this.props.jobImages
-        const imageList = $$('ul').addClass('integrationimages-list')
+
+        const imageList = $$('ul').addClass('job__item-list')
 
         const imageElements = jobImages.map((image) => {
-            const imageItem = $$('li').addClass('integrationimages-list__item').ref('imageItem')
-            const displayNameElement = $$('span').append(image)
-
-            imageItem.append(displayNameElement)
-
-            return imageItem
+            return $$(JobImageItem, {jobImage: image})
         }, this)
 
         imageList.append(imageElements)

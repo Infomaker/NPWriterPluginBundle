@@ -9,10 +9,20 @@ class JobComponent extends Component {
 
     getInitialState() {
         return {
+            // TODO
             jobImages: [
-                "image1",
-                "image2",
-                "image3"
+                {
+                    name: "Cthulhu A.jpg",
+                    url: "http://vignette3.wikia.nocookie.net/lovecraft/images/6/67/Cthulhu.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20140818055533"
+                },
+                {
+                    name: "Cthulhu B.jpg",
+                    url: "http://vignette3.wikia.nocookie.net/lovecraft/images/6/67/Cthulhu.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20140818055533"
+                },
+                {
+                    name: "Cthulhu B.jpg",
+                    url: "http://vignette3.wikia.nocookie.net/lovecraft/images/6/67/Cthulhu.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20140818055533"
+                }
             ]
         }
     }
@@ -24,7 +34,7 @@ class JobComponent extends Component {
             jobImages: this.state.jobImages
         }).ref('imageList')
 
-        el.append($$('h2').append(this.getLabel('Newspilot job images loaded!')))
+        el.append($$('h2').append(this.getLabel('Bilder i Newspilot jobb')))
         el.append(imageList)
 
         return el;
