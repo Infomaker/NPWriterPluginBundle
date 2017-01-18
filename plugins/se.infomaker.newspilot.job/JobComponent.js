@@ -34,14 +34,14 @@ class JobComponent extends Component {
     render($$) {
         const el = $$('div').addClass('jobimages')
 
-        const dummyLink = $$('a')
-            .attr('href', 'https://cdn.pixabay.com/photo/2017/01/06/20/43/soap-bubble-1958841_640.jpg')
-            .attr('draggable', true)
-            .on('click', function (evt) {
-                evt.stopPropagation();
-            })
-            .on('dragstart', this._onDragStart, this)
-            .append("Hello image")
+        // const dummyLink = $$('a')
+        //     .attr('href', 'https://cdn.pixabay.com/photo/2017/01/06/20/43/soap-bubble-1958841_640.jpg')
+        //     .attr('draggable', true)
+        //     .on('click', function (evt) {
+        //         evt.stopPropagation();
+        //     })
+        //     .on('dragstart', this._onDragStart, this)
+        //     .append("Hello image")
 
 
         const imageList = $$(JobImagesListComponent, {
@@ -50,7 +50,7 @@ class JobComponent extends Component {
 
         el.append($$('h2').append(this.getLabel('Bilder i Newspilot jobb')))
         el.append(imageList)
-        el.append(dummyLink)
+        //el.append(dummyLink)
 
         return el;
     }
