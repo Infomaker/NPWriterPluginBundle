@@ -10,13 +10,7 @@ class PublishFlowComponent extends Component {
         super(...args)
 
         api.events.on(pluginId, event.DOCUMENT_CHANGED, () => {
-            this.props.popover.setButtonText(
-                this.getLabel('Save *')
-            )
-
-            this.extendState({
-                unsavedChanges: true
-            })
+            this._onDocumentChanged()
         })
 
         api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
@@ -565,6 +559,19 @@ class PublishFlowComponent extends Component {
     }
 
     /**
+     * When document is marked unsaved
+     */
+    _onDocumentChanged() {
+        this.props.popover.setButtonText(
+            this.getLabel('Save *')
+        )
+
+        this.extendState({
+            unsavedChanges: true
+        })
+    }
+
+    /**
      * When saved, update state and UI
      */
     _onDocumentSaved() {
@@ -585,7 +592,6 @@ class PublishFlowComponent extends Component {
      * Update UI
      */
     _updateStatus(updateButtonSavedLabel, unsavedChanges) {
-
         if (updateButtonSavedLabel) {
             if (unsavedChanges === true) {
                 this.props.popover.setButtonText(
