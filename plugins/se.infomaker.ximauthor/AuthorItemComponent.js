@@ -1,6 +1,6 @@
-import {Component, FontAwesomeIcon} from 'substance'
-import {NilUUID, jxon} from 'writer'
-import {isObject, isArray} from 'lodash'
+import { Component, FontAwesomeIcon } from 'substance'
+import { NilUUID, jxon, api } from 'writer'
+import { isObject, isArray } from 'lodash'
 import authorInfoComponent from './AuthorInfoComponent'
 
 class AuthorItemComponent extends Component {
@@ -41,7 +41,7 @@ class AuthorItemComponent extends Component {
                     name: this.props.author.title,
                     isLoaded: true,
                     isSimpleAuthor: true,
-                    loadedAuthor: {name: this.props.author.title}
+                    loadedAuthor: { name: this.props.author.title }
                 })
             }.bind(this), 1)
         }
@@ -72,7 +72,7 @@ class AuthorItemComponent extends Component {
                         name: this.props.author.title,
                         isLoaded: true,
                         isSimpleAuthor: true,
-                        loadedAuthor: {name: this.props.author.title}
+                        loadedAuthor: { name: this.props.author.title }
                     })
                 }.bind(this))
         }
@@ -88,7 +88,7 @@ class AuthorItemComponent extends Component {
 
         var deleteButton = $$('button')
             .addClass('author__button--delete')
-            .append($$(FontAwesomeIcon, {icon: 'fa-times'}))
+            .append($$(FontAwesomeIcon, { icon: 'fa-times' }))
             .attr('title', this.getLabel('Remove from article'))
             .on('click', function () {
                 this.removeAuthor(author)
@@ -112,7 +112,7 @@ class AuthorItemComponent extends Component {
         authorItem
             .append($$('div')
                 .addClass('avatar__container')
-                .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
+                .append($$(FontAwesomeIcon, { icon: 'fa-user' })))
             .append($$('div')
                 .addClass('metadata__container')
                 .append($$('span')
@@ -132,8 +132,8 @@ class AuthorItemComponent extends Component {
             .attr('data-placement', 'bottom')
             .attr('data-trigger', 'manual')
 
-        displayNameEl.on('mouseenter', this.toggleTooltip)
-        displayNameEl.on('mouseout', this.hideTooltip)
+        // displayNameEl.on('mouseenter', this.toggleTooltip)
+        // displayNameEl.on('mouseout', this.hideTooltip)
 
         this.updateTagItemName(displayNameEl, this.state.loadedAuthor)
 
@@ -149,17 +149,59 @@ class AuthorItemComponent extends Component {
         if (email) {
             metaDataContainer.append($$('span').append(email).addClass('author__email meta'))
         }
+        const Avatar = api.ui.getComponent('avatar')
+        const twitterLink = this._getLinkForType('x-im/social+twitter')
+        const twitterURL = this._getTwitterUrlFromAuhtorLink(twitterLink)
+        const twitterHandle = this._getTwitterHandleFromTwitterUrl(twitterURL)
 
+        const avatarEl = $$(Avatar, { avatarSource: 'twitter', avatarId: twitterHandle })
+
+        const avatarContainer = $$('div').addClass('avatar__container').ref('avatarContainer').append(avatarEl)
         authorItem
-            .append($$('div')
-                .addClass('avatar__container').ref('avatarContainer')
-                .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
-
-            //                .append($$(Avatar, {author: author, links: this.state.loadedAuhtorLinks}).ref('avatar')))
+            .append(avatarContainer)
             .append(metaDataContainer)
             .append($$('div')
                 .addClass('button__container')
                 .append(deleteButton))
+    }
+
+    /**
+     * Fetches the Twitter url for an author
+     * @returns {string|undefined} 
+     */
+    _getTwitterUrlFromAuhtorLink(link) {
+        return this.findAttribute(link, '@url')
+    }
+
+    /**
+     * Finds a links object for a specific type.
+     * Checks if it's array or and object.
+     */
+    _getLinkForType(type) {
+        const links = this.state.loadedAuhtorLinks.link
+        if(!links) {
+            return undefined
+        }
+        if (isObject(links) && links['@type'] === type) {
+            return links
+        } else if (isArray(links)) {
+            return links.find((link) => {
+                return link['@type'] === type
+            })
+        }
+
+    }
+
+    /**
+     * Returns the Twitter handle from an URL
+     */
+    _getTwitterHandleFromTwitterUrl(url) {
+
+        var twitter = url.match(/twitter\.com\/(\w+)/);
+        if (twitter === null) {
+            return undefined
+        }
+        return twitter[1]
     }
 
     /**
@@ -231,11 +273,12 @@ class AuthorItemComponent extends Component {
     showInformation() {
         this.context.api.ui.showDialog(authorInfoComponent, {
             author: this.state.loadedAuthor
-        }, {
-            secondary: false,
-            title: this.state.loadedAuthor.name,
-            global: true
-        })
+        },
+            {
+                secondary: false,
+                title: this.state.loadedAuthor.name,
+                global: true
+            })
     }
 
     showHover() {
