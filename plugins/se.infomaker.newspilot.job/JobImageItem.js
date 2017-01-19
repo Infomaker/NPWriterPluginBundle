@@ -28,11 +28,13 @@ class JobImageItem extends Component {
             .attr('src', jobImage.url)
             .addClass('image-icon')
 
+        const divImage = $$('div').addClass('imageplaceholder').attr('style', 'background-image:url(' + jobImage.url + ')')
+
         const label = $$('span')
             .addClass('title')
             .append(jobImage.name)
 
-        listContent.append([label, icon])
+        listContent.append([label, divImage])
 
         ul.append([listDrag, listContent])
 
@@ -43,6 +45,11 @@ class JobImageItem extends Component {
 
     _onDragStart(e) {
         e.stopPropagation()
+
+        let img = document.createElement('img');
+        img.src = this.props.jobImage.url;
+
+        e.dataTransfer.setDragImage(img, 0, 0);
         e.dataTransfer.setData('text/uri-list', this.props.jobImage.url)
     }
 

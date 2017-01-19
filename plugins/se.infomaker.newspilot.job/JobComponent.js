@@ -12,7 +12,7 @@ class JobComponent extends Component {
             // TODO
             jobImages: [
                 {
-                    name: "Cthulhu A.jpg",
+                    name: "Cthulhu A.jpg asdflökaf löaskdf klasdfj ölaksdfj aölsdfkj aödlfk aölksfj aölsdfjk aösdfl",
                     url: "http://vignette3.wikia.nocookie.net/lovecraft/images/6/67/Cthulhu.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20140818055533"
                 },
                 {
@@ -26,6 +26,10 @@ class JobComponent extends Component {
                 {
                     name: "Some really long image name comes here... and here...",
                     url: "http://wallpaperbackgrounds.com/Content/wallpapers/fantasy/cthulhu/189583-29777.jpg"
+                },
+                {
+                    name: "Hello",
+                    url: "http://wallpapercave.com/wp/KZzyyWc.png"
                 }
             ]
         }

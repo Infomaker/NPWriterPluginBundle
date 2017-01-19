@@ -8,13 +8,9 @@
   }
 
   .box {
-    height: 50px;
     margin-bottom: 7px;
     background: white;
-    border-left: 6px solid green;
-    border-top: 1px solid #dedede;
-    border-bottom: 1px solid #dedede;
-    border-right: 1px solid #dedede;
+    border: 1px solid #dedede;
   }
 
   ul, li {
@@ -24,19 +20,21 @@
   }
 
   ul {
-    display: table;
+    display: flex;
     height: 100%;
     width: 100%;
   }
 
   li {
-    display: table-cell;
+    flex: 0 27px;
   }
 
   .drag {
     position: relative;
-    width: 27px;
+    width: 25px;
+    min-width: 25px;
     border-right: 1px solid #dedede;
+    cursor: move;
   }
 
   svg {
@@ -52,6 +50,8 @@
 
   .content {
 
+    flex: 1 auto;
+
     img {
       float: right;
       width: auto;
@@ -61,26 +61,20 @@
 
     .title {
       float: left;
-      padding-left: 5px;
-      overflow: auto;
-      //white-space: nowrap;
-      //text-overflow: ellipsis;
-      //display: inline-block;
-      //width: 60%;
-      font-size: 90%;
-      //cursor: move;
+      padding: 1px 5px;
+      display: inline-block;
+      width: 80%;
+      font-size: 80%;
       text-decoration: none;
       color: rgba(0, 0, 0, 0.75);
     }
 
-    .contentRight {
+    .imageplaceholder {
       float: right;
-      width: 80px;
-    }
-
-    .contentLeft {
-      float: left;
-      width: 100%;
+      background-size: cover;
+      background-position: 50% 50%;
+      height: 48px;
+      width: 20%;
     }
   }
 }
