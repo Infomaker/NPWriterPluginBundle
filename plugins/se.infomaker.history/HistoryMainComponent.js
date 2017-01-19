@@ -161,8 +161,15 @@ class HistoryMainComponent extends Component {
 
     applyVersion(version, article) {
         api.newsItem.setTemporaryId(article.id)
-        api.events.documentIsUnsaved()
         api.newsItem.setSource(version.src, null, true)
+
+        api.events.documentChanged(
+            'se.infomaker.history',
+            {
+                type: 'version',
+                action: 'update'
+            }
+        )
     }
 }
 
