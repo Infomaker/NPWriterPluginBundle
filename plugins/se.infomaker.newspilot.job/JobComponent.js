@@ -1,10 +1,28 @@
-import {Component} from 'substance'
-import JobImagesListComponent from './JobImagesListComponent'
+import {Component} from "substance";
+import JobImagesListComponent from "./JobImagesListComponent";
+import NewspilotComm from "./communication/newspilot";
+import {idGenerator} from 'writer'
+
 
 class JobComponent extends Component {
 
     constructor(...args) {
         super(...args)
+
+        // 13980
+
+        let comm = new NewspilotComm("52.211.173.251", "infomaker", "newspilot", this.queryUpdates);
+        comm.connect().then((data) => {
+            console.log('connected', data);
+            const request = {
+                quid: idGenerator(),
+                query: '<query type="Image" version="1.1"> <structure> <entity type="Image"/> </structure> <base-query> <and> <many-to-one field="image.id" type="Image"> <eq field="job.id" type="ImageLink" value="13980"/> </many-to-one> </and> </base-query> </query>'
+            };
+
+            comm.addQuery(request.quid, request.quid, request.query)
+
+        })
+
     }
 
     getInitialState() {
@@ -37,6 +55,13 @@ class JobComponent extends Component {
 
     _onDragStart(e) {
         e.stopPropagation()
+    }
+
+    queryUpdates(query, events) {
+        console.log(query, events)
+
+
+
     }
 
     render($$) {
