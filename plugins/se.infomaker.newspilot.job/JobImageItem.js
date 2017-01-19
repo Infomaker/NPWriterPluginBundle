@@ -1,5 +1,7 @@
 import {Component, FontAwesomeIcon} from 'substance'
 
+import JobImageInfoComponent from './JobImageInfoComponent'
+
 class JobImageItem extends Component {
 
     getInitialState() {
@@ -13,22 +15,26 @@ class JobImageItem extends Component {
     render($$) {
         const jobImage = this.props.jobImage
 
-        const divBox = $$('div').addClass('box')
+        const divBox = $$('div')
+            .addClass('box')
+            .on('click', () => {
+                this._showImageInfo();
+            })
 
         const ul = $$('ul')
 
-        const listDrag = $$('li').addClass('drag')
+        const listDrag = $$('li')
+            .addClass('drag')
             .attr('draggable', true)
             .on('dragstart', this._onDragStart, this)
             .html(this._getSvg())
 
-        const listContent = $$('li').addClass('content')
+        const listContent = $$('li')
+            .addClass('content')
 
-        const icon = $$('img')
-            .attr('src', jobImage.url)
-            .addClass('image-icon')
-
-        const divImage = $$('div').addClass('imageplaceholder').attr('style', 'background-image:url(' + jobImage.url + ')')
+        const divImage = $$('div')
+            .addClass('imageplaceholder')
+            .attr('style', 'background-image:url(' + jobImage.url + ')')
 
         const label = $$('span')
             .addClass('title')
@@ -51,6 +57,21 @@ class JobImageItem extends Component {
 
         e.dataTransfer.setDragImage(img, 0, 0);
         e.dataTransfer.setData('text/uri-list', this.props.jobImage.url)
+    }
+
+    /**
+     * Open dialog with image and metadata.
+     *
+     * @private
+     */
+    _showImageInfo() {
+        this.context.api.ui.showDialog(JobImageInfoComponent, {
+            jobImage: this.props.jobImage
+        }, {
+            secondary: false,
+            title: this.getLabel('Image information'),
+            global: true
+        })
     }
 
     _getSvg() {
