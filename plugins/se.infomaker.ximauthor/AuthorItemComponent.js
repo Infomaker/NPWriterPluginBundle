@@ -58,6 +58,10 @@ class AuthorItemComponent extends Component {
                         authorLinks = jxon.build(linksXML);
                     }
 
+                    // When author is loaded from repository we need to update
+                    // the author information in the NewsItem for the Article
+                    this.updateAuthor(jsonFormat)
+
                     this.setState({
                         name: jsonFormat.name,
                         isLoaded: true,
@@ -76,6 +80,20 @@ class AuthorItemComponent extends Component {
                     })
                 }.bind(this))
         }
+    }
+
+    /**
+     * We need to update the author element in the NewsItem
+     * with first and foremost the email, if exist but also
+     * we update the author name
+     */
+    updateAuthor(loadedAuthor) {
+        const email = this.findAttribute(loadedAuthor, 'email')
+        const author = {name: loadedAuthor.name}
+        if (email) {
+            author['email'] = email
+        }
+        this.context.api.newsItem.updateAuthorWithUUID('ximauthor', this.props.author.uuid, author)
     }
 
     render($$) {
@@ -179,7 +197,7 @@ class AuthorItemComponent extends Component {
      */
     _getLinkForType(type) {
         const links = this.state.loadedAuhtorLinks.link
-        if(!links) {
+        if (!links) {
             return undefined
         }
         if (isObject(links) && links['@type'] === type) {
