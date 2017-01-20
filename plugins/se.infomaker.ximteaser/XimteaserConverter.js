@@ -146,7 +146,7 @@ export default {
             data.append($$('width').append(String(node.width)))
         }
         if(node.height) {
-            data.append($$('height').append(String(node.width)))
+            data.append($$('height').append(String(node.height)))
         }
 
         if (node.text) {
