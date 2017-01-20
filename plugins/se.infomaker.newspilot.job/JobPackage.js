@@ -13,5 +13,21 @@ export default {
         config.addLabel('Images', {
             sv: 'Bilder'
         })
+
+        config.addLabel('Image information', {
+            sv: 'Bildinformation'
+        })
+
+        config.addLabel('Created', {
+            sv: 'Skapad'
+        })
+
+        config.addLabel('Photographer', {
+            sv: 'Fotograf'
+        })
+
+        config.addLabel('Proposed caption', {
+            sv: 'Bildtextförslag'
+        })
     }
 }

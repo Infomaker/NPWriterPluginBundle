@@ -71,9 +71,6 @@ class JobComponent extends Component {
 
     queryUpdates(query, events) {
         console.log(query, events)
-
-
-
     }
 
     render($$) {
