@@ -99,6 +99,7 @@ class ImageDisplay extends Component {
                     this.getComponent('dialog-image'),
                     {
                         node: this.props.node,
+                        url: this.props.node.getUrl(),
                         newsItem: response,
                         disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
                     },
