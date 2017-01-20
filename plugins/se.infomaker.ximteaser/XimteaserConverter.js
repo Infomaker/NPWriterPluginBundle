@@ -206,7 +206,7 @@ export default {
             if(node.height) {
                 linkData.append(
                     $$('height').append(
-                        String(node.width)
+                        String(node.height)
                     )
                 )
             }
