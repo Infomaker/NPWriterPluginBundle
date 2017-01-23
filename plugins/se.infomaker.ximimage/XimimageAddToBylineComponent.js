@@ -28,9 +28,7 @@ class XimimageAddToBylineComponent extends Component {
     }
 
     _onDocumentChange(change) {
-        if (change.isAffected(this.props.node.id) ||
-            change.isAffected(this.props.node.imageFile)) {
-            console.log("Node is changed", this.props.node, this.props.authors)
+        if (change.isAffected(this.props.node.id) || change.isAffected(this.props.node.imageFile)) {
             this.rerender()
         }
     }
