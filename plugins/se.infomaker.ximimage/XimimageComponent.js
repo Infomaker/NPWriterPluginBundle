@@ -7,6 +7,7 @@ const {api} = writer
 class XimimageComponent extends Component {
 
     didMount() {
+        this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
@@ -72,13 +73,23 @@ class XimimageComponent extends Component {
 
 
     renderAuthor($$, author) {
-        const avatar = $$('span').addClass('x-im-image-author-token')
+
+        const Avatar = api.ui.getComponent('avatar')
+
+        let twitterHandle
+        if(author.isLoaded && author.links && author.links.link) {
+            const link = author.links.link
+            const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
+            const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
+            twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
+        }
+
 
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
-
+        const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-'+refid)
         return $$('li').append(
             $$('div').append([
-                avatar,
+                avatarEl,
                 $$('div').append([
                     $$('strong').append(author.name),
                     //$$('em').append(this.authors[n].data.email ? this.authors[n].data.email : '')
@@ -92,7 +103,7 @@ class XimimageComponent extends Component {
                             this.removeAuthor(author)
                         })
                 )
-            ])
+            ]).ref('container-'+refid)
         ).ref('item-' + refid);
 
     }

@@ -1,4 +1,5 @@
 import {NilUUID, idGenerator, api} from 'writer'
+import Author from './Author'
 
 export default {
     type: 'ximimage',
@@ -46,14 +47,12 @@ export default {
         node.uuid = el.attr('uuid')
 
         let dataEl
-        if(newsItemConversion) {
+        if (newsItemConversion) {
             dataEl = el.find('data')
         } else {
             dataEl = linkEl.find('data')
         }
         // Import data
-
-
 
 
         node.caption = ''
@@ -128,7 +127,7 @@ export default {
         // Import author links
         node.authors = []
         let authorLinks
-        if(newsItemConversion) {
+        if (newsItemConversion) {
             authorLinks = el.find('links')
         } else {
             authorLinks = linkEl.find('links')
@@ -137,10 +136,13 @@ export default {
         if (authorLinks) {
             authorLinks.children.forEach(function (authorLinkEl) {
                 if ("author" === authorLinkEl.getAttribute('rel')) {
-                    node.authors.push({
-                        uuid: authorLinkEl.getAttribute('uuid'),
-                        name: authorLinkEl.getAttribute('title')
-                    })
+
+                    const author = new Author(authorLinkEl.getAttribute('uuid'), authorLinkEl.getAttribute('title'), node.id)
+                    const emailElement = authorLinkEl.find('email')
+                    if(emailElement) {
+                        author.email = emailElement.textContent
+                    }
+                    node.authors.push(author)
                 }
                 else {
                     console.warn("Unhandled link in image object", authorLinkEl);
@@ -219,21 +221,25 @@ export default {
         }).append(data);
 
         if (node.authors.length) {
-            var authorLinks = $$('links');
-            for (var n in node.authors) {
-                if (node.authors.hasOwnProperty(n)) {
-                    var authorLink = $$('link').attr({
-                        rel: 'author',
-                        uuid: node.authors[n].uuid,
-                        title: node.authors[n].name
-                    })
 
-                    if (!NilUUID.isNilUUID(node.authors[n].uuid)) {
-                        authorLink.attr('type', 'x-im/author')
-                    }
-                    authorLinks.append(authorLink);
+            const authorLinks = $$('links')
+            const authorLink = node.authors.map((author) => {
+                const authorLink = $$('link').attr({
+                    rel: 'author',
+                    uuid: author.uuid,
+                    title: author.name,
+                    type: 'x-im/author'
+                })
+
+                if(author.email) {
+                    const data = $$('data')
+                    const email = $$('email').append(author.email)
+                    data.append(email)
+                    authorLink.append(data)
                 }
-            }
+                return authorLink
+            })
+            authorLinks.append(authorLink)
             link.append(authorLinks)
         }
 
