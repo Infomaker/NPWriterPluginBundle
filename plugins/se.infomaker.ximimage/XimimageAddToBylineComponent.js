@@ -1,5 +1,6 @@
-import {Component, FontAwesomeIcon} from "substance";
-import {NilUUID} from "writer";
+import { Component, FontAwesomeIcon } from "substance";
+import { NilUUID, api } from "writer";
+import Author from './Author'
 
 class XimimageAddToBylineComponent extends Component {
 
@@ -18,6 +19,22 @@ class XimimageAddToBylineComponent extends Component {
     //     }, 50)
     // }
 
+    didMount() {
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
+    }
+
+    dispose() {
+        this.context.editorSession.off(this)
+    }
+
+    _onDocumentChange(change) {
+        if (change.isAffected(this.props.node.id) ||
+            change.isAffected(this.props.node.imageFile)) {
+            console.log("Node is changed", this.props.node, this.props.authors)
+            this.rerender()
+        }
+    }
+
     render($$) {
         const el = $$('div')
             .ref('authorContainer')
@@ -31,7 +48,7 @@ class XimimageAddToBylineComponent extends Component {
         if (bylinesearch) {
             const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
             searchComponent = $$(AuthorSearchComponent, {
-                existingItems: this.props.authors,
+                existingItems: this.props.node.authors,
                 searchUrl: '/api/search/concepts/authors?q=',
                 onSelect: this.addAuthor.bind(this),
                 onCreate: this.createAuthor.bind(this),
@@ -42,7 +59,7 @@ class XimimageAddToBylineComponent extends Component {
             const AuthorAddComponent = this.context.componentRegistry.get('form-add')
 
             searchComponent = $$(AuthorAddComponent, {
-                existingItems: this.props.authors,
+                existingItems: this.props.node.authors,
                 onSelect: this.addAuthor.bind(this),
                 onCreate: this.createAuthor.bind(this),
                 createAllowed: true,
@@ -62,8 +79,8 @@ class XimimageAddToBylineComponent extends Component {
             .addClass('dialog-image-authorlist')
             .attr('contenteditable', false)
 
-        for (let n = 0; n < this.props.authors.length; n++) {
-            const authorItem = this.renderAuthor($$, this.props.authors[n])
+        for (let n = 0; n < this.props.node.authors.length; n++) {
+            const authorItem = this.renderAuthor($$, this.props.node.authors[n])
             if (authorItem) {
                 authorList.append(authorItem)
             }
@@ -72,38 +89,33 @@ class XimimageAddToBylineComponent extends Component {
         return $$('div')
             .addClass('dialog-image-authors')
             .append(
-                authorList
+            authorList
             )
     }
 
     renderAuthor($$, author) {
-        let avatar
-        // TODO Implement Avatar
-        // if (!NilUUID.isNilUUID(author.uuid)) {
-        //     avatar = $$('div')
-        //         .addClass('avatar__container')
-        //         .ref('avatarContainer')
-        //         .append(
-        //             $$(Avatar, {
-        //                 links: author.links
-        //             }).ref('avatar')
-        //         )
-        // }
-        // else {
-        avatar = $$('span')
-        // }
+        const Avatar = api.ui.getComponent('avatar')
+
+        let twitterHandle
+        if(author.isLoaded && author.links && author.links.link) {
+            const link = author.links.link
+            const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
+            const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
+            twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
+        }
+        const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle})
 
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid
         return $$('li').append(
             $$('div').append([
-                avatar,
+                avatarEl,
                 $$('div').append([
                     $$('strong').append(author.name),
                     $$('em').append(author.data ? author.data.email ? author.data.email : '' : '')
                 ]),
                 $$('span').append(
                     $$('a').append(
-                        $$(FontAwesomeIcon, {icon: 'remove'})
+                        $$(FontAwesomeIcon, { icon: 'remove' })
                     )
                         .attr('title', this.getLabel('Remove'))
                         .on('click', function () {
@@ -115,22 +127,16 @@ class XimimageAddToBylineComponent extends Component {
     }
 
     createAuthor(authorItem) {
-        const author = {
-            uuid: NilUUID.getNilUUID(),
-            name: authorItem.inputValue
-            //name: authorItem.name[0]
-        }
 
-        this.props.addAuthor(author, function () {
+        const author = new Author(NilUUID.getNilUUID(), authorItem.inputValue, this.props.node.id)
+        this.props.addAuthor(author, () => {
             this.rerender()
-        }.bind(this))
+        })
     }
 
     addAuthor(authorItem) {
-        const author = {
-            uuid: authorItem.uuid,
-            name: authorItem.name[0]
-        }
+
+        const author = new Author(authorItem.uuid, authorItem.name[0], this.props.node.id)
 
         this.props.addAuthor(author, function () {
             this.rerender()

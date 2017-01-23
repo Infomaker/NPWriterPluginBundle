@@ -168,9 +168,13 @@ class AuthorItemComponent extends Component {
             metaDataContainer.append($$('span').append(email).addClass('author__email meta'))
         }
         const Avatar = api.ui.getComponent('avatar')
-        const twitterLink = this._getLinkForType('x-im/social+twitter')
-        const twitterURL = this._getTwitterUrlFromAuhtorLink(twitterLink)
-        const twitterHandle = this._getTwitterHandleFromTwitterUrl(twitterURL)
+        let twitterHandle
+        if(this.state.loadedAuhtorLinks && this.state.loadedAuhtorLinks.link) {
+            const twitterLink = Avatar._getLinkForType(this.state.loadedAuhtorLinks.link, 'x-im/social+twitter')
+            const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
+            twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
+        }
+
 
         const avatarEl = $$(Avatar, { avatarSource: 'twitter', avatarId: twitterHandle })
 
@@ -184,43 +188,6 @@ class AuthorItemComponent extends Component {
     }
 
     /**
-     * Fetches the Twitter url for an author
-     * @returns {string|undefined} 
-     */
-    _getTwitterUrlFromAuhtorLink(link) {
-        return this.findAttribute(link, '@url')
-    }
-
-    /**
-     * Finds a links object for a specific type.
-     * Checks if it's array or and object.
-     */
-    _getLinkForType(type) {
-        const links = this.state.loadedAuhtorLinks.link
-        if (!links) {
-            return undefined
-        }
-        if (isObject(links) && links['@type'] === type) {
-            return links
-        } else if (isArray(links)) {
-            return links.find((link) => {
-                return link['@type'] === type
-            })
-        }
-
-    }
-
-    /**
-     * Returns the Twitter handle from an URL
-     */
-    _getTwitterHandleFromTwitterUrl(url) {
-
-        var twitter = url.match(/twitter\.com\/(\w+)/);
-        if (twitter === null) {
-            return undefined
-        }
-        return twitter[1]
-    }
 
     /**
      * @todo Implement

@@ -1,6 +1,8 @@
 const {BlockNode} = substance
-import {api} from 'writer'
-import {DefaultDOMElement} from 'substance'
+import { api, NilUUID } from 'writer'
+import { DefaultDOMElement } from 'substance'
+
+
 class Ximimage extends BlockNode {
 
     getImageFile() {
@@ -59,9 +61,76 @@ class Ximimage extends BlockNode {
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')
             tx.set([this.id, 'width'], width ? width.textContent : '')
             tx.set([this.id, 'height'], height ? height.textContent : '')
-        }, {history: false})
+        }, { history: false })
 
     }
+
+    addAuthor(author) {
+        const authors = this.authors
+        authors.push(author)
+
+        // First add the authors to the node
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'authors'], authors)
+        })
+
+
+        // We the author is added we try to load the concept newsitem
+        // for this author.
+        // When concepts information is fetch we update the authors on the node yet again.
+        // Only fetch information for authors that has a uuid
+        if(!author.isSimpleAuthor()) {
+            this.fetchAuthorConcept(author)
+        }
+
+    }
+
+    fetchAuthorsConcept() {
+
+        const authors = this.authors
+
+        const authorsLoadPromises = this.authors.map((author) => {
+            if(!author.isSimpleAuthor()) {
+                return author.fetchAuthorConcept()
+            } else {
+                return null
+            }
+        }).filter((author) => {
+            return author !== null
+        })
+
+        const loadAuthors = Promise.all(authorsLoadPromises)
+            .then(() => {
+                api.editorSession.transaction((tx) => {
+                    tx.set([this.id, 'authors'], authors)
+                }, { history: false })
+            })
+    }
+
+    fetchAuthorConcept(author) {
+        const authors = this.authors
+        author.fetchAuthorConcept()
+            .then((updatedAuthor) => {
+                const authorObject = authors.find((author) => {
+                    if(author.uuid === updatedAuthor.uuid) {
+                        return author
+                    }
+                    return undefined
+                })
+
+                if(authorObject) {
+                    const index = authors.indexOf(authorObject)
+                    authors[index] = updatedAuthor
+                    api.editorSession.transaction((tx) => {
+                        tx.set([this.id, 'authors'], authors)
+                    }, { history: false })
+
+                }
+
+            })
+
+    }
+
 
     /**
      * Fetchpayload is used when inserting an existing image with an UUID.
@@ -76,7 +145,7 @@ class Ximimage extends BlockNode {
         // from the relation plugin
         // Create a newsml importer and use the same importer as when opening an article
         if (fileNode.sourceUUID) {
-            api.router.get('/api/newsitem/' + fileNode.uuid, {imType: 'x-im/article'})
+            api.router.get('/api/newsitem/' + fileNode.uuid, { imType: 'x-im/article' })
                 .then(response => api.router.checkForOKStatus(response))
                 .then(response => response.text())
                 .then((xmlString) => {
@@ -129,21 +198,21 @@ Ximimage.isResource = true
 
 Ximimage.define({
     type: 'ximimage',
-    uuid: {type: 'string', optional: true},
-    uri: {type: 'string', optional: true},
-    imageFile: {type: 'file'},
-    width: {type: 'number', optional: true},
-    height: {type: 'number', optional: true},
+    uuid: { type: 'string', optional: true },
+    uri: { type: 'string', optional: true },
+    imageFile: { type: 'file' },
+    width: { type: 'number', optional: true },
+    height: { type: 'number', optional: true },
 
-    errorMessage: {type: 'string', optional: true},
-    crops: {type: 'object', default: []},
-    authors: {type: 'array', default: []},
+    errorMessage: { type: 'string', optional: true },
+    crops: { type: 'object', default: [] },
+    authors: { type: 'array', default: [] },
 
     // Semi configurable, optional, fields
-    caption: {type: 'string', default: ''},
-    alttext: {type: 'string', optional: true},
-    credit: {type: 'string', optional: true},
-    alignment: {type: 'string', optional: true}
+    caption: { type: 'string', default: '' },
+    alttext: { type: 'string', optional: true },
+    credit: { type: 'string', optional: true },
+    alignment: { type: 'string', optional: true }
 })
 
 export default Ximimage
