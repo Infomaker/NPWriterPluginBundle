@@ -134,21 +134,25 @@ export default {
         }
 
         if (authorLinks) {
-            authorLinks.children.forEach(function (authorLinkEl) {
-                if ("author" === authorLinkEl.getAttribute('rel')) {
-
-                    const author = new Author(authorLinkEl.getAttribute('uuid'), authorLinkEl.getAttribute('title'), node.id)
-                    const emailElement = authorLinkEl.find('email')
-                    if(emailElement) {
-                        author.email = emailElement.textContent
-                    }
-                    node.authors.push(author)
-                }
-                else {
-                    console.warn("Unhandled link in image object", authorLinkEl);
-                }
-            })
+            this.convertAuthors(node, authorLinks)
         }
+    },
+
+    convertAuthors: function(node, authorLinks) {
+        authorLinks.children.forEach(function (authorLinkEl) {
+            if ("author" === authorLinkEl.getAttribute('rel')) {
+
+                const author = new Author(authorLinkEl.getAttribute('uuid'), authorLinkEl.getAttribute('title'), node.id)
+                const emailElement = authorLinkEl.find('email')
+                if(emailElement) {
+                    author.email = emailElement.textContent
+                }
+                node.authors.push(author)
+            }
+            else {
+                console.warn("Unhandled link in image object", authorLinkEl);
+            }
+        })
     },
 
     export: function (node, el, converter) {

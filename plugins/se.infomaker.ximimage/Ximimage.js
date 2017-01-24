@@ -1,6 +1,5 @@
-const {BlockNode} = substance
-import { api, NilUUID } from 'writer'
-import { DefaultDOMElement } from 'substance'
+import { jxon, api, NilUUID, lodash } from 'writer'
+import { DefaultDOMElement, BlockNode } from 'substance'
 
 
 class Ximimage extends BlockNode {
@@ -36,6 +35,31 @@ class Ximimage extends BlockNode {
         })
     }
 
+    getNewsMLImporter() {
+        return api.configurator.createImporter('newsml', {
+            api: api
+        })
+
+    }
+    getXimImageConverter(context) {
+
+        let converterRegistry = context.converterRegistry
+        if(!converterRegistry) {
+            converterRegistry = context.editorSession.converterRegistry
+        }
+        // Create a newsML importer
+        const newsMLImporter = this.getNewsMLImporter()
+
+
+        // Get the converter for newsml
+        const newsMLConverters = converterRegistry.get('newsml')
+
+        // Get converter for ximimage
+        const ximImageConverter = newsMLConverters.get('ximimage')
+
+        return ximImageConverter
+    }
+
     /**
      * This method is called from NPFile when file is uploaded.
      *
@@ -43,16 +67,19 @@ class Ximimage extends BlockNode {
      *
      * @param {DOMDoucment} newsItemDOMDocument
      */
-    handleDOMDocument(newsItemDOMDocument) {
+    handleDOMDocument(newsItemDOMDocument, context) {
         const dom = newsItemDOMDocument.documentElement,
             uuid = dom.getAttribute('guid'),
             uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]'),
             // TODO: Implement support for authors/byline
-            // authors = dom.querySelectorAll('itemMeta > links > link[rel="author"]'),
+            authors = dom.querySelectorAll('itemMeta > links'),
             text = dom.querySelector('contentMeta > metadata > object > data > text'),
             credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
             width = dom.querySelector('contentMeta > metadata > object > data > width'),
             height = dom.querySelector('contentMeta > metadata > object > data > height')
+
+        const ximimageConverter = this.getXimImageConverter(context)
+        ximimageConverter.convertAuthors(this, authors)
 
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid ? uuid : '')
@@ -79,19 +106,60 @@ class Ximimage extends BlockNode {
         // for this author.
         // When concepts information is fetch we update the authors on the node yet again.
         // Only fetch information for authors that has a uuid
-        if(!author.isSimpleAuthor()) {
-            this.fetchAuthorConcept(author)
+        if(!author.isSimpleAuthor) {
+            this.updateAuthorFromConcept(author)
         }
 
     }
 
+    fetchAuthorConcept(author) {
+        return new Promise((resolve, reject) => {
+            api.router.getConceptItem(author.uuid, 'x-im/author')
+                .then((dom) => {
+                    const conceptXML = dom.querySelector('concept')
+                    const linksXML = dom.querySelector('itemMeta links')
+                    const jsonFormat = jxon.build(conceptXML)
+
+                    if (linksXML) {
+                        author.links = jxon.build(linksXML)
+                    }
+                    author.name = jsonFormat.name
+                    author.email = this.findAttribute(jsonFormat, 'email')
+                    author.isLoaded = true
+
+                    resolve(author)
+
+                })
+                .catch((e) => {
+                    console.error("Error fetching author", e)
+                    reject(e)
+                })
+        })
+
+    }
+    findAttribute(object, attribute) {
+        var match;
+
+        function iterateObject(target, name) {
+            Object.keys(target).forEach(function (key) {
+                if (lodash.isObject(target[key])) {
+                    iterateObject(target[key], name);
+                } else if (key === name) {
+                    match = target[key];
+                }
+            })
+        }
+
+        iterateObject(object, attribute)
+
+        return match ? match : undefined;
+    }
+
     fetchAuthorsConcept() {
-
         const authors = this.authors
-
         const authorsLoadPromises = this.authors.map((author) => {
-            if(!author.isSimpleAuthor()) {
-                return author.fetchAuthorConcept()
+            if(!author.isSimpleAuthor && author.isLoaded === false) {
+                return this.fetchAuthorConcept(author)
             } else {
                 return null
             }
@@ -107,9 +175,14 @@ class Ximimage extends BlockNode {
             })
     }
 
-    fetchAuthorConcept(author) {
+    /**
+     *
+     * @param {Author} author
+     */
+    updateAuthorFromConcept(author) {
         const authors = this.authors
-        author.fetchAuthorConcept()
+
+        this.fetchAuthorConcept(author)
             .then((updatedAuthor) => {
                 const authorObject = authors.find((author) => {
                     if(author.uuid === updatedAuthor.uuid) {
@@ -149,16 +222,10 @@ class Ximimage extends BlockNode {
                 .then(response => api.router.checkForOKStatus(response))
                 .then(response => response.text())
                 .then((xmlString) => {
-                    // Create a newsML importer
-                    const newsMLImporter = api.configurator.createImporter('newsml', {
-                        api: api
-                    })
-
-                    // Get the converter for newsml
-                    const newsMLConverters = context.converterRegistry.get('newsml')
 
                     // Get converter for ximimage
-                    const ximImageConverter = newsMLConverters.get('ximimage')
+                    const ximImageConverter = this.getXimImageConverter(context)
+                    const newsMLImporter = this.getNewsMLImporter()
 
                     // Create a default DOMElement for the image Newsitem
                     const imageNewsItemDocument = DefaultDOMElement.parseXML(xmlString)
@@ -168,6 +235,7 @@ class Ximimage extends BlockNode {
                     let imageObjectElement = imageNewsItem.find('contentMeta > metadata > object[type="x-im/image"]')
 
                     let node = {}
+                    node.id = this.id
 
                     // Parse only the object element as a defaultDOMElement
                     const defaultDOMImageNewsitem = DefaultDOMElement.parseXML(imageObjectElement.outerHTML)
@@ -177,6 +245,9 @@ class Ximimage extends BlockNode {
 
                     const uri = imageNewsItem.find('itemMetaExtProperty[type="imext:uri"]').attr('value')
                     const uuid = imageNewsItem.attr('guid')
+                    const authorLinks = imageNewsItem.find('newsItem > itemMeta > links')
+
+                    ximImageConverter.convertAuthors(node, authorLinks)
 
                     node.uri = uri
                     node.uuid = uuid
