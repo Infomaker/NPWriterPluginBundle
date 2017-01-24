@@ -35,12 +35,17 @@ class Ximimage extends BlockNode {
         })
     }
 
+    /**
+     * Returns a newsML importer
+     * @returns {*}
+     */
     getNewsMLImporter() {
         return api.configurator.createImporter('newsml', {
             api: api
         })
 
     }
+
     getXimImageConverter(context) {
 
         let converterRegistry = context.converterRegistry
@@ -50,36 +55,37 @@ class Ximimage extends BlockNode {
         // Create a newsML importer
         const newsMLImporter = this.getNewsMLImporter()
 
-
         // Get the converter for newsml
         const newsMLConverters = converterRegistry.get('newsml')
 
         // Get converter for ximimage
-        const ximImageConverter = newsMLConverters.get('ximimage')
-
-        return ximImageConverter
+        return newsMLConverters.get('ximimage')
     }
 
     /**
      * This method is called from NPFile when file is uploaded.
      *
-     * @todo Implement support for authors/byline
-     *
      * @param {DOMDoucment} newsItemDOMDocument
      */
     handleDOMDocument(newsItemDOMDocument, context) {
+        const newsItemDOMElement = DefaultDOMElement.parseXML(newsItemDOMDocument.documentElement.outerHTML)
         const dom = newsItemDOMDocument.documentElement,
             uuid = dom.getAttribute('guid'),
             uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]'),
-            // TODO: Implement support for authors/byline
-            authors = dom.querySelectorAll('itemMeta > links'),
+            authors = newsItemDOMElement.find('itemMeta > links'),
             text = dom.querySelector('contentMeta > metadata > object > data > text'),
             credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
             width = dom.querySelector('contentMeta > metadata > object > data > width'),
             height = dom.querySelector('contentMeta > metadata > object > data > height')
 
-        const ximimageConverter = this.getXimImageConverter(context)
-        ximimageConverter.convertAuthors(this, authors)
+        let convertedAuthors = []
+        if(authors) {
+            const ximimageConverter = this.getXimImageConverter(context)
+
+            // Uses the ximImageConverter to convert links to authors
+            // Sets the authors-property on this node
+            convertedAuthors = ximimageConverter.convertAuthors(this, authors)
+        }
 
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid ? uuid : '')
@@ -88,6 +94,7 @@ class Ximimage extends BlockNode {
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')
             tx.set([this.id, 'width'], width ? width.textContent : '')
             tx.set([this.id, 'height'], height ? height.textContent : '')
+            tx.set([this.id, 'authors'], convertedAuthors)
         }, { history: false })
 
     }
@@ -101,17 +108,22 @@ class Ximimage extends BlockNode {
             tx.set([this.id, 'authors'], authors)
         })
 
-
-        // We the author is added we try to load the concept newsitem
-        // for this author.
-        // When concepts information is fetch we update the authors on the node yet again.
-        // Only fetch information for authors that has a uuid
+        /*
+            We the author is added we try to load the concept newsitem for this author.
+            When concepts information is fetch we update the authors on the node yet again.
+            Only fetch information for authors that has a uuid
+         */
         if(!author.isSimpleAuthor) {
             this.updateAuthorFromConcept(author)
         }
 
     }
 
+    /**
+     *
+     * @param author
+     * @returns {Promise}
+     */
     fetchAuthorConcept(author) {
         return new Promise((resolve, reject) => {
             api.router.getConceptItem(author.uuid, 'x-im/author')
@@ -155,6 +167,10 @@ class Ximimage extends BlockNode {
         return match ? match : undefined;
     }
 
+    /**
+     * Takes all authors available on the node and loads the conceptItem for this authors
+     *  When all authors is fetched the nodes authors property is updated
+     */
     fetchAuthorsConcept() {
         const authors = this.authors
         const authorsLoadPromises = this.authors.map((author) => {
@@ -167,7 +183,7 @@ class Ximimage extends BlockNode {
             return author !== null
         })
 
-        const loadAuthors = Promise.all(authorsLoadPromises)
+        Promise.all(authorsLoadPromises)
             .then(() => {
                 api.editorSession.transaction((tx) => {
                     tx.set([this.id, 'authors'], authors)
@@ -247,8 +263,7 @@ class Ximimage extends BlockNode {
                     const uuid = imageNewsItem.attr('guid')
                     const authorLinks = imageNewsItem.find('newsItem > itemMeta > links')
 
-                    ximImageConverter.convertAuthors(node, authorLinks)
-
+                    node.authors = ximImageConverter.convertAuthors(node, authorLinks)
                     node.uri = uri
                     node.uuid = uuid
                     node.imageFile = fileNode.id
