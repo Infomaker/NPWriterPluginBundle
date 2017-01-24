@@ -1,6 +1,5 @@
 import PublishFlow from './se.infomaker.publishflow/index'
 import SocialEmbed from './se.infomaker.socialembed/index'
-import XImteaser from './se.infomaker.ximteaser/index'
 import XImimage from './se.infomaker.ximimage/index'
 import YoutubeEmbed from './se.infomaker.youtubeembed/index'
 import History from './se.infomaker.history/index'
@@ -22,7 +21,6 @@ import ParagraphPackage from './textstyles/se.infomaker.paragraph/ParagraphPacka
 
     XImimage()
     SocialEmbed()
-    XImteaser()
     HeaderEditor()
     YoutubeEmbed()
     History()
