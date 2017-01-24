@@ -29,12 +29,13 @@
 }
 
 .dialog-image-authorlist {
+    float:none;
+    min-height: 34px;
     display: flex;
     padding-left: 0;
-    float: left;
     margin: -6px;
     line-height: 18px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     flex-wrap: wrap;
 }
 
@@ -42,24 +43,31 @@
     display: inline-block;
     border-radius: 0.25rem;
     padding: 3px 12px 4px 8px;
+    line-height:25px;
 
     &:hover {
-        background-color: #f5f5f5;
+        background-color: #fff;
     }
 }
 
 div.x-im-image-authors {
 
-    padding: 8px 8px 0 2px;
+    padding: 8px 8px 0 6px;
     font-size: 90%;
+
+    float:none;
+
+    &:before {
+        font-family: FontAwesome;
+        opacity: 0.5;
+        float: left;
+        content: "\f007";
+        width: 24px;
+        left: 50px;
+        top: 2px;
+    }
 }
 
-div.x-im-image-authors {
-    margin-top: 5px;
-    padding-left: 24px;
-    height: 32px;
-
-}
 
 span.x-im-image-author-token {
     &::before {
