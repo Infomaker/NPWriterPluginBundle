@@ -34,7 +34,7 @@ class JobImageItem extends Component {
 
         const divImage = $$('div')
             .addClass('imageplaceholder')
-            .attr('style', 'background-image:url(' + jobImage.url + ')')
+            .attr('style', 'background-image:url(' + jobImage.thumb + ')')
 
         const label = $$('span')
             .addClass('title')

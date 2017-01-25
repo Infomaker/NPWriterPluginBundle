@@ -1,12 +1,14 @@
 import {Component} from "substance";
 import JobImagesListComponent from "./JobImagesListComponent";
-import {idGenerator} from "writer";
+import NPGateway from "./NPGateway"
 
 
 class JobComponent extends Component {
 
     constructor(...args) {
         super(...args)
+
+        this.gateway = new NPGateway("newspilot.dev.np.infomaker.io", "infomaker", "newspilot", 13980, this.updateModel.bind(this))
     }
 
     getInitialState() {
@@ -53,15 +55,21 @@ class JobComponent extends Component {
         e.stopPropagation()
     }
 
-    queryUpdates(query, events) {
-        console.log(query, events)
+    updateModel(data) {
+        this.extendState({jobImages:data})
+    }
+
+    dispose() {
+        if (this.gateway) {
+            this.gateway.disconnect()
+        }
     }
 
     initGateway() {
         // 13980
 
 
-        return new NPCallback("infomaker", "newspilot", {urlEndpoint: 'http://www.infomaker.se', server:'52.211.173.251', port:8080, nameProperty:'', idProperty:'id', createdProperty: 'created', captionProperty: ''})
+        //return new NPCallback("infomaker", "newspilot", {urlEndpoint: 'http://www.infomaker.se', server:'52.211.173.251', port:8080, nameProperty:'', idProperty:'id', createdProperty: 'created', captionProperty: ''})
 
     }
 
