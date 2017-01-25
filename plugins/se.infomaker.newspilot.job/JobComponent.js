@@ -1,7 +1,6 @@
 import {Component} from "substance";
 import JobImagesListComponent from "./JobImagesListComponent";
-import NewspilotComm from "./communication/newspilot";
-import {idGenerator} from 'writer'
+import NPGateway from "./NPGateway"
 
 
 class JobComponent extends Component {
@@ -9,20 +8,7 @@ class JobComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        // 13980
-
-        let comm = new NewspilotComm("52.211.173.251", "infomaker", "newspilot", this.queryUpdates);
-        comm.connect().then((data) => {
-            console.log('connected', data);
-            const request = {
-                quid: idGenerator(),
-                query: '<query type="Image" version="1.1"> <structure> <entity type="Image"/> </structure> <base-query> <and> <many-to-one field="image.id" type="Image"> <eq field="job.id" type="ImageLink" value="13980"/> </many-to-one> </and> </base-query> </query>'
-            };
-
-            comm.addQuery(request.quid, request.quid, request.query)
-
-        })
-
+        this.gateway = new NPGateway("newspilot.dev.np.infomaker.io", "infomaker", "newspilot", 13993, this.updateModel.bind(this))
     }
 
     getInitialState() {
@@ -76,8 +62,22 @@ class JobComponent extends Component {
         e.stopPropagation()
     }
 
-    queryUpdates(query, events) {
-        console.log(query, events)
+    updateModel(data) {
+        this.extendState({jobImages:data})
+    }
+
+    dispose() {
+        if (this.gateway) {
+            this.gateway.disconnect()
+        }
+    }
+
+    initGateway() {
+        // 13980
+
+
+        //return new NPCallback("infomaker", "newspilot", {urlEndpoint: 'http://www.infomaker.se', server:'52.211.173.251', port:8080, nameProperty:'', idProperty:'id', createdProperty: 'created', captionProperty: ''})
+
     }
 
     render($$) {
