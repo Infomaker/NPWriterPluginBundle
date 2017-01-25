@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "cropjs": "^1.0.4",
-    "google-maps-api-loader": "^0.3.0"
+    "google-maps-api-loader": "^0.3.0",
+    "socket.io-client": "^1.7.2"
   }
 }

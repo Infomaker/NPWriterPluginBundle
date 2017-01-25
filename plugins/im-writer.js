@@ -24,6 +24,7 @@ import Category from './se.infomaker.ximcategory/index'
 import Channel from './se.infomaker.ximchannel/index'
 import XImSection from './se.infomaker.ximsection/index'
 
+import Eventtracker from './eventtracker/EventtrackerPackage'
 /**
  * Text styles
  */
@@ -46,6 +47,7 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
 
 (() => {
 
+    Eventtracker()
     XImPlace('position')
     XImPlace('polygon')
     TextAnalyzer()

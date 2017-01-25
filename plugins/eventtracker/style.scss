@@ -1,0 +1,23 @@
+.eventtracker {
+
+    ul {
+        list-style: none;
+        padding:0;
+        margin:0;
+
+        li {
+            font-size:1.1rem;
+            border-bottom:1px solid #ccc;
+
+            &.current {
+                font-weight:bold;
+            }
+            .username {
+
+            }
+            .timestamp {
+                float:right
+            }
+        }
+    }
+}
