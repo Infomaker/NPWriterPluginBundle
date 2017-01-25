@@ -8,7 +8,7 @@ class JobImageInfoComponent extends Component {
             ulDiv = $$('ul'),
             liImage = $$('li'),
             liInfo = $$('li').addClass('infolist'),
-            image = $$('img').attr('src', jobImage.url)
+            image = $$('img').attr('src', jobImage.previewUrl)
 
         const nameLabel = this._createLabel($$, this.getLabel('Name'))
         const name = this._createLabelValue($$, jobImage.name)

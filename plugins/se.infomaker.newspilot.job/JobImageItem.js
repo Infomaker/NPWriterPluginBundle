@@ -34,7 +34,7 @@ class JobImageItem extends Component {
 
         const divImage = $$('div')
             .addClass('imageplaceholder')
-            .attr('style', 'background-image:url(' + jobImage.url + ')')
+            .attr('style', 'background-image:url(' + jobImage.thumbUrl + ')')
 
         const label = $$('span')
             .addClass('title')
@@ -53,10 +53,10 @@ class JobImageItem extends Component {
         e.stopPropagation()
 
         let img = document.createElement('img');
-        img.src = this.props.jobImage.url;
+        img.src = this.props.jobImage.thumbUrl;
 
         e.dataTransfer.setDragImage(img, 0, 0);
-        e.dataTransfer.setData('text/uri-list', this.props.jobImage.url)
+        e.dataTransfer.setData('text/uri-list', this.props.jobImage.thumbUrl)
     }
 
     /**
