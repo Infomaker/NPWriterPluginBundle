@@ -30,18 +30,25 @@ default filter is used;
 ]
 ```
 
-Please not that `filters` must correspond with Concept backend configuration for `tags` search so that the same
+Please note that `filters` must correspond with Concept backend configuration for `tags` search so that the same
 filters are used both in plugin and in Concept backend.
 
 ## Tag concept format
-See [Concept Items](https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem)
+See [Concept Items](https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem).
 
 ## Tag format in article
 When applying a tag in the article the relation will be represented as a link;
 ```xml
-<link title="John Doe" rel="author" type="x-im/author" uuid="9e1653f3-7575-4cb7-9b74-dc4dea63513e">
-    <data>
-        <email>john.doe@example.org</email>
-    </data>
-</link>
+<newsItem>
+    <itemMeta>
+        <links>
+            <link title="John Doe" rel="author" type="x-im/author"
+                uuid="9e1653f3-7575-4cb7-9b74-dc4dea63513e">
+                <data>
+                    <email>john.doe@example.org</email>
+                </data>
+            </link>
+        </links>
+    </itemMeta>
+</newsItem>
 ```
