@@ -1,5 +1,5 @@
 import {Component} from "substance";
-import Auth from "./Auth"
+import Auth from "./Auth";
 
 export default class LoginComponent extends Component {
 
@@ -8,14 +8,16 @@ export default class LoginComponent extends Component {
 
         const form =
             $$('form')
-            .addClass('form-control')
-            .on('submit', this.doLogin)
+                .addClass('form-control')
+                .on('submit', this.doLogin)
 
-        form.append($$('label').attr('for', 'login').append(this.getLabel('login')))
-        form.append($$('input').type('text').attr('id', 'login').ref('login'))
+        form.append($$('label').attr('for', 'user').append(this.getLabel('user')))
+        form.append($$('input').attr('type', 'text').attr('id', 'user').ref('user'))
 
         form.append($$('label').attr('for', 'password').append(this.getLabel('password')))
-        form.append($$('input').type('password').attr('id', 'password').ref('password'))
+        form.append($$('input').attr('type', 'password').attr('id', 'password').ref('password'))
+
+        form.append($$('input').attr('type', 'submit').append(this.getLabel('login')))
 
         if (this.state.error) {
             el.append('div').append("Hello error: " + this.state.error)
@@ -25,11 +27,14 @@ export default class LoginComponent extends Component {
         return el;
     }
 
-    doLogin() {
-        let login = this.refs.login.val()
+    doLogin(e) {
+        e.preventDefault();
+        let user = this.refs.user.val()
         let password = this.refs.password.val()
 
-        Auth.login(login, password)
+        console.log("Logging in")
+
+        Auth.login(user, password, this.props.server)
             .then(() => {
                 this.extendState({error: undefined})
                 this.send('login:success')
@@ -39,6 +44,8 @@ export default class LoginComponent extends Component {
                     error: e.message
                 })
             })
+
+        return false
     }
 
 }
