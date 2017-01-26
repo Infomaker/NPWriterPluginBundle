@@ -26,11 +26,9 @@ export default class Auth {
         return JSON.parse(window.sessionStorage.getItem("npCredentials"));
 
     }
-
 }
 
 function getAuthHeader(authItem) {
-
     return new Headers().append('Authorization', `Basic ${btoa(authItem.user + ":" + authItem.password)}`)
 }
 

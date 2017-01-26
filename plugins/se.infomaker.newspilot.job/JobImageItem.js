@@ -56,7 +56,7 @@ class JobImageItem extends Component {
         img.src = this.props.jobImage.thumbUrl;
 
         e.dataTransfer.setDragImage(img, 0, 0);
-        e.dataTransfer.setData('text/uri-list', this.props.jobImage.thumbUrl)
+        e.dataTransfer.setData('text/uri-list', this.props.jobImage.url)
     }
 
     /**

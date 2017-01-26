@@ -1,6 +1,7 @@
 import {Component} from "substance";
 import JobImagesListComponent from "./JobImagesListComponent";
 import NPGateway from "./NPGateway";
+import NPArticle from "./NPArticle"
 import Auth from "./Auth";
 
 
@@ -36,10 +37,19 @@ class JobComponent extends Component {
     }
 
     initGateway() {
-
         let {user, password} = Auth.getCredentials()
 
-        this.gateway = new NPGateway("newspilot.dev.np.infomaker.io", user, password, 13993, this.updateModel.bind(this))
+        const article = new NPArticle(21963, user, password)
+
+        article.getArticle()
+            .then((response) => {
+                this.gateway = new NPGateway(
+                    "newspilot.dev.np.infomaker.io", user, password, response.jobId, this.updateModel.bind(this)
+                )
+            })
+            .catch((e) => {
+                console.error(e)
+            })
     }
 
     render($$) {
@@ -67,6 +77,7 @@ class JobComponent extends Component {
 
         return el;
     }
+
 }
 
 export default JobComponent

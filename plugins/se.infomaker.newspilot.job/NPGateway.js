@@ -28,7 +28,11 @@ export default class NPGateway {
         const newData = events.map((item) => {
             return JSON.parse(
                 getTemplate(server)(
-                    {data: item.currentValues, config: {server: server, urlEndpoint: 'https://services.dev.np.infomaker.io'}})
+                    // TODO: get url from config
+                    {
+                        data: item.currentValues,
+                        config: {server: server, urlEndpoint: 'https://services.dev.np.infomaker.io'}
+                    })
             )
         });
 
@@ -50,7 +54,7 @@ function getTemplate() {
             "name":     "${item.data.name}",
             "url":      "${getUrl(item)}",
             "thumbUrl":    "${getThumb(item)}",
-            "previewUrl": "${getUrl(item)}",
+            "previewUrl": "${getPreview(item)}",
             "created":  "${item.data.created}",
             "proposedCaption": "${item.data.name}"
         }`
@@ -58,11 +62,14 @@ function getTemplate() {
 
 
 function getThumb(item) {
-    return `http://newspilot.dev.np.infomaker.io:8080/newspilot/thumb?id=${item.data.id}&type=24`
+    return `${item.config.urlEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`
+}
+
+function getPreview(item) {
+    return `${item.config.urlEndpoint}/newspilot/preview?id=${item.data.id}&type=24`
 }
 
 function getUrl(item) {
-
     return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
 }
 
