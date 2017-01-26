@@ -1,8 +1,7 @@
 import {Component} from "substance";
 import JobImagesListComponent from "./JobImagesListComponent";
-import NPGateway from "./NPGateway"
-import LoginComponent from "./LoginComponent"
-import Auth from "./Auth"
+import NPGateway from "./NPGateway";
+import Auth from "./Auth";
 
 
 class JobComponent extends Component {
@@ -27,7 +26,7 @@ class JobComponent extends Component {
     }
 
     updateModel(data) {
-        this.extendState({jobImages:data})
+        this.extendState({jobImages: data})
     }
 
     dispose() {
@@ -48,8 +47,15 @@ class JobComponent extends Component {
         const el = $$('div').addClass('npjob')
 
         if (!Auth.isLoggedIn()) {
-            el.append($$(LoginComponent))
-            return el;
+            // TODO Show login component
+            // el.append($$(LoginComponent))
+            // return el;
+
+            Auth.login("infomaker", "newspilot")
+                .then(() => {
+                    this.initGateway()
+                    this.rerender()
+                })
         }
 
         const imageList = $$(JobImagesListComponent, {
