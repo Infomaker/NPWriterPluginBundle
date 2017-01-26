@@ -22,15 +22,19 @@ export default class Auth {
                     .then((response) => {
                         console.log('response', response)
 
-                        resolve()
+                        if (response.status !== 200) {
+                            this.logout()
+                            return reject(new Error(response.statusText))
+                        }
+                        return resolve()
                     })
                     .catch((e) => {
                         this.logout()
                         console.log('reject response', e)
-                        reject(e)
+                        return reject(e)
                     })
             } else {
-                resolve()
+                return resolve()
             }
         })
     }

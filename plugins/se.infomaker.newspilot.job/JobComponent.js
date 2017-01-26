@@ -54,7 +54,7 @@ class JobComponent extends Component {
         const el = $$('div').addClass('npjob')
 
         if (!Auth.isLoggedIn()) {
-            el.append($$(LoginComponent, {server: "http://newspilot.dev.np.infomaker.io:8080/newspilot/rest"}))
+            el.append($$(LoginComponent, {server: "http://newspilot.dev.np.infomaker.io:8080/newspilot/"}))
             return el;
 
         }
