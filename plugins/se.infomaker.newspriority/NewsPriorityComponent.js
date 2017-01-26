@@ -41,8 +41,8 @@ class NewsPriorityComponent extends Component {
         if (!newsPriority) {
             // No news prio found in document, create a default template
             var template = {
-                '$id': idGenerator(),
-                '$type': "x-im/newsvalue",
+                '@id': idGenerator(),
+                '@type': "x-im/newsvalue",
                 data: {
                     description: this.lifetimes[this.defaultLifetimeIndex].label,
                     end: "",

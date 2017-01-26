@@ -33,7 +33,7 @@ class HistoryMainComponent extends Component {
 
         var unsavedArticles = historyArticles.filter(function (history) {
             return history.unsavedArticle === true;
-        });
+        })
 
         let buttonText = 'No thanks, create a new article';
         let description = 'We\'ve found some unsaved articles. Click on the version you would like to restore';
@@ -41,17 +41,21 @@ class HistoryMainComponent extends Component {
 
         // If we already have loaded an article from history we should not open the dialog again.
         let historyForArticle = api.history.get(api.newsItem.getIdForArticle());
+
         if (historyForArticle && historyForArticle.versions && historyForArticle.versions.length > 0 && api.newsItem.hasTemporaryId()) {
-            return;
-        } else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length > 0) { // If we load a existing article
+            return
+        }
+        else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length > 0) { // If we load a existing article
             unsavedArticles = [historyForArticle];
             buttonText = "Continue with last saved version";
             description = 'We found some unsaved changes for this article.';
             title = 'Unsaved changes found for this article';
-        } else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length === 0) {
-            return;
-        } else if (unsavedArticles.length === 0) {
-            return;
+        }
+        else if (!api.newsItem.hasTemporaryId() && historyForArticle.versions.length === 0) {
+            return
+        }
+        else if (unsavedArticles.length === 0) {
+            return
         }
 
         if(api.document.getDocumentStatus() === 'writerHasNoDocument') {
@@ -130,7 +134,7 @@ class HistoryMainComponent extends Component {
     }
 
     renderSeeAllUnsavedLink($$, unsavedArticles) {
-        return $$('a').addClass('all-unsaved-articles').append(this.getLabel('See all other unsaved articles')).on('click', (_) => {
+        return $$('a').addClass('all-unsaved-articles').append(this.getLabel('See all other unsaved articles')).on('click', () => {
             this.context.api.ui.showDialog(
                 VersionSelectorDialog,
                 {
@@ -148,7 +152,6 @@ class HistoryMainComponent extends Component {
     }
 
     renderHistoryItem($$, version, article) {
-
         return $$(HistoryItemComponent, {
             version: version,
             article: article,
@@ -158,12 +161,15 @@ class HistoryMainComponent extends Component {
 
     applyVersion(version, article) {
         api.newsItem.setTemporaryId(article.id)
-        api.events.documentIsUnsaved()
         api.newsItem.setSource(version.src, null, true)
 
-
-
-
+        api.events.documentChanged(
+            'se.infomaker.history',
+            {
+                type: 'version',
+                action: 'update'
+            }
+        )
     }
 }
 

@@ -30,7 +30,8 @@ export default {
 
         if(hasMatch) {
             editorSession.executeCommand('socialembed', {
-                url: url
+                url: url,
+                isPaste: true
             })
             return true
         }

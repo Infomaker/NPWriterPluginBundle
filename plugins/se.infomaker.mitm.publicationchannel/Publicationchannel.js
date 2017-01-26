@@ -1,5 +1,4 @@
 import PublicationChannelComponent from './PublicationchannelComponent'
-function Publicationchannel() {}
 
 export default {
     id: 'se.infomaker.mitm.publicationchannel',
@@ -35,4 +34,3 @@ export default {
         config.addComponentToSidebarWithTabId('publicationchannel', 'main', PublicationChannelComponent)
     }
 }
-

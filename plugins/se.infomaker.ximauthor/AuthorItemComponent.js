@@ -1,6 +1,6 @@
-import {Component, FontAwesomeIcon} from 'substance'
-import {NilUUID, jxon} from 'writer'
-import {isObject, isArray} from 'lodash'
+import { Component, FontAwesomeIcon } from 'substance'
+import { NilUUID, jxon, api } from 'writer'
+import { isObject, isArray } from 'lodash'
 import authorInfoComponent from './AuthorInfoComponent'
 
 class AuthorItemComponent extends Component {
@@ -41,10 +41,11 @@ class AuthorItemComponent extends Component {
                     name: this.props.author.title,
                     isLoaded: true,
                     isSimpleAuthor: true,
-                    loadedAuthor: {name: this.props.author.title}
+                    loadedAuthor: { name: this.props.author.title }
                 })
             }.bind(this), 1)
-        } else {
+        }
+        else {
             this.context.api.router.getConceptItem(this.props.author.uuid, this.props.author.type)
                 .then(function (dom) {
                     var conceptXML = dom.querySelector('concept')
@@ -56,6 +57,10 @@ class AuthorItemComponent extends Component {
                     if (linksXML) {
                         authorLinks = jxon.build(linksXML);
                     }
+
+                    // When author is loaded from repository we need to update
+                    // the author information in the NewsItem for the Article
+                    this.updateAuthor(jsonFormat)
 
                     this.setState({
                         name: jsonFormat.name,
@@ -71,10 +76,24 @@ class AuthorItemComponent extends Component {
                         name: this.props.author.title,
                         isLoaded: true,
                         isSimpleAuthor: true,
-                        loadedAuthor: {name: this.props.author.title}
+                        loadedAuthor: { name: this.props.author.title }
                     })
                 }.bind(this))
         }
+    }
+
+    /**
+     * We need to update the author element in the NewsItem
+     * with first and foremost the email, if exist but also
+     * we update the author name
+     */
+    updateAuthor(loadedAuthor) {
+        const email = this.findAttribute(loadedAuthor, 'email')
+        const author = {name: loadedAuthor.name}
+        if (email) {
+            author['email'] = email
+        }
+        this.context.api.newsItem.updateAuthorWithUUID('ximauthor', this.props.author.uuid, author)
     }
 
     render($$) {
@@ -87,7 +106,7 @@ class AuthorItemComponent extends Component {
 
         var deleteButton = $$('button')
             .addClass('author__button--delete')
-            .append($$(FontAwesomeIcon, {icon: 'fa-times'}))
+            .append($$(FontAwesomeIcon, { icon: 'fa-times' }))
             .attr('title', this.getLabel('Remove from article'))
             .on('click', function () {
                 this.removeAuthor(author)
@@ -111,7 +130,7 @@ class AuthorItemComponent extends Component {
         authorItem
             .append($$('div')
                 .addClass('avatar__container')
-                .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
+                .append($$(FontAwesomeIcon, { icon: 'fa-user' })))
             .append($$('div')
                 .addClass('metadata__container')
                 .append($$('span')
@@ -131,8 +150,8 @@ class AuthorItemComponent extends Component {
             .attr('data-placement', 'bottom')
             .attr('data-trigger', 'manual')
 
-        displayNameEl.on('mouseenter', this.toggleTooltip)
-        displayNameEl.on('mouseout', this.hideTooltip)
+        // displayNameEl.on('mouseenter', this.toggleTooltip)
+        // displayNameEl.on('mouseout', this.hideTooltip)
 
         this.updateTagItemName(displayNameEl, this.state.loadedAuthor)
 
@@ -148,20 +167,32 @@ class AuthorItemComponent extends Component {
         if (email) {
             metaDataContainer.append($$('span').append(email).addClass('author__email meta'))
         }
+        const Avatar = api.ui.getComponent('avatar')
+        let twitterHandle
+        if(this.state.loadedAuhtorLinks && this.state.loadedAuhtorLinks.link) {
+            const twitterLink = Avatar._getLinkForType(this.state.loadedAuhtorLinks.link, 'x-im/social+twitter')
+            const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
+            twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
+        }
 
+
+        const avatarEl = $$(Avatar, { avatarSource: 'twitter', avatarId: twitterHandle })
+
+        const avatarContainer = $$('div').addClass('avatar__container').ref('avatarContainer').append(avatarEl)
         authorItem
-            .append($$('div')
-                .addClass('avatar__container').ref('avatarContainer')
-                .append($$(FontAwesomeIcon, {icon: 'fa-user'})))
-
-            //                .append($$(Avatar, {author: author, links: this.state.loadedAuhtorLinks}).ref('avatar')))
+            .append(avatarContainer)
             .append(metaDataContainer)
             .append($$('div')
                 .addClass('button__container')
                 .append(deleteButton))
     }
 
-    toggleTooltip(ev) {
+    /**
+
+    /**
+     * @todo Implement
+     */
+    toggleTooltip(/* ev */) {
         // $(ev.target).tooltip('toggle')
         //
         // ev.target.timeout = window.setTimeout(function () {
@@ -169,7 +200,10 @@ class AuthorItemComponent extends Component {
         // }.bind(this), 3000)
     }
 
-    hideTooltip(ev) {
+    /**
+     * @todo Implement
+     */
+    hideTooltip(/* ev */) {
         // if (ev.target.timeout) {
         //     window.clearTimeout(ev.target.timeout)
         //     ev.target.timeout = undefined
@@ -224,11 +258,12 @@ class AuthorItemComponent extends Component {
     showInformation() {
         this.context.api.ui.showDialog(authorInfoComponent, {
             author: this.state.loadedAuthor
-        }, {
-            secondary: false,
-            title: this.state.loadedAuthor.name,
-            global: true
-        })
+        },
+            {
+                secondary: false,
+                title: this.state.loadedAuthor.name,
+                global: true
+            })
     }
 
     showHover() {

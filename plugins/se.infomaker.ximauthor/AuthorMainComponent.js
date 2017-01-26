@@ -26,20 +26,36 @@ class AuthorMainComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
+        const noSearch = api.getConfigValue(this.props.pluginConfigObject.id, 'noSearch');
 
-        const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
+        const el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
 
-        var searchComponent = $$(AuthorSearchComponent, {
-            existingItems: this.state.existingAuthors,
-            searchUrl: '/api/search/concepts/authors?q=',
-            onSelect: this.addAuthor.bind(this),
-            onCreate: this.createAuthor.bind(this),
-            createAllowed: true,
-            placeholderText: this.getLabel('Search authors')
-        }).ref('authorSearchComponent')
+        let searchComponent
 
-        var existingAuthorsList = $$(AuthorListComponent, {
+        if (noSearch) {
+            const AuthorAddComponent = this.context.componentRegistry.get('form-add');
+
+            searchComponent = $$(AuthorAddComponent, {
+                existingItems: this.state.existingAuthors,
+                onSelect: this.addAuthor.bind(this),
+                onCreate: this.createAuthor.bind(this),
+                createAllowed: true,
+                placeholderText: this.getLabel('Enter author')
+            }).ref('authorSearchComponent')
+        } else {
+            const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
+
+            searchComponent = $$(AuthorSearchComponent, {
+                existingItems: this.state.existingAuthors,
+                searchUrl: '/api/search/concepts/authors?q=',
+                onSelect: this.addAuthor.bind(this),
+                onCreate: this.createAuthor.bind(this),
+                createAllowed: true,
+                placeholderText: this.getLabel('Search authors')
+            }).ref('authorSearchComponent')
+        }
+
+        const existingAuthorsList = $$(AuthorListComponent, {
             existingAuthors: this.state.existingAuthors,
             removeAuthor: this.removeAuthor.bind(this)
         }).ref('existingAuthorList');

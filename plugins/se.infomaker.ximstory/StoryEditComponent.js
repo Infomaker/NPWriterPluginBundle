@@ -50,7 +50,7 @@ class StoryEditComponent extends Component {
                 this.props.reload()
                 this.send('close')
             })
-            .catch((e) => {
+            .catch(() => {
                 this.extendState({error: true});
             })
     }

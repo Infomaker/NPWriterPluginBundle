@@ -1,5 +1,5 @@
 import {DragAndDropHandler} from 'substance'
-import {api, idGenerator} from 'writer'
+import {idGenerator} from 'writer'
 
 // Implements a file drop handler
 class DropImageUUID extends DragAndDropHandler {

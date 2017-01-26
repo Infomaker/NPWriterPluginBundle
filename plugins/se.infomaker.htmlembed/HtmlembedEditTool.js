@@ -1,4 +1,4 @@
-import {Tool, Component, FontAwesomeIcon} from 'substance'
+import {Tool} from 'substance'
 import {api} from 'writer'
 
 class HtmlembedEditTool extends Tool {
@@ -13,10 +13,10 @@ class HtmlembedEditTool extends Tool {
         textarea.el.on('keydown', () => {
             this.resize()
         })
-        textarea.el.el.addEventListener('paste', (e) => {
+        textarea.el.el.addEventListener('paste', () => {
             this.resize()
         })
-        textarea.el.el.addEventListener('cut', (e) => {
+        textarea.el.el.addEventListener('cut', () => {
             this.resize()
         })
     }
@@ -33,9 +33,8 @@ class HtmlembedEditTool extends Tool {
         // Wait some time before change height so the scroll height is updated when pasting
         setTimeout(() => {
             htmlTexarea.style.height = 'auto'
-            htmlTexarea.style.height = htmlTexarea.scrollHeight +20+ 'px'
+            htmlTexarea.style.height = htmlTexarea.scrollHeight + 20 + 'px'
         }, 100)
-
     }
 
     render($$) {

@@ -84,7 +84,7 @@ export default {
         })
 
         config.addLabel('Ready for approval', {
-            sv: 'Redo för godkännande'
+            sv: 'Klar för godkännande'
         })
 
         config.addLabel('Schedule for publish', {
@@ -110,7 +110,7 @@ export default {
 
         config.addLabel('imext:done', {
             en: 'Ready for approval',
-            sv: 'Redo för godkännande'
+            sv: 'Klar för godkännande'
         })
 
         config.addLabel('stat:withheld', {
@@ -126,6 +126,18 @@ export default {
         config.addLabel('stat:canceled', {
             en: 'Unpublished',
             sv: 'Avpublicerad'
+        })
+
+        config.addLabel('Create a new article', {
+            sv: 'Skapa en ny artikel'
+        })
+
+        config.addLabel('Create a new copy of this article', {
+            sv: 'Skapa en kopia på den här artikeln'
+        })
+
+        config.addLabel('Article contains unsaved changes. Continue without saving?', {
+            sv: 'Artikeln innehåller osparade ändringar. Fortsätt utan att spara?'
         })
     }
 }

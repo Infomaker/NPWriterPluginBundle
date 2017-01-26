@@ -17,7 +17,6 @@ class StoryMainComponent extends Component {
         }
     }
 
-
     reload() {
         this.extendState({
             existingItems: this.context.api.newsItem.getStories(this.name)
@@ -25,7 +24,6 @@ class StoryMainComponent extends Component {
     }
 
     render($$) {
-
         const el = $$('div').ref('tagContainer').addClass('stories').append($$('h2').append(this.getLabel('ximstory-story')))
 
         const SearchComponent = this.context.componentRegistry.get('form-search')
@@ -55,8 +53,9 @@ class StoryMainComponent extends Component {
         try {
             this.context.api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
             this.reload()
-        } catch (e) {
-            console.log(e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
@@ -64,8 +63,9 @@ class StoryMainComponent extends Component {
         try {
             this.context.api.newsItem.addStory(this.name, { uuid: story.uuid, title: story.name[0] })
             this.reload()
-        } catch (e) {
-            console.log(e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
@@ -95,4 +95,3 @@ class StoryMainComponent extends Component {
 }
 
 export default StoryMainComponent
-

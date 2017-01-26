@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {jxon} from 'writer'
+import {jxon, api} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
 import TagEditPersonComponent from './TagEditPersonComponent'
@@ -15,25 +15,13 @@ class TagsMainComponent extends Component {
 
     getInitialState() {
         return {
-            existingTags: this.context.api.newsItem.getTags([
-                'x-im/person',
-                'x-im/organisation',
-                'x-cmbr/channel',
-                'x-im/channel',
-                'x-im/category'
-            ])
+            existingTags: this.context.api.newsItem.getTags(this.getTags())
         }
     }
 
     reload() {
         this.extendState({
-            existingTags: this.context.api.newsItem.getTags([
-                'x-im/person',
-                'x-im/organisation',
-                'x-cmbr/channel',
-                'x-im/channel',
-                'x-im/category'
-            ])
+            existingTags: this.context.api.newsItem.getTags(this.getTags())
         })
     }
 
@@ -72,36 +60,52 @@ class TagsMainComponent extends Component {
         try {
             this.context.api.newsItem.removeLinkByUUIDAndRel(this.name, tag.uuid, 'subject')
             this.reload()
-        } catch (e) {
-            console.log(e)
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
     addTag(tag) {
         try {
-            this.context.api.newsItem.addTag(this.name, tag)
-            this.reload()
-        } catch (e) {
-            console.log(e)
+            if (this.isValidTag(tag)) {
+                this.context.api.newsItem.addTag(this.name, tag)
+                this.reload()
+            } else {
+                console.error('Tag is invalid or not in plugin configuration', tag)
+            }
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
+    /**
+     * Only handles create new 'person' or 'organisation'.
+     *
+     * @param tag
+     * @param exists
+     */
     createTag(tag, exists) {
         try {
-            this.context.api.ui.showDialog(TagEditBaseComponent, {
-                tag: tag,
-                exists: exists,
-                close: this.closeFromDialog.bind(this),
-                createPerson: this.createPerson.bind(this),
-                createOrganisation: this.createOrganisation.bind(this)
-            }, {
-                primary: false,
-                title: this.getLabel('ximtags-create') + " " + tag.inputValue,
-                global: true
-            })
-
-        } catch (e) {
-            console.log("E", e)
+            if (this.canCreateTag()) {
+                this.context.api.ui.showDialog(TagEditBaseComponent, {
+                    tag: tag,
+                    exists: exists,
+                    close: this.closeFromDialog.bind(this),
+                    createPerson: this.createPerson.bind(this),
+                    createOrganisation: this.createOrganisation.bind(this)
+                }, {
+                    primary: false,
+                    title: this.getLabel('ximtags-create') + " " + tag.inputValue,
+                    global: true
+                })
+            } else {
+                console.error('Tag plugin not configured to support creation of new tags')
+            }
+        }
+        catch (e) {
+            // FIXME: Implement exception handling
         }
     }
 
@@ -154,6 +158,39 @@ class TagsMainComponent extends Component {
 
     closeFromDialog() {
         this.reload()
+    }
+
+    isValidTag(tag) {
+        if (tag.imType && tag.imType[0]) {
+            return this.getTags().indexOf(tag.imType[0]) > -1
+        }
+        return false
+    }
+
+    getTags() {
+        const filters = api.getConfigValue(
+            'se.infomaker.tags',
+            'filters'
+        )
+
+        if (filters) {
+            return filters;
+        } else {
+            // Default filters
+            return [
+                'x-im/person',
+                'x-im/organisation',
+                'x-cmbr/channel',
+                'x-im/channel',
+                'x-im/category'
+            ]
+        }
+    }
+
+    canCreateTag() {
+        const tags = this.getTags()
+
+        return tags.indexOf('x-im/person') > -1 && tags.indexOf('x-im/organisation') > -1
     }
 }
 

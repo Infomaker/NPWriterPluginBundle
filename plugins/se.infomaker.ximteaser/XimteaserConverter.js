@@ -141,10 +141,13 @@ export default {
         }
 
         // Data element
-        const data = $$('data').append([
-            $$('width').append(String(node.width)),
-            $$('height').append(String(node.height))
-        ])
+        const data = $$('data')
+        if(node.width) {
+            data.append($$('width').append(String(node.width)))
+        }
+        if(node.height) {
+            data.append($$('height').append(String(node.height)))
+        }
 
         if (node.text) {
             data.append($$('text').append(

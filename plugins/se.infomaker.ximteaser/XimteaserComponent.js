@@ -1,6 +1,5 @@
 import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
-import ImageDisplay from '../se.infomaker.ximimage/ImageDisplay'
 import FileInputComponent from './FileInputComponent'
 
 class XimteaserComponent extends Component {
@@ -32,7 +31,7 @@ class XimteaserComponent extends Component {
         const teaserFields = api.getConfigValue('se.infomaker.ximteaser', 'fields', [])
 
         el.append(this.renderHeader($$))
-
+        const ImageDisplay = api.ui.getComponent('imageDisplay')
         if (this.props.node.imageFile) {
             el.append(
                 $$(ImageDisplay, { // Pass property to images if used in teaser and if drag should be disabled

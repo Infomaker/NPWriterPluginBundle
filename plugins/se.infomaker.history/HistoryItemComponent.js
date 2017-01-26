@@ -1,7 +1,5 @@
 import {Component} from 'substance'
-import {lodash, moment} from 'writer'
-
-const isArray = lodash.isArray
+import {moment} from 'writer'
 
 class HistoryItemComponent extends Component {
 
@@ -42,4 +40,3 @@ class HistoryItemComponent extends Component {
 
 }
 export default HistoryItemComponent
-

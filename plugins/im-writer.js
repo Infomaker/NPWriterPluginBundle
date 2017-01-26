@@ -20,6 +20,9 @@ import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
 import ContentProfile from './se.infomaker.ximcontentprofile/index'
 import XImStory from './se.infomaker.ximstory/index'
+import Category from './se.infomaker.ximcategory/index'
+import Channel from './se.infomaker.ximchannel/index'
+import XImSection from './se.infomaker.ximsection/index'
 
 /**
  * Text styles
@@ -64,7 +67,10 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
     XImStory()
     MitmTags()
     XimTags()
-
+    Category()
+    Channel()
+    XImSection()
+    
     // Textstyles
     BlockQuotePackage()
     ParagraphPackage()

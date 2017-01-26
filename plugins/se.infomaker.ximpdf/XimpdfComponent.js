@@ -21,11 +21,8 @@ class XimpdfComponent extends Component {
     render($$) {
         const doc = api.doc
         const node = this.props.node
-
         const fileNode = doc.get(node.pdfFile)
-
         const el = $$('div').addClass('im-blocknode__container ximpdf__container')
-
         const textEditor = $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, 'text'],
@@ -38,7 +35,7 @@ class XimpdfComponent extends Component {
             .append('Loading...')
             .addClass('text-pdf')
 
-        if (node.text) {
+        if (fileNode.uuid) {
             el.append([this.renderHeader($$, fileNode), textEditor])
         } else {
             el.append([this.renderHeader($$, fileNode), loadingSpan])
@@ -47,8 +44,7 @@ class XimpdfComponent extends Component {
         return el
     }
 
-    renderContent($$, node) {
-
+    renderContent($$) {
         const content = $$('div')
             .addClass('im-blocknode__content')
 
@@ -62,7 +58,6 @@ class XimpdfComponent extends Component {
         content.append(link)
         return content
     }
-
 
     renderHeader($$, fileNode) {
         return $$('div')
@@ -80,7 +75,6 @@ class XimpdfComponent extends Component {
             .addClass('header')
             .attr('contenteditable', false)
     }
-
 }
 
 export default XimpdfComponent
