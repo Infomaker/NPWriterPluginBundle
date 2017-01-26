@@ -4,8 +4,6 @@ import {idGenerator} from "writer";
 export default class NPGateway {
 
     constructor(host, username, password, jobId, callback) {
-        // 13980
-
         this.callback = callback
 
         this.server = `${host}:8080`
@@ -51,13 +49,17 @@ function getTemplate() {
     return (item) => `{
             "name":     "${item.data.name}",
             "url":      "${getUrl(item)}",
-            "thumbUrl":    "${getUrl(item)}",
+            "thumbUrl":    "${getThumb(item)}",
             "previewUrl": "${getUrl(item)}",
             "created":  "${item.data.created}",
             "proposedCaption": "${item.data.name}"
         }`
 }
 
+
+function getThumb(item) {
+    return `http://newspilot.dev.np.infomaker.io:8080/newspilot/thumb?id=${item.data.id}&type=24`
+}
 
 function getUrl(item) {
 

@@ -8,6 +8,7 @@ class JobImagesListComponent extends Component {
     }
 
     render($$) {
+
         const jobImages = this.props.jobImages
 
         const imageList = $$('div').addClass('container')
