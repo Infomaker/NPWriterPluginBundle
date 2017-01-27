@@ -63,6 +63,7 @@
     }
 
     /* Show actions depending on isolated node state */
+    &.sm-focused > .se-image-container,
     &.sm-selected > .se-image-container  {
         .remove-image__button {
             display: inline;
