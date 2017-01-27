@@ -18,7 +18,7 @@ export default class Auth {
             if (checkUrl) {
                 let authHeader = Auth.getAuthHeader();
                 console.log(authHeader.get('Authorization'))
-                fetch(checkUrl, {headers: authHeader, mode: 'no-cors'})
+                fetch(checkUrl, {headers: authHeader, mode: 'cors'})
                     .then((response) => {
                         console.log('response', response)
 

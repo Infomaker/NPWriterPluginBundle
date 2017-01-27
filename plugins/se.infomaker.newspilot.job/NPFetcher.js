@@ -7,7 +7,7 @@ export default class NPFetcher {
             const url = `http://newspilot.dev.np.infomaker.io:8080/newspilot/rest/articles/${articleId}`
             const authHeader = Auth.getAuthHeader(Auth.getCredentials());
 
-            fetch(url, {headers: authHeader, mode: 'no-cors'})
+            fetch(url, {headers: authHeader, mode: 'cors'})
                 .then((response) => {
                     console.log('response', response)
                     resolve(response)
