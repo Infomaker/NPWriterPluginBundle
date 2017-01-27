@@ -1,8 +1,10 @@
 import {Component} from "substance";
+import {api} from 'writer';
 import JobImagesListComponent from "./JobImagesListComponent";
 import NPGateway from "./NPGateway";
-import NPArticle from "./NPArticle"
+import NPFetcher from "./NPFetcher"
 import Auth from "./Auth";
+import LoginComponent from "./LoginComponent";
 
 
 class JobComponent extends Component {
@@ -10,14 +12,24 @@ class JobComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        if (Auth.isLoggedIn()) {
-            this.initGateway()
+        // Only necessary to login to Newspilot if Newspilot
+        // article is coupled with Writer article
+        if (this.state.articleId > 0) {
+            if (Auth.isLoggedIn()) {
+                this.initGateway()
+            }
         }
+
+        this.handleActions({
+            'login:success': this.initGateway,
+        });
     }
 
     getInitialState() {
+        const articleId = api.newsItem.getNewspilotArticleId()
+
         return {
-            // TODO
+            articleId: articleId ? articleId : 0,
             jobImages: []
         }
     }
@@ -37,43 +49,60 @@ class JobComponent extends Component {
     }
 
     initGateway() {
-        let {user, password} = Auth.getCredentials()
+        // Sanity check
+        if (this.state.articleId === 0) {
+            return
+        }
 
-        const article = new NPArticle(21963, user, password)
-
-        article.getArticle()
-            .then((response) => {
+        NPFetcher.getArticle(this.state.articleId)
+            .then((article) => {
+                let {user, password} = Auth.getCredentials()
                 this.gateway = new NPGateway(
-                    "newspilot.dev.np.infomaker.io", user, password, response.jobId, this.updateModel.bind(this)
+                    "newspilot.dev.np.infomaker.io", user, password, 13993/*article.jobId*/, this.updateModel.bind(this)
                 )
+                this.rerender()
             })
             .catch((e) => {
                 console.error(e)
+                this.rerender()
             })
+    }
+
+    getNewspilotLoginUrl() {
+        const newspilotHost = api.getConfigValue(
+            'se.infomaker.newspilot.job',
+            'newspilotHost'
+        )
+
+        return newspilotHost + '/newspilot/'
     }
 
     render($$) {
 
         const el = $$('div').addClass('npjob')
 
-        if (!Auth.isLoggedIn()) {
-            // TODO Show login component
-            // el.append($$(LoginComponent))
-            // return el;
+        if (this.state.articleId > 0) {
+            if (!Auth.isLoggedIn()) {
+                el.append($$(LoginComponent, {server: this.getNewspilotLoginUrl()}))
+                return el;
+            }
 
-            Auth.login("infomaker", "newspilot")
-                .then(() => {
-                    this.initGateway()
+            const imageList = $$(JobImagesListComponent, {
+                jobImages: this.state.jobImages
+            }).ref('imageList')
+
+            el.append($$('h2').append(this.getLabel('Images')))
+            el.append(imageList)
+
+            el.append($$('button')
+                .on('click', () => {
+                    Auth.logout()
                     this.rerender()
                 })
+                .append('Logout'))
+        } else {
+            el.append($$('h2').append(this.getLabel('Article not linked with Newspilot')))
         }
-
-        const imageList = $$(JobImagesListComponent, {
-            jobImages: this.state.jobImages
-        }).ref('imageList')
-
-        el.append($$('h2').append(this.getLabel('Images')))
-        el.append(imageList)
 
         return el;
     }

@@ -29,5 +29,9 @@ export default {
         config.addLabel('Proposed caption', {
             sv: 'Bildtextförslag'
         })
+
+        config.addLabel('Article not linked with Newspilot', {
+            sv: 'Artikeln är inte länkad till Newspilot'
+        })
     }
 }

@@ -1,5 +1,5 @@
 import NewspilotComm from "newspilot-js-client";
-import {idGenerator} from "writer";
+import {idGenerator, api} from "writer";
 
 export default class NPGateway {
 
@@ -23,16 +23,20 @@ export default class NPGateway {
     }
 
     queryUpdates(query, events) {
+        let imageProxyHost = api.getConfigValue(
+            'se.infomaker.newspilot.job',
+            'imageProxyHost'
+        )
 
         let server = this.server
+
         const newData = events.map((item) => {
             return JSON.parse(
-                getTemplate(server)(
-                    // TODO: get url from config
-                    {
+                getTemplate(server)({
                         data: item.currentValues,
-                        config: {server: server, urlEndpoint: 'https://services.dev.np.infomaker.io'}
-                    })
+                        config: {server: server, urlEndpoint: imageProxyHost}
+                    }
+                )
             )
         });
 
@@ -70,6 +74,7 @@ function getPreview(item) {
 }
 
 function getUrl(item) {
+    // TODO: Check if storelocation is 0, if so construct url that points to 'data' and 'majorType'...
     return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
 }
 
