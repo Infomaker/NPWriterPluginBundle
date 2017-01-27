@@ -46,8 +46,7 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
 
 (() => {
 
-    XImPlace('position')
-    XImPlace('polygon')
+    XImPlace()
     TextAnalyzer()
     XImimage()
     SocialEmbed()

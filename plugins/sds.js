@@ -41,7 +41,7 @@ import Factbody from './textstyles/se.infomaker.factbody/Factbody'
     Preamble()
     Factbody()
 
-    XImPlace('position')
+    XImPlace()
     TextAnalyzer()
     XImimage()
     SocialEmbed()
