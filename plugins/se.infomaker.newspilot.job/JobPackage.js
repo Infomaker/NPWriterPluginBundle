@@ -36,5 +36,6 @@ export default {
 
 
         config.addIcon('login', {'fontawesome': 'fa-sign-in'})
+        config.addIcon('warning', {'fontawesome': 'fa-warning'})
     }
 }

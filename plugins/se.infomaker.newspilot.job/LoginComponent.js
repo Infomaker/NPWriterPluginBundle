@@ -1,4 +1,4 @@
-import {Component, Button} from "substance";
+import {Component, Button, FontAwesomeIcon} from "substance";
 import Auth from "./Auth";
 
 export default class LoginComponent extends Component {
@@ -15,13 +15,14 @@ export default class LoginComponent extends Component {
         form.append($$('p'))
         form.append($$('input').attr('type', 'password').attr('id', 'password').attr('placeholder', this.getLabel('password')).ref('password'))
 
-        form.append($$(Button, {icon: 'login'}).addClass('fa-2x').on('click',this.doLogin))
-
-        if (this.state.error) {
-            el.append('div').append("Hello error: " + this.state.error)
-        }
+        form.append($$(Button, {icon: 'login'}).addClass('fa-2x').on('click', this.doLogin))
 
         el.append(form)
+
+        if (this.state.error) {
+            el.append($$('div').append($$(FontAwesomeIcon, 'warning')).append(this.getLabel(this.state.error)))
+        }
+
         return el;
     }
 
@@ -38,8 +39,12 @@ export default class LoginComponent extends Component {
                 this.send('login:success')
             })
             .catch((e) => {
+                let message = e.message
+                if (e.status && e.status === 401) {
+                    message = 'Invalid username or password'
+                }
                 this.extendState({
-                    error: e.message
+                    error: message
                 })
             })
 
