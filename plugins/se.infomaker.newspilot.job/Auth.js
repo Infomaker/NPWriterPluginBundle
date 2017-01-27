@@ -24,7 +24,7 @@ export default class Auth {
 
                         if (response.status !== 200) {
                             this.logout()
-                            return reject(new Error(response.statusText))
+                            return reject({status: response.status, message: response.statusText})
                         }
                         return resolve()
                     })
