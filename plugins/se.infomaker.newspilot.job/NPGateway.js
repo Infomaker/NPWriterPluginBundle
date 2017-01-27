@@ -17,7 +17,8 @@ export default class NPGateway {
                     query: getQuery(jobId)
                 };
 
-                this.comm.addQuery(request.quid, request.quid, request.query)
+                this.query = this.comm.addQuery(request.quid, request.quid, request.query)
+                this.nodeMap = new Map();
             })
             .catch((e) => console.log("Error", e))
     }
@@ -30,17 +31,21 @@ export default class NPGateway {
 
         let server = this.server
 
-        const newData = events.map((item) => {
-            return JSON.parse(
-                getTemplate(server)({
-                        data: item.currentValues,
-                        config: {server: server, urlEndpoint: imageProxyHost}
-                    }
-                )
-            )
-        });
+        for (let event of events) {
+            switch (event.eventType) {
+                case "CREATE":
+                case "CHANGE":
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyHost))
+                    break
+                case "REMOVE":
+                    this.nodeMap.delete(event.id)
+                    break
+                default:
+                    console.log("Unknown event type", event.eventType)
+            }
+        }
 
-        this.callback(newData)
+        this.callback([...this.nodeMap.values()])
     }
 
 
@@ -52,6 +57,18 @@ export default class NPGateway {
     }
 
 }
+
+function getNode(currentValues, imageProxyHost) {
+    return JSON.parse(
+        getTemplate()(
+            {
+                data: currentValues,
+                config: {urlEndpoint: imageProxyHost}
+            }
+        )
+    )
+}
+
 
 function getTemplate() {
     return (item) => `{
