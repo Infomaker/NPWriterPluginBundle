@@ -1,23 +1,21 @@
-import {Component} from "substance";
+import {Component, Button} from "substance";
 import Auth from "./Auth";
 
 export default class LoginComponent extends Component {
 
     render($$) {
-        const el = $$('div');
+        const el = $$('div').addClass('login-form');
 
         const form =
             $$('form')
                 .addClass('form-control')
                 .on('submit', this.doLogin)
 
-        form.append($$('label').attr('for', 'user').append(this.getLabel('user')))
-        form.append($$('input').attr('type', 'text').attr('id', 'user').ref('user'))
+        form.append($$('input').attr('type', 'text').attr('id', 'user').attr('placeholder', this.getLabel('user')).ref('user'))
+        form.append($$('p'))
+        form.append($$('input').attr('type', 'password').attr('id', 'password').attr('placeholder', this.getLabel('password')).ref('password'))
 
-        form.append($$('label').attr('for', 'password').append(this.getLabel('password')))
-        form.append($$('input').attr('type', 'password').attr('id', 'password').ref('password'))
-
-        form.append($$('input').attr('type', 'submit').append(this.getLabel('login')))
+        form.append($$(Button, {icon: 'login'}).addClass('fa-2x').on('click',this.doLogin))
 
         if (this.state.error) {
             el.append('div').append("Hello error: " + this.state.error)

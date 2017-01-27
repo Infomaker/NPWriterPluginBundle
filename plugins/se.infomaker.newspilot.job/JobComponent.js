@@ -94,12 +94,6 @@ class JobComponent extends Component {
             el.append($$('h2').append(this.getLabel('Images')))
             el.append(imageList)
 
-            el.append($$('button')
-                .on('click', () => {
-                    Auth.logout()
-                    this.rerender()
-                })
-                .append('Logout'))
         } else {
             el.append($$('h2').append(this.getLabel('Article not linked with Newspilot')))
         }

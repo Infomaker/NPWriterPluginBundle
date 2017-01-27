@@ -33,5 +33,8 @@ export default {
         config.addLabel('Article not linked with Newspilot', {
             sv: 'Artikeln är inte länkad till Newspilot'
         })
+
+
+        config.addIcon('login', {'fontawesome': 'fa-sign-in'})
     }
 }
