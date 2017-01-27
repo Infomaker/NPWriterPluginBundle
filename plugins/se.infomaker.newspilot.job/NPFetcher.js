@@ -1,16 +1,26 @@
 import Auth from "./Auth";
 
+function getNewspilotRestUrl(newspilotServer, articleId) {
+    return `${newspilotServer}/newspilot/rest/articles/${articleId}`
+}
+
 export default class NPFetcher {
 
-    static getArticle(articleId) {
+    static getArticle(newspilotServer, articleId) {
         return new Promise((resolve, reject) => {
-            const url = `http://newspilot.dev.np.infomaker.io:8080/newspilot/rest/articles/${articleId}`
-            const authHeader = Auth.getAuthHeader(Auth.getCredentials());
+            const url = getNewspilotRestUrl(newspilotServer, articleId)
+            const headers = Auth.getAuthHeader(Auth.getCredentials());
 
-            fetch(url, {headers: authHeader, mode: 'cors'})
+            headers.append('Accept', 'application/json')
+
+            fetch(url, {headers: headers, mode: 'cors'})
                 .then((response) => {
                     console.log('response', response)
-                    resolve(response)
+                    return response.json()
+                })
+                .then((jsonResponse) => {
+                    console.log(jsonResponse)
+                    resolve(jsonResponse)
                 })
                 .catch((e) => {
                     console.error('Failed to get url', url, e)

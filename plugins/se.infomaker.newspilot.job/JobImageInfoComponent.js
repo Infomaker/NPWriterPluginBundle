@@ -8,6 +8,7 @@ class JobImageInfoComponent extends Component {
             ulDiv = $$('ul'),
             liImage = $$('li'),
             liInfo = $$('li').addClass('infolist'),
+            imageLink = $$('a').attr('href', jobImage.url).attr('target', '_blank'),
             image = $$('img').attr('src', jobImage.previewUrl)
 
         const nameLabel = this._createLabel($$, this.getLabel('Name'))
@@ -29,7 +30,8 @@ class JobImageInfoComponent extends Component {
             proposedCaptionLabel, proposedCaption
         ])
 
-        liImage.append(image)
+        imageLink.append(image)
+        liImage.append(imageLink)
         ulDiv.append([liImage, liInfo])
         infoDiv.append(ulDiv)
 

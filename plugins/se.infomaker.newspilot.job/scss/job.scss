@@ -77,6 +77,11 @@
 
 .imageinfo {
 
+  border: 1px solid #dedede;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 0.25rem;
+
   ul, li {
     padding: 0;
     margin: 0;
@@ -84,7 +89,7 @@
   }
 
   ul {
-    padding: 10px;
+    padding: 5px;
     display: table;
     height: 100%;
   }
@@ -101,20 +106,18 @@
 
   .infolist {
     width: 100%;
-    border-radius: 0.25rem;
-    border: 1px solid #dedede;
   }
 
   .infolabel {
     display: block;
-    padding: 5px 5px 0 5px;
+    padding: 0 5px 0 5px;
     font-size: 80%;
     color: rgba(0, 0, 0, 0.75);
   }
 
   .infovalue {
     display: block;
-    padding: 0 5px 5px 5px;
+    padding: 0 5px 8px 5px;
     font-size: 90%;
     color: rgba(0, 0, 0, 0.75);
   }

@@ -54,11 +54,15 @@ class JobComponent extends Component {
             return
         }
 
-        NPFetcher.getArticle(this.state.articleId)
+        const newspilotServer = this.getNewspilotServer()
+
+        const newspilotHost = this.extractDomain(newspilotServer)
+
+        NPFetcher.getArticle(newspilotServer, this.state.articleId)
             .then((article) => {
                 let {user, password} = Auth.getCredentials()
                 this.gateway = new NPGateway(
-                    "newspilot.dev.np.infomaker.io", user, password, 13993/*article.jobId*/, this.updateModel.bind(this)
+                    newspilotHost, user, password, article.jobId, this.updateModel.bind(this)
                 )
                 this.rerender()
             })
@@ -69,12 +73,28 @@ class JobComponent extends Component {
     }
 
     getNewspilotLoginUrl() {
-        const newspilotHost = api.getConfigValue(
-            'se.infomaker.newspilot.job',
-            'newspilotHost'
-        )
+        return this.getNewspilotServer() + '/newspilot/'
+    }
 
-        return newspilotHost + '/newspilot/'
+    getNewspilotServer() {
+        return api.getConfigValue('se.infomaker.newspilot.job', 'newspilotServer')
+    }
+
+    extractDomain(url) {
+        let domain;
+
+        // Find & remove protocol (http, ftp, etc.) and get domain
+        if (url.indexOf("://") > -1) {
+            domain = url.split('/')[2];
+        }
+        else {
+            domain = url.split('/')[0];
+        }
+
+        // Find & remove port number
+        domain = domain.split(':')[0];
+
+        return domain;
     }
 
     render($$) {

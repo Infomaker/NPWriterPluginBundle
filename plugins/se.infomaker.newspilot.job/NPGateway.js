@@ -5,9 +5,6 @@ export default class NPGateway {
 
     constructor(host, username, password, jobId, callback) {
         this.callback = callback
-
-        this.server = `${host}:8080`
-
         this.comm = new NewspilotComm(host, username, password, this.queryUpdates.bind(this))
         this.comm.connect()
             .then(() => {
@@ -24,18 +21,13 @@ export default class NPGateway {
     }
 
     queryUpdates(query, events) {
-        let imageProxyHost = api.getConfigValue(
-            'se.infomaker.newspilot.job',
-            'imageProxyHost'
-        )
-
-        let server = this.server
+        let imageProxyServer = api.getConfigValue('se.infomaker.newspilot.job', 'imageProxyServer')
 
         for (let event of events) {
             switch (event.eventType) {
                 case "CREATE":
                 case "CHANGE":
-                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyHost))
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer))
                     break
                 case "REMOVE":
                     this.nodeMap.delete(event.id)
@@ -58,27 +50,32 @@ export default class NPGateway {
 
 }
 
-function getNode(currentValues, imageProxyHost) {
-    return JSON.parse(
-        getTemplate()(
-            {
-                data: currentValues,
-                config: {urlEndpoint: imageProxyHost}
-            }
-        )
-    )
+function getNode(currentValues, imageProxyServer) {
+    return getTemplate({
+        data: currentValues,
+        config: {urlEndpoint: imageProxyServer}
+    })
 }
 
 
-function getTemplate() {
-    return (item) => `{
-            "name":     "${item.data.name}",
-            "url":      "${getUrl(item)}",
-            "thumbUrl":    "${getThumb(item)}",
-            "previewUrl": "${getPreview(item)}",
-            "created":  "${item.data.created}",
-            "proposedCaption": "${item.data.name}"
-        }`
+function getTemplate(item) {
+    return {
+        name: item.data.name,
+        url: getUrl(item),
+        thumbUrl: getThumb(item),
+        previewUrl: getPreview(item),
+        created: getSafeItemStringValue(item.data.created_date),
+        photographer: getSafeItemStringValue(item.data.image_author_name),
+        proposedCaption: getSafeItemStringValue(item.data.caption_proposed)
+    }
+}
+
+function getSafeItemStringValue(value) {
+    return value ? value : ''
+}
+
+function getSafeItemIntegerValue(value) {
+    return value ? value : 0
 }
 
 
@@ -91,8 +88,12 @@ function getPreview(item) {
 }
 
 function getUrl(item) {
-    // TODO: Check if storelocation is 0, if so construct url that points to 'data' and 'majorType'...
-    return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
+    if (getSafeItemIntegerValue(item.data.storelocation_id) > 0) {
+        return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
+    } else {
+        // last query parameter is a dummy in order for the image plugin to pick the drop up
+        return `${item.config.urlEndpoint}/newspilot/data?id=${item.data.id}&majorType=24&extension=.jpg`
+    }
 }
 
 function getQuery(jobId) {
