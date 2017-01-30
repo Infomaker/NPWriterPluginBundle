@@ -84,7 +84,7 @@ class JobComponent extends Component {
 
 
     getNewspilotLoginUrl() {
-        return this.getNewspilotServer() + '/newspilot/'
+        return this.getNewspilotServer() + '/newspilot/rest/'
     }
 
     getNewspilotServer() {
