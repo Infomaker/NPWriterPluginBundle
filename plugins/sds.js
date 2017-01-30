@@ -26,6 +26,7 @@ import Pagedateline from './textstyles/se.infomaker.pagedateline/Pagedateline'
 import Dateline from './textstyles/se.infomaker.dateline/Dateline'
 import Preleadin from './textstyles/se.infomaker.preleadin/Preleadin'
 import Preamble from './textstyles/se.infomaker.preamble/Preamble'
+import Factbody from './textstyles/se.infomaker.factbody/Factbody'
 
 (() => {
     BlockQuotePackage()
@@ -38,8 +39,9 @@ import Preamble from './textstyles/se.infomaker.preamble/Preamble'
     Dateline()
     Preleadin()
     Preamble()
+    Factbody()
 
-    XImPlace('position')
+    XImPlace()
     TextAnalyzer()
     XImimage()
     SocialEmbed()

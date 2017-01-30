@@ -19,7 +19,7 @@ class PublicationchannelComponent extends Component {
             this.clearAllChannels()
         })
 
-        this.refs.dropdownButton.el.el.addEventListener('blur', (e) => {
+        this.refs.dropdownButton.el.el.addEventListener('blur', () => {
             setTimeout(() => {
                 this.hideMenu()
             }, 50)

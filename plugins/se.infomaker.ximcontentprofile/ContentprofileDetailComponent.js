@@ -162,7 +162,7 @@ class ContentprofileDetailComponent extends Component {
         formContainer.append(hiddenSubmitButtonToEnableEnterSubmit)
 
         // Name
-        const formGroup = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupName')
+        const formGroup = $$('fieldset').addClass('form-group col-12').ref('formGroupName')
         formGroup.append($$('label').attr('for', 'contentProfileNameInput').append(this.getLabel('Name')))
 
         if (this.props.editable) {
@@ -192,7 +192,7 @@ class ContentprofileDetailComponent extends Component {
         formContainer.append(formGroup)
 
         // Short description
-        const formGroupShortDesc = $$('fieldset').addClass('form-group col-xs-6').ref('formGroupShortDesc')
+        const formGroupShortDesc = $$('fieldset').addClass('form-group col-12').ref('formGroupShortDesc')
         formGroupShortDesc.append(
             $$('label').attr('for', 'contentProfileShortDescInput')
                 .append(this.getLabel('Short description'))
@@ -215,7 +215,7 @@ class ContentprofileDetailComponent extends Component {
         formContainer.append(formGroupShortDesc)
 
         // Long description
-        const formGroupLongDesc = $$('fieldset').addClass('form-group col-xs-12').ref('formGroupLongDesc')
+        const formGroupLongDesc = $$('fieldset').addClass('form-group col-12').ref('formGroupLongDesc')
         formGroupLongDesc.append(
             $$('label').attr('for', 'contentProfileLongDescText')
                 .append(this.getLabel('Long description'))

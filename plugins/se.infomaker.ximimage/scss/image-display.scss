@@ -1,7 +1,12 @@
 .sc-image-display {
 
+    .broken-image {
+        color: #d9534f;
+        padding-top:2rem;
+    }
     > .se-image-container {
         position: relative;
+        text-align: center;
 
         .remove-image__button {
             display: none;
@@ -58,6 +63,7 @@
     }
 
     /* Show actions depending on isolated node state */
+    &.sm-focused > .se-image-container,
     &.sm-selected > .se-image-container  {
         .remove-image__button {
             display: inline;

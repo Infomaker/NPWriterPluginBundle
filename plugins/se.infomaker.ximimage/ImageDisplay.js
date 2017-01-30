@@ -20,8 +20,16 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
-        let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer'),
+        let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer')
+        let imgSrc
+        try {
+            this.hasLoadingErrors = false
             imgSrc = this.props.node.getUrl()
+        } catch(e) {
+            this.hasLoadingErrors = e
+        }
+
+        let contentElement = $$(FontAwesomeIcon, { icon: 'fa-picture-o'}).attr('style', 'font-size:25rem;color:#efefef')
 
         if (imgSrc) {
             if (this.props.removeImage) {
@@ -35,25 +43,23 @@ class ImageDisplay extends Component {
                 imgContainer.append(deleteButton)
             }
 
-            imgContainer.append(
-                $$('img', {
-                    src: imgSrc
-                }).ref('img')
-            )
+            contentElement = $$('img', {
+                src: imgSrc
+            }).ref('img')
+
+        } else if(this.hasLoadingErrors) {
+            contentElement = $$(FontAwesomeIcon, { icon: 'fa-chain-broken'})
+                .attr('style', 'font-size:4rem;')
+                .addClass('broken-image')
+                .attr('title', this.getLabel('Image could not be found'))
         }
-        else {
-            imgContainer.append(
-                $$(FontAwesomeIcon, {
-                    icon: 'fa-picture-o'
-                })
-                    .attr('style', 'font-size:25rem;color:#efefef')
-            )
-        }
+
+        imgContainer.append(contentElement)
 
         const imageFile = this.context.doc.get(this.props.node.imageFile)
         const actionsEl = $$('div').addClass('se-actions')
 
-        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'user-plus'
@@ -61,7 +67,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
@@ -69,7 +75,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'crop'
@@ -93,6 +99,7 @@ class ImageDisplay extends Component {
                     this.getComponent('dialog-image'),
                     {
                         node: this.props.node,
+                        url: this.props.node.getUrl(),
                         newsItem: response,
                         disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
                     },
@@ -110,17 +117,19 @@ class ImageDisplay extends Component {
         api.ui.showDialog(
             XimimageAddToBylineComponent,
             {
-                authors: this.props.node.authors,
+                node: this.props.node,
                 removeAuthor: () => (author) => {
                     this.props.node.removeAuthor(author)
                 },
                 addAuthor: (author, cbDone) => {
-                    const authors = this.props.node.authors
-                    authors.push(author)
+                    this.props.node.addAuthor(author)
 
-                    this.props.node.setAuthors(authors)
+                    // const authors = this.props.node.authors
+                    // authors.push(author)
 
-                    cbDone();
+                    // this.props.node.setAuthors(authors)
+
+                    // cbDone();
                 }
             },
             {

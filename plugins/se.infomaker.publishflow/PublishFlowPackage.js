@@ -127,5 +127,17 @@ export default {
             en: 'Unpublished',
             sv: 'Avpublicerad'
         })
+
+        config.addLabel('Create a new article', {
+            sv: 'Skapa en ny artikel'
+        })
+
+        config.addLabel('Create a new copy of this article', {
+            sv: 'Skapa en kopia på den här artikeln'
+        })
+
+        config.addLabel('Article contains unsaved changes. Continue without saving?', {
+            sv: 'Artikeln innehåller osparade ändringar. Fortsätt utan att spara?'
+        })
     }
 }

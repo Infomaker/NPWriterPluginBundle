@@ -10,9 +10,7 @@ class PublishFlowComponent extends Component {
         super(...args)
 
         api.events.on(pluginId, event.DOCUMENT_CHANGED, () => {
-            this.props.popover.setButtonText(
-                this.getLabel('Save *')
-            )
+            this._onDocumentChanged()
         })
 
         api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
@@ -43,6 +41,7 @@ class PublishFlowComponent extends Component {
 
         return {
             status: status,
+            unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
             allowed: this.publishFlowMgr.getAllowedActions(status.qcode)
@@ -175,17 +174,53 @@ class PublishFlowComponent extends Component {
         el.append(actions)
         el.append(
             $$('div')
-                .css({'text-align': 'right'})
-                .append(
+                .css({
+                    'float': 'left',
+                    'padding-bottom': '13px',
+                    'width': '100%'
+                })
+                .append([
                     $$('button')
                         .addClass('sc-np-btn btn-secondary')
+                        .css({
+                            'float': 'right'
+                        })
                         .append(
                             this.getLabel('Cancel')
                         )
                         .on('click', () => {
                             this.props.popover.close()
+                        }),
+                    $$('button')
+                        .attr({
+                            title: this.getLabel('Create a new article')
                         })
-                )
+                        .addClass('sc-np-btn btn-secondary btn-icon')
+                        .append(
+                            $$('i').addClass('fa fa-file-o')
+                        )
+                        .css({
+                            'float': 'left',
+                            'margin-right': '10px'
+                        })
+                        .on('click', () => {
+                            this._clearArticle()
+                        }),
+                    $$('button')
+                        .attr({
+                            title: this.getLabel('Create a new copy of this article')
+                        })
+                        .addClass('sc-np-btn btn-secondary btn-icon')
+                        .css({
+                            'float': 'left'
+                        })
+                        .append(
+                            $$('i').addClass('fa fa-copy')
+                        )
+                        .on('click', () => {
+                            this._duplicateArticle()
+                        })
+                ])
         )
         return el
     }
@@ -382,11 +417,11 @@ class PublishFlowComponent extends Component {
                 this.getLabel('Unpublish article')
             )
         ])
-            .on('click', () => {
-                this._save(() => {
-                    this.publishFlowMgr.setToCanceled()
-                })
+        .on('click', () => {
+            this._save(() => {
+                this.publishFlowMgr.setToCanceled()
             })
+        })
     }
 
     /**
@@ -396,6 +431,66 @@ class PublishFlowComponent extends Component {
         api.newsItem.save()
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+    }
+
+    /**
+     * Request creation of new article
+     */
+    _clearArticle() {
+        if (this.state.unsavedChanges) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'warning',
+                    message: this.getLabel('Article contains unsaved changes. Continue without saving?')
+                }],
+                () => {
+                    api.article.clear(true)
+                }
+            )
+            return
+        }
+
+        api.article.clear()
+    }
+
+    /**
+     * Request creation of a new article based on the content of the current article
+     */
+    _duplicateArticle() {
+        if (this.state.unsavedChanges) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'warning',
+                    message: this.getLabel('Article contains unsaved changes. Continue without saving?')
+                }],
+                () => {
+                    this._createDuplicate()
+                }
+            )
+            return
+        }
+
+        this._createDuplicate()
+    }
+
+    /**
+     * Execute creation of a new article copy
+     */
+    _createDuplicate() {
+        this.publishFlowMgr.setToDraft()
+
+        this.extendState({
+            status: api.newsItem.getPubStatus(),
+            unsavedChanges: false,
+            pubStart: api.newsItem.getPubStart(),
+            pubStop: api.newsItem.getPubStop(),
+            allowed: this.publishFlowMgr.getAllowedActions(status.qcode),
+            previousState: null
+        })
+
+        api.article.copy();
+        this._updateStatus(true, true)
+        this.props.popover.close()
     }
 
     /**
@@ -456,10 +551,24 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            previousState: null
+            previousState: null,
+            unsavedChanges: true
         })
 
-        this._updateStatus(false)
+        this._updateStatus(true)
+    }
+
+    /**
+     * When document is marked unsaved
+     */
+    _onDocumentChanged() {
+        this.props.popover.setButtonText(
+            this.getLabel('Save *')
+        )
+
+        this.extendState({
+            unsavedChanges: true
+        })
     }
 
     /**
@@ -472,7 +581,8 @@ class PublishFlowComponent extends Component {
         this.extendState({
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
-            pubStop: api.newsItem.getPubStop()
+            pubStop: api.newsItem.getPubStop(),
+            unsavedChanges: true
         })
 
         this._updateStatus(true)
@@ -481,12 +591,18 @@ class PublishFlowComponent extends Component {
     /**
      * Update UI
      */
-    _updateStatus(updateButtonSavedLabel) {
-
+    _updateStatus(updateButtonSavedLabel, unsavedChanges) {
         if (updateButtonSavedLabel) {
-            this.props.popover.setButtonText(
-                this.getLabel('Save')
-            )
+            if (unsavedChanges === true) {
+                this.props.popover.setButtonText(
+                    this.getLabel('Save *')
+                )
+            }
+            else {
+                this.props.popover.setButtonText(
+                    this.getLabel('Save')
+                )
+            }
         }
 
         if (this.state.status.qcode === 'stat:usable') {

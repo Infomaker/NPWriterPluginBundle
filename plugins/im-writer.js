@@ -46,8 +46,7 @@ import NewspilotJob from "./se.infomaker.newspilot.job/index";
 
 (() => {
 
-    XImPlace('position')
-    XImPlace('polygon')
+    XImPlace()
     TextAnalyzer()
     XImimage()
     SocialEmbed()

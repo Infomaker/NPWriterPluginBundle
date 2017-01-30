@@ -8,6 +8,7 @@ import DropImageUri from "./DropImageUri";
 import DropImageUUID from "./DropImageUUID";
 import XimimageFileProxy from "./XimimageFileProxy";
 import InsertImageUrlCommand from "./InsertImageUrlCommand";
+import ImageDisplay from "./ImageDisplay";
 
 export default {
     name: 'ximimage',
@@ -19,7 +20,7 @@ export default {
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
         config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
-
+        config.addComponent('imageDisplay', ImageDisplay)
         config.addConverter('newsml', XimimageConverter)
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
