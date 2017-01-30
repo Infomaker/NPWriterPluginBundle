@@ -1,5 +1,5 @@
-import JobComponent from './JobComponent'
-import './scss/job.scss'
+import JobComponent from "./JobComponent";
+import "./scss/job.scss";
 
 export default {
     id: 'se.infomaker.newspilot.job',
@@ -34,8 +34,37 @@ export default {
             sv: 'Artikeln är inte länkad till Newspilot'
         })
 
+        config.addLabel('Invalid username or password', {
+            sv: 'Felaktigt användarnamn eller lösenord'
+        })
 
-        config.addIcon('login', {'fontawesome': 'fa-sign-in'})
-        config.addIcon('warning', {'fontawesome': 'fa-warning'})
+        config.addLabel('user', {
+            en: 'Username',
+            sv: 'Användarnamn'
+        })
+
+        config.addLabel('password', {
+            en: 'Password',
+            sv: 'Lösenord'
+        })
+
+        config.addLabel('An error has occurred', {
+            sv: 'Ett fel har inträffat'
+        })
+
+        config.addLabel('Login required', {
+            sv: 'Inloggning krävs'
+        })
+
+        config.addLabel('Article not linked with Newspilot', {
+            en: 'The article is not linked with Newspilot',
+            sv: 'Artikeln är inte länkad med Newspilot'
+        })
+
+        config.addLabel('Please login', {
+            sv: 'Vänligen logga in'
+        })
+
+        config.addIcon('reload', {'fontawesome': 'fa-refresh'})
     }
 }

@@ -1,8 +1,8 @@
-import {Component} from "substance";
-import {api} from 'writer';
+import {Component, Button} from "substance";
+import {api} from "writer";
 import JobImagesListComponent from "./JobImagesListComponent";
 import NPGateway from "./NPGateway";
-import NPFetcher from "./NPFetcher"
+import NPFetcher from "./NPFetcher";
 import Auth from "./Auth";
 import LoginComponent from "./LoginComponent";
 
@@ -64,13 +64,24 @@ class JobComponent extends Component {
                 this.gateway = new NPGateway(
                     newspilotHost, user, password, article.jobId, this.updateModel.bind(this)
                 )
-                this.rerender()
+                this.extendState({error: undefined})
             })
             .catch((e) => {
-                console.error(e)
-                this.rerender()
+                this.extendState({error: e})
             })
     }
+
+
+    reconnect() {
+        try {
+            this.dispose()
+        } catch (e) {
+
+        }
+
+        this.initGateway()
+    }
+
 
     getNewspilotLoginUrl() {
         return this.getNewspilotServer() + '/newspilot/'
@@ -116,6 +127,16 @@ class JobComponent extends Component {
 
         } else {
             el.append($$('h2').append(this.getLabel('Article not linked with Newspilot')))
+        }
+
+        if (this.state.error && this.state.error.message) {
+            el.append(
+                $$('div').addClass('job-panel').append([
+                    $$('div').addClass('job-panel-heading').append(this.getLabel('An error has occurred')),
+                    $$('div').addClass('job-panel-body').append(this.state.error.message),
+                    $$(Button, {icon: 'reload'}).addClass('job-refresh').on('click', this.reconnect)
+                ])
+            )
         }
 
         return el;

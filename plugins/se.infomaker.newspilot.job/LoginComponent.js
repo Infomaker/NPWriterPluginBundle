@@ -1,4 +1,4 @@
-import {Component, Button, FontAwesomeIcon} from "substance";
+import {Component, FontAwesomeIcon} from "substance";
 import Auth from "./Auth";
 
 export default class LoginComponent extends Component {
@@ -6,22 +6,37 @@ export default class LoginComponent extends Component {
     render($$) {
         const el = $$('div').addClass('login-form');
 
+
         const form =
-            $$('form')
-                .addClass('form-control')
-                .on('submit', this.doLogin)
+            $$('form').on('submit', this.doLogin)
 
-        form.append($$('input').attr('type', 'text').attr('id', 'user').attr('placeholder', this.getLabel('user')).ref('user'))
-        form.append($$('p'))
-        form.append($$('input').attr('type', 'password').attr('id', 'password').attr('placeholder', this.getLabel('password')).ref('password'))
+        form.append($$('h2').append(this.getLabel('Please login')))
 
-        form.append($$(Button, {icon: 'login'}).addClass('fa-2x').on('click', this.doLogin))
-
-        el.append(form)
+        form.append(
+            [
+                $$('div').addClass('form-group').append(
+                    $$('input').addClass('form-control')
+                        .attr({type: 'text', id: 'user', placeholder: this.getLabel('user')})
+                        .ref('user')),
+                $$('div').addClass('form-group').append(
+                    $$('input').addClass('form-control')
+                        .attr({type: 'password', id: 'password', placeholder: this.getLabel('password')})
+                        .ref('password')
+                ),
+                $$('button').addClass('btn sc-np-btn').append(
+                    [
+                        $$('i').addClass('fa fa-sign-in'),
+                        this.getLabel('Login')
+                    ]
+                ).on('click', this.doLogin)
+            ]
+        )
 
         if (this.state.error) {
-            el.append($$('div').append($$(FontAwesomeIcon, 'warning')).append(this.getLabel(this.state.error)))
+            form.append($$('div').append($$(FontAwesomeIcon, {icon: 'fa-warning'})).append(this.getLabel(this.state.error)))
         }
+
+        el.append(form)
 
         return el;
     }
