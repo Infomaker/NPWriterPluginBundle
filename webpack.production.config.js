@@ -13,19 +13,38 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const fs = require('fs')
 
 console.log("\n ----------------------------")
 console.log(" Plugin production build ")
 console.log(" ----------------------------\n")
 
+function getPluginBuildSpec(dir) {
+
+    const result = {}
+
+    const list = fs.readdirSync(dir);
+
+    // For every file in the list
+    list.forEach(function (file) {
+        const basename = file.substr(0, file.length - 3);
+        result[basename] = dir + '/' + basename;
+    });
+
+    console.log(result)
+
+    return result;
+}
+
 module.exports = {
-    entry: {
-        'im-writer': './plugins/im-writer',
-        'fd': './plugins/fd',
-        'mitm': './plugins/mitm',
-        'sds': './plugins/sds',
-        'np-integration': './plugins/np-integration'
-    },
+    // entry: {
+    //     'im-writer': './plugins/im-writer',
+    //     'fd': './plugins/fd',
+    //     'mitm': './plugins/mitm',
+    //     'sds': './plugins/sds',
+    //     'np-integration': './plugins/np-integration'
+    // },
+    entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js"
@@ -75,12 +94,9 @@ module.exports = {
         failOnError: true
     },
     plugins: [
-        function()
-        {
-            this.plugin("done", function(stats)
-            {
-                if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1)
-                {
+        function () {
+            this.plugin("done", function (stats) {
+                if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1) {
                     console.log(stats.compilation.errors);
                     process.exit(1); // or throw new Error('webpack build failed.');
                 }
