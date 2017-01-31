@@ -21,8 +21,7 @@ class DropImageUri extends DragAndDropHandler {
         setTimeout(() => {
             api.editorSession.fileManager.sync()
                 .catch((e) => {
-                    // TODO When image cannot be uploaded, the proxy, file node and object node should be removed
-                    // Maybe using the api?
+                    // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
                     const document = api.editorSession.getDocument()
                     const node = document.get(nodeId),
                         imageFile = node.imageFile
