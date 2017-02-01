@@ -1,5 +1,5 @@
-import DefaultvalidationPackage from "../se.infomaker.defaultvalidation/DefaultvalidationPackage"
+import Package from "../se.infomaker.defaultvalidation/DefaultvalidationPackage"
 
 (() => {
-    DefaultvalidationPackage()
+    Package()
 })()

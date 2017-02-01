@@ -1,5 +1,5 @@
-import ChannelSelector from '../se.infomaker.hdsds.channelselector/index'
+import Index from '../se.infomaker.hdsds.channelselector/index'
 
 (() => {
-    ChannelSelector()
+    Index()
 })()

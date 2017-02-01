@@ -1,5 +1,5 @@
-import ContentRelations from "../se.infomaker.contentrelations/index";
+import Index from "../se.infomaker.contentrelations/index";
 
 (() => {
-    ContentRelations()
+    Index()
 })()

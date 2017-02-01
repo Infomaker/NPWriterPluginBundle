@@ -1,5 +1,5 @@
-import History from "../se.infomaker.history/index";
+import Index from "../se.infomaker.history/index";
 
 (() => {
-    History()
+    Index()
 })()

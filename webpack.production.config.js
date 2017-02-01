@@ -31,8 +31,6 @@ function getPluginBuildSpec(dir) {
         result[basename] = dir + '/' + basename;
     });
 
-    console.log(result)
-
     return result;
 }
 

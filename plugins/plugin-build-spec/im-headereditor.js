@@ -1,5 +1,5 @@
-import HeaderEditor from "../se.infomaker.headereditor/HeaderEditorPackage";
+import Package from "../se.infomaker.headereditor/HeaderEditorPackage";
 
 (() => {
-    HeaderEditor()
+    Package()
 })()
