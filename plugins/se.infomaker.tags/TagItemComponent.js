@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {jxon, lodash as _} from 'writer'
+import {jxon, lodash as _, api} from 'writer'
 import Config from './config/Config'
 import TagInfoComponent from './TagInfoComponent'
 import TagEditCompanyComponent from './TagEditCompanyComponent'
@@ -75,6 +75,8 @@ class TagsItemComponent extends Component {
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName)
                 this.updateTagItemName(displayNameEl, this.state.loadedTag)
 
+                const Tooltip = api.ui.getComponent('tooltip')
+
                 displayNameEl.on('click', () => {
                     // $(ev.target).tooltip('hide');
                     if (Config.isTagEditable(tag)) {
@@ -83,15 +85,20 @@ class TagsItemComponent extends Component {
                         this.showTag(displayName)
                     }
                 })
+                    .append($$(Tooltip, {title: displayName, parent: this}).ref('tooltip'))
             }
 
-            displayNameEl.attr('data-toggle', 'tooltip')
-                .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual')
 
-            // TODO Tooltip
-            // displayNameEl.on('mouseenter', this.toggleTooltip)
-            // displayNameEl.on('mouseout', this.hideTooltip)
+            displayNameEl.on('mouseenter', () => {
+                this.refs.tooltip.extendProps({
+                    show: false
+                })
+            })
+            displayNameEl.on('mouseout', () => {
+                this.refs.tooltip.extendProps({
+                    show: true
+                })
+            })
 
             tagItem.append(displayNameEl)
 
@@ -110,7 +117,6 @@ class TagsItemComponent extends Component {
         }
         return tagItem
     }
-
 
     showTag(title) {
         this.context.api.ui.showDialog(TagInfoComponent,
@@ -214,22 +220,6 @@ class TagsItemComponent extends Component {
     getDefaultIconForTag($$) {
         return $$(Icon, {icon: 'fa-tag'}).addClass('tag-icon')
     }
-
-// TODO Tooltip
-// toggleTooltip = function (ev) {
-//     $(ev.target).tooltip('toggle');
-//     ev.target.timeout = window.setTimeout(function () {
-//         this.hideTooltip(ev)
-//     }.bind(this), 3000)
-// };
-//
-// hideTooltip = function (ev) {
-//     if (ev.target.timeout) {
-//         window.clearTimeout(ev.target.timeout);
-//         ev.target.timeout = undefined;
-//     }
-//     $(ev.target).tooltip('hide');
-// };
 
 }
 

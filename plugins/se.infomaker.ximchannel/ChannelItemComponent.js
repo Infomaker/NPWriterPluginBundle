@@ -12,7 +12,7 @@ class ChannelItemComponent extends Component {
     getInitialState() {
         return {
             isLoaded: false,
-            loadedChannel: {}
+            loadedItem: {}
         }
     }
 
@@ -26,7 +26,7 @@ class ChannelItemComponent extends Component {
                 conceptItemJSON = jxon.build(conceptXML)
 
             this.extendState({
-                loadedChannel: conceptItemJSON,
+                loadedItem: conceptItemJSON,
                 isLoaded: true
             })
         })
@@ -44,16 +44,27 @@ class ChannelItemComponent extends Component {
             return $$('div');
         }
 
+        const displayLabel = this.state.isLoaded ? this.state.loadedItem.concept.name : channel['@title']
         var channelItem = $$('li')
                 .addClass('tag-list__item tag-item__title--no-avatar').addClass('clearfix')
                 .ref('channelItem'),
             displayTitle = $$('span').append(
-                this.state.loadedItem ? this.state.loadedItem.concept.name : channel['@title']
+                displayLabel
             )
 
-        displayTitle.attr('data-toggle', 'tooltip')
-            .attr('data-placement', 'bottom')
-            .attr('data-trigger', 'manual')
+        const Tooltip = api.ui.getComponent('tooltip')
+
+        displayTitle.append($$(Tooltip, {title: displayLabel, parent: this}).ref('tooltip'))
+        displayTitle.on('mouseover', () => {
+            this.refs.tooltip.extendProps({
+                show: true
+            })
+        })
+        displayTitle.on('mouseout', () => {
+            this.refs.tooltip.extendProps({
+                show: false
+            })
+        })
 
         var deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
             .addClass('tag-icon tag-icon--delete')
@@ -77,7 +88,7 @@ class ChannelItemComponent extends Component {
         }
 
 
-        if (this.state.loadedItem) {
+        if (this.state.isLoaded) {
             this.updateTagItemName(displayTitle, this.state.loadedItem)
         }
 
@@ -112,11 +123,11 @@ class ChannelItemComponent extends Component {
         api.ui.showDialog(
             ConceptChannelInfoComponent,
             {
-                channel: this.state.loadedChannel
+                channel: this.state.loadedItem
             },
             {
                 secondary: false,
-                title: this.state.loadedChannel.concept.name,
+                title: this.state.loadedItem.concept.name,
                 global: true
             }
         )

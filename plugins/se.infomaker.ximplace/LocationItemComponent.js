@@ -3,7 +3,7 @@
 import {Component} from 'substance'
 // var $$ = Component.$$;
 import {FontAwesomeIcon} from 'substance'
-import {jxon} from 'writer'
+import {jxon, api} from 'writer'
 import {isArray} from 'lodash'
 
 
@@ -77,12 +77,14 @@ class LocationItemComponent extends Component {
                     });
                 }
 
+                const Tooltip = api.ui.getComponent('tooltip')
                 displayNameEl.on('click', function () {
                     this.props.openMap(this.state.loadedLocation)
                 }.bind(this))
+                    .append($$(Tooltip, {title: location.title, parent: this}).ref('tooltip'))
 
-                // displayNameEl.on('mouseenter', this.toggleTooltip)
-                // displayNameEl.on('mouseout', this.hideTooltip)
+                displayNameEl.on('mouseenter', this.toggleTooltip)
+                displayNameEl.on('mouseout', this.hideTooltip)
 
             }
 
@@ -115,20 +117,17 @@ class LocationItemComponent extends Component {
 
     }
 
-    // toggleTooltip(ev) {
-    //     $(ev.target).tooltip('toggle')
-    //     ev.target.timeout = window.setTimeout(function () {
-    //         this.hideTooltip(ev)
-    //     }.bind(this), 3000)
-    // }
-    //
-    // hideTooltip(ev) {
-    //     if (ev.target.timeout) {
-    //         window.clearTimeout(ev.target.timeout);
-    //         ev.target.timeout = undefined;
-    //     }
-    //     $(ev.target).tooltip('hide')
-    // }
+    toggleTooltip(ev) {
+        this.refs.tooltip.extendProps({
+            show: true
+        })
+    }
+
+    hideTooltip(ev) {
+        this.refs.tooltip.extendProps({
+            show: false
+        })
+    }
 
 
     static updateTagItemName(tagItem, loadedTag) {
