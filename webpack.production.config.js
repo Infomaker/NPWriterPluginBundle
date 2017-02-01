@@ -14,6 +14,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const fs = require('fs')
+var webpackUglifyJsPlugin = require('webpack-uglify-js-plugin');
 
 console.log("\n ----------------------------")
 console.log(" Plugin production build ")
@@ -101,6 +102,18 @@ module.exports = {
                 // ...
             });
         },
+        new webpackUglifyJsPlugin({
+            cacheFolder: path.resolve(__dirname, 'dist/cached_uglify/'),
+            debug: false,
+            minimize: true,
+            sourceMap: false,
+            output: {
+                comments: false
+            },
+            compressor: {
+                warnings: false
+            }
+        }),
         new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
             'process.env': {
