@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.preamble/PreamblePackage";
+import Index from "../textstyles/se.infomaker.preamble/Preamble";
 
 (() => {
-    Package()
+    Index()
 })()

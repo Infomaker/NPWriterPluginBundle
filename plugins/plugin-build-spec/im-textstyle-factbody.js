@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.factbody/FactbodyPackage";
+import Index from "../textstyles/se.infomaker.factbody/Factbody";
 
 (() => {
-    Package()
+    Index()
 })()

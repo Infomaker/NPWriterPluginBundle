@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.drophead/DropheadPackage";
+import Index from "../textstyles/se.infomaker.drophead/Drophead";
 
 (() => {
-    Package()
+    Index()
 })()
