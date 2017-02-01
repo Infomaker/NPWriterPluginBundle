@@ -60,14 +60,8 @@ class LocationItemComponent extends Component {
                 locationType = this.state.loadedLocation.concept.metadata.object['@type']
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(this.state.loadedLocation.concept.name)
 
-                displayNameEl.attr('title', location.title)
-
-                LocationItemComponent.updateTagItemName(displayNameEl, this.state.loadedLocation)
-
-                displayNameEl.attr('data-toggle', 'tooltip')
-                    .attr('data-placement', 'bottom')
-                    .attr('data-trigger', 'manual')
-
+                const label = LocationItemComponent.getShortDescription(this.state.loadedLocation)
+                const title = label ? label : location.title
 
                 // TODO: Find a way to update the NewsItem when a concept name has changed
                 // Check if there's been an update
@@ -81,7 +75,7 @@ class LocationItemComponent extends Component {
                 displayNameEl.on('click', function () {
                     this.props.openMap(this.state.loadedLocation)
                 }.bind(this))
-                    .append($$(Tooltip, {title: location.title, parent: this}).ref('tooltip'))
+                    .append($$(Tooltip, {title: title, parent: this}).ref('tooltip'))
 
                 displayNameEl.on('mouseenter', this.toggleTooltip)
                 displayNameEl.on('mouseout', this.hideTooltip)
@@ -130,15 +124,14 @@ class LocationItemComponent extends Component {
     }
 
 
-    static updateTagItemName(tagItem, loadedTag) {
+    static getShortDescription(loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
             const definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (let i = 0; i < definition.length; i++) {
                 const item = definition[i]
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
-                        tagItem.attr('title', item["keyValue"])
-                        break
+                        return item["keyValue"]
                     }
                 }
             }

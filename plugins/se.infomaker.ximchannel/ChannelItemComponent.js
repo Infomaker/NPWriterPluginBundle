@@ -44,13 +44,18 @@ class ChannelItemComponent extends Component {
             return $$('div');
         }
 
-        const displayLabel = this.state.isLoaded ? this.state.loadedItem.concept.name : channel['@title']
+        let displayLabel = this.state.isLoaded ? this.state.loadedItem.concept.name : channel['@title']
+
         var channelItem = $$('li')
                 .addClass('tag-list__item tag-item__title--no-avatar').addClass('clearfix')
                 .ref('channelItem'),
             displayTitle = $$('span').append(
                 displayLabel
             )
+
+        if (this.state.isLoaded) {
+            displayLabel = this.getShortDescription(this.state.loadedItem)
+        }
 
         const Tooltip = api.ui.getComponent('tooltip')
 
@@ -88,17 +93,12 @@ class ChannelItemComponent extends Component {
         }
 
 
-        if (this.state.isLoaded) {
-            this.updateTagItemName(displayTitle, this.state.loadedItem)
-        }
+
 
         return channelItem
     }
 
-    updateTagItemName(tagItem, loadedTag) {
-        if (!loadedTag.concept || !loadedTag.concept.definition) {
-            tagItem.attr('title', loadedTag.concept.name)
-        }
+    getShortDescription(loadedTag) {
 
         let definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
         for (var i = 0; i < definition.length; i++) {
@@ -110,8 +110,7 @@ class ChannelItemComponent extends Component {
 
             if (item["keyValue"] && item["keyValue"].length > 0) {
                 // tagItem.attr('title', item["keyValue"]);
-                tagItem.attr('title', item["keyValue"])
-                break
+                return item["keyValue"]
             }
         }
     }
