@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.preleadin/PreleadinPackage";
+import Index from "../textstyles/se.infomaker.preleadin/Preleadin";
 
 (() => {
-    Package()
+    Index()
 })()

@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.pagedateline/PagedatelinePackage";
+import Index from "../textstyles/se.infomaker.pagedateline/Pagedateline";
 
 (() => {
-    Package()
+    Index()
 })()

@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.dateline/DatelinePackage";
+import Index from "../textstyles/se.infomaker.dateline/Dateline";
 
 (() => {
-    Package()
+    Index()
 })()

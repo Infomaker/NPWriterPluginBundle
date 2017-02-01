@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.madmansrow/MadmansrowPackage";
+import Index from "../textstyles/se.infomaker.madmansrow/Madmansrow";
 
 (() => {
-    Package()
+    Index()
 })()
