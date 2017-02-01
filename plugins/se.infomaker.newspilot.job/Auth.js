@@ -20,7 +20,6 @@ export default class Auth {
                 console.log(authHeader.get('Authorization'))
                 fetch(checkUrl, {headers: authHeader, mode: 'cors'})
                     .then((response) => {
-                        console.log('response', response)
 
                         if (response.status !== 200) {
                             this.logout()
@@ -30,7 +29,6 @@ export default class Auth {
                     })
                     .catch((e) => {
                         this.logout()
-                        console.log('reject response', e)
                         return reject(e)
                     })
             } else {

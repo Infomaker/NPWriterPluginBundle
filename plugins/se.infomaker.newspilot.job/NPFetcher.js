@@ -15,11 +15,9 @@ export default class NPFetcher {
 
             fetch(url, {headers: headers, mode: 'cors'})
                 .then((response) => {
-                    console.log('response', response)
                     return response.json()
                 })
                 .then((jsonResponse) => {
-                    console.log(jsonResponse)
                     resolve(jsonResponse)
                 })
                 .catch((e) => {
