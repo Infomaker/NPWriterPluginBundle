@@ -65,6 +65,10 @@ export default {
             sv: 'Vänligen logga in'
         })
 
+        config.addLabel('Logging in, please wait', {
+            sv: 'Loggar in, vänligen vänta'
+        })
+
         config.addIcon('reload', {'fontawesome': 'fa-refresh'})
     }
 }
