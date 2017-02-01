@@ -73,8 +73,9 @@ class TagsItemComponent extends Component {
             } else {
                 displayName = this.state.loadedTag.concept.name
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName)
-                this.updateTagItemName(displayNameEl, this.state.loadedTag)
+                const title = this.updateTagItemName(displayNameEl, this.state.loadedTag)
 
+                // displayNameEl.attr('title', title);
                 const Tooltip = api.ui.getComponent('tooltip')
 
                 displayNameEl.on('click', () => {
@@ -85,7 +86,7 @@ class TagsItemComponent extends Component {
                         this.showTag(displayName)
                     }
                 })
-                    .append($$(Tooltip, {title: displayName, parent: this}).ref('tooltip'))
+                    .append($$(Tooltip, {title: title ? title : displayName, parent: this}).ref('tooltip'))
             }
 
 
@@ -209,8 +210,8 @@ class TagsItemComponent extends Component {
                 const item = definition[i];
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
-                        tagItem.attr('title', item["keyValue"]);
-                        break;
+
+                        return item["keyValue"]
                     }
                 }
             }
