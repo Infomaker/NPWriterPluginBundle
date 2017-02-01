@@ -20,10 +20,15 @@ console.log("\n ----------------------------")
 console.log(" Plugin production build ")
 console.log(" ----------------------------\n")
 
+/**
+ * Iterates every plugin file in plugins/plugin-build-spec
+ * and adds to an object later processed by webpack
+ *
+ * @param {string} dir - The folder containing the plugin spec
+ * @returns {{}}
+ */
 function getPluginBuildSpec(dir) {
-
     const result = {}
-
     const list = fs.readdirSync(dir);
 
     // For every file in the list
@@ -31,18 +36,10 @@ function getPluginBuildSpec(dir) {
         const basename = file.substr(0, file.length - 3);
         result[basename] = dir + '/' + basename;
     });
-
     return result;
 }
 
 module.exports = {
-    // entry: {
-    //     'im-writer': './plugins/im-writer',
-    //     'fd': './plugins/fd',
-    //     'mitm': './plugins/mitm',
-    //     'sds': './plugins/sds',
-    //     'np-integration': './plugins/np-integration'
-    // },
     entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
         path: path.join(__dirname, "dist"),
