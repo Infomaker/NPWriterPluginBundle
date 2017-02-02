@@ -17,7 +17,7 @@ class DropImageUri extends DragAndDropHandler {
 
     drop(tx, params) {
         const nodeId = insertImage(tx, params.uri)
-        console.log('imageNode', nodeId);
+
         setTimeout(() => {
             api.editorSession.fileManager.sync()
                 .catch((e) => {
@@ -29,7 +29,6 @@ class DropImageUri extends DragAndDropHandler {
                     if (imageFile) {
                         api.editorSession.transaction((tx) => {
                             tx.delete(imageFile)
-                            console.log("Removed file node: " + imageFile)
                         })
                     }
                 })
