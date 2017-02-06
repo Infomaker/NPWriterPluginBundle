@@ -153,7 +153,7 @@ class TagEditBaseComponent extends Component {
 
 
     renderElement($$, refName, label, inputValue, fullWidth, inputType) {
-        const cssClass = fullWidth ? 'col-xs-12' : 'col-xs-12 col-sm-6'
+        const cssClass = fullWidth ? 'col-12' : 'col-sm-6'
         let input
         switch (inputType) {
             case 'textarea':

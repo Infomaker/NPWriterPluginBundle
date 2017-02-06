@@ -35,12 +35,14 @@
     "node-sass": "^3.10.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
+    "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-dev-server": "^1.16.2",
+    "webpack-uglify-js-plugin": "^1.1.9"
   },
   "dependencies": {
     "cropjs": "^1.0.4",
     "google-maps-api-loader": "^0.3.0",
-    "socket.io-client": "^1.7.2"
+    "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git"
   }
 }

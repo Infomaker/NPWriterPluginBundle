@@ -132,7 +132,7 @@ class StoryEditComponent extends Component {
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
-                this.addLabel('ximstory-name_already_in_use') + ": " + this.props.item.concept.name)))
+                this.getLabel('ximstory-name_already_in_use') + ": " + this.props.item.concept.name)))
         }
 
         if (this.state.error) {
