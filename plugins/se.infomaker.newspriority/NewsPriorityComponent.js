@@ -103,23 +103,35 @@ class NewsPriorityComponent extends Component {
 
     }
 
+    toogleTooltip(ref, show) {
+        this.refs[ref].extendProps({show: show})
+    }
+
     _renderPriority($$) {
         var prio = $$('div').addClass('btn-group')
 
-        var buttons = this.scores.map(function (score) {
-            return $$('button')
-                .addClass('btn btn-secondary sc-np-btn')
-                .text(String(score.value))
-                .attr('data-toggle', 'tooltip')
-                .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual')
-                .attr('title', score.text)
-                .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
-                .on('click', function () {
-                    this.setNewsPriority(score.value);
-                }.bind(this));
+        var buttons = this.scores.map((score) => {
 
-        }.bind(this));
+            const Tooltip = api.ui.getComponent('tooltip')
+            return $$('button')
+                .append([
+                    $$(Tooltip, {title: score.text}).ref('tooltip-' + score.value),
+                    $$('span').addClass('label').text(String(score.value))
+                        .on('click', () => {
+                            this.setNewsPriority(score.value);
+                            this.toogleTooltip('tooltip-' + score.value, false)
+                        })
+                        .on('mouseenter', () => {
+                            this.toogleTooltip('tooltip-' + score.value, true)
+                        })
+                        .on('mouseout', () => {
+                            this.toogleTooltip('tooltip-' + score.value, false)
+                        })
+                ])
+                .addClass('btn btn-secondary sc-np-btn')
+                .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
+
+        })
 
         prio.append(buttons)
         return prio;
@@ -130,17 +142,26 @@ class NewsPriorityComponent extends Component {
 
         var buttons = this.lifetimes.map(function (lifetime) {
 
+            const Tooltip = api.ui.getComponent('tooltip')
             return $$('button')
                 .addClass('btn btn-secondary sc-np-btn')
-                .text(lifetime.label)
-                .attr('data-toggle', 'tooltip')
-                .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual')
+                .append([
+                    $$(Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
+                    $$('span').addClass('label').text(lifetime.label)
+                        .on('click', (e) => {
+                            this.setLifetime(e, lifetime);
+                            this.toogleTooltip('tooltip-' + lifetime.label, false)
+                        })
+                        .on('mouseenter', () => {
+                            this.toogleTooltip('tooltip-' + lifetime.label, true)
+                        })
+                        .on('mouseout', () => {
+                            this.toogleTooltip('tooltip-' + lifetime.label, false)
+                        })
+                ])
                 .attr('title', lifetime.text)
                 .addClass(this.state[this.durationKey] === lifetime.value ? "active" : "")
-                .on('click', function (e) {
-                    this.setLifetime(e, lifetime);
-                }.bind(this));
+
 
         }.bind(this));
 

@@ -13,18 +13,34 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const fs = require('fs')
+var webpackUglifyJsPlugin = require('webpack-uglify-js-plugin');
 
 console.log("\n ----------------------------")
 console.log(" Plugin production build ")
 console.log(" ----------------------------\n")
 
+/**
+ * Iterates every plugin file in plugins/plugin-build-spec
+ * and adds to an object later processed by webpack
+ *
+ * @param {string} dir - The folder containing the plugin spec
+ * @returns {{}}
+ */
+function getPluginBuildSpec(dir) {
+    const result = {}
+    const list = fs.readdirSync(dir);
+
+    // For every file in the list
+    list.forEach(function (file) {
+        const basename = file.substr(0, file.length - 3);
+        result[basename] = dir + '/' + basename;
+    });
+    return result;
+}
+
 module.exports = {
-    entry: {
-        'im-writer': './plugins/im-writer',
-        'fd': './plugins/fd',
-        'mitm': './plugins/mitm',
-        'sds': './plugins/sds'
-    },
+    entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js"
@@ -74,18 +90,27 @@ module.exports = {
         failOnError: true
     },
     plugins: [
-        function()
-        {
-            this.plugin("done", function(stats)
-            {
-                if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1)
-                {
+        function () {
+            this.plugin("done", function (stats) {
+                if (stats.compilation.errors && stats.compilation.errors.length && process.argv.indexOf('--watch') == -1) {
                     console.log(stats.compilation.errors);
                     process.exit(1); // or throw new Error('webpack build failed.');
                 }
                 // ...
             });
         },
+        new webpackUglifyJsPlugin({
+            cacheFolder: path.resolve(__dirname, 'dist/cached_uglify/'),
+            debug: false,
+            minimize: true,
+            sourceMap: false,
+            output: {
+                comments: false
+            },
+            compressor: {
+                warnings: false
+            }
+        }),
         new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
             'process.env': {

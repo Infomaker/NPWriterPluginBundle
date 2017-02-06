@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {jxon, lodash as _} from 'writer'
+import {jxon, lodash as _, api} from 'writer'
 import Config from './config/Config'
 import TagInfoComponent from './TagInfoComponent'
 import TagEditCompanyComponent from './TagEditCompanyComponent'
@@ -73,7 +73,10 @@ class TagsItemComponent extends Component {
             } else {
                 displayName = this.state.loadedTag.concept.name
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar').append(displayName)
-                this.updateTagItemName(displayNameEl, this.state.loadedTag)
+                const title = this.updateTagItemName(displayNameEl, this.state.loadedTag)
+
+                // displayNameEl.attr('title', title);
+                const Tooltip = api.ui.getComponent('tooltip')
 
                 displayNameEl.on('click', () => {
                     // $(ev.target).tooltip('hide');
@@ -83,15 +86,20 @@ class TagsItemComponent extends Component {
                         this.showTag(displayName)
                     }
                 })
+                    .append($$(Tooltip, {title: title ? title : displayName, parent: this}).ref('tooltip'))
             }
 
-            displayNameEl.attr('data-toggle', 'tooltip')
-                .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual')
 
-            // TODO Tooltip
-            // displayNameEl.on('mouseenter', this.toggleTooltip)
-            // displayNameEl.on('mouseout', this.hideTooltip)
+            displayNameEl.on('mouseenter', () => {
+                this.refs.tooltip.extendProps({
+                    show: false
+                })
+            })
+            displayNameEl.on('mouseout', () => {
+                this.refs.tooltip.extendProps({
+                    show: true
+                })
+            })
 
             tagItem.append(displayNameEl)
 
@@ -110,7 +118,6 @@ class TagsItemComponent extends Component {
         }
         return tagItem
     }
-
 
     showTag(title) {
         this.context.api.ui.showDialog(TagInfoComponent,
@@ -203,8 +210,8 @@ class TagsItemComponent extends Component {
                 const item = definition[i];
                 if (item["@role"] === "drol:short") {
                     if (item["keyValue"] && item["keyValue"].length > 0) {
-                        tagItem.attr('title', item["keyValue"]);
-                        break;
+
+                        return item["keyValue"]
                     }
                 }
             }
@@ -214,22 +221,6 @@ class TagsItemComponent extends Component {
     getDefaultIconForTag($$) {
         return $$(Icon, {icon: 'fa-tag'}).addClass('tag-icon')
     }
-
-// TODO Tooltip
-// toggleTooltip = function (ev) {
-//     $(ev.target).tooltip('toggle');
-//     ev.target.timeout = window.setTimeout(function () {
-//         this.hideTooltip(ev)
-//     }.bind(this), 3000)
-// };
-//
-// hideTooltip = function (ev) {
-//     if (ev.target.timeout) {
-//         window.clearTimeout(ev.target.timeout);
-//         ev.target.timeout = undefined;
-//     }
-//     $(ev.target).tooltip('hide');
-// };
 
 }
 

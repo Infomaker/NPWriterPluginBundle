@@ -99,6 +99,7 @@ class ImageDisplay extends Component {
                     this.getComponent('dialog-image'),
                     {
                         node: this.props.node,
+                        url: this.props.node.getUrl(),
                         newsItem: response,
                         disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
                     },
@@ -116,17 +117,19 @@ class ImageDisplay extends Component {
         api.ui.showDialog(
             XimimageAddToBylineComponent,
             {
-                authors: this.props.node.authors,
+                node: this.props.node,
                 removeAuthor: () => (author) => {
                     this.props.node.removeAuthor(author)
                 },
                 addAuthor: (author, cbDone) => {
-                    const authors = this.props.node.authors
-                    authors.push(author)
+                    this.props.node.addAuthor(author)
 
-                    this.props.node.setAuthors(authors)
+                    // const authors = this.props.node.authors
+                    // authors.push(author)
 
-                    cbDone();
+                    // this.props.node.setAuthors(authors)
+
+                    // cbDone();
                 }
             },
             {
