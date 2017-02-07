@@ -13,11 +13,32 @@
 }
 
 .restore-history-dialog {
-    padding:1rem;
+    padding: 1rem;
+
     p {
-        margin-bottom:1rem;
+        margin-bottom: 1rem;
+    }
+
+    & > a.simple,
+    & > a.advanced {
+        display: block;
+        cursor: pointer;
+        color: #999;
+        font-size: 90%;
+
+        i {
+            padding-left: 5px;
+        }
+    }
+
+    & > a.advanced {
+        color: #777;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
     }
 }
+
 .history-article {
     margin-bottom:15px;
 
