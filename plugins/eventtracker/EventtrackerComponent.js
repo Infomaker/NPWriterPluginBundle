@@ -1,6 +1,6 @@
 //http://dev.lca.infomaker.io/
 
-import deepStreamClient from 'deepstream.io-client-js'
+import io from 'socket.io-client'
 import {Component} from 'substance'
 import {idGenerator, api, moment} from 'writer'
 import LoginComponent from './LoginComponent'
@@ -23,8 +23,14 @@ class EventtrackerComponent extends Component {
 
     didMount() {
         // If no username specified make sure to show dialog
-        if(!this.state.username) {
-            api.ui.showDialog(LoginComponent, { login: this.login.bind(this)}, { title: "Logga in" })
+
+
+        if (!this.state.username) {
+            api.ui.showDialog(LoginComponent, {login: this.login.bind(this)}, {
+                title: "Logga in",
+                primary: false,
+                secondary: false
+            })
         }
     }
 
@@ -33,20 +39,13 @@ class EventtrackerComponent extends Component {
         const uuid = api.newsItem.getGuid()
         const eventPrefix = api.getConfigValue('se.infomaker.eventtracker', 'customerKey')
 
-        const client = deepStreamClient('localhost:6020').login({username: this.state.username}, (success, data) => {
-            console.log("Log in", data);
+        const username = JSON.stringify({username: this.state.username, userId: idGenerator()})
 
-            if(success) {
-                client.event.emit('user/logged-in', {username: this.state.username, id: client.getUid()})
+        const socket = io('http://localhost:3000')
 
-                client.event.subscribe('user/logged-in', (eventName, isSubscribed, response) => {
-                    console.log("User logged in", eventName, isSubscribed);
-                })
-            }
-
+        socket.on('connect', (data) => {
+            console.log("Client connect", data);
         })
-
-
 
 
     }
@@ -60,6 +59,7 @@ class EventtrackerComponent extends Component {
         })
         this.setupLiveArticles()
     }
+
     render($$) {
 
         const el = $$('div').addClass('eventtracker')

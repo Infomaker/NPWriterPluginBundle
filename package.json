@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "cropjs": "^1.0.4",
-    "deepstream.io-client-js": "^2.1.1",
     "google-maps-api-loader": "^0.3.0",
-    "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git"
+    "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git",
+    "socket.io-client": "^1.7.2"
   }
 }
