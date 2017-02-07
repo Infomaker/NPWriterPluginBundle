@@ -14,6 +14,7 @@ const eventtrackerPackage = {
 }
 
 export default () => {
+    console.log("RUB!");
     if (registerPlugin) {
         registerPlugin(eventtrackerPackage)
     } else {
