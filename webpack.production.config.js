@@ -102,8 +102,8 @@ module.exports = {
         new webpackUglifyJsPlugin({
             cacheFolder: path.resolve(__dirname, 'dist/cached_uglify/'),
             debug: false,
-            minimize: true,
-            sourceMap: false,
+            minimize: false,
+            sourceMap: true,
             output: {
                 comments: false
             },
