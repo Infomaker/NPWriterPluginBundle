@@ -12,8 +12,8 @@ export default({
             sv: 'Osparade artiklar har hittats'
         })
 
-        config.addLabel('We\'ve found some unsaved articles. Below is a list if you would like to restore one of them.', {
-            sv: 'Vi har hittat några osparade artiklar. Nedan är en lista med osparade artiklar, klicka på en av dem ifall du vill återställa någon.'
+        config.addLabel('It looks like there are one or more unsaved articles. Do you want to restore an unsaved article?', {
+            sv: 'Det ser ut som om det finns en eller flera påbörjade artiklar som inte sparats. Vill du återställa en osparad artikel?'
         })
 
         config.addLabel('No thanks, create new article', {
@@ -49,13 +49,21 @@ export default({
         })
 
         config.addLabel('history-popover-headline', {
-            en: 'Changes since last successful save',
-            sv: 'Senaste ändringar'
+            en: 'Change history',
+            sv: 'Ändringshistorik'
         })
 
         config.addLabel('history-popover-description', {
-            en: 'Changes since last successful save',
-            sv: 'Ändringar sedan senast lyckade uppdatering till servern.'
+            en: 'Change history for this article.',
+            sv: 'Ändringshistorik för den här artikeln.'
+        })
+
+        config.addLabel('Identical with the current version', {
+            sv: 'Identisk med den aktuella versionen'
+        })
+
+        config.addLabel('Clear this version history', {
+            sv: 'Radera denna versionshistorik'
         })
 
         config.addPopover(

@@ -50,7 +50,7 @@ class HistoryMainComponent extends Component {
 
 
         let title = this.getLabel('Unsaved articles found')
-        let description = this.getLabel('We\'ve found some unsaved articles. Below is a list if you would like to restore one of them.')
+        let description = this.getLabel('It looks like there are one or more unsaved articles. Do you want to restore an unsaved article?')
         let primaryButton = this.getLabel('No thanks, create new article')
         let secondaryButton = this.getLabel('Restore latest unsaved article')
         let existingArticle = false

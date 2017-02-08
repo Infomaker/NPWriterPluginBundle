@@ -11,7 +11,7 @@ class ArticleItem extends Component {
 
         const deleteButton = $$('span').append($$(FontAwesomeIcon, {icon: 'fa-times'})
             .addClass('icon-delete')
-            .attr('title', this.getLabel('Ignore and clear history')))
+            .attr('title', this.getLabel('Clear this version history')))
             .on('click', function () {
                 this.context.api.history.deleteHistory(article.id);
                 this.remove();
@@ -21,9 +21,22 @@ class ArticleItem extends Component {
         // let latestVersion = article.versions.reverse()[0];
         let title = article.id;
 
-        el.append($$('h4').append(title));
+        let domParser = new DOMParser(),
+            dom = domParser.parseFromString(article.versions[0].src, 'text/xml'),
+            headline = dom.querySelector('idf element[type="headline"]')
 
-        let versions = article.versions.slice(0, 100).map(function (version) {
+        if (headline.textContent.length > 2) {
+            title = headline.textContent
+        }
+
+        el.append(
+            $$('h4').append([
+                $$('i').addClass('fa fa-file-text-o'),
+                title
+            ])
+        );
+
+        let versions = article.versions.reverse().slice(0, 100).map(function (version) {
             return this.renderHistoryItem($$, version, article);
         }.bind(this));
 
