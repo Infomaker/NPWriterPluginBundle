@@ -55,6 +55,7 @@ module.exports = {
         "substance": "substance",
         "writer": "writer"
     },
+    devtool: 'source-map',
     module: {
         loaders: [
             {
@@ -99,18 +100,7 @@ module.exports = {
                 // ...
             });
         },
-        new webpackUglifyJsPlugin({
-            cacheFolder: path.resolve(__dirname, 'dist/cached_uglify/'),
-            debug: false,
-            minimize: true,
-            sourceMap: false,
-            output: {
-                comments: false
-            },
-            compressor: {
-                warnings: false
-            }
-        }),
+
         new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
             'process.env': {
