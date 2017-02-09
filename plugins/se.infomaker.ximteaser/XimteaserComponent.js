@@ -164,4 +164,6 @@ class XimteaserComponent extends Component {
     }
 }
 
+XimteaserComponent.noBlocker = true
+
 export default XimteaserComponent
