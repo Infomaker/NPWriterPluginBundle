@@ -182,4 +182,6 @@ class XimimageComponent extends Component {
     }
 }
 
+XimimageComponent.noBlocker = true
+
 export default XimimageComponent
