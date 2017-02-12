@@ -8,13 +8,18 @@ const eventtrackerPackage = {
     id: 'se.infomaker.eventtracker',
     configure: function(config) {
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', EventtrackerComponent)
-
+        config.addPopover(
+            'eventtracker',
+            {
+                icon: 'fa-user',
+                align: 'left'
+            },
+            EventtrackerComponent
+        )
     }
 }
 
 export default () => {
-    console.log("RUB!");
     if (registerPlugin) {
         registerPlugin(eventtrackerPackage)
     } else {

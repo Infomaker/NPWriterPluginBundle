@@ -44,9 +44,11 @@ import HeadlinePackage from './textstyles/se.infomaker.headline/HeadlinePackage'
  */
 
 import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
+import Factbox from './se.hdsds.factbox/index'
 
 (() => {
 
+    Factbox()
     Eventtracker()
     XImPlace('position')
     XImPlace('polygon')

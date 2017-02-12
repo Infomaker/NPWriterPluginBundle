@@ -43,9 +43,10 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
  */
 import NewspilotJob from "../se.infomaker.newspilot.job/index";
 import Eventtracker from '../eventtracker/EventtrackerPackage'
-
+import Factbox from '../se.hdsds.factbox/index'
 (() => {
 
+    Factbox()
     Eventtracker()
     XImPlace()
     TextAnalyzer()
