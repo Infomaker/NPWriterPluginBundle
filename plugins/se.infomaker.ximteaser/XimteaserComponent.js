@@ -126,7 +126,7 @@ class XimteaserComponent extends Component {
             const subjectEditor = $$(TextPropertyEditor, {
                 tagName: 'div',
                 path: [this.props.node.id, 'subject'],
-                doc: this.props.doc
+                disabled: Boolean(this.props.disabled)
             }).ref('subject').addClass('x-im-teaser-subject')
             const icon = $$(FontAwesomeIcon, {icon: 'fa-flag'})
 
@@ -140,7 +140,7 @@ class XimteaserComponent extends Component {
         const titleEditor = $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, 'title'],
-            doc: this.props.doc
+            disabled: Boolean(this.props.disabled)
         }).ref('title').addClass('x-im-teaser-title')
 
         const icon = $$(FontAwesomeIcon, {icon: 'fa-header'})
@@ -154,7 +154,7 @@ class XimteaserComponent extends Component {
         const textEditor = $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, 'text'],
-            doc: this.props.doc
+            disabled: Boolean(this.props.disabled)
         }).ref('text').addClass('x-im-teaser-text')
 
         const icon = $$(FontAwesomeIcon, {icon: 'fa-paragraph'})
@@ -163,5 +163,7 @@ class XimteaserComponent extends Component {
         return textContainer
     }
 }
+
+XimteaserComponent.noBlocker = true
 
 export default XimteaserComponent

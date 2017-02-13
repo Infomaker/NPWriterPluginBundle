@@ -134,7 +134,7 @@ class XimimageComponent extends Component {
         return $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, obj.name],
-            doc: this.props.doc // TODO really?
+            disabled: Boolean(this.props.disabled)
         })
             .ref(obj.name)
             .attr('title', obj.label)
@@ -181,5 +181,7 @@ class XimimageComponent extends Component {
             .append(options)
     }
 }
+
+XimimageComponent.noBlocker = true
 
 export default XimimageComponent
