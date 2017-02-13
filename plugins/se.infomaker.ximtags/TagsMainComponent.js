@@ -202,7 +202,7 @@ class TagsMainComponent extends Component {
         if (tagConfigs) {
             let tags = []
 
-            tags.forEach((tagConfig) => {
+            tagConfigs.forEach((tagConfig) => {
                 tags.push(tagConfig.keys[0])
             })
 
