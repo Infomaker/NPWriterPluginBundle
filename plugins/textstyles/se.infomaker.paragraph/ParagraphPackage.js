@@ -1,4 +1,4 @@
-import {registerPlugin} from 'writer'
+
 
 import Paragraph from './Paragraph'
 import ParagraphComponent from './ParagraphComponent'
@@ -24,13 +24,5 @@ const paragraphPackage = {
             de: 'Paragraph'
         })
     }
-};
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(paragraphPackage)
-    } else {
-        console.info("Register method not yet available");
-    }
 }
-
+export default paragraphPackage
