@@ -42,7 +42,6 @@
   },
   "dependencies": {
     "cropjs": "^1.0.4",
-    "google-maps-api-loader": "^0.3.0",
-    "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git"
+    "google-maps-api-loader": "^0.3.0"
   }
 }
