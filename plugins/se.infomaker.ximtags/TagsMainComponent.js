@@ -200,22 +200,9 @@ class TagsMainComponent extends Component {
         )
 
         if (tagConfigs) {
-            let tags = []
-
-            tagConfigs.forEach((tagConfig) => {
-                tags.push(tagConfig.keys[0])
-            })
-
-            return tags;
+            return Object.keys(tagConfigs)
         } else {
-            // Default filters
-            return [
-                'x-im/person',
-                'x-im/organisation',
-                'x-cmbr/channel',
-                'x-im/channel',
-                'x-im/category'
-            ]
+            throw new Error('Missing tags configuration for ximtags plugin')
         }
     }
 

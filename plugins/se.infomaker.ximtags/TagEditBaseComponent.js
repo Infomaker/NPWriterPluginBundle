@@ -120,8 +120,14 @@ class TagEditBaseComponent extends Component {
                 .append(this.getLabel('ximtags-Organization')))
             .on('click', this.createOrganisation)
 
+        const topicBtn = $$('button')
+            .append($$(Icon, {icon: 'fa-tags'}))
+            .append($$('span')
+                .append(this.getLabel('ximtags-Topic')))
+            .on('click', this.createTopic)
+
         el.append($$('small').addClass('text-muted').append(this.getLabel('ximtags-type-question-label')))
-        el.append([personBtn, organisationBtn])
+        el.append([personBtn, organisationBtn, topicBtn])
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
@@ -158,7 +164,7 @@ class TagEditBaseComponent extends Component {
 
 
     renderElement($$, refName, label, inputValue, fullWidth, inputType) {
-        const cssClass = fullWidth ? 'col-xs-12' : 'col-xs-12 col-sm-6'
+        const cssClass = fullWidth ? 'col-12' : 'col-sm-6'
         let input
         switch (inputType) {
             case 'textarea':
