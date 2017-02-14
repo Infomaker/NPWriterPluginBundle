@@ -21,6 +21,7 @@ console.log(" ----------------------------\n")
 module.exports = {
     entry: {
         'im-writer': './plugins/im-writer',
+        'im-writer-demo': './plugins/im-writer-demo',
         'fd': './plugins/fd',
         'mitm': './plugins/mitm',
         'sds': './plugins/sds'
