@@ -38,7 +38,7 @@ class TagsItemComponent extends Component {
     }
 
     loadTag() {
-        this.context.api.router.getConceptItem(this.props.tag.uuid, this.props.tag.type)
+        return this.context.api.router.getConceptItem(this.props.tag.uuid, this.props.tag.type)
             .then(xml => {
                 const conceptXML = xml.querySelector('conceptItem'),
                     conceptItemJSON = jxon.build(conceptXML)
@@ -48,8 +48,6 @@ class TagsItemComponent extends Component {
                     isLoaded: true
                 })
 
-                //Add tagType to loaded tag
-                this.state.loadedTag.type = this.getItemMetaExtPropertyByType('imext:type')
             })
             .catch(() => {
                 this.extendState({
@@ -84,7 +82,9 @@ class TagsItemComponent extends Component {
 
                 displayNameEl.on('click', () => {
                     if (this.config.getTagConfigByType(tag.type).editable) {
-                        this.editTag(displayName)
+                        this.loadTag().then(() => {
+                            this.editTag(displayName)
+                        })
                     } else {
                         this.showTag(displayName)
                     }
@@ -138,32 +138,39 @@ class TagsItemComponent extends Component {
      */
     editTag(title) {
         let tagEdit;
+        let type = this.getItemMetaExtPropertyByType('imext:type')
 
-        switch (this.state.loadedTag.type['@value']) {
-            case 'x-im/organisation':
-                tagEdit = TagEditCompanyComponent
-                break
-            case 'x-im/person':
-                tagEdit = TagEditPersonComponent
-                break
-            case 'x-im/topic':
-                tagEdit = TagEditTopicComponent
-                break
-            default:
-                break;
+        if (type) {
+            switch (type['@value']) {
+                case 'x-im/organisation':
+                    tagEdit = TagEditCompanyComponent
+                    break
+                case 'x-im/person':
+                    tagEdit = TagEditPersonComponent
+                    break
+                case 'x-im/topic':
+                    tagEdit = TagEditTopicComponent
+                    break
+                default:
+                    break;
+            }
         }
 
-        this.context.api.ui.showDialog(tagEdit,
-            {
-                tag: this.state.loadedTag,
-                close: this.closeFromDialog.bind(this),
-                couldNotLoad: this.state.couldNotLoad
-            },
-            {
-                primary: this.getLabel('ximtags-save'),
-                title: this.getLabel('ximtags-edit') + " " + title,
-                global: true
-            })
+        if (tagEdit) {
+            this.context.api.ui.showDialog(tagEdit,
+                {
+                    tag: this.state.loadedTag,
+                    close: this.closeFromDialog.bind(this),
+                    couldNotLoad: this.state.couldNotLoad
+                },
+                {
+                    primary: this.getLabel('ximtags-save'),
+                    title: this.getLabel('ximtags-edit') + " " + title,
+                    global: true
+                })
+        } else {
+            console.log("Unsupported tag type", type)
+        }
     }
 
     /**

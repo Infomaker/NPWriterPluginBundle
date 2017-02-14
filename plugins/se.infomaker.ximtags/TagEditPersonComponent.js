@@ -49,7 +49,6 @@ class TagEditPersonComponent extends TagEditBaseComponent {
                     this.context.api.newsItem.addTag(this.name, {
                         uuid: uuid,
                         name: [fullName],
-                        type: ['person'],
                         imType: ['x-im/person']
                     })
                     if (this.state.error) {
@@ -65,7 +64,7 @@ class TagEditPersonComponent extends TagEditBaseComponent {
                     // If save is done, update the tag in article newsitem
                     this.context.api.newsItem.updateTag(this.name, uuid, {
                         name: [fullName],
-                        imType: [tag.type['@value']]
+                        imType: ['x-im/person']
                     })
                     if (this.state.error) {
                         this.extendState({error: false})

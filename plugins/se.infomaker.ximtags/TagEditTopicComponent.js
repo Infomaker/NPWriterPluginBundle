@@ -37,7 +37,6 @@ class TagEditTopicComponent extends TagEditBaseComponent {
                     this.context.api.newsItem.addTag(this.name, {
                         uuid: uuid,
                         name: [name],
-                        type: ['organisation'],
                         imType: ['x-im/topic']
                     })
                     if (this.state.error) {
@@ -53,7 +52,7 @@ class TagEditTopicComponent extends TagEditBaseComponent {
                     // If save is done, update the tag in article newsitem
                     this.context.api.newsItem.updateTag(this.name, uuid, {
                         name: [name],
-                        imType: [tag.type['@value']]
+                        imType: ['x-im/topic']
                     })
                     if (this.state.error) {
                         this.extendState({error: false})
