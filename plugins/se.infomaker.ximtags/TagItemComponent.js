@@ -67,7 +67,7 @@ class TagsItemComponent extends Component {
 
         let displayName
 
-        displayNameEl.attr('title', TagsItemComponent.getNameForTag(tag))
+        displayNameEl.attr('title', this.getNameForTag(tag))
 
         if (!this.state.isLoaded) {
             this.loadTag()
@@ -195,14 +195,17 @@ class TagsItemComponent extends Component {
         }
     }
 
-    static getNameForTag(tag) {
+    getNameForTag(tag) {
         if (!tag.type) {
             return undefined;
         }
+
         const tagConfig = this.config.getTagConfigByType(tag.type)
         if (tagConfig) {
             return tagConfig.name;
         }
+
+        return undefined
     }
 
     updateTagItemName(tagItem, loadedTag) {

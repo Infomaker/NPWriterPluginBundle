@@ -174,8 +174,8 @@ class TagsMainComponent extends Component {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.getLabel('mmtags-save'),
-            title: this.getLabel('mmtags-create') + " " + inputValue,
+            primary: this.getLabel('ximtags-save'),
+            title: this.getLabel('ximtags-create') + " " + inputValue,
             icon: 'fa-tags',
             global: true
         })
@@ -214,14 +214,15 @@ class TagsMainComponent extends Component {
      */
     canCreateTag() {
         const tags = this.getTags()
+        let canCreate = false
 
         tags.forEach((tag) => {
             if (this.config.getTagConfigByType(tag).editable) {
-                return true
+                canCreate = true
             }
         })
 
-        return false
+        return canCreate
     }
 }
 

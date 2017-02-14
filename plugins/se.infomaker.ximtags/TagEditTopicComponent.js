@@ -5,7 +5,7 @@ class TagEditTopicComponent extends TagEditBaseComponent {
 
     constructor(...args) {
         super(...args)
-        this.name = 'mmtags'
+        this.name = 'ximtags'
     }
 
 
@@ -72,12 +72,12 @@ class TagEditTopicComponent extends TagEditBaseComponent {
 
             name = this.renderElement($$, "nameInput", 'Name', tag.concept.name, true, 'input'),
             shortDesc = this.renderElement($$, 'shortDescInput',
-                this.getLabel('mmtags-Short_description'),
+                this.getLabel('ximtags-Short_description'),
                 this.getConceptDefinition('drol:short').keyValue,
                 true,
                 'input'),
             longDesc = this.renderElement($$, 'longDescTextarea',
-                this.getLabel('mmtags-Long_description'),
+                this.getLabel('ximtags-Long_description'),
                 this.getConceptDefinition('drol:long').keyValue,
                 true,
                 'textarea')
@@ -95,7 +95,7 @@ class TagEditTopicComponent extends TagEditBaseComponent {
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.getLabel("mmtags-error-save"))))
+                this.getLabel("ximtags-error-save"))))
         }
 
         return el

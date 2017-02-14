@@ -65,7 +65,7 @@ export default {
 
         config.addLabel('ximtags-error-save', {
             en: 'Error when saving tag',
-            sv: 'Fel vid sparande av tag'
+            sv: 'Fel vid sparande av tagg'
         })
 
         config.addLabel('ximtags-Short_description', {
