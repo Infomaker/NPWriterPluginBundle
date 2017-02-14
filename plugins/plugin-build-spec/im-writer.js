@@ -21,6 +21,7 @@ import XImStory from "../se.infomaker.ximstory/index";
 import Category from "../se.infomaker.ximcategory/index";
 import Channel from "../se.infomaker.ximchannel/index";
 import XImSection from "../se.infomaker.ximsection/index";
+import DefaultConflictHandler from "../se.infomaker.defaultconflicthandler/DefaultConflictHandlerPackage"
 /**
  * Text styles
  */
@@ -69,6 +70,7 @@ import NewspilotJob from "../se.infomaker.newspilot.job/index";
     Category()
     Channel()
     XImSection()
+    DefaultConflictHandler()
     
     // Textstyles
     BlockQuotePackage()
