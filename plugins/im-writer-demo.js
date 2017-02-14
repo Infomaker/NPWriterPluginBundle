@@ -14,7 +14,7 @@ import History from './se.infomaker.history/index'
 import ChannelSelector from './se.infomaker.hdsds.channelselector/index'
 import PublicationChannel from './se.infomaker.mitm.publicationchannel/index'
 import MitmTags from './se.infomaker.mitm.tags/index'
-import XimTags from './se.infomaker.tags/index'
+import XimTags from './se.infomaker.ximtags/index'
 import DefaultvalidationPackage from './se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import HeaderEditor from './se.infomaker.headereditor/HeaderEditorPackage'
 import XImPdf from './se.infomaker.ximpdf/index'
@@ -70,7 +70,7 @@ import HtmlembedPackage from './se.infomaker.htmlembed/HtmlembedPackage'
     Category()
     Channel()
     XImSection()
-    
+
     // Textstyles
     BlockQuotePackage()
     ParagraphPackage()
