@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.paragraph/ParagraphPackage";
+import Index from "../textstyles/se.infomaker.paragraph/index";
 
 (() => {
-    Package()
+    Index()
 })()

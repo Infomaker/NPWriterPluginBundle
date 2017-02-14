@@ -1,9 +1,8 @@
-import {registerPlugin} from 'writer'
 import Blockquote from './Blockquote'
 import BlockquoteComponent from './BlockquoteComponent'
 import BlockquoteConverter from './BlockquoteConverter'
 
-const blockquotePackage = {
+export default {
     id: 'se.infomaker.blockquote',
     name: 'blockquote',
     configure: function (config) {
@@ -25,14 +24,7 @@ const blockquotePackage = {
             sv: "Citat"
         })
     }
-};
-
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(blockquotePackage)
-    } else {
-        console.info("Register method not yet available");
-    }
 }
+
+
 

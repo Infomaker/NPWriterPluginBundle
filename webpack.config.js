@@ -34,7 +34,8 @@ module.exports = {
       historyApiFallback: true,
       inline: true,
       compress: false,
-      port: 5001
+      port: 5001,
+        host: '0.0.0.0'
     },
     module: {
         loaders: [

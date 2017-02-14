@@ -1,9 +1,8 @@
-import {registerPlugin} from 'writer'
 import Headline from './Headline'
 import HeadlineComponent from './HeadlineComponent'
 import HeadlineConverter from './HeadlineConverter'
 
-const headlinePackage = {
+export default {
     id: 'se.infomaker.headline',
     name: 'headline',
     configure: function (config) {
@@ -24,13 +23,6 @@ const headlinePackage = {
         config.addLabel('headline', headlineLbl)
 
     }
-};
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(headlinePackage)
-    } else {
-        console.info("Register method not yet available");
-    }
 }
+
 

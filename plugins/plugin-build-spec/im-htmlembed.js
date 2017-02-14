@@ -1,5 +1,5 @@
-import Package from "../se.infomaker.htmlembed/HtmlembedPackage";
+import Index from "../se.infomaker.htmlembed/index";
 
 (() => {
-    Package()
+    Index()
 })()

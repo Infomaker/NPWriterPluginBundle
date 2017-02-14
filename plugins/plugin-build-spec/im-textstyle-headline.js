@@ -1,5 +1,5 @@
-import Package from "../textstyles/se.infomaker.headline/HeadlinePackage";
+import Index from "../textstyles/se.infomaker.headline/index";
 
 (() => {
-    Package()
+    Index()
 })()

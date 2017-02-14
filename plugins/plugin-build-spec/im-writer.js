@@ -13,8 +13,7 @@ import ChannelSelector from "../se.infomaker.hdsds.channelselector/index";
 import PublicationChannel from "../se.infomaker.mitm.publicationchannel/index";
 import MitmTags from "../se.infomaker.mitm.tags/index";
 import XimTags from "../se.infomaker.tags/index";
-import DefaultvalidationPackage from "../se.infomaker.defaultvalidation/DefaultvalidationPackage";
-import HeaderEditor from "../se.infomaker.headereditor/HeaderEditorPackage";
+import HeaderEditor from "../se.infomaker.headereditor/index";
 import XImPdf from "../se.infomaker.ximpdf/index";
 import ContentProfile from "../se.infomaker.ximcontentprofile/index";
 import XImStory from "../se.infomaker.ximstory/index";
@@ -30,14 +29,14 @@ import Dateline from "../textstyles/se.infomaker.dateline/Dateline";
 import Preleadin from "../textstyles/se.infomaker.preleadin/Preleadin";
 import Madmansrow from "../textstyles/se.infomaker.madmansrow/Madmansrow";
 import Preamble from "../textstyles/se.infomaker.preamble/Preamble";
-import BlockQuotePackage from "../textstyles/se.infomaker.blockquote/BlockquotePackage";
-import ParagraphPackage from "../textstyles/se.infomaker.paragraph/ParagraphPackage";
-import SubheadlinePackage from "../textstyles/se.infomaker.subheadline/SubheadlinePackage";
-import HeadlinePackage from "../textstyles/se.infomaker.headline/HeadlinePackage";
+import BlockQuote from "../textstyles/se.infomaker.blockquote/index";
+import Paragraph from "../textstyles/se.infomaker.paragraph/index";
+import Subheadline from "../textstyles/se.infomaker.subheadline/index";
+import Headline from "../textstyles/se.infomaker.headline/index";
 /**
  * Enrichment
  */
-import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
+import Htmlembed from "../se.infomaker.htmlembed/index";
 /**
  * Newspilot integration
  */
@@ -59,7 +58,6 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
     ContentRelations()
     History()
     XImPdf()
-    DefaultvalidationPackage()
     ChannelSelector()
     PublicationChannel()
     ContentProfile()
@@ -71,10 +69,10 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
     XImSection()
 
     // Textstyles
-    BlockQuotePackage()
-    ParagraphPackage()
-    HeadlinePackage()
-    SubheadlinePackage()
+    BlockQuote()
+    Paragraph()
+    Headline()
+    Subheadline()
     Preleadin()
     Preamble()
     Dateline()
@@ -83,7 +81,7 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
     Madmansrow()
 
     // Enrichment
-    HtmlembedPackage()
+    Htmlembed()
 
     // Newspilot job
     // NewspilotJob()

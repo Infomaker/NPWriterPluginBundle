@@ -1,7 +1,6 @@
 import DefaultValidation from './DefaultValidation'
-const {registerPlugin} = writer
 
-const validationPackage = {
+export default {
     id: 'se.infomaker.defaultvalidation',
     name: 'defaultvalidation',
     configure: (config) => {
@@ -10,13 +9,5 @@ const validationPackage = {
 }
 
 
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(validationPackage)
-    } else {
-        console.info("Register method not yet available");
-    }
-}
 
 

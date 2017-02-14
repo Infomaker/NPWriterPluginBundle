@@ -1,9 +1,8 @@
-import {registerPlugin} from 'writer'
 import Subheadline from './Subheadline'
 import SubheadlineComponent from './SubheadlineComponent'
 import SubheadlineConverter from './SubheadlineConverter'
 
-const subheadlinePackage = {
+export default {
     id: 'se.infomaker.subheadline',
     name: 'subheadline',
     configure: function(config) {
@@ -25,13 +24,5 @@ const subheadlinePackage = {
             de: 'Subheadline',
             sv: 'Underrubrikrik'
         })
-    }
-}
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(subheadlinePackage)
-    } else {
-        console.info("Register method not yet available");
     }
 }

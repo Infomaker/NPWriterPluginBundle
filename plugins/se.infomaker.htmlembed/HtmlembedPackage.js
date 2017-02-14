@@ -1,4 +1,4 @@
-import {registerPlugin} from 'writer'
+
 import {platform} from 'substance'
 import './scss/htmlembed.scss'
 import HtmlembedNode from './HtmlembedNode'
@@ -38,7 +38,4 @@ const htmlEmbedPackage = {
 
     }
 }
-
-export default () => {
-    registerPlugin(htmlEmbedPackage)
-}
+export default htmlEmbedPackage
