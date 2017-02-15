@@ -37,7 +37,11 @@ class PublicationchannelComponent extends Component {
                 'se.infomaker.mitm.publicationchannel',
                 'publicationchannels'
             ),
-            mainChannel = null
+            mainChannel = null,
+            useMainChannel = this.context.api.getConfigValue(
+                'se.infomaker.mitm.publicationchannel',
+                'useMainChannel'
+            )
 
         channels.forEach((channel) => {
             if (currentChannels.some(currentChannel => channel.qcode === currentChannel['qcode'] && currentChannel['@why'] === 'imext:main')) {
@@ -60,7 +64,8 @@ class PublicationchannelComponent extends Component {
         return {
             mainChannel: mainChannel,
             channels: channels,
-            activeChannelCount: activeChannelCount
+            activeChannelCount: activeChannelCount,
+            useMainChannel: (useMainChannel === false) ? false : true
         }
     }
 
@@ -76,21 +81,25 @@ class PublicationchannelComponent extends Component {
         var el = $$('div').addClass('sc-publicationchannel')
         //    checked = this.state.channels.length === this.state.activeChannelCount ? 'checked' : ''
 
-        el.append([
-            $$('h2').append(this.getLabel('publicationchannel-Channels')),
-            this.renderMainChannelSelect($$),
-            $$('p').addClass('sc-sharedwith').append([
-                this.getLabel('publicationchannel-Shared_with'),
-                // TODO: Enable and make configurable
-                // $$('a').addClass(checked).append(
-                //     this.getLabel('publicationchannel-Choose_all')).on('click', (evt) => {
-                //         this.toggleAllChannels(evt.target)
-                //         return false
-                //     }
-                // )
-            ]),
+        el.append(
+            $$('h2').append(this.getLabel('publicationchannel-Channels'))
+        )
 
-        ])
+        if (this.state.useMainChannel === true) {
+            el.append([
+                this.renderMainChannelSelect($$),
+                $$('p').addClass('sc-sharedwith').append([
+                    this.getLabel('publicationchannel-Shared_with'),
+                    // TODO: Enable and make configurable
+                    // $$('a').addClass(checked).append(
+                    //     this.getLabel('publicationchannel-Choose_all')).on('click', (evt) => {
+                    //         this.toggleAllChannels(evt.target)
+                    //         return false
+                    //     }
+                    // )
+                ])
+            ])
+        }
 
         el.append(this.renderChannelButtons($$))
 
@@ -267,19 +276,21 @@ class PublicationchannelComponent extends Component {
      */
     toggleChannel(channel, setAsMainChannel) {
         var mainChannel = this.context.api.newsItem.getMainChannel()
-        if (!mainChannel && !setAsMainChannel) {
-            this.context.api.ui.showMessageDialog([
-                {
-                    plugin: 'publicationchannel',
-                    type: 'error',
-                    message: this.getLabel(
-                        'Please choose main publication channel before sharing with other channels')
-                }
-            ])
+        
+        if (this.state.useMainChannel === true) {
+            if (!mainChannel && !setAsMainChannel) {
+                this.context.api.ui.showMessageDialog([
+                    {
+                        plugin: 'publicationchannel',
+                        type: 'error',
+                        message: this.getLabel(
+                            'Please choose main publication channel before sharing with other channels')
+                    }
+                ])
 
-            return
+                return
+            }
         }
-
 
         if (channel.active && !setAsMainChannel) {
             this.context.api.newsItem.removeChannel('publicationchannel', channel)
