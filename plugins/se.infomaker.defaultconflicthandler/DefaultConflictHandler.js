@@ -27,7 +27,6 @@ class DefaultConflictHandler extends Component {
     }
 
     resolveConflict() {
-        api.newsItem.invalidate()
         api.history.deleteHistory(this.props.uuid)
         api.article.openInNewWindow(this.props.uuid)
         if (typeof this.props.close === 'function') {
