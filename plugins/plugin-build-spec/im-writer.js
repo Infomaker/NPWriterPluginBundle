@@ -41,7 +41,7 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
 /**
  * Newspilot integration
  */
-import NewspilotJob from "../se.infomaker.newspilot.job/index";
+// import NewspilotJob from "../se.infomaker.newspilot.job/index";
 
 
 (() => {
@@ -86,6 +86,6 @@ import NewspilotJob from "../se.infomaker.newspilot.job/index";
     HtmlembedPackage()
 
     // Newspilot job
-    NewspilotJob()
+    // NewspilotJob()
 
 })()
