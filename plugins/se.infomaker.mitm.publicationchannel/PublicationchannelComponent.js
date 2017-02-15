@@ -1,6 +1,4 @@
 import {Component} from 'substance'
-import {lodash} from 'writer'
-
 
 class PublicationchannelComponent extends Component {
 
@@ -61,7 +59,7 @@ class PublicationchannelComponent extends Component {
 
         return {
             mainChannel: mainChannel,
-            channels: lodash.sortBy(channels, ['name']),
+            channels: channels,
             activeChannelCount: activeChannelCount
         }
     }
