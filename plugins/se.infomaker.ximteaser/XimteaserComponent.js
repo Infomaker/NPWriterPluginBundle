@@ -162,8 +162,51 @@ class XimteaserComponent extends Component {
         textContainer.append([icon, textEditor])
         return textContainer
     }
-}
 
-XimteaserComponent.noBlocker = true
+    /* Custom dropzone protocol */
+    getDropzoneSpecs() {
+        return [
+            {
+                component: this,
+                message: 'Replace Image',
+                dropParams: {
+                    action: 'replace-image',
+                    nodeId: this.props.node.id,
+                }
+            }
+        ]
+    }
+
+    handleDrop(tx, dragState) {
+        // TODO: it would be nice to execute a command in the
+        // drop implementation, like so:
+        // editorSession.executeCommand('ximteaserinsertimage', {
+        //     type: 'file',
+        //     data: dragState.data.files,
+        //     context: {node: this.props.node}
+        // });
+
+        // HACK: so this should not be done here -> see command
+        const teaserNode = this.props.node
+        const file = dragState.data.files[0] // Teaser only supports one image, take the first one
+
+        // TODO: we need to get the file instance through to the
+        // real document
+        let imageFile = tx.create({
+            parentNodeId: teaserNode.id,
+            type: 'npfile',
+            imType: 'x-im/image',
+            mimeType: file.type,
+        })
+        // HACK: binary data does not survive tx.create()
+        imageFile.sourceFile = file
+        tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+        // HACK: fileUpload will be done by CollabSession
+        setTimeout(() => {
+            this.context.editorSession.fileManager.sync()
+        })
+    }
+
+}
 
 export default XimteaserComponent
