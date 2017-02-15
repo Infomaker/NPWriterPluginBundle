@@ -74,12 +74,6 @@
             height: 32px;
             opacity: 0.8;
 
-            &:hover {
-                border-color: #bbb;
-                cursor: pointer;
-                opacity: 0.9;
-            }
-
             &:before {
                 /* On top of img to make sure tooltips work over img inside list item */
                 position: absolute;
@@ -100,6 +94,17 @@
                 font-weight: 100;
             }
 
+            &:hover {
+                border-color: #bbb;
+                cursor: pointer;
+                opacity: 0.9;
+
+                &:after {
+                    opacity: 1;
+                    content: "\f067";
+                }
+            }
+
             &.active {
                 background: #eaeaea;
                 border-color: #bbb;
@@ -107,6 +112,7 @@
 
                 &:after {
                     opacity: 0.9;
+                    content: "\f00c";
                 }
 
                 &:hover {
