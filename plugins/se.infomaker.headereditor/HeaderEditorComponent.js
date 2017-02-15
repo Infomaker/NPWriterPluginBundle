@@ -63,6 +63,7 @@ class HeaderEditorComponent extends Component {
             tagName: "div",
             commands: this.props.headlineCommands,
             withoutBreak: false,
+            multiLine: true,
             path: [this.props.node.id, field]
         }).addClass('se-' + field))
 
