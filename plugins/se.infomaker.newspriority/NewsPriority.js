@@ -1,5 +1,7 @@
 import './scss/newspriority.scss'
 import NewsPriorityComponent from './NewsPriorityComponent'
+import NewsPriorityNode from './NewsPriorityNode'
+import NewsPriorityConverter from './NewsPriorityConverter'
 
 export default {
     name: 'newspriority',
@@ -7,6 +9,9 @@ export default {
     configure: function (config) {
 
         config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent)
+
+        config.addNode(NewsPriorityNode)
+        config.addConverter('newsml', NewsPriorityConverter)
 
         config.addLabel('newsvalue', {
             en: 'Newsvalue',

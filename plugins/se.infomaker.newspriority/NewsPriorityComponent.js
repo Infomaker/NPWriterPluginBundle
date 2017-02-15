@@ -36,7 +36,7 @@ class NewsPriorityComponent extends Component {
     }
 
     updateState() {
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
+       /* var newsPriority = api.newsItem.getNewsPriority(pluginId);
 
         if (!newsPriority) {
             // No news prio found in document, create a default template
@@ -78,12 +78,12 @@ class NewsPriorityComponent extends Component {
             end: newsPriority.data.end
         };
         newState[this.durationKey] = newsPriority.data[this.durationKey];
-        this.setState(newState);
+        this.setState(newState);*/
     }
 
     render($$) {
 
-        this.updateState();
+        // this.updateState();
 
         var el = $$('div');
 
@@ -91,13 +91,13 @@ class NewsPriorityComponent extends Component {
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
-        var lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
-        el.append(lifetimeTitle);
-        if (this.lifetimes.length > 1) {
-            el.append(this._renderLifeTime($$));
-        }
+        // var lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
+        // el.append(lifetimeTitle);
+        // if (this.lifetimes.length > 1) {
+        //     el.append(this._renderLifeTime($$));
+        // }
 
-        el.append(this._renderDatetimeInput($$).ref('datePickerComponent'));
+        // el.append(this._renderDatetimeInput($$).ref('datePickerComponent'));
 
         return el;
 
@@ -237,14 +237,14 @@ class NewsPriorityComponent extends Component {
 
     setNewsPriority(score) {
         //$(ev.target).tooltip('hide');
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
-        newsPriority.data.score = score;
+        // var newsPriority = api.newsItem.getNewsPriority(pluginId);
+        // newsPriority.data.score = score;
 
-        api.newsItem.setNewsPriority(pluginId, newsPriority);
+        api.newsItem.setNewsPriority(pluginId, score);
 
-        this.extendState({
-            score: newsPriority.data.score
-        });
+        // this.extendState({
+        //     score: newsPriority.data.score
+        // });
     }
 
     setLifetime(ev, lifetime) {
