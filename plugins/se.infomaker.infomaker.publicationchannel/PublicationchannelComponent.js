@@ -189,17 +189,13 @@ class PublicationchannelComponent extends Component {
                 return
             }
 
-            let channelClass = 'inactive',
-                channelIcon = channel.icon
+            let channelClass = 'inactive'
 
             if (channel.main) {
                 channelClass = ' main'
             }
             else if (channel.active) {
                 channelClass = ' active'
-            }
-            else if (typeof channel.iconInactive === 'string') {
-                channelIcon = channel.iconInactive
             }
 
 
