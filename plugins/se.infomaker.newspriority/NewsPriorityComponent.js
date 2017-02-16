@@ -15,6 +15,14 @@ class NewsPriorityComponent extends Component {
             api.clearNewsPriority('newspriority');
             this.rerender();
         });
+
+        this.context.editorSession.onRender('document', this._onDocumentChange, this, { path: ['newsvalue'] })
+    }
+
+    _onDocumentChange(change) {
+        if (change.isAffected('newsvalue')) {
+            this.rerender()
+        }
     }
 
     getInitialState() {
@@ -85,9 +93,9 @@ class NewsPriorityComponent extends Component {
 
         // this.updateState();
 
-        var el = $$('div');
+        const el = $$('div'),
+            prioTitle = $$('h2').text(this.getLabel('newsvalue'));
 
-        var prioTitle = $$('h2').text(this.getLabel('newsvalue'));
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
@@ -108,11 +116,10 @@ class NewsPriorityComponent extends Component {
     }
 
     _renderPriority($$) {
-        var prio = $$('div').addClass('btn-group')
+        const prio = $$('div').addClass('btn-group'),
+            Tooltip = api.ui.getComponent('tooltip')
 
-        var buttons = this.scores.map((score) => {
-
-            const Tooltip = api.ui.getComponent('tooltip')
+        const buttons = this.scores.map((score) => {
             return $$('button')
                 .append([
                     $$(Tooltip, {title: score.text}).ref('tooltip-' + score.value),
@@ -129,8 +136,7 @@ class NewsPriorityComponent extends Component {
                         })
                 ])
                 .addClass('btn btn-secondary sc-np-btn')
-                .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
-
+                .addClass(parseInt(this.context.api.newsItem.getNewsPriority(), 10) === score.value ? "active" : "")
         })
 
         prio.append(buttons)
@@ -236,15 +242,7 @@ class NewsPriorityComponent extends Component {
      }*/
 
     setNewsPriority(score) {
-        //$(ev.target).tooltip('hide');
-        // var newsPriority = api.newsItem.getNewsPriority(pluginId);
-        // newsPriority.data.score = score;
-
         api.newsItem.setNewsPriority(pluginId, score);
-
-        // this.extendState({
-        //     score: newsPriority.data.score
-        // });
     }
 
     setLifetime(ev, lifetime) {
