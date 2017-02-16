@@ -188,7 +188,8 @@ class PublicationchannelComponent extends Component {
                 return
             }
 
-            var channelClass = ''
+            let channelClass = 'inactive',
+                channelIcon = channel.icon
 
             if (channel.main) {
                 channelClass = ' main'
@@ -196,27 +197,47 @@ class PublicationchannelComponent extends Component {
             else if (channel.active) {
                 channelClass = ' active'
             }
+            else if (typeof channel.iconInactive === 'string') {
+                channelIcon = channel.iconInactive
+            }
 
-            ul.append(
-                $$('li').addClass('tag-list__item ' + channelClass)
-                    .append(
-                        $$('img').attr({
-                            src: channel.icon
-                        })
-                    )
-                    .attr({
-                        title: channel.name,
-                        'data-toggle': 'tooltip',
-                        'data-placement': 'bottom',
-                        'data-trigger': 'manual'
-                    })
-                    .on('click', () => {
-                        if (!channel.main) {
-                            this.toggleChannel(channel, false)
-                        }
-                        return false
-                    })
+
+            let li = $$('li').addClass('tag-list__item ' + channelClass)
+                .attr({
+                    title: channel.name,
+                    'data-toggle': 'tooltip',
+                    'data-placement': 'bottom',
+                    'data-trigger': 'manual'
+                })
+                .on('click', () => {
+                    if (!channel.main) {
+                        this.toggleChannel(channel, false)
+                    }
+                    return false
+                })
+
+            li.append(
+                $$('img').attr({
+                    src: channel.icon
+                })
             )
+
+            if (!channel.active && typeof channel.iconInactive === 'string') {
+                li.append(
+                    $$('img').attr({
+                        src: channel.iconInactive
+                    })
+                )
+            }
+            else {
+                li.append(
+                    $$('img').attr({
+                        src: channel.icon
+                    })
+                )
+            }
+
+            ul.append(li)
         })
 
         return ul
@@ -276,7 +297,7 @@ class PublicationchannelComponent extends Component {
      */
     toggleChannel(channel, setAsMainChannel) {
         var mainChannel = this.context.api.newsItem.getMainChannel()
-        
+
         if (this.state.useMainChannel === true) {
             if (!mainChannel && !setAsMainChannel) {
                 this.context.api.ui.showMessageDialog([
