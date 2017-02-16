@@ -1,17 +1,11 @@
-import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
-import {api} from 'writer'
+import {Component, TextPropertyEditor, FontAwesomeIcon, documentHelpers} from 'substance'
+import {api, idGenerator} from 'writer'
 import FileInputComponent from './FileInputComponent'
 
 class XimteaserComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
-
-        // @TODO, how to prevent drag correctly??
-        this.parent.parent.attr('draggable', false)
-        this.parent.attr('draggable', false)
-        this.attr('draggable', false)
-
     }
 
     dispose() {
@@ -19,9 +13,24 @@ class XimteaserComponent extends Component {
     }
 
     _onDocumentChange(change) {
-        if (change.isAffected(this.props.node.id) ||
-            change.isAffected(this.props.node.imageFile)) {
+        if (change.isAffected(this.props.node.id)) {
             this.rerender()
+        } else if (change.isAffected(this.props.node.imageFile)) {
+            this.rerender()
+            const imageNode = this.context.api.doc.get(this.props.node.imageFile)
+            if(imageNode && imageNode.sourceUUID && this.shouldDownloadMetadataForImageUri ) {
+                this.props.node.fetchPayload(this.context, (err, node) => {
+                    this.context.editorSession.transaction((tx) => {
+                        tx.set([this.props.node.id, 'uri'], node.uri)
+                        tx.set([this.props.node.id, 'width'], node.width)
+                        tx.set([this.props.node.id, 'height'], node.height)
+                        tx.set([this.props.node.id, 'crops'], [])
+                    })
+                    this.shouldDownloadMetadataForImageUri = false
+                    // this.rerender()
+                })
+            }
+
         }
     }
 
@@ -187,9 +196,99 @@ class XimteaserComponent extends Component {
         // });
 
         // HACK: so this should not be done here -> see command
-        const teaserNode = this.props.node
-        const file = dragState.data.files[0] // Teaser only supports one image, take the first one
+        if (this.isFileDrop(dragState.data)) {
+            // Handle file drop
+            this.handleNewImage(tx, dragState)
+        } else if (this.isUriDrop(dragState.data)) {
+            const uri = dragState.data.uris[0]
+            const dropData = this.getDataFromURL(uri)
+            this.handleUriDrop(tx, dropData)
+            //Handle URI drop
+        } else if (dragState.nodeDrag) {
+            // Handle internal node drag
+            this.handleNodeDrop(tx, dragState)
+        }
 
+
+    }
+
+    getDataFromURL(url) {
+        const queryParamKey = 'data='
+        const dataPosition = url.indexOf(queryParamKey)
+        let encodedData = url.substr(dataPosition + queryParamKey.length, url.length)
+        return JSON.parse(window.atob(encodedData))
+    }
+
+    /**
+     * This handles drops of nodes of type ximimage.
+     * It retrieves the imageNode and extracts that fileNode and make a copy of it
+     * The crops is removed, uri is changed to used to one from the ImageNode
+     * The imageFile.id
+     * @param tx
+     * @param dragState
+     */
+    handleNodeDrop(tx, dragState) {
+        const teaserNode = this.props.node
+        if (dragState.sourceSelection) {
+            try {
+                const draggedNodeId = dragState.sourceSelection.nodeId
+                const doc = this.context.editorSession.getDocument()
+                const draggedNode = doc.get(draggedNodeId)
+                if (draggedNode && draggedNode.type === 'ximimage') {
+                    const imageFile = draggedNode.imageFile
+                    const imageNode = doc.get(imageFile)
+                    const newFileNode = documentHelpers.copyNode(imageNode)[0]
+                    newFileNode.parentNodeId = teaserNode.id
+                    delete newFileNode.id
+                    let imageFileNode = tx.create(newFileNode)
+                    tx.set([teaserNode.id, 'imageFile'], imageFileNode.id)
+                    tx.set([teaserNode.id, 'uri'], draggedNode.uri)
+                    tx.set([teaserNode.id, 'crops'], [])
+                }
+            } catch(_) {
+
+            }
+
+        }
+    }
+
+    handleUriDrop(tx, dropData) {
+        this.shouldDownloadMetadataForImageUri = true
+        // Fetch the image
+        const uuid = dropData.uuid
+        const nodeId = idGenerator()
+        const teaserNode = this.props.node
+
+        if (!dropData.uuid) {
+            throw new Error('Unsupported data. UUID must exist')
+        }
+
+        const imageFileNode = {
+            parentNodeId: nodeId,
+            type: 'npfile',
+            imType: 'x-im/image',
+            uuid: uuid,
+            sourceUUID: uuid,
+        }
+
+        // Create file node for the image
+        let imageFile = tx.create(imageFileNode)
+
+        tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+
+    }
+
+
+    /**
+     * This method is used when a file is dropped on top of the teaser
+     * It will create a fileNode and update the teasernode with
+     * the filenode property, all done in a provided transaction
+     * @param tx
+     * @param dragState
+     */
+    handleNewImage(tx, dragState) {
+        const file = dragState.data.files[0] // Teaser only supports one image, take the first one
+        const teaserNode = this.props.node
         // TODO: we need to get the file instance through to the
         // real document
         let imageFile = tx.create({
@@ -205,6 +304,20 @@ class XimteaserComponent extends Component {
         setTimeout(() => {
             this.context.editorSession.fileManager.sync()
         })
+    }
+
+    isFileDrop(dragData) {
+        if (dragData.files && dragData.files.length > 0) {
+            return true
+        }
+        return false
+    }
+
+    isUriDrop(dragData) {
+        if (dragData.uris && dragData.uris.length > 0) {
+            return true
+        }
+        return false
     }
 
 }

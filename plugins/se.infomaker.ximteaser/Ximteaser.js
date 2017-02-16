@@ -1,4 +1,4 @@
-import {BlockNode} from 'substance'
+import {BlockNode, DefaultDOMElement} from 'substance'
 import {api} from 'writer'
 class Ximteaser extends BlockNode {
 
@@ -36,22 +36,68 @@ class Ximteaser extends BlockNode {
             tx.set([this.id, 'height'], height ? height.textContent : '')
         }, {history: false})
     }
+
+    /**
+     * Fetchpayload is used when inserting an existing image with an UUID into the teaser.
+     * @param context
+     * @param cb
+     */
+    fetchPayload(context, cb) {
+        // const doc = api.editorSession.getDocument()
+        const fileNode = this.getImageFile()
+
+        // If the fileNode contains a sourceUUID it's an existing item
+        // from the relation plugin
+        // Create a newsml importer and use the same importer as when opening an article
+        if (fileNode.sourceUUID) {
+            api.router.get('/api/newsitem/' + fileNode.uuid, {imType: 'x-im/article'})
+                .then(response => api.router.checkForOKStatus(response))
+                .then(response => response.text())
+                .then((xmlString) => {
+
+                    // Create a default DOMElement for the image Newsitem
+                    const imageNewsItemDocument = DefaultDOMElement.parseXML(xmlString)
+                    const imageNewsItem = imageNewsItemDocument[0]
+
+                    // Find the object element in the newsitem
+                    let imageObjectElement = imageNewsItem.find('contentMeta > metadata > object[type="x-im/image"]')
+                    const width = imageNewsItem.find('contentMeta > metadata > object > data > width')
+                    const height = imageNewsItem.find('contentMeta > metadata > object > data > height')
+
+
+
+                    let node = {}
+                    const uri = imageNewsItem.find('itemMetaExtProperty[type="imext:uri"]').attr('value')
+                    node.uri = uri
+                    node.width = Number(width.textContent)
+                    node.height = Number(height.textContent)
+
+                    cb(null, node)
+                })
+                .catch((e) => {
+                    cb(e)
+                })
+        }
+
+
+    }
 }
 
+Ximteaser.isResource = true
 Ximteaser.define({
     type: 'ximteaser',
     dataType: {type: 'string', optional: false},
-    imageFile: { type: 'file', optional: true },
+    imageFile: {type: 'file', optional: true},
     uuid: {type: 'string', optional: true},
-    uri: { type: 'string', optional: true },
+    uri: {type: 'string', optional: true},
 
-    title: {type: 'string', optional: false, default: '' },
-    subject: {type: 'string', optional: false, default: '' },
-    text: {type: 'string', optional: false, default: '' },
+    title: {type: 'string', optional: false, default: ''},
+    subject: {type: 'string', optional: false, default: ''},
+    text: {type: 'string', optional: false, default: ''},
 
-    width: {type: 'number', optional: true },
-    height: {type: 'number', optional: true },
-    crops: { type: 'object', default: [] }
+    width: {type: 'number', optional: true},
+    height: {type: 'number', optional: true},
+    crops: {type: 'object', default: []}
 })
 
 export default Ximteaser
