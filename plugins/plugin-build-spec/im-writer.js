@@ -9,8 +9,7 @@ import XImAuthor from "../se.infomaker.ximauthor/index";
 import YoutubeEmbed from "../se.infomaker.youtubeembed/index";
 import ContentRelations from "../se.infomaker.contentrelations/index";
 import History from "../se.infomaker.history/index";
-import ChannelSelector from "../se.infomaker.hdsds.channelselector/index";
-import PublicationChannel from "../se.infomaker.mitm.publicationchannel/index";
+import PublicationChannel from "../se.infomaker.infomaker.publicationchannel/index";
 import MitmTags from "../se.infomaker.mitm.tags/index";
 import XimTags from '../se.infomaker.tags/index';
 import DefaultvalidationPackage from "../se.infomaker.defaultvalidation/DefaultvalidationPackage";
@@ -60,7 +59,6 @@ import NewspilotJob from "../se.infomaker.newspilot.job/index";
     History()
     XImPdf()
     DefaultvalidationPackage()
-    ChannelSelector()
     PublicationChannel()
     ContentProfile()
     XImStory()
@@ -69,7 +67,7 @@ import NewspilotJob from "../se.infomaker.newspilot.job/index";
     Category()
     Channel()
     XImSection()
-    
+
     // Textstyles
     BlockQuotePackage()
     ParagraphPackage()

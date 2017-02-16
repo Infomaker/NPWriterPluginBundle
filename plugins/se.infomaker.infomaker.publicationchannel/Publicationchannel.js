@@ -1,7 +1,7 @@
 import PublicationChannelComponent from './PublicationchannelComponent'
 
 export default {
-    id: 'se.infomaker.mitm.publicationchannel',
+    id: 'se.infomaker.infomaker.publicationchannel',
     name: 'publicationchannel',
 
     configure: function(config) {
@@ -26,7 +26,7 @@ export default {
             sv: 'Välj huvudkanal'
         })
 
-        config.addLabel('publicationchannel-mainChannel-warning', {
+        config.addLabel('Please choose main publication channel before sharing with other channels', {
             en: 'Please choose main publication channel before sharing with other channels',
             sv: 'Vänligen välj huvudkanal innan delning med andra kanaler'
         })

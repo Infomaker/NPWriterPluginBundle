@@ -17,13 +17,14 @@ class PublicationchannelComponent extends Component {
             this.clearAllChannels()
         })
 
-        this.refs.dropdownButton.el.el.addEventListener('blur', () => {
-            setTimeout(() => {
-                this.hideMenu()
-            }, 50)
+        if (this.state.useMainChannel === true) {
+            this.refs.dropdownButton.el.el.addEventListener('blur', () => {
+                setTimeout(() => {
+                    this.hideMenu()
+                }, 50)
 
-        })
-
+            })
+        }
     }
 
     /**
@@ -34,12 +35,12 @@ class PublicationchannelComponent extends Component {
         var activeChannelCount = 0,
             currentChannels = this.context.api.newsItem.getChannels(),
             channels = this.context.api.getConfigValue(
-                'se.infomaker.mitm.publicationchannel',
+                'se.infomaker.infomaker.publicationchannel',
                 'publicationchannels'
             ),
             mainChannel = null,
             useMainChannel = this.context.api.getConfigValue(
-                'se.infomaker.mitm.publicationchannel',
+                'se.infomaker.infomaker.publicationchannel',
                 'useMainChannel'
             )
 
