@@ -9,7 +9,7 @@ import XImAuthor from '../se.infomaker.ximauthor/index'
 import YoutubeEmbed from '../se.infomaker.youtubeembed/index'
 import ContentRelations from '../se.infomaker.contentrelations/index'
 import History from '../se.infomaker.history/index'
-import ChannelSelector from '../se.infomaker.hdsds.channelselector/index'
+import PublicationChannel from '../se.infomaker.infomaker.publicationchannel/index'
 import DefaultvalidationPackage from '../se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import XImPdf from '../se.infomaker.ximpdf/index'
 import XimTags from '../se.infomaker.tags'
@@ -54,7 +54,7 @@ import Factbody from '../textstyles/se.infomaker.factbody/Factbody'
     History()
     XImPdf()
     DefaultvalidationPackage()
-    ChannelSelector()
+    PublicationChannel()
     XimTags()
     Channel()
     XImStory()
