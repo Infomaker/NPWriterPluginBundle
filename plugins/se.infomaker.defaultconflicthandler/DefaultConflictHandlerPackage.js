@@ -9,18 +9,18 @@ const conflictHandlerPackage = {
         config.registerConflictHandler("server.conflict", DefaultConflictHandler)
 
         config.addLabel("conflicthandler-header", {
-            en: "The article cannot be saved",
-            sv: "Det går inte att spara artikeln"
+            en: "Whoops, it looks like someone else has made changes to the article",
+            sv: "Hoppsan, det verkar som om någon annan gjort ändringar i artikeln"
         })
 
         config.addLabel("conflicthandler-description", {
-            en: "The article has been updated by someone else your changes must be copied manually.",
-            sv: "Artikeln har uppdaterats av någon annan och dina ändringar måste kopieras manuellt."
+            en: "It's not possible to save your changes, these have to be copied manually to the new version.",
+            sv: "Det går inte att spara dina ändringar, dessa måste kopieras manuellt till den nya versionen."
         })
 
         config.addLabel("conflicthandler-commandtext", {
-            en: "Click here to open the most recent article in a new window",
-            sv: "Tryck här för att öppna den senast sparade artikeln"
+            en: "Click here to open the new version",
+            sv: "Tryck här för att öppna den nya versionen"
         })
     }
 }

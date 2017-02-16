@@ -11,8 +11,12 @@
     color: #999;
   }
 
-  a {
+  &>a {
     cursor: pointer;
+  }
+
+  &>p {
+    margin: 0.8rem;
   }
 
 }
