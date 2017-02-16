@@ -29,13 +29,14 @@ class DefaultConflictHandler extends Component {
     resolveConflict() {
         api.history.deleteHistory(this.props.uuid)
         api.article.openInNewWindow(this.props.uuid)
+        this.props.api.newsItem.invalidate()
         if (typeof this.props.close === 'function') {
             this.props.close()
         }
     }
 
     onClose() {
-
+        this.props.api.newsItem.invalidate()
     }
 
 }
