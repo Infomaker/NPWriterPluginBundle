@@ -296,14 +296,14 @@ class XimteaserComponent extends Component {
             type: 'npfile',
             imType: 'x-im/image',
             mimeType: file.type,
+            sourceFile: file
         })
-        // HACK: binary data does not survive tx.create()
-        imageFile.sourceFile = file
+
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
         // HACK: fileUpload will be done by CollabSession
         setTimeout(() => {
             this.context.editorSession.fileManager.sync()
-        })
+        },300)
     }
 
     isFileDrop(dragData) {

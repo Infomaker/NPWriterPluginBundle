@@ -92,8 +92,8 @@ class Ximimage extends BlockNode {
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
             tx.set([this.id, 'caption'], text ? text.textContent : '')
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')
-            tx.set([this.id, 'width'], width ? width.textContent : '')
-            tx.set([this.id, 'height'], height ? height.textContent : '')
+            tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
+            tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
             tx.set([this.id, 'authors'], convertedAuthors)
         }, { history: false })
 
