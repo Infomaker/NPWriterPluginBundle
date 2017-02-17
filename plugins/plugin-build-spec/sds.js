@@ -12,7 +12,7 @@ import History from '../se.infomaker.history/index'
 import PublicationChannel from '../se.infomaker.infomaker.publicationchannel/index'
 import DefaultvalidationPackage from '../se.infomaker.defaultvalidation/DefaultvalidationPackage'
 import XImPdf from '../se.infomaker.ximpdf/index'
-import XimTags from '../se.infomaker.tags'
+import XimTags from '../se.infomaker.hdsds.tags'
 import Channel from '../se.infomaker.ximchannel/index'
 import XImStory from '../se.infomaker.ximstory/index'
 
