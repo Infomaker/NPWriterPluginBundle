@@ -10,14 +10,14 @@ class SocialembedCommand extends WriterCommand {
             if(!currentNode) {
                 return false
             }
-            const currentNodeId = currentNode[0]
-            const previousNode = api.document.getPreviousNode(currentNodeId)
-            api.document.deleteNode('socialembed', previousNode)
+            const doc = params.editorSession.getDocument()
+            api.document.deleteNode('socialembed', doc.get(currentNode[0]))
         }
 
         params.editorSession.transaction((tx) => {
-            insertEmbed(tx, params.url)
+            const embedNodeId = insertEmbed(tx, params.url)
         })
+
         return true
     }
 }

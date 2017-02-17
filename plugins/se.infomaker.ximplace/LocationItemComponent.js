@@ -111,13 +111,13 @@ class LocationItemComponent extends Component {
 
     }
 
-    toggleTooltip(ev) {
+    toggleTooltip() {
         this.refs.tooltip.extendProps({
             show: true
         })
     }
 
-    hideTooltip(ev) {
+    hideTooltip() {
         this.refs.tooltip.extendProps({
             show: false
         })
