@@ -6,7 +6,7 @@ class TagEditBaseComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'ximtags'
+        this.name = 'hdsdstags'
     }
 
     saveConcept(uuid, newsItem) {
@@ -111,26 +111,26 @@ class TagEditBaseComponent extends Component {
         const personBtn = $$('button')
             .append($$(Icon, {icon: 'fa-user'}))
             .append($$('span')
-                .append(this.getLabel('ximtags-Person')))
+                .append(this.getLabel('hdsds-tagsPerson')))
             .on('click', this.createPerson)
 
         const organisationBtn = $$('button')
             .append($$(Icon, {icon: 'fa-sitemap'}))
             .append($$('span')
-                .append(this.getLabel('ximtags-Organization')))
+                .append(this.getLabel('hdsds-tagsOrganization')))
             .on('click', this.createOrganisation)
 
-        el.append($$('small').addClass('text-muted').append(this.getLabel('ximtags-type-question-label')))
+        el.append($$('small').addClass('text-muted').append(this.getLabel('hdsds-tagstype-question-label')))
         el.append([personBtn, organisationBtn])
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
-                this.getLabel("ximtags-name_already_in_use") + ": " + this.props.tag.value)))
+                this.getLabel("hdsds-tagsname_already_in_use") + ": " + this.props.tag.value)))
         }
 
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
-                this.getLabel("ximtags-error-save"))))
+                this.getLabel("hdsds-tagserror-save"))))
         }
 
         return el

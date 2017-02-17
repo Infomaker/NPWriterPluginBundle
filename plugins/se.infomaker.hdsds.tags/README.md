@@ -4,8 +4,8 @@ This plugin handles searching and selecting "tags".
 ## Plugin configuration
 ```
 {
-    "id": "se.infomaker.tags",
-    "name": "ximtags",
+    "id": "se.infomaker.hdsds.tags",
+    "name": "hdsdsmtags",
     "url": "http://localhost:5001/index.js",
     "style": "http://localhost:5001/style.css",
     "mandatory": false,

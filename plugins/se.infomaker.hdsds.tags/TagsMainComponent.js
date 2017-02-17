@@ -10,7 +10,7 @@ class TagsMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'ximtags'
+        this.name = 'hdsdstags'
     }
 
     getInitialState() {
@@ -27,7 +27,7 @@ class TagsMainComponent extends Component {
 
     render($$) {
 
-        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('ximtags-title')))
+        const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('hdsds-tagstitle')))
 
         const SearchComponent = this.context.componentRegistry.get('form-search')
 
@@ -36,7 +36,7 @@ class TagsMainComponent extends Component {
             searchUrl: '/api/search/concepts/tags?q=',
             onSelect: this.addTag.bind(this),
             onCreate: this.createTag.bind(this),
-            placeholderText: this.getLabel('ximtags-search_placeholder'),
+            placeholderText: this.getLabel('hdsds-tagssearch_placeholder'),
             createAllowed: true
         }).ref('searchComponent')
 
@@ -97,7 +97,7 @@ class TagsMainComponent extends Component {
                     createOrganisation: this.createOrganisation.bind(this)
                 }, {
                     primary: false,
-                    title: this.getLabel('ximtags-create') + " " + tag.inputValue,
+                    title: this.getLabel('hdsds-tagscreate') + " " + tag.inputValue,
                     global: true
                 })
             } else {
@@ -126,8 +126,8 @@ class TagsMainComponent extends Component {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.getLabel('ximtags-save'),
-            title: this.getLabel('ximtags-create') + " " + inputValue,
+            primary: this.getLabel('hdsds-tagssave'),
+            title: this.getLabel('hdsds-tagscreate') + " " + inputValue,
             icon: 'fa-user',
             global: true
         })
@@ -148,8 +148,8 @@ class TagsMainComponent extends Component {
             tag: loadedTag,
             close: this.closeFromDialog.bind(this)
         }, {
-            primary: this.getLabel('ximtags-save'),
-            title: this.getLabel('ximtags-create') + " " + inputValue,
+            primary: this.getLabel('hdsds-tagssave'),
+            title: this.getLabel('hdsds-tagscreate') + " " + inputValue,
             icon: 'fa-sitemap',
             global: true
         })

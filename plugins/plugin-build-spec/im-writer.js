@@ -11,7 +11,8 @@ import ContentRelations from "../se.infomaker.contentrelations/index";
 import History from "../se.infomaker.history/index";
 import PublicationChannel from "../se.infomaker.infomaker.publicationchannel/index";
 import MitmTags from "../se.infomaker.mitm.tags/index";
-import XimTags from '../se.infomaker.tags/index';
+import HdsdsTags from '../se.infomaker.hdsds.tags/index';
+import XimTags from '../se.infomaker.ximtags/index';
 import DefaultvalidationPackage from "../se.infomaker.defaultvalidation/DefaultvalidationPackage";
 import HeaderEditor from "../se.infomaker.headereditor/HeaderEditorPackage";
 import XImPdf from "../se.infomaker.ximpdf/index";
@@ -64,6 +65,7 @@ import NewspilotJob from "../se.infomaker.newspilot.job/index";
     ContentProfile()
     XImStory()
     MitmTags()
+    HdsdsTags()
     XimTags()
     Category()
     Channel()
