@@ -15,7 +15,7 @@ class SocialembedCommand extends WriterCommand {
         }
 
         params.editorSession.transaction((tx) => {
-            const embedNodeId = insertEmbed(tx, params.url)
+            insertEmbed(tx, params.url)
         })
 
         return true

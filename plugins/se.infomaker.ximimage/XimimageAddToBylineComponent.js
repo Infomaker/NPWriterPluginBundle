@@ -96,7 +96,6 @@ class XimimageAddToBylineComponent extends Component {
 
         let twitterHandle
         if(author.isLoaded && author.links && author.links.link) {
-            const link = author.links.link
             const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
             const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
             twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)

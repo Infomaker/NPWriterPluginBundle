@@ -49,7 +49,7 @@ class Ximteaser extends BlockNode {
         // If the fileNode contains a sourceUUID it's an existing item
         // from the relation plugin
         // Create a newsml importer and use the same importer as when opening an article
-        if (fileNode.sourceUUID) {
+        if (fileNode && fileNode.sourceUUID) {
             api.router.get('/api/newsitem/' + fileNode.uuid, {imType: 'x-im/article'})
                 .then(response => api.router.checkForOKStatus(response))
                 .then(response => response.text())
@@ -60,15 +60,11 @@ class Ximteaser extends BlockNode {
                     const imageNewsItem = imageNewsItemDocument[0]
 
                     // Find the object element in the newsitem
-                    let imageObjectElement = imageNewsItem.find('contentMeta > metadata > object[type="x-im/image"]')
                     const width = imageNewsItem.find('contentMeta > metadata > object > data > width')
                     const height = imageNewsItem.find('contentMeta > metadata > object > data > height')
 
-
-
                     let node = {}
-                    const uri = imageNewsItem.find('itemMetaExtProperty[type="imext:uri"]').attr('value')
-                    node.uri = uri
+                    node.uri = imageNewsItem.find('itemMetaExtProperty[type="imext:uri"]').attr('value')
                     node.width = Number(width.textContent)
                     node.height = Number(height.textContent)
 

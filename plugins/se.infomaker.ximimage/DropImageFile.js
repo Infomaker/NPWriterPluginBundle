@@ -12,17 +12,25 @@ class DropImageFile extends DragAndDropHandler {
         const nodeId = insertImage(tx, params.file)
         setTimeout(() => {
             api.editorSession.fileManager.sync()
-                .catch((e) => {
+                .catch((err) => {
                     // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
-                    const document = api.editorSession.getDocument()
-                    const node = document.get(nodeId),
-                        imageFile = node.imageFile
-                    api.document.deleteNode('ximimage', node)
-                    if (imageFile) {
-                        api.editorSession.transaction((tx) => {
-                            tx.delete(imageFile)
-                        })
+                    let errors = [err.message]
+                    try {
+                        const document = api.editorSession.getDocument()
+                        const node = document.get(nodeId),
+                            imageFile = node.imageFile
+                        api.document.deleteNode('ximimage', node)
+                        if (imageFile) {
+                            api.editorSession.transaction((tx) => {
+                                tx.delete(imageFile)
+                            })
+                        }
                     }
+                    catch(e) {
+                        errors.push(e.message)
+                    }
+                    api.ui.showNotification('ximimage', 'Error', errors.join(' - '))
+
                 })
 
         }, 300)

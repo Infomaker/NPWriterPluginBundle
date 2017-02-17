@@ -1,4 +1,4 @@
-import { jxon, api, NilUUID, lodash } from 'writer'
+import { jxon, api, lodash } from 'writer'
 import { DefaultDOMElement, BlockNode } from 'substance'
 
 
@@ -52,8 +52,6 @@ class Ximimage extends BlockNode {
         if(!converterRegistry) {
             converterRegistry = context.editorSession.converterRegistry
         }
-        // Create a newsML importer
-        const newsMLImporter = this.getNewsMLImporter()
 
         // Get the converter for newsml
         const newsMLConverters = converterRegistry.get('newsml')
@@ -66,6 +64,7 @@ class Ximimage extends BlockNode {
      * This method is called from NPFile when file is uploaded.
      *
      * @param {DOMDoucment} newsItemDOMDocument
+     * @param context
      */
     handleDOMDocument(newsItemDOMDocument, context) {
         const newsItemDOMElement = DefaultDOMElement.parseXML(newsItemDOMDocument.documentElement.outerHTML)
@@ -150,7 +149,7 @@ class Ximimage extends BlockNode {
 
     }
     findAttribute(object, attribute) {
-        var match;
+        let match
 
         function iterateObject(target, name) {
             Object.keys(target).forEach(function (key) {

@@ -121,15 +121,8 @@ class ImageDisplay extends Component {
                 removeAuthor: () => (author) => {
                     this.props.node.removeAuthor(author)
                 },
-                addAuthor: (author, cbDone) => {
+                addAuthor: (author) => {
                     this.props.node.addAuthor(author)
-
-                    // const authors = this.props.node.authors
-                    // authors.push(author)
-
-                    // this.props.node.setAuthors(authors)
-
-                    // cbDone();
                 }
             },
             {
