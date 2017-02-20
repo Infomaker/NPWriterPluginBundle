@@ -43,9 +43,11 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
  */
 // import NewspilotJob from "../se.infomaker.newspilot.job/index";
 
+import UATrackerIndex from '../se.infomaker.uatracker/index'
 
 (() => {
 
+    UATrackerIndex()
     XImPlace()
     TextAnalyzer()
     XImimage()
