@@ -9,10 +9,10 @@ import XImAuthor from "../se.infomaker.ximauthor/index";
 import YoutubeEmbed from "../se.infomaker.youtubeembed/index";
 import ContentRelations from "../se.infomaker.contentrelations/index";
 import History from "../se.infomaker.history/index";
-import ChannelSelector from "../se.infomaker.hdsds.channelselector/index";
-import PublicationChannel from "../se.infomaker.mitm.publicationchannel/index";
+import PublicationChannel from "../se.infomaker.infomaker.publicationchannel/index";
 import MitmTags from "../se.infomaker.mitm.tags/index";
-import XimTags from '../se.infomaker.tags/index';
+import HdsdsTags from '../se.infomaker.hdsds.tags/index';
+import XimTags from '../se.infomaker.ximtags/index';
 import DefaultvalidationPackage from "../se.infomaker.defaultvalidation/DefaultvalidationPackage";
 import HeaderEditor from "../se.infomaker.headereditor/HeaderEditorPackage";
 import XImPdf from "../se.infomaker.ximpdf/index";
@@ -21,6 +21,7 @@ import XImStory from "../se.infomaker.ximstory/index";
 import Category from "../se.infomaker.ximcategory/index";
 import Channel from "../se.infomaker.ximchannel/index";
 import XImSection from "../se.infomaker.ximsection/index";
+import DefaultConflictHandler from "../se.infomaker.defaultconflicthandler/DefaultConflictHandlerPackage"
 /**
  * Text styles
  */
@@ -62,15 +63,16 @@ import UATrackerIndex from '../se.infomaker.uatracker/index'
     History()
     XImPdf()
     DefaultvalidationPackage()
-    ChannelSelector()
     PublicationChannel()
     ContentProfile()
     XImStory()
     MitmTags()
+    HdsdsTags()
     XimTags()
     Category()
     Channel()
     XImSection()
+    DefaultConflictHandler()
     
     // Textstyles
     BlockQuotePackage()

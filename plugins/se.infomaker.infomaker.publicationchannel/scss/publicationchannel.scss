@@ -70,15 +70,10 @@
 
     .sc-sharedchannels {
         .tag-list__item {
+            position: relative;
             width: 60px;
             height: 32px;
             opacity: 0.8;
-
-            &:hover {
-                border-color: #bbb;
-                cursor: pointer;
-                opacity: 0.9;
-            }
 
             &:before {
                 /* On top of img to make sure tooltips work over img inside list item */
@@ -100,6 +95,17 @@
                 font-weight: 100;
             }
 
+            &:hover {
+                border-color: #bbb;
+                cursor: pointer;
+                opacity: 0.9;
+
+                &:after {
+                    opacity: 1;
+                    content: "\f067";
+                }
+            }
+
             &.active {
                 background: #eaeaea;
                 border-color: #bbb;
@@ -107,6 +113,7 @@
 
                 &:after {
                     opacity: 0.9;
+                    content: "\f00c";
                 }
 
                 &:hover {
@@ -138,9 +145,21 @@
             }
 
             img {
+                position: absolute;
+                top: 6px;
+                left: 12px;
                 vertical-align: middle;
-                margin: -2px 0 0 12px;
                 border-radius: 2px;
+                width: 18px;
+                height: 18px;
+            }
+
+            &.inactive {
+                &:hover {
+                    img:last-child {
+                        display: none;
+                    }
+                }
             }
         }
     }
@@ -168,6 +187,8 @@
         img {
             margin-right: 12px;
             vertical-align: middle;
+            width: 18px;
+            height: 18px;
         }
 
         div {

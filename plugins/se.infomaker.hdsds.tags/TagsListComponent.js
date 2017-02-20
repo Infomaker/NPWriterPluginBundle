@@ -5,7 +5,7 @@ class TagsListComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'ximtags';
+        this.name = 'hdsdstags';
     }
 
     render($$) {

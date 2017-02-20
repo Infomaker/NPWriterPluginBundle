@@ -9,7 +9,7 @@ class TagsItemComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'ximtags'
+        this.name = 'hdsdstags'
     }
 
 
@@ -68,7 +68,7 @@ class TagsItemComponent extends Component {
             if (this.state.couldNotLoad) {
                 displayNameEl.addClass('tag-item__title tag-item__title--no-avatar tag-item__title--notexisting')
                     .append(tag.title)
-                    .attr('title', this.getLabel('ximtags-could_not_load_uuid') + tag.uuid)
+                    .attr('title', this.getLabel('hdsds-tagscould_not_load_uuid') + tag.uuid)
                 displayName = tag.title
             } else {
                 displayName = this.state.loadedTag.concept.name
@@ -105,7 +105,7 @@ class TagsItemComponent extends Component {
 
             const deleteButton = $$('span').append($$(Icon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
-                .attr('title', this.getLabel('ximtags-Remove_from_article')))
+                .attr('title', this.getLabel('hdsds-tagsRemove_from_article')))
                 .on('click', () => {
                     this.removeTag(tag)
                 })
@@ -158,8 +158,8 @@ class TagsItemComponent extends Component {
                 couldNotLoad: this.state.couldNotLoad
             },
             {
-                primary: this.getLabel('ximtags-save'),
-                title: this.getLabel('ximtags-edit') + " " + title,
+                primary: this.getLabel('hdsds-tagssave'),
+                title: this.getLabel('hdsds-tagsedit') + " " + title,
                 global: true
             })
     }

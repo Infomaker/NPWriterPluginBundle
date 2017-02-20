@@ -2,98 +2,98 @@ import './scss/tags.scss'
 import TagsMainComponent from './TagsMainComponent'
 
 export default {
-    id: 'se.infomaker.tags',
-    name: 'ximtags',
+    id: 'se.infomaker.hdsds.tags',
+    name: 'hdsdstags',
     vendor: 'infomaker.se',
 
     configure: function(config) {
 
-        config.addLabel('ximtags-could_not_load_uuid', {
+        config.addLabel('hdsds-tagscould_not_load_uuid', {
             en: 'This item could not be loaded. UUID: ',
             sv: 'Detta objekt kunde inte laddas in. UUID: '
         })
 
-        config.addLabel('ximtags-title',{
+        config.addLabel('hdsds-tagstitle',{
             sv: 'Taggar',
             en: 'Tags'
         })
 
-        config.addLabel('ximtags-search_placeholder',{
+        config.addLabel('hdsds-tagssearch_placeholder',{
             sv: 'Sök taggar',
             en: 'Search tags'
         })
 
-        config.addLabel('ximtags-create',{
+        config.addLabel('hdsds-tagscreate',{
             en: 'Create',
             sv: 'Skapa'
         })
 
-        config.addLabel('ximtags-save',{
+        config.addLabel('hdsds-tagssave',{
             en: 'Save',
             sv: 'Spara'
         })
 
-        config.addLabel('ximtags-edit',{
+        config.addLabel('hdsds-tagsedit',{
             en: 'Edit',
             sv: 'Redigera'
         })
 
-        config.addLabel('ximtags-Person',{
+        config.addLabel('hdsds-tagsPerson',{
             en: 'Person',
             sv: 'Person'
         })
 
-        config.addLabel('ximtags-Organization',{
+        config.addLabel('hdsds-tagsOrganization',{
             en: 'Organization',
             sv: 'Organisation'
         })
 
-        config.addLabel('ximtags-Topic', {
+        config.addLabel('hdsds-tagsTopic', {
             en: 'Topic',
             sv: 'Ämne'
         })
 
-        config.addLabel('ximtags-type-question-label', {
+        config.addLabel('hdsds-tagstype-question-label', {
             en: 'What kind of tag do you want to create?',
             sv: 'Vilken typ vill du skapa?'
         })
 
-        config.addLabel('ximtags-name_already_in_use', {
+        config.addLabel('hdsds-tagsname_already_in_use', {
             en: 'Please note that this name is already in use',
             sv: 'Observera att namnet redan används'
         })
 
-        config.addLabel('ximtags-error-save', {
+        config.addLabel('hdsds-tagserror-save', {
             en: 'Error when saving tag',
             sv: 'Fel vid sparande av tag'
         })
 
-        config.addLabel('ximtags-Short_description', {
+        config.addLabel('hdsds-tagsShort_description', {
             en: 'Short description',
             sv: 'Kort beskrivning'
         })
 
-        config.addLabel('ximtags-Long_description', {
+        config.addLabel('hdsds-tagsLong_description', {
             en: 'Long description',
             sv: 'Lång beskrivning'
         })
 
-        config.addLabel('ximtags-Website_url', {
+        config.addLabel('hdsds-tagsWebsite_url', {
             en: 'Website url',
             sv: 'Länk till webbsida'
         })
 
-        config.addLabel('ximtags-Twitter_url', {
+        config.addLabel('hdsds-tagsTwitter_url', {
             en: 'Twitter url',
             sv: 'Länk till Twitter'
         })
 
-        config.addLabel('ximtags-Facebook_url', {
+        config.addLabel('hdsds-tagsFacebook_url', {
             en: 'Facebook url',
             sv: 'Länk till Facebook'
         })
 
-        config.addLabel('ximtags-Remove_from_article', {
+        config.addLabel('hdsds-tagsRemove_from_article', {
             en: 'Remove from article',
             sv: 'Ta bort från artikel'
         })
