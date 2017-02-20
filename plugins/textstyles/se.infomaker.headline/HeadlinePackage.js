@@ -16,6 +16,7 @@ const headlinePackage = {
         })
 
         const headlineLbl = {
+            nl: 'Titel',
             en: 'Headline',
             de: 'Headline',
             sv: 'Rubrik'

@@ -22,10 +22,12 @@ export default {
             data: {type: PreambleNode.type}
         })
         config.addLabel('preamble', {
+            nl: 'Inleiding',
             en: 'Preamble',
             sv: 'Ingress'
         })
         config.addLabel('preamble.content', {
+            nl: 'Inleiding',
             en: 'Preamble',
             sv: 'Ingress'
         })
