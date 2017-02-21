@@ -186,10 +186,12 @@ class XimteaserComponent extends Component {
 
     /* Custom dropzone protocol */
     getDropzoneSpecs() {
+        console.log("Dropzone");
+        const label = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
         return [
             {
                 component: this,
-                message: 'Replace Image',
+                message: this.getLabel(label),
                 dropParams: {
                     action: 'replace-image',
                     nodeId: this.props.node.id,
