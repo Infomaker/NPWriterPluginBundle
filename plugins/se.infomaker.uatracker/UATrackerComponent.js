@@ -126,7 +126,7 @@ class UATrackerComponent extends Component {
     updateIcon(users) {
         if (users.length > 1) {
             this.props.popover.setIcon('fa-group')
-            this.props.popover.setStatusText(users.length + this.getLabel(' users connected'))
+            this.props.popover.setStatusText(users.length + this.getLabel('connected-users-qty-connected'))
         } else {
             this.props.popover.setIcon('fa-user')
             this.props.popover.setStatusText(this.state.name)
