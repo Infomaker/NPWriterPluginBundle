@@ -1,29 +1,3 @@
-.sc-ximimage {
-    margin-bottom:10px;
-}
-
-/* Show actions depending on isolated node state */
-
-.sc-isolated-node:hover {
-    .sc-ximimage {
-        box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
-    }
-}
-
-.sc-isolated-node.sm-selected,
-.sc-isolated-node.sm-default-style.sm-focused {
-    .sc-ximimage {
-        box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14902) 0px 1px 10px 0px;
-        background: rgba(222, 235, 255, 0.6);
-    }
-}
-
-.sc-isolated-node.sm-default-style.sm-focused {
-    & > .se-container {
-        outline: none;
-    }
-}
-
 #x-im-image-fileupload {
     display: none;
 }
