@@ -169,7 +169,8 @@ class TagsItemComponent extends Component {
                     global: true
                 })
         } else {
-            console.log("Unsupported tag type", type)
+            // Handle somehow?
+            // console.log("Unsupported tag type", type)
         }
     }
 
