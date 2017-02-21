@@ -16,6 +16,15 @@ class YoutubeEmbedComponent extends Component {
         api.editorSession.off(this)
     }
 
+    grabFocus() {
+        let startTime = this.refs.startTime
+        this.context.editorSession.setSelection({
+            type: 'property',
+            path: startTime.getPath(),
+            startOffset: 0
+        })
+    }
+
     render($$) {
         const el = $$('div').addClass('im-blocknode__container im-youtube')
 
