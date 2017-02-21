@@ -12,13 +12,25 @@ class XimteaserComponent extends Component {
         this.context.editorSession.off(this)
     }
 
+    grabFocus() {
+        let title = this.refs.title
+        if (title) {
+            this.context.editorSession.setSelection({
+                type: 'property',
+                path: title.getPath(),
+                startOffset: 0,
+                surfaceId: title._surfaceId
+            })
+        }
+    }
+
     _onDocumentChange(change) {
         if (change.isAffected(this.props.node.id)) {
             this.rerender()
         } else if (change.isAffected(this.props.node.imageFile)) {
             this.rerender()
             const imageNode = this.context.api.doc.get(this.props.node.imageFile)
-            if(imageNode && imageNode.sourceUUID && this.shouldDownloadMetadataForImageUri ) {
+            if (imageNode && imageNode.sourceUUID && this.shouldDownloadMetadataForImageUri) {
                 this.props.node.fetchPayload(this.context, (err, node) => {
                     this.context.editorSession.transaction((tx) => {
                         tx.set([this.props.node.id, 'uri'], node.uri)
@@ -245,7 +257,7 @@ class XimteaserComponent extends Component {
                     tx.set([teaserNode.id, 'uri'], draggedNode.uri)
                     tx.set([teaserNode.id, 'crops'], [])
                 }
-            } catch(_) {
+            } catch (_) {
 
             }
 
@@ -303,7 +315,7 @@ class XimteaserComponent extends Component {
         // HACK: fileUpload will be done by CollabSession
         setTimeout(() => {
             this.context.editorSession.fileManager.sync()
-        },300)
+        }, 300)
     }
 
     isFileDrop(dragData) {

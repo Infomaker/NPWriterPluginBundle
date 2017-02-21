@@ -22,6 +22,17 @@ class XimimageComponent extends Component {
         }
     }
 
+    grabFocus() {
+        let caption = this.refs.caption
+        if(caption) {
+            this.context.editorSession.setSelection({
+                type: 'property',
+                path: caption.getPath(),
+                startOffset: 0,
+                surfaceId: caption._surfaceId
+            })
+        }
+    }
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage')
