@@ -18,6 +18,18 @@ class XimpdfComponent extends Component {
         }
     }
 
+    grabFocus() {
+        let text = this.refs.text
+        if(text) {
+            const textLength = text.textContent.length // To set selection at the end of the text field
+            this.context.editorSession.setSelection({
+                type: 'property',
+                path: text.getPath(),
+                startOffset: textLength
+            })
+        }
+
+    }
     render($$) {
         const doc = api.doc
         const node = this.props.node
