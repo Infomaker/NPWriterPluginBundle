@@ -169,7 +169,7 @@ class HistoryMainComponent extends Component {
 
     applyVersion(version, article) {
         api.newsItem.setTemporaryId(article.id)
-        api.newsItem.setSource(version.src, null, true)
+        api.newsItem.setSource(version.src, null, article.etag)
 
         api.events.documentChanged(
             'se.infomaker.history',
