@@ -4,6 +4,7 @@ import './scss/publishflow.scss'
 const {Component} = substance
 const {api, moment, event} = writer
 const pluginId = 'se.infomaker.publishflow'
+const TIMEOUT = 30000
 
 class PublishFlowComponent extends Component {
     constructor(...args) {
@@ -428,9 +429,31 @@ class PublishFlowComponent extends Component {
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
+        this._initSaveTimeout()
         api.newsItem.save()
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+    }
+
+    _failTimeout() {
+        this._onDocumentSaveFailed();
+        api.ui.showNotification(
+            'invalidate',
+            api.getLabel("Whoops, the save operation timed out"),
+            api.getLabel("Please try again")
+        );
+    }
+
+    _initSaveTimeout() {
+        this._clearSaveTimeout();
+        this._saveTimeout = setTimeout(this._failTimeout.bind(this), TIMEOUT)
+    }
+
+    _clearSaveTimeout() {
+        if (this._saveTimeout) {
+            clearTimeout(this._saveTimeout)
+            this._saveTimeout = undefined;
+        }
     }
 
     /**
@@ -523,6 +546,8 @@ class PublishFlowComponent extends Component {
      * When save fails, restore previous state and update UI
      */
     _onDocumentSaveFailed() {
+        this._clearSaveTimeout()
+
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
@@ -575,6 +600,8 @@ class PublishFlowComponent extends Component {
      * When saved, update state and UI
      */
     _onDocumentSaved() {
+        this._clearSaveTimeout()
+
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
