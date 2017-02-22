@@ -34,9 +34,9 @@ export default {
             en: '(You)',
             sv: '(Du)'
         })
-        config.addLabel('Forget me', {
-            en: 'Forget me',
-            sv: 'Glöm mig'
+        config.addLabel('Logout', {
+            en: 'Logout',
+            sv: 'Logga ut'
         })
     }
 }

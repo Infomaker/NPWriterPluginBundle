@@ -181,7 +181,7 @@ class UATrackerComponent extends Component {
 
 
         if (this.state.email) {
-            const logoutButton = $$('button').addClass('btn sc-np-btn').append(this.getLabel('Forget me')).on('click', this.logout)
+            const logoutButton = $$('button').addClass('btn sc-np-btn btn-secondary').append(this.getLabel('Logout')).on('click', this.logout)
             el.append(logoutButton)
         }
 
