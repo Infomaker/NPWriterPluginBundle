@@ -70,7 +70,8 @@ export default({
             'historymaincomponent',
             {
                 icon: 'fa-history',
-                align: 'right'
+                align: 'right',
+                sticky: true
             },
             HistoryMainComponent
         )
