@@ -34,5 +34,9 @@ export default {
             en: '(You)',
             sv: '(Du)'
         })
+        config.addLabel('Forget me', {
+            en: 'Forget me',
+            sv: 'Glöm mig'
+        })
     }
 }
