@@ -213,14 +213,14 @@ class XimteaserComponent extends Component {
         if (this.isFileDrop(dragState.data)) {
             // Handle file drop
             this.handleNewImage(tx, dragState)
+        } else if (dragState.nodeDrag) {
+            // Handle internal node drag
+            this.handleNodeDrop(tx, dragState)
         } else if (this.isUriDrop(dragState.data)) {
             const uri = dragState.data.uris[0]
             const dropData = this.getDataFromURL(uri)
             this.handleUriDrop(tx, dropData)
             //Handle URI drop
-        } else if (dragState.nodeDrag) {
-            // Handle internal node drag
-            this.handleNodeDrop(tx, dragState)
         }
 
 
