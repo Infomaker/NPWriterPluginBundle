@@ -87,7 +87,7 @@ Ximteaser.define({
     uuid: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
 
-    title: {type: 'string', optional: false, default: ''},
+    title: {type: 'text', optional: false, default: ''},
     subject: {type: 'string', optional: false, default: ''},
     text: {type: 'string', optional: false, default: ''},
 

@@ -35,7 +35,7 @@ class XimimageComponent extends Component {
     }
     render($$) {
         let node = this.props.node
-        let el = $$('div').addClass('sc-ximimage')
+        let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
 
         el.append(
