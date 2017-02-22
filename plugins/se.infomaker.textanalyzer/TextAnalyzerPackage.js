@@ -18,7 +18,8 @@ export default {
             'textanalyzer',
             {
                 icon: 'fa-info',
-                align: 'right'
+                align: 'right',
+                sticky: true
             },
             TextanalyzerComponent
         )
