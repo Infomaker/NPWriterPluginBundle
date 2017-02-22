@@ -19,7 +19,7 @@ class XimteaserComponent extends Component {
                 type: 'property',
                 path: title.getPath(),
                 startOffset: 0,
-                surfaceId: title._surfaceId
+                surfaceId: title.id
             })
         }
     }

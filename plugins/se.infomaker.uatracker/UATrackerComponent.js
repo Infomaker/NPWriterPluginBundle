@@ -38,7 +38,8 @@ class UATrackerComponent extends Component {
                 api.ui.showDialog(LoginComponent, {login: this.userLogin.bind(this)}, {
                     title: "Logga in",
                     primary: this.getLabel('Continue'),
-                    secondary: false
+                    secondary: false,
+                    disableEscKey: true
                 })
             }
         }
@@ -76,48 +77,23 @@ class UATrackerComponent extends Component {
              */
             const information = {
                 uuid: uuid,
-                timestamp: moment().format('X'),
+                timestamp: moment().format('x'),
                 socketId: this.socket.id,
                 customerKey: customerKey,
                 name: this.state.name,
                 email: this.state.email
             }
 
-
             this.socket.emit('article/opened', information)
 
-            this.socket.on('article/initial-users', (users) => {
+
+            this.socket.on('article/user-change', (users) => {
                 this.extendState({
                     users: users,
                     socketId: this.socket.id
                 })
                 this.updateIcon(users)
             })
-
-            this.socket.on('article/user-connected', (user) => {
-                const allUsers = this.state.users
-                allUsers.push(user)
-                this.updateIcon(allUsers)
-                api.ui.showNotification('se.infomaker.uatracker', this.getLabel('User connected'), user.email + ' has opened this article')
-                this.extendState({
-                    users: allUsers
-                })
-            })
-
-            this.socket.on('article/user-disconnected', (user) => {
-                const allUsers = this.state.users
-                const disconnectedUser = allUsers.find((u) => {
-                    return u.socketId === user.socketId
-                })
-                const idx = this.state.users.indexOf(disconnectedUser)
-                allUsers.splice(idx, 1)
-                this.updateIcon(allUsers)
-                api.ui.showNotification('se.infomaker.uatracker', this.getLabel('User connected'), user.email + ' has closed this article')
-                this.extendState({
-                    users: allUsers
-                })
-            })
-
         })
 
 
@@ -184,8 +160,10 @@ class UATrackerComponent extends Component {
             const container = $$('div').addClass('metadata__container')
             if (user.socketId === this.state.socketId) {
                 item.addClass('current')
-                container.append($$('span').addClass('active-user').append(this.getLabel('(You)')))
+                // container.append($$('span').addClass('active-user').append(this.getLabel('(You)')))
+
             }
+            container.append($$('span').addClass('active-user').append(moment(Number(user.timestamp)).fromNow()))
 
             item.append([
                 avatarEl,
@@ -203,9 +181,7 @@ class UATrackerComponent extends Component {
 
 
         if (this.state.email) {
-
-            const logoutButton = $$('button').addClass('btn sc-np-btn').append(this.getLabel('Log out')).on('click', this.logout)
-
+            const logoutButton = $$('button').addClass('btn sc-np-btn').append(this.getLabel('Forget me')).on('click', this.logout)
             el.append(logoutButton)
         }
 

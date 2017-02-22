@@ -29,7 +29,7 @@ class XimimageComponent extends Component {
                 type: 'property',
                 path: caption.getPath(),
                 startOffset: 0,
-                surfaceId: caption._surfaceId
+                surfaceId: caption.id
             })
         }
     }
