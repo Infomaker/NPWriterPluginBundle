@@ -11,10 +11,10 @@ class LoginComponent extends Component {
     render($$) {
         const el = $$('div').addClass('col-12')
 
-        const description = $$('p').append('Vi skulle vilja be dig att fylla i din epostadress och namn')
+        const description = $$('p').append(this.getLabel('We would like you to enter email and name'))
 
         const emailGroup = $$('div').addClass('form-group')
-        const emailLabel = $$('span').append('Ange din epost-adress')
+        const emailLabel = $$('span').append(this.getLabel('Enter your email address'))
 
         const emailInput = $$('input')
             .attr('type', 'text')
@@ -26,7 +26,7 @@ class LoginComponent extends Component {
         emailGroup.append([emailLabel, emailInput])
 
         const nameGroup = $$('div').addClass('form-group')
-        const label = $$('span').append('Ange dit namn')
+        const label = $$('span').append('Enter your name')
         const name = $$('input').attr('type', 'text').addClass('form-control').ref('username')
         nameGroup.append([label, name])
 
