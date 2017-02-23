@@ -21,11 +21,16 @@ class UserList extends Component {
             const container = $$('div').addClass('metadata__container')
             if (user.socketId === this.props.socketId) {
                 item.addClass('current')
-                nameEl.append(this.getLabel('(You)'))
+                nameEl.append(' ' + this.getLabel('(You)'))
                 // container.append($$('span').addClass('active-user').append(this.getLabel('(You)')))
 
             }
-            container.append($$('span').addClass('active-user').append(moment(Number(user.timestamp)).fromNow()))
+            const loginTime = moment(Number(user.timestamp)).fromNow()
+            container.append($$('span')
+                .addClass('active-user')
+                .attr('title', this.getLabel('User logged in') + loginTime)
+                .append(loginTime)
+            )
 
             item.append([
                 avatarEl,
