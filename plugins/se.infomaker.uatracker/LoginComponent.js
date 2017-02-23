@@ -24,7 +24,7 @@ class LoginComponent extends Component {
             .on('keydown', this.validateEmail)
             .on('blur', this.loadAvatar)
 
-        emailGroup.append([emailLabel, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar'), emailInput])
+        emailGroup.append([emailLabel, emailInput, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar')])
 
         const nameGroup = $$('div').addClass('form-group')
         const label = $$('span').append('Enter your name')

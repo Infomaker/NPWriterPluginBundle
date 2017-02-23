@@ -65,9 +65,21 @@ export default {
             en: '(You)',
             sv: '(Du)'
         })
+        config.addLabel('Continue', {
+            en: 'Continue',
+            sv: 'Fortsätt'
+        })
         config.addLabel('Logout', {
             en: 'Logout',
             sv: 'Logga ut'
+        })
+        config.addLabel('User logged in', {
+            en: 'User logged in ',
+            sv: 'Användaren loggade in '
+        })
+        config.addLabel('uatracker-dialog-title', {
+            en: 'Identification',
+            sv: 'Identifiering'
         })
     }
 }

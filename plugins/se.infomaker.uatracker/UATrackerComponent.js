@@ -38,7 +38,7 @@ class UATrackerComponent extends Component {
                 this.login(JSON.parse(user))
             } else {
                 api.ui.showDialog(LoginComponent, {login: this.userLogin.bind(this)}, {
-                    title: "Logga in",
+                    title: this.getLabel("uatracker-dialog-title"),
                     primary: this.getLabel('Continue'),
                     secondary: false,
                     disableEscKey: true
@@ -49,7 +49,6 @@ class UATrackerComponent extends Component {
 
 
     socketConnectError() {
-        console.log("Error");
         this.props.popover.setIcon('fa-chain-broken')
         this.props.popover.setStatusText(this.getLabel('uatracker-no-connetion'))
         this.extendState({
