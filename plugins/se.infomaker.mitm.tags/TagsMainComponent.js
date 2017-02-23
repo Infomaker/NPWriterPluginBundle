@@ -113,9 +113,11 @@ class TagsMainComponent extends Component {
         const parser = new DOMParser();
         const tagXML = parser.parseFromString(TagsTemplate.personTemplate, 'text/xml').firstChild
 
+        const firstname = newName.shift()
+        const lastName = newName.join(' ')
         // Prepopulate the TAG with user input from form
-        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:firstName"]').setAttribute('value', newName[0])
-        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:lastName"]').setAttribute('value', newName[1] ? newName[1] : '')
+        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:firstName"]').setAttribute('value', firstname)
+        tagXML.querySelector('itemMeta itemMetaExtProperty[type="imext:lastName"]').setAttribute('value', lastName)
 
         const loadedTag = jxon.build(tagXML)
 
