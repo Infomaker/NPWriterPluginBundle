@@ -72,7 +72,6 @@ class UATrackerComponent extends Component {
         })
 
         this.socket.on('connect', () => {
-            console.log("Connected");
             this.updateIcon([])
             this.extendState({
                 socketError: false
@@ -116,6 +115,7 @@ class UATrackerComponent extends Component {
     }
 
     dispose() {
+        this.socket.close()
     }
 
     login({email, name}) {
