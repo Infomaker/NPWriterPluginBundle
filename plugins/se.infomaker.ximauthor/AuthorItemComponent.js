@@ -1,7 +1,7 @@
 import { Component, FontAwesomeIcon } from 'substance'
 import { NilUUID, jxon, api } from 'writer'
-import { isObject, isArray } from 'lodash'
 import authorInfoComponent from './AuthorInfoComponent'
+const {isObject, isArray} = writer.lodash
 
 class AuthorItemComponent extends Component {
     constructor(...args) {
