@@ -9,7 +9,7 @@ import XImAuthor from "../se.infomaker.ximauthor/index";
 import YoutubeEmbed from "../se.infomaker.youtubeembed/index";
 import ContentRelations from "../se.infomaker.contentrelations/index";
 import History from "../se.infomaker.history/index";
-import PublicationChannel from "../se.infomaker.infomaker.publicationchannel/index";
+import PublicationChannel from "../se.infomaker.publicationchannel/index";
 import MitmTags from "../se.infomaker.mitm.tags/index";
 import HdsdsTags from '../se.infomaker.hdsds.tags/index';
 import XimTags from '../se.infomaker.ximtags/index';
@@ -73,7 +73,7 @@ import UATrackerIndex from '../se.infomaker.uatracker/index'
     Channel()
     XImSection()
     DefaultConflictHandler()
-    
+
     // Textstyles
     BlockQuotePackage()
     ParagraphPackage()

@@ -1,4 +1,4 @@
-import Index from "../se.infomaker.infomaker.publicationchannel/index";
+import Index from "../se.infomaker.publicationchannel/index";
 
 (() => {
     Index()

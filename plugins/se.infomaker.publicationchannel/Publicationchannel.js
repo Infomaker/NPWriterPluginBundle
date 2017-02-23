@@ -1,7 +1,7 @@
 import PublicationChannelComponent from './PublicationchannelComponent'
 
 export default {
-    id: 'se.infomaker.infomaker.publicationchannel',
+    id: 'se.infomaker.publicationchannel',
     name: 'publicationchannel',
 
     configure: function(config) {

@@ -35,12 +35,12 @@ class PublicationchannelComponent extends Component {
         var activeChannelCount = 0,
             currentChannels = this.context.api.newsItem.getChannels(),
             channels = this.context.api.getConfigValue(
-                'se.infomaker.infomaker.publicationchannel',
+                'se.infomaker.publicationchannel',
                 'publicationchannels'
             ),
             mainChannel = null,
             useMainChannel = this.context.api.getConfigValue(
-                'se.infomaker.infomaker.publicationchannel',
+                'se.infomaker.publicationchannel',
                 'useMainChannel'
             )
 
