@@ -29,9 +29,14 @@ class ImageDisplay extends Component {
             this.hasLoadingErrors = e
         }
 
+        const imageFile = this.context.doc.get(this.props.node.imageFile)
+        if (!imageFile) {
+            this.hasLoadingErrors = 'Missing image file'
+        }
+
         let contentElement = $$(FontAwesomeIcon, { icon: 'fa-picture-o'}).attr('style', 'font-size:25rem;color:#efefef')
 
-        if (imgSrc) {
+        if (imgSrc && !this.hasLoadingErrors) {
             if (this.props.removeImage) {
                 const deleteButton = $$(Button, {icon: 'remove'})
                     .addClass('remove-image__button')
@@ -56,7 +61,6 @@ class ImageDisplay extends Component {
 
         imgContainer.append(contentElement)
 
-        const imageFile = this.context.doc.get(this.props.node.imageFile)
         const actionsEl = $$('div').addClass('se-actions')
 
         if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
@@ -121,15 +125,8 @@ class ImageDisplay extends Component {
                 removeAuthor: () => (author) => {
                     this.props.node.removeAuthor(author)
                 },
-                addAuthor: (author, cbDone) => {
+                addAuthor: (author) => {
                     this.props.node.addAuthor(author)
-
-                    // const authors = this.props.node.authors
-                    // authors.push(author)
-
-                    // this.props.node.setAuthors(authors)
-
-                    // cbDone();
                 }
             },
             {

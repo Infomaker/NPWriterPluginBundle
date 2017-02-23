@@ -47,7 +47,7 @@ class SearchComponent extends Component {
         var tmpSearch = $$('div').ref('tmpSearchContainer')
         el.append(tmpSearch)
 
-        var container = $$('div').ref('searchContainer').addClass('search-component__main clearfix')
+        var container = $$('div').ref('searchComponent').addClass('search-component__main clearfix')
 
 
         if (this.state.googleMapsLoaded) {

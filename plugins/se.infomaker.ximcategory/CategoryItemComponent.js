@@ -63,15 +63,15 @@ class CategoryItemComponent extends Component {
 
             this.updateTagItemName(displayNameEl, this.state.loadedItem)
 
+            const Tooltip = api.ui.getComponent('tooltip')
             displayNameEl
-                .attr('data-toggle', 'tooltip')
-                .attr('data-placement', 'bottom')
-                .attr('data-trigger', 'manual')
                 .on('click', () => {
                     this.showInfo(displayName)
                 })
-                // .on('mouseenter', this.toggleTooltip)
-                // .on('mouseout', this.hideTooltip)
+                .append($$(Tooltip, {title: displayName, parent: this}).ref('tooltip'))
+                .on('mouseenter', this.toggleTooltip)
+                .on('mouseout', this.hideTooltip)
+
         }
 
         tagItem.append([
@@ -89,36 +89,26 @@ class CategoryItemComponent extends Component {
         return tagItem;
     }
 
-    /**
-     * @todo Implement
-     */
-    // toggleTooltip(ev) {
-    //     $(ev.target).tooltip('toggle')
-    //     ev.target.timeout = window.setTimeout(function () {
-    //         this.hideTooltip(ev)
-    //     }.bind(this), 3000)
-    // }
+    toggleTooltip() {
+        this.refs.tooltip.extendProps({
+            show: true
+        })
+    }
 
-    /**
-     * @todo Implement
-     */
-    // hideTooltip(ev) {
-    //     if (ev.target.timeout) {
-    //         window.clearTimeout(ev.target.timeout)
-    //         ev.target.timeout = undefined
-    //     }
-    //
-    //     $(ev.target).tooltip('hide')
-    // }
+    hideTooltip() {
+        this.refs.tooltip.extendProps({
+            show: false
+        })
+    }
 
     updateTagItemName(tagItem, loadedTag) {
         if (!loadedTag.concept || loadedTag.concept.definition) {
             return
         }
 
-        var definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
-        for (var i = 0; i < definition.length; i++) {
-            var item = definition[i]
+        const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
+        for (let i = 0; i < definition.length; i++) {
+            const item = definition[i];
 
             if (item["@role"] === "drol:short") {
                 if (item["keyValue"] && item["keyValue"].length > 0) {

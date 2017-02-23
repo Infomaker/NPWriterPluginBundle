@@ -19,7 +19,6 @@ export default {
         if(startTimeEl) {
             startTimeFromEl = startTimeEl.text()
         }
-
         const startTime = moment.duration(parseInt(startTimeFromEl, 10), 'seconds');
         node.start = startTime.minutes()+":"+startTime.seconds();
     },

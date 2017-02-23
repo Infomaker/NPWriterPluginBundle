@@ -22,9 +22,20 @@ class XimimageComponent extends Component {
         }
     }
 
+    grabFocus() {
+        let caption = this.refs.caption
+        if(caption) {
+            this.context.editorSession.setSelection({
+                type: 'property',
+                path: caption.getPath(),
+                startOffset: 0,
+                surfaceId: caption.id
+            })
+        }
+    }
     render($$) {
         let node = this.props.node
-        let el = $$('div').addClass('sc-ximimage')
+        let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
 
         el.append(
@@ -78,12 +89,10 @@ class XimimageComponent extends Component {
 
         let twitterHandle
         if(author.isLoaded && author.links && author.links.link) {
-            const link = author.links.link
             const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
             const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
             twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
         }
-
 
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
         const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-'+refid)
@@ -134,7 +143,7 @@ class XimimageComponent extends Component {
         return $$(TextPropertyEditor, {
             tagName: 'div',
             path: [this.props.node.id, obj.name],
-            doc: this.props.doc // TODO really?
+            disabled: Boolean(this.props.disabled)
         })
             .ref(obj.name)
             .attr('title', obj.label)

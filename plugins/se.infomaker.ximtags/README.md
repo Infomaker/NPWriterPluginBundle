@@ -1,3 +1,8 @@
+# ximtags plugin
+This plugin handles searching, creating and editing "tags". What is handled by the plugin depends on the plugin
+configuration (see below).
+
+## Plugin configuration
 ```json
 {
     "id": "se.infomaker.ximtags",
@@ -17,21 +22,31 @@
             "name": "Organisation",
             "editable": true
         },
-        "x-im/channel": {
-            "icon": "fa-random",
-            "name": "Channel",
-            "editable": false
-        },
         "x-im/topic": {
             "icon": "fa-tags",
             "name": "Topic",
             "editable": true
-        },
-        "x-im/category": {
-            "icon": "fa-tags",
-            "name": "Category",
-            "editable": false
         }
     }}
 }
+```
+
+The `tags` config decides what types of concepts that are handled by the plugin.
+
+Please note that `tags` must correspond with Concept backend configuration for `tags` search so that the same
+concept types are used both in plugin and in Concept backend.
+
+## Tag concept format
+See [Concept Items](https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem).
+
+## Tag format in article
+When applying a tag in the article the relation will be represented as a link;
+```xml
+<newsItem>
+    <itemMeta>
+        <links>
+            <link title="Volvo" rel="author" type="x-im/organisation" uuid="4w1653f3-6575-5cb7-8b74-qc4dea63513e"/>                
+        </links>
+    </itemMeta>
+</newsItem>
 ```

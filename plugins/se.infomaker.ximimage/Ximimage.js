@@ -1,4 +1,4 @@
-import { jxon, api, NilUUID, lodash } from 'writer'
+import { jxon, api, lodash } from 'writer'
 import { DefaultDOMElement, BlockNode } from 'substance'
 
 
@@ -52,8 +52,6 @@ class Ximimage extends BlockNode {
         if(!converterRegistry) {
             converterRegistry = context.editorSession.converterRegistry
         }
-        // Create a newsML importer
-        const newsMLImporter = this.getNewsMLImporter()
 
         // Get the converter for newsml
         const newsMLConverters = converterRegistry.get('newsml')
@@ -66,6 +64,7 @@ class Ximimage extends BlockNode {
      * This method is called from NPFile when file is uploaded.
      *
      * @param {DOMDoucment} newsItemDOMDocument
+     * @param context
      */
     handleDOMDocument(newsItemDOMDocument, context) {
         const newsItemDOMElement = DefaultDOMElement.parseXML(newsItemDOMDocument.documentElement.outerHTML)
@@ -92,8 +91,8 @@ class Ximimage extends BlockNode {
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
             tx.set([this.id, 'caption'], text ? text.textContent : '')
             tx.set([this.id, 'credit'], credit ? credit.textContent : '')
-            tx.set([this.id, 'width'], width ? width.textContent : '')
-            tx.set([this.id, 'height'], height ? height.textContent : '')
+            tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
+            tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
             tx.set([this.id, 'authors'], convertedAuthors)
         }, { history: false })
 
@@ -150,7 +149,7 @@ class Ximimage extends BlockNode {
 
     }
     findAttribute(object, attribute) {
-        var match;
+        let match
 
         function iterateObject(target, name) {
             Object.keys(target).forEach(function (key) {

@@ -11,9 +11,8 @@ class YoutubeEmbedCommand extends WriterCommand {
             if(!currentNode) {
                 return false
             }
-            const currentNodeId = currentNode[0]
-            const previousNode = api.document.getPreviousNode(currentNodeId)
-            api.document.deleteNode('youtubeembed', previousNode)
+            const doc = params.editorSession.getDocument()
+            api.document.deleteNode('socialembed', doc.get(currentNode[0]))
         }
 
         params.editorSession.transaction((tx) => {

@@ -1,7 +1,20 @@
 .sc-np-headereditor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 40px 0 40px;
 
-    border-bottom: 1px solid #ddd;
-    padding-bottom:40px;
+    @media all and (max-width: 900px) and (min-width: 551px) {
+        margin: 20px 60px ;
+    }
+    @media all and (max-width: 550px){
+        margin: 0 60px ;
+    }
+
+    .wrapper {
+        border-bottom: 1px solid #ddd;
+        padding-bottom:40px;
+    }
+
 
     span.sc-metdata-text__container {
         display: block;

@@ -1,6 +1,6 @@
-import insertImage from './insertImage'
-import {DragAndDropHandler} from 'substance'
-import {api} from 'writer'
+import insertImage from "./insertImage";
+import {DragAndDropHandler} from "substance";
+import {api} from "writer";
 
 // Implements a file drop handler
 class DropImageUri extends DragAndDropHandler {
@@ -16,9 +16,23 @@ class DropImageUri extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        insertImage(tx, params.uri)
+        const nodeId = insertImage(tx, params.uri)
+
         setTimeout(() => {
             api.editorSession.fileManager.sync()
+                .catch(() => {
+                    // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
+                    const document = api.editorSession.getDocument()
+                    const node = document.get(nodeId),
+                        imageFile = node.imageFile
+
+                    if (imageFile) {
+                        api.editorSession.transaction((tx) => {
+                            tx.delete(imageFile)
+                        })
+                    }
+                    api.document.deleteNode('ximimage', node)
+                })
         }, 300)
 
     }
@@ -35,7 +49,7 @@ class DropImageUri extends DragAndDropHandler {
         let fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension')
 
         //If no extension specified in config use the default extension, specified in constructor
-        if(!fileExtensionsFromConfig) {
+        if (!fileExtensionsFromConfig) {
             fileExtensionsFromConfig = this.defaultImageFileextension
         }
 

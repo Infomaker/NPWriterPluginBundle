@@ -8,21 +8,70 @@ export default({
     configure: function(config) {
         // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
+        config.addLabel('Unsaved articles found', {
+            sv: 'Osparade artiklar har hittats'
+        })
+
+        config.addLabel('It looks like there are one or more unsaved articles. Do you want to restore an unsaved article?', {
+            sv: 'Det ser ut som om det finns en eller flera påbörjade artiklar som inte sparats. Vill du återställa en osparad artikel?'
+        })
+
+        config.addLabel('No thanks, create new article', {
+            sv: 'Nej tack, skapa en ny artikel'
+        })
+
+        config.addLabel('Unsaved changes found for this article', {
+            sv: 'Osparade ändringar hittades för den här artikeln'
+        })
+
+        config.addLabel('We found some unsaved changes for this article. Do you want to restore the unsaved changes?', {
+            sv: 'Vi hittade osparade ändringar för den här artikeln. Vill du återskapa de senaste osparade ändringarna?'
+        })
+
+        config.addLabel('Restore unsaved changes', {
+            sv: 'Återskapa osparade ändringar'
+        })
+
+        config.addLabel('Restore latest unsaved article', {
+            sv: 'Återskapa senast osparade artikeln'
+        })
+
+        config.addLabel('No thanks, just open the article', {
+            sv: 'Nej tack, öppna artikeln'
+        })
+
+        config.addLabel('Show advanced list of changes', {
+            sv: 'Visa detaljerad ändringshistorik'
+        })
+
+        config.addLabel('Hide advanced list of changes', {
+            sv: 'Dölj detaljerad ändringshistorik'
+        })
+
         config.addLabel('history-popover-headline', {
-            en: 'Changes since last successful save',
-            sv: 'Senaste ändringar'
+            en: 'Change history',
+            sv: 'Ändringshistorik'
         })
 
         config.addLabel('history-popover-description', {
-            en: 'Changes since last successful save',
-            sv: 'Ändringar sedan senast lyckade uppdatering till servern.'
+            en: 'Change history for this article.',
+            sv: 'Ändringshistorik för den här artikeln.'
+        })
+
+        config.addLabel('Identical with the current version', {
+            sv: 'Identisk med den aktuella versionen'
+        })
+
+        config.addLabel('Clear this version history', {
+            sv: 'Radera denna versionshistorik'
         })
 
         config.addPopover(
             'historymaincomponent',
             {
                 icon: 'fa-history',
-                align: 'right'
+                align: 'right',
+                sticky: true
             },
             HistoryMainComponent
         )
@@ -30,4 +79,3 @@ export default({
 
     }
 })
-

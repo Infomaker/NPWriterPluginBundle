@@ -30,12 +30,14 @@ class HeaderEditorComponent extends Component {
 
     render($$) {
         const el = $$("div").addClass("sc-np-headereditor");
+        const wrapper = $$('div').addClass('wrapper')
         const headerGroupFields = api.getConfigValue('se.infomaker.headereditor', 'elements') || ['headline', 'leadin'];
         const fields = headerGroupFields.map(function (field) {
             return this.getElement($$, field);
         }.bind(this));
 
-        el.append(fields);
+        wrapper.append(fields);
+        el.append(wrapper);
 
         return el;
     }
@@ -63,6 +65,7 @@ class HeaderEditorComponent extends Component {
             tagName: "div",
             commands: this.props.headlineCommands,
             withoutBreak: false,
+            multiLine: true,
             path: [this.props.node.id, field]
         }).addClass('se-' + field))
 

@@ -1,4 +1,4 @@
-## Newspilot Writer 2.0 plugin bundle
+## Newspilot Writer 3.0 plugin bundle
 
 This package contains plugins for Newspilot writer, created by Infomaker.
 
@@ -24,3 +24,11 @@ npm run build
 
 ### Add plugin to Newspilot Writer
 In your Newspilot Writer open /server/config/writer.json and add your plugin  
+
+
+## Infomaker plugins
+
+__Image__
+* type: x-im/image
+
+

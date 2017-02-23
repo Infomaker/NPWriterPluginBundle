@@ -43,4 +43,6 @@ export default function(tx, data) {
         width: 0,
         height: 0
     })
+
+    return nodeId
 }

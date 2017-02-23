@@ -33,5 +33,13 @@ export default {
             en: 'Insert Teaser',
             sv: 'Infoga puff'
         })
+        config.addLabel('teaser-add-image', {
+            en: 'Add image',
+            sv: 'Lägg till bild'
+        })
+        config.addLabel('teaser-replace-image', {
+            en: 'Replace image',
+            sv: 'Ersätt bild'
+        })
     }
 }
