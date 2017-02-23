@@ -25,9 +25,24 @@ export default {
             sv: 'Följande användare har denna artikel öppen för redigering. Detta kan innebära att de ändringar du gör inte kan sparas.'
         })
 
+        config.addLabel('no-connection-headline', {
+            en: 'No connection to user identification service',
+            sv: 'Ingen anslutning till identifieringstjänsten'
+        })
+
+        config.addLabel('no-connection-description', {
+            en: 'Unable to connect to user identification service. This means that it might be others users working on this article.',
+            sv: 'Det gick inte ansluta till identifieringstjänsten. Detta innebär att andra användare kan ha denna artikeln öppen samtidigt.'
+        })
+
         config.addLabel('connected-users-qty-connected', {
             en: ' users connected',
             sv: ' anslutna användare'
+        })
+
+        config.addLabel('uatracker-no-connetion', {
+            en: 'No connection',
+            sv: 'Ingen anslutning'
         })
 
         config.addLabel('(You)', {

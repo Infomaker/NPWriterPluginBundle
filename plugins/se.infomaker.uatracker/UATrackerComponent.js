@@ -4,6 +4,8 @@ import io from 'socket.io-client'
 import {Component} from 'substance'
 import { api, moment} from 'writer'
 import LoginComponent from './LoginComponent'
+import NoConnection from './NoConnection'
+import UserList from './UserList'
 
 class UATrackerComponent extends Component {
 
@@ -47,11 +49,13 @@ class UATrackerComponent extends Component {
 
 
     socketConnectError() {
+        console.log("Error");
         this.props.popover.setIcon('fa-chain-broken')
-        this.props.popover.setStatusText(this.getLabel('No connection'))
+        this.props.popover.setStatusText(this.getLabel('uatracker-no-connetion'))
         this.extendState({
             users: [],
-            socketId: null
+            socketId: null,
+            socketError: true
         })
     }
     setupLiveArticles() {
@@ -69,8 +73,11 @@ class UATrackerComponent extends Component {
         })
 
         this.socket.on('connect', () => {
-
+            console.log("Connected");
             this.updateIcon([])
+            this.extendState({
+                socketError: false
+            })
 
             /*
              Trigger an event telling the server that we have opened this article
@@ -146,38 +153,14 @@ class UATrackerComponent extends Component {
 
         const el = $$('div').addClass('uatracker')
 
+        if(this.state.socketError) {
+            const noConnectionEl = $$(NoConnection)
+            el.append(noConnectionEl)
+        } else {
+            const userListEl = $$(UserList, {users: this.state.users, socketId: this.state.socketId})
+            el.append(userListEl)
+        }
 
-        el.append($$('h2').append(this.getLabel('connected-users-headline')))
-        el.append($$('p').append(this.getLabel('connected-users-description')))
-
-        const Avatar = api.ui.getComponent('avatar')
-
-        const userList = $$('ul').addClass('user-list authors__list')
-        const userEls = this.state.users.map((user) => {
-            const item = $$('li').addClass('authors__list-item')
-            const avatarEl = $$(Avatar, {avatarSource: 'gravatar', avatarId: user.email}).ref('avatar-'+user.socketId)
-
-            const container = $$('div').addClass('metadata__container')
-            if (user.socketId === this.state.socketId) {
-                item.addClass('current')
-                // container.append($$('span').addClass('active-user').append(this.getLabel('(You)')))
-
-            }
-            container.append($$('span').addClass('active-user').append(moment(Number(user.timestamp)).fromNow()))
-
-            item.append([
-                avatarEl,
-                container.append([
-                    $$('span').addClass('author__name meta').append(user.name),
-                    $$('span').addClass('author__email').append(user.email)
-                ])
-            ])
-
-
-            return item
-        })
-        userList.append(userEls)
-        el.append(userList)
 
 
         if (this.state.email) {

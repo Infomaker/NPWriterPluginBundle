@@ -9,7 +9,8 @@ class LoginComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('col-12')
+        const el = $$('div').addClass('col-12 uatracker-login')
+        const avatar = api.ui.getComponent('avatar')
 
         const description = $$('p').append('Vi skulle vilja be dig att fylla i din epostadress och namn')
 
@@ -23,17 +24,16 @@ class LoginComponent extends Component {
             .on('keydown', this.validateEmail)
             .on('blur', this.loadAvatar)
 
-        emailGroup.append([emailLabel, emailInput])
+        emailGroup.append([emailLabel, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar'), emailInput])
 
         const nameGroup = $$('div').addClass('form-group')
         const label = $$('span').append('Ange dit namn')
         const name = $$('input').attr('type', 'text').addClass('form-control').ref('username')
         nameGroup.append([label, name])
 
-        const avatar = api.ui.getComponent('avatar')
+
         el.append([
             description,
-            $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar'),
             emailGroup,
             nameGroup
         ])
