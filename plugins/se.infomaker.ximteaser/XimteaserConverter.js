@@ -15,7 +15,7 @@ export default {
      */
     import: function (el, node, converter) { // jshint ignore:line
         const nodeId = el.attr('id')
-        node.title = el.attr('title')
+        node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
         // Import teaser data
