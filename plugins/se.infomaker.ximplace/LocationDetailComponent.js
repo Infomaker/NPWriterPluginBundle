@@ -5,11 +5,8 @@ import MapComponent from './MapComponent'
 import SearchComponent from './SearchComponent'
 import {jxon} from 'writer'
 import {idGenerator} from 'writer'
-import {lodash} from 'writer'
 
-const isArray = lodash.isArray
-const isObject = lodash.isObject
-const find = lodash.find
+const {isObject, isArray, find} = writer.lodash
 
 class LocationDetailComponent extends Component {
 
