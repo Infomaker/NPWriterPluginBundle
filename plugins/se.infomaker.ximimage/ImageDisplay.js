@@ -164,7 +164,8 @@ class ImageDisplay extends Component {
                 }
             },
             {
-                tertiary: tertiary
+                tertiary: tertiary,
+                cssClass: 'np-crop-dialog'
             }
         )
     }
