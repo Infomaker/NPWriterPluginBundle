@@ -1,3 +1,4 @@
+import CharacterTransformation from "../se.infomaker.charactertransformation/index";
 import TextAnalyzer from "../se.infomaker.textanalyzer/index";
 import PublishFlow from "../se.infomaker.publishflow/index";
 import SocialEmbed from "../se.infomaker.socialembed/index";
@@ -47,7 +48,7 @@ import HtmlembedPackage from "../se.infomaker.htmlembed/HtmlembedPackage";
 import UATrackerIndex from '../se.infomaker.uatracker/index'
 
 (() => {
-
+    CharacterTransformation()
     UATrackerIndex()
     XImPlace()
     TextAnalyzer()
