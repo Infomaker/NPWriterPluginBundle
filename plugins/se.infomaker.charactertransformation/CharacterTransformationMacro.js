@@ -33,7 +33,7 @@ export default {
         function replaceCharacter(params, context, rule) {
             let toChar = null
             if (Array.isArray(rule.to)) {
-                toChar = rule.to[0]
+                toChar = getCharacter(params.text, params.start, rule.to[0], rule.to[1])
             }
             else {
                 toChar = rule.to
@@ -49,6 +49,18 @@ export default {
                 })
                 tx.insertText(toChar)
             })
+        }
+
+        function getCharacter(text, pos, openingChar, closingChar) {
+            if (pos === 0) {
+                return openingChar
+            }
+
+            let str = text.substr(0, pos),
+                cPos = str.lastIndexOf(closingChar),
+                oPos = str.lastIndexOf(openingChar)
+
+            return (cPos >= oPos) ? openingChar : closingChar
         }
     }
 }
