@@ -1,3 +1,15 @@
+div.np-crop-dialog {
+    .modal-dialog {
+        width: 100%;
+        max-width: 800px;
+        min-width: 500px;
+    }
+}
+
+#imc {
+    height: 500px !important;
+}
+
 #ximimage__softcrop {
     div.toolbar {
         height: 40px;
