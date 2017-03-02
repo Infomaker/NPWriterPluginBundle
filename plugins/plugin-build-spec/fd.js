@@ -1,3 +1,4 @@
+import CharacterTransformation from "../se.infomaker.charactertransformation/index";
 import PublishFlow from '../se.infomaker.publishflow/index'
 import SocialEmbed from '../se.infomaker.socialembed/index'
 import XImimage from '../se.infomaker.ximimage/index'
@@ -13,6 +14,7 @@ import ParagraphPackage from '../textstyles/se.infomaker.paragraph/ParagraphPack
 (() => {
     // TODO Remove when their version if finished
     PublishFlow()
+    CharacterTransformation()
 
     HeadlinePackage()
     Preamble()

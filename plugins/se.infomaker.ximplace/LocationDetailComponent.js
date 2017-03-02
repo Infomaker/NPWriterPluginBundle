@@ -5,11 +5,8 @@ import MapComponent from './MapComponent'
 import SearchComponent from './SearchComponent'
 import {jxon} from 'writer'
 import {idGenerator} from 'writer'
-import {lodash} from 'writer'
 
-const isArray = lodash.isArray
-const isObject = lodash.isObject
-const find = lodash.find
+const {isObject, isArray, find} = writer.lodash
 
 class LocationDetailComponent extends Component {
 
@@ -244,12 +241,15 @@ class LocationDetailComponent extends Component {
     }
 
     willReceiveProps(props) {
-        this.extendState({
-            query: props.query,
+        const newProps = {
             newLocation: props.newLocation,
             location: props.location,
             editable: props.editable
-        })
+        }
+        if(props.query) {
+            newProps.query = props.query
+        }
+        this.extendState(newProps)
     }
 
     getNameForLocation() {
@@ -259,6 +259,12 @@ class LocationDetailComponent extends Component {
             return this.state.location.concept.name
         }
     }
+
+    // shouldRerender(data) {
+    //     No need to rerender this
+        // return false
+    // }
+
 
     render($$) {
 
@@ -309,6 +315,9 @@ class LocationDetailComponent extends Component {
                 .ref('locationNameInput')
 
             locationName.on('change', function () {
+                this.extendState({
+                    query: this.refs['locationNameInput'].val()
+                })
                 if (this.refs['locationNameInput'].val() === "") {
                     this.send("dialog:disablePrimaryBtn")
                 } else {
