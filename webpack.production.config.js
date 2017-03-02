@@ -16,6 +16,7 @@ const autoprefixer = require('autoprefixer');
 const fs = require('fs')
 var webpackUglifyJsPlugin = require('webpack-uglify-js-plugin');
 
+
 console.log("\n ----------------------------")
 console.log(" Plugin production build ")
 console.log(" ----------------------------\n")
@@ -38,7 +39,7 @@ function getPluginBuildSpec(dir) {
     });
     return result;
 }
-
+const version = process.env.VERSION
 module.exports = {
     entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
@@ -59,9 +60,19 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: 'url-loader?limit=100000'
+                test: /\.(jpe?g|png|gif|svg)(\?v=\d+\.\d+\.\d+)?$/i,
+                loader: 'file-loader?name=media/[name].[ext]',
+                exclude: /(node_modules|bower_components)/
             },
+            {
+                test: /readme\.(txt|md)(\?v=\d+\.\d+\.\d+)?/i,
+                loader: 'file-loader?publicPath=plugins&name=readme/[path]/[name].[ext]',
+                exclude: /(node_modules|bower_components)/
+            },
+            // {
+            //     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+            //     loader: 'url-loader?limit=100000'
+            // },
             {
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract('style', 'css!sass')
@@ -75,8 +86,21 @@ module.exports = {
             }
         ],
         preLoaders: [
-            {test: /\.js?$/, loader: 'eslint', exclude: /node_modules/}
-
+            {test: /\.js?$/, loader: 'eslint', exclude: /node_modules/},
+            {
+                test: /\.js$/,
+                loader: 'string-replace',
+                query: {
+                    multiple: [
+                        {
+                            search: '{{version}}',
+                            replace: version,
+                            flags: 'g'
+                        }
+                    ]
+                },
+                flags: 'g'
+            }
         ]
     },
     cssLoader: {
@@ -102,6 +126,7 @@ module.exports = {
         },
 
         new ExtractTextPlugin("[name].css"),
+
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')

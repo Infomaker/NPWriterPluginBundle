@@ -1,10 +1,15 @@
 import './style.scss'
+import './readme.md'
+import './media/uatracker.png'
+import './media/uatracker-login.png'
 
 import UATrackerComponent from './UATrackerComponent'
-
+import PluginInformation from './PluginInfomation'
 export default {
     name: 'uatracker',
     id: 'se.infomaker.uatracker',
+    version: '{{version}}',
+    metadata: PluginInformation,
     configure: function(config) {
 
         config.addPopover(
