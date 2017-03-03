@@ -1,5 +1,10 @@
 .content_relations {
 
+  img.product-icon {
+    margin-left: 5px;
+    opacity: 0.6;
+  }
+
   form {
     display: flex;
   }
@@ -19,10 +24,6 @@
 
   .type-icon {
     color: #d0d0d0;
-    //float: left;
-    //margin-left: 3px;
-    //font-size: 1rem;
-    //margin-top: 4px;
     font-family: FontAwesome;
   }
   /* http://meyerweb.com/eric/tools/css/reset/
@@ -95,13 +96,9 @@
   }
 
   .box {
-    //height: 100px;
     margin-bottom: 7px;
     background: white;
-    border-left: 1px solid #dedede;
-    border-bottom: 1px solid #dedede;
-    border-top: 1px solid #dedede;
-    border-right: 1px solid #dedede;
+    border: 1px solid #dedede;
     display: flex;
   }
 
@@ -152,31 +149,19 @@
   .main div {
     margin: 5px;
   }
-
-  .footer {
-    height: 25px;
-  }
-
-  .footer div {
-    margin: auto 5px;
-    flex: 1;
-  }
-
+  
   .icondiv {
     flex-grow: 0;
-    //padding: 2px 5px 5px 5px;
   }
 
   .namediv {
     flex-grow: 1;
     word-break: break-all;
-    //padding: 5px;
     font-size: 80%;
     color: rgba(0, 0, 0, 0.75);
   }
 
   .imagediv {
     flex-grow: 0;
-    margin: 5px 5px 0 0;
   }
 }
