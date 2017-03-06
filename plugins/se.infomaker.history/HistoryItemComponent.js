@@ -26,11 +26,23 @@ class HistoryItemComponent extends Component {
                 this.props.applyVersion(version, this.props.article)
             });
 
-        var inner = $$('div');
+        var inner = $$('div'),
+            displayFormat = this.context.api.getConfigValue('se.infomaker.history', 'timeFormat')
 
-        inner.append(
-            $$('span').append(moment(version.time).from())
-        );
+        if (displayFormat) {
+            inner.append(
+                $$('span').append(
+                    moment(version.time).format(displayFormat)
+                )
+            );
+        }
+        else {
+            inner.append(
+                $$('span').append(
+                    moment(version.time).from()
+                )
+            )
+        }
 
         if (version.action === 'saved') {
             inner.addClass('saved');
