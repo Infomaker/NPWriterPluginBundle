@@ -6,6 +6,7 @@ import YoutubeEmbedComponent from './YoutubeEmbedComponent'
 import YoutubeEmbedConverter from './YoutubeEmbedConverter'
 import YoutubeEmbedMacro from './YoutubeEmbedMacro'
 import YoutubeEmbedValidation from './YoutubeEmbedValidation'
+import DropUri from './DropUri'
 
 export default {
     id: 'se.infomaker.youtubeembed',
@@ -25,6 +26,7 @@ export default {
         // Add node
         config.addNode(YoutubeEmbedNode)
 
+        config.addDragAndDrop(DropUri)
         config.addMacro(YoutubeEmbedMacro)
 
     }

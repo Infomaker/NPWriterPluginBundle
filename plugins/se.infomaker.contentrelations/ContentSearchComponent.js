@@ -1,5 +1,3 @@
-// var SearchResult = require('./ContentSearchResultComponent');
-
 import {Component} from 'substance'
 import {api} from 'writer'
 import SearchResult from './ContentSearchResultComponent'
@@ -14,7 +12,7 @@ class ContentSearchComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('search__container');
+        const el = $$('div').addClass('content_relations');
 
         const searchForm = $$('form').addClass('clearfix')
             .on('submit', this.search.bind(this)).ref('form');

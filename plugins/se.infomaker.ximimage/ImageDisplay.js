@@ -111,7 +111,8 @@ class ImageDisplay extends Component {
                         title: this.getLabel('Image archive information'),
                         global: true,
                         primary: this.getLabel('Save'),
-                        secondary: this.getLabel('Cancel')
+                        secondary: this.getLabel('Cancel'),
+                        cssClass: 'np-image-dialog'
                     }
                 )
             })
@@ -163,7 +164,8 @@ class ImageDisplay extends Component {
                 }
             },
             {
-                tertiary: tertiary
+                tertiary: tertiary,
+                cssClass: 'np-crop-dialog'
             }
         )
     }
