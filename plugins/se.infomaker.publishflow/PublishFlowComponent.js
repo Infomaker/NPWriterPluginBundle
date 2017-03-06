@@ -609,7 +609,7 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            unsavedChanges: true
+            unsavedChanges: false
         })
 
         this._updateStatus(true)

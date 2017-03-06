@@ -218,18 +218,48 @@ class XimteaserComponent extends Component {
         } else if (this.isUriDrop(dragState.data)) {
             const uri = dragState.data.uris[0]
             const dropData = this.getDataFromURL(uri)
-            this.handleUriDrop(tx, dropData)
-            //Handle URI drop
+            if(dropData) {
+                // Handles uri drop from related content
+                this.handleUriDrop(tx, dropData)
+            } else {
+                // Handles external URL drops
+                if(this._isImage(uri)) {
+                    this.handleUrlDrop(tx, uri)
+                    setTimeout(() => {
+                        api.editorSession.fileManager.sync()
+                    }, 300)
+                }
+            }
+        }
+    }
+
+    _isImage(uri) {
+
+        // Load allowed filextension from config file
+        let fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension')
+
+        //If no extension specified in config use the default extension, specified in constructor
+        if (!fileExtensionsFromConfig) {
+            fileExtensionsFromConfig = ['jpeg', 'jpg', 'gif', 'png']
         }
 
+        // Iterate given extension and return bool if found
+        return fileExtensionsFromConfig.some((extension) => {
+            return uri.indexOf(extension) > 0
+        })
 
     }
 
     getDataFromURL(url) {
         const queryParamKey = 'data='
         const dataPosition = url.indexOf(queryParamKey)
-        let encodedData = url.substr(dataPosition + queryParamKey.length, url.length)
-        return JSON.parse(window.atob(encodedData))
+        if(dataPosition > -1) {
+            let encodedData = url.substr(dataPosition + queryParamKey.length, url.length)
+            return JSON.parse(window.atob(encodedData))
+        } else {
+            return false
+        }
+
     }
 
     /**
@@ -277,7 +307,7 @@ class XimteaserComponent extends Component {
         }
 
         const imageFileNode = {
-            parentNodeId: nodeId,
+            parentNodeId: teaserNode.id,
             type: 'npfile',
             imType: 'x-im/image',
             uuid: uuid,
@@ -291,6 +321,24 @@ class XimteaserComponent extends Component {
 
     }
 
+    handleUrlDrop(tx, uri) {
+        const nodeId = idGenerator()
+        const teaserNode = this.props.node
+
+        const imageFileNode = {
+            parentNodeId: teaserNode.id,
+            type: 'npfile',
+            imType: 'x-im/image'
+        }
+        imageFileNode['sourceUrl'] = uri
+
+        // Create file node for the image
+        let imageFile = tx.create(imageFileNode)
+
+        tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+
+        return nodeId
+    }
 
     /**
      * This method is used when a file is dropped on top of the teaser
