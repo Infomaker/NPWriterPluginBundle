@@ -182,17 +182,6 @@ class PublishFlowComponent extends Component {
                 })
                 .append([
                     $$('button')
-                        .addClass('sc-np-btn btn-secondary')
-                        .css({
-                            'float': 'right'
-                        })
-                        .append(
-                            this.getLabel('Cancel')
-                        )
-                        .on('click', () => {
-                            this.props.popover.close()
-                        }),
-                    $$('button')
                         .attr({
                             title: this.getLabel('Create a new article')
                         })
@@ -351,7 +340,7 @@ class PublishFlowComponent extends Component {
                         .addClass('sc-np-publish-action-section-content-actions')
                         .append(
                             $$('button')
-                                .addClass('sc-np-btn btn-secondary')
+                                .addClass('sc-np-btn btn-primary')
                                 .append(
                                     this.getLabel('Save')
                                 )
