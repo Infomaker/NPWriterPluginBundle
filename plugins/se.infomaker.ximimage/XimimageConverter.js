@@ -103,45 +103,16 @@ export default {
 
         // Import softcrops
         if (!newsItemConversion) {
-            this.importSoftcrops(linkEl, node)
-        }
-    },
+            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            let softcrops = imageModule.importSoftcropLinks(
+                linkEl.find('links')
+            )
 
-    /**
-     * Import the image link structure
-     */
-    importSoftcrops: function(el, node) {
-        let links = el.find('links')
-        if (!links || links.length <= 0) {
-            return
-        }
-
-        let crops = {
-            crops: []
-        }
-
-        links.children.forEach(function(link) {
-            if (link.attr('type') !== 'x-im/crop') {
-                return
+            if (softcrops.length) {
+                node.crops = {
+                    crops: softcrops
+                }
             }
-
-            let parsed = link.attr('uri').match(/im:\/\/crop\/(.*)/)
-            if(!Array.isArray(parsed) || parsed.length !== 2) {
-                return
-            }
-
-            let [x, y, w, h] = parsed[1].split('/')
-            crops.crops.push({
-                name: link.attr('title'),
-                x: x,
-                y: y,
-                width: w,
-                height: h
-            })
-        })
-
-        if (crops.crops.length) {
-            node.crops = crops
         }
     },
 
@@ -205,37 +176,8 @@ export default {
 
         // Add crops to data
         if (node.crops) {
-            // <link rel="crop" type="x-im/crop" title="16:9" uri="im://crop/0.07865168539325842/0.0899/0.8426966292134831/0.9899" />
-            for (var x in node.crops.crops) { // eslint-disable-line
-                let crop = node.crops.crops[x]
-                let uri = 'im://crop/' + crop.x + '/' + crop.y + '/' + crop.width + '/' + crop.height
-                imageLinks.append(
-                    $$('link')
-                        .attr({
-                            rel: 'crop',
-                            type: 'x-im/crop',
-                            title: crop.name,
-                            uri: uri
-                        })
-                )
-            }
-
-            // for (var x in node.crops.crops) {
-            //     if (node.crops.crops.hasOwnProperty(x)) {
-            //         var origCrop = node.crops.crops[x];
-            //
-            //         crops.append(
-            //             $$('crop').attr('name', origCrop.name).append([
-            //                 $$('x').append(origCrop.x),
-            //                 $$('y').append(origCrop.y),
-            //                 $$('width').append(origCrop.width),
-            //                 $$('height').append(origCrop.height)
-            //             ])
-            //         )
-            //     }
-            // }
-            //
-            // data.append(crops)
+            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            imageModule.exportSoftcropLinks($$, imageLinks, node.crops.crops)
         }
 
 

@@ -1,4 +1,4 @@
-import { idGenerator } from 'writer'
+import { idGenerator, api } from 'writer'
 
 
 export default {
@@ -94,37 +94,15 @@ export default {
      * Import the image link structure
      */
     importSoftcrops: function(el, node) {
-        let links = el.find('links')
-        if (!links || links.length <= 0) {
-            return
-        }
+        let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+        let softcrops = imageModule.importSoftcropLinks(
+            el.find('links')
+        )
 
-        let crops = {
-            crops: []
-        }
-
-        links.children.forEach(function(link) {
-            if (link.attr('type') !== 'x-im/crop') {
-                return
+        if (softcrops.length) {
+            node.crops = {
+                crops: softcrops
             }
-
-            let parsed = link.attr('uri').match(/im:\/\/crop\/(.*)/)
-            if(!Array.isArray(parsed) || parsed.length !== 2) {
-                return
-            }
-
-            let [x, y, w, h] = parsed[1].split('/')
-            crops.crops.push({
-                name: link.attr('title'),
-                x: x,
-                y: y,
-                width: w,
-                height: h
-            })
-        })
-
-        if (crops.crops.length) {
-            node.crops = crops
         }
     },
 
@@ -216,21 +194,8 @@ export default {
 
             if (node.crops) {
                 let cropLinks = $$('links')
-
-                // <link rel="crop" type="x-im/crop" title="16:9" uri="im://crop/0.07865168539325842/0.0899/0.8426966292134831/0.9899" />
-                for (var x in node.crops.crops) { // eslint-disable-line
-                    let crop = node.crops.crops[x]
-                    let uri = 'im://crop/' + crop.x + '/' + crop.y + '/' + crop.width + '/' + crop.height
-                    cropLinks.append(
-                        $$('link')
-                            .attr({
-                                rel: 'crop',
-                                type: 'x-im/crop',
-                                title: crop.name,
-                                uri: uri
-                            })
-                    )
-                }
+                let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+                imageModule.exportSoftcropLinks($$, cropLinks, node.crops.crops)
                 link.append(cropLinks)
             }
 
