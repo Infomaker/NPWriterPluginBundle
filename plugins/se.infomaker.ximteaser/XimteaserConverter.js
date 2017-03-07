@@ -69,15 +69,15 @@ export default {
                 this.importImageLinkData(dataEl, node)
             }
 
+            // Import softcrops if exists
+            this.importSoftcrops(linkEl, node)
+
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
             node.uuid = linkEl.attr('uuid')
         }
     },
 
-    /**
-     * Import the image link structure
-     */
     importImageLinkData: function(el, node) {
         el.children.forEach(function(child) {
             if (child.tagName === 'width') {
@@ -87,44 +87,45 @@ export default {
             if (child.tagName === 'height') {
                 node.height = parseInt(child.text(), 10)
             }
-
-            if (child.tagName === 'crops' && child.children.length > 0) {
-                let crops = {
-                    crops: []
-                }
-
-                child.children.forEach(function(crop) {
-                    if (crop.children.length === 0) {
-                        return
-                    }
-
-                    if (crop.tagName === 'width') {
-                        crops.width = crop.text()
-                    }
-                    else if (crop.tagName === 'height') {
-                        crops.height = crop.text()
-                    }
-                    else {
-                        var x = crop.find('x'),
-                            y = crop.find('y'),
-                            width = crop.find('width'),
-                            height = crop.find('height')
-
-                        crops.crops.push({
-                            name: crop.attr('name'),
-                            x: x.text(),
-                            y: y.text(),
-                            width: width.text(),
-                            height: height.text()
-                        })
-                    }
-                })
-
-                if (crops.crops.length) {
-                    node.crops = crops
-                }
-            }
         })
+    },
+
+    /**
+     * Import the image link structure
+     */
+    importSoftcrops: function(el, node) {
+        let links = el.find('links')
+        if (!links || links.length <= 0) {
+            return
+        }
+
+        let crops = {
+            crops: []
+        }
+
+        links.children.forEach(function(link) {
+            if (link.attr('type') !== 'x-im/crop') {
+                return
+            }
+
+            let parsed = link.attr('uri').match(/im:\/\/crop\/(.*)/)
+            if(!Array.isArray(parsed) || parsed.length !== 2) {
+                return
+            }
+
+            let [x, y, w, h] = parsed[1].split('/')
+            crops.crops.push({
+                name: link.attr('title'),
+                x: x,
+                y: y,
+                width: w,
+                height: h
+            })
+        })
+
+        if (crops.crops.length) {
+            node.crops = crops
+        }
     },
 
     /**
@@ -211,24 +212,26 @@ export default {
                 )
             }
 
+            link.append(linkData)
+
             if (node.crops) {
-                let crops = $$('crops')
+                let cropLinks = $$('links')
 
+                // <link rel="crop" type="x-im/crop" title="16:9" uri="im://crop/0.07865168539325842/0.0899/0.8426966292134831/0.9899" />
                 for (var x in node.crops.crops) { // eslint-disable-line
-                    var origCrop = node.crops.crops[x]
-
-                    crops.append(
-                        $$('crop').attr('name', origCrop.name).append([
-                            $$('x').append(origCrop.x),
-                            $$('y').append(origCrop.y),
-                            $$('width').append(origCrop.width),
-                            $$('height').append(origCrop.height)
-                        ])
+                    let crop = node.crops.crops[x]
+                    let uri = 'im://crop/' + crop.x + '/' + crop.y + '/' + crop.width + '/' + crop.height
+                    cropLinks.append(
+                        $$('link')
+                            .attr({
+                                rel: 'crop',
+                                type: 'x-im/crop',
+                                title: crop.name,
+                                uri: uri
+                            })
                     )
                 }
-
-                linkData.append(crops)
-                link.append(linkData)
+                link.append(cropLinks)
             }
 
             el.append(
