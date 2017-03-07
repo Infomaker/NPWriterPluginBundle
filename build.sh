@@ -55,7 +55,7 @@ AWS_ACCESS_KEY_ID=$awsaccesskey \
 AWS_SECRET_ACCESS_KEY=$awssecretkey \
 AWS_S3_BUCKET_NAME=$awsbucketname \
 AWS_S3_DIRECTORY=$awsdirectory \
-#node s3Upload.js
+node s3Upload.js
 
 
 
