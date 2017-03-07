@@ -19,8 +19,16 @@ export default {
             sv: 'Spara'
         })
 
+        config.addLabel('Update', {
+            sv: 'Uppdatera'
+        })
+
         config.addLabel('Save *', {
             sv: 'Spara *'
+        })
+
+        config.addLabel('Update *', {
+            sv: 'Uppdatera *'
         })
 
         config.addLabel('Cancel', {

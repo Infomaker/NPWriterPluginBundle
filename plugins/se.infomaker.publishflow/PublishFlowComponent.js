@@ -50,11 +50,7 @@ class PublishFlowComponent extends Component {
     }
 
     didMount() {
-        this.props.popover.setButtonText(
-            this.getLabel('Save')
-        )
-
-        this._updateStatus()
+        this._updateStatus(true, false)
 
         if (!api.browser.isSupported()) {
             this.props.popover.disable()
@@ -576,9 +572,7 @@ class PublishFlowComponent extends Component {
      * When document is marked unsaved
      */
     _onDocumentChanged() {
-        this.props.popover.setButtonText(
-            this.getLabel('Save *')
-        )
+        this._updateButton(true)
 
         this.extendState({
             unsavedChanges: true
@@ -609,16 +603,7 @@ class PublishFlowComponent extends Component {
      */
     _updateStatus(updateButtonSavedLabel, unsavedChanges) {
         if (updateButtonSavedLabel) {
-            if (unsavedChanges === true) {
-                this.props.popover.setButtonText(
-                    this.getLabel('Save *')
-                )
-            }
-            else {
-                this.props.popover.setButtonText(
-                    this.getLabel('Save')
-                )
-            }
+            this._updateButton(unsavedChanges)
         }
 
         if (this.state.status.qcode === 'stat:usable') {
@@ -640,6 +625,17 @@ class PublishFlowComponent extends Component {
                 this.getLabel(this.state.status.qcode)
             )
         }
+    }
+
+    _updateButton(unsavedChanges) {
+        let caption = (this.state.status.qcode === 'stat:usable') ? 'Update' : 'Save'
+        if (unsavedChanges) {
+            caption += ' *'
+        }
+
+        this.props.popover.setButtonText(
+            this.getLabel(caption)
+        )
     }
 }
 
