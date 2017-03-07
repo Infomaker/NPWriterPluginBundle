@@ -85,42 +85,6 @@ export default {
                 if (child.tagName === 'height') {
                     node.height = parseInt(child.text(), 10)
                 }
-
-                if (child.tagName === 'crops' && child.children.length > 0) {
-                    var crops = {crops: []};
-
-                    child.children.forEach(function (crop) {
-                        if (crop.children.length === 0) {
-                            // Sanity check
-                            return;
-                        }
-
-                        if (crop.tagName === 'width') {
-                            crops.width = crop.text();
-                        }
-                        else if (crop.tagName === 'height') {
-                            crops.height = crop.text();
-                        }
-                        else {
-                            var x = crop.find('x'),
-                                y = crop.find('y'),
-                                width = crop.find('width'),
-                                height = crop.find('height');
-
-                            crops.crops.push({
-                                name: crop.attr('name'),
-                                x: x.text(),
-                                y: y.text(),
-                                width: width.text(),
-                                height: height.text()
-                            });
-                        }
-                    });
-
-                    if (crops.crops.length) {
-                        node.crops = crops;
-                    }
-                }
             })
         }
 
@@ -135,6 +99,49 @@ export default {
 
         if (authorLinks) {
             node.authors = this.convertAuthors(node, authorLinks)
+        }
+
+        // Import softcrops
+        if (!newsItemConversion) {
+            this.importSoftcrops(linkEl, node)
+        }
+    },
+
+    /**
+     * Import the image link structure
+     */
+    importSoftcrops: function(el, node) {
+        let links = el.find('links')
+        if (!links || links.length <= 0) {
+            return
+        }
+
+        let crops = {
+            crops: []
+        }
+
+        links.children.forEach(function(link) {
+            if (link.attr('type') !== 'x-im/crop') {
+                return
+            }
+
+            let parsed = link.attr('uri').match(/im:\/\/crop\/(.*)/)
+            if(!Array.isArray(parsed) || parsed.length !== 2) {
+                return
+            }
+
+            let [x, y, w, h] = parsed[1].split('/')
+            crops.crops.push({
+                name: link.attr('title'),
+                x: x,
+                y: y,
+                width: w,
+                height: h
+            })
+        })
+
+        if (crops.crops.length) {
+            node.crops = crops
         }
     },
 
@@ -194,26 +201,41 @@ export default {
             }
         })
 
+        const imageLinks = $$('links')
+
         // Add crops to data
         if (node.crops) {
-            let crops = $$('crops')
-
-            for (var x in node.crops.crops) {
-                if (node.crops.crops.hasOwnProperty(x)) {
-                    var origCrop = node.crops.crops[x];
-
-                    crops.append(
-                        $$('crop').attr('name', origCrop.name).append([
-                            $$('x').append(origCrop.x),
-                            $$('y').append(origCrop.y),
-                            $$('width').append(origCrop.width),
-                            $$('height').append(origCrop.height)
-                        ])
-                    )
-                }
+            // <link rel="crop" type="x-im/crop" title="16:9" uri="im://crop/0.07865168539325842/0.0899/0.8426966292134831/0.9899" />
+            for (var x in node.crops.crops) { // eslint-disable-line
+                let crop = node.crops.crops[x]
+                let uri = 'im://crop/' + crop.x + '/' + crop.y + '/' + crop.width + '/' + crop.height
+                imageLinks.append(
+                    $$('link')
+                        .attr({
+                            rel: 'crop',
+                            type: 'x-im/crop',
+                            title: crop.name,
+                            uri: uri
+                        })
+                )
             }
 
-            data.append(crops)
+            // for (var x in node.crops.crops) {
+            //     if (node.crops.crops.hasOwnProperty(x)) {
+            //         var origCrop = node.crops.crops[x];
+            //
+            //         crops.append(
+            //             $$('crop').attr('name', origCrop.name).append([
+            //                 $$('x').append(origCrop.x),
+            //                 $$('y').append(origCrop.y),
+            //                 $$('width').append(origCrop.width),
+            //                 $$('height').append(origCrop.height)
+            //             ])
+            //         )
+            //     }
+            // }
+            //
+            // data.append(crops)
         }
 
 
@@ -224,9 +246,8 @@ export default {
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 
-        if (node.authors.length) {
 
-            const authorLinks = $$('links')
+        if (node.authors.length) {
             const authorLink = node.authors.map((author) => {
                 const authorLink = $$('link').attr({
                     rel: 'author',
@@ -243,8 +264,12 @@ export default {
                 }
                 return authorLink
             })
-            authorLinks.append(authorLink)
-            link.append(authorLinks)
+
+            imageLinks.append(authorLink)
+        }
+
+        if (imageLinks.children.length > 0) {
+            link.append(imageLinks)
         }
 
         el.append(
