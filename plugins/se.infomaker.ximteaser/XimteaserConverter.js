@@ -1,4 +1,4 @@
-import { idGenerator } from 'writer'
+import { idGenerator, api } from 'writer'
 
 
 export default {
@@ -69,15 +69,15 @@ export default {
                 this.importImageLinkData(dataEl, node)
             }
 
+            // Import softcrops if exists
+            this.importSoftcrops(linkEl, node)
+
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
             node.uuid = linkEl.attr('uuid')
         }
     },
 
-    /**
-     * Import the image link structure
-     */
     importImageLinkData: function(el, node) {
         el.children.forEach(function(child) {
             if (child.tagName === 'width') {
@@ -87,44 +87,23 @@ export default {
             if (child.tagName === 'height') {
                 node.height = parseInt(child.text(), 10)
             }
-
-            if (child.tagName === 'crops' && child.children.length > 0) {
-                let crops = {
-                    crops: []
-                }
-
-                child.children.forEach(function(crop) {
-                    if (crop.children.length === 0) {
-                        return
-                    }
-
-                    if (crop.tagName === 'width') {
-                        crops.width = crop.text()
-                    }
-                    else if (crop.tagName === 'height') {
-                        crops.height = crop.text()
-                    }
-                    else {
-                        var x = crop.find('x'),
-                            y = crop.find('y'),
-                            width = crop.find('width'),
-                            height = crop.find('height')
-
-                        crops.crops.push({
-                            name: crop.attr('name'),
-                            x: x.text(),
-                            y: y.text(),
-                            width: width.text(),
-                            height: height.text()
-                        })
-                    }
-                })
-
-                if (crops.crops.length) {
-                    node.crops = crops
-                }
-            }
         })
+    },
+
+    /**
+     * Import the image link structure
+     */
+    importSoftcrops: function(el, node) {
+        let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+        let softcrops = imageModule.importSoftcropLinks(
+            el.find('links')
+        )
+
+        if (softcrops.length) {
+            node.crops = {
+                crops: softcrops
+            }
+        }
     },
 
     /**
@@ -211,24 +190,13 @@ export default {
                 )
             }
 
+            link.append(linkData)
+
             if (node.crops) {
-                let crops = $$('crops')
-
-                for (var x in node.crops.crops) { // eslint-disable-line
-                    var origCrop = node.crops.crops[x]
-
-                    crops.append(
-                        $$('crop').attr('name', origCrop.name).append([
-                            $$('x').append(origCrop.x),
-                            $$('y').append(origCrop.y),
-                            $$('width').append(origCrop.width),
-                            $$('height').append(origCrop.height)
-                        ])
-                    )
-                }
-
-                linkData.append(crops)
-                link.append(linkData)
+                let cropLinks = $$('links')
+                let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+                imageModule.exportSoftcropLinks($$, cropLinks, node.crops.crops)
+                link.append(cropLinks)
             }
 
             el.append(
