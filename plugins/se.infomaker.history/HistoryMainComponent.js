@@ -172,12 +172,19 @@ class HistoryMainComponent extends Component {
         const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
         const uuidMatches = uuidRegex.exec(article.id)
         if(uuidMatches && uuidMatches.length > 0) {
-            // Is existing article, open in new tab
-            const writerUrl = api.router.getEndpoint() + "/#" + uuidMatches[0]
-            const a = document.createElement('a');
-            a.href = writerUrl;
-            a.target = '_blank'
-            fireClickEvent(a);
+            api.newsItem.setTemporaryId(article.id)
+            api.browser.ignoreNextHashChange = true
+            api.browser.setHash(article.id)
+            api.newsItem.setSource(version.src, null, article.etag)
+            //
+            api.events.documentChanged(
+                'se.infomaker.history',
+                {
+                    type: 'version',
+                    action: 'update'
+                }
+            )
+
         } else {
             // Is temp article, replace in window
             api.newsItem.setTemporaryId(article.id)
