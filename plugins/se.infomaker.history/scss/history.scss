@@ -1,11 +1,13 @@
 .tooltip {
     z-index: 1000000 !important;
 }
+
 .icon-delete {
-    float:right;
+    float: right;
     cursor: pointer;
-    margin-top:5px;
+    margin-top: 5px;
 }
+
 .all-unsaved-articles {
     font-size: 1rem;
     cursor: pointer;
@@ -40,37 +42,48 @@
     }
 }
 
-.history-article {
-    margin-bottom:15px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 3px;
 
-    h4 {
-        font-weight: bold;
-        font-size: 1rem;
-        margin-bottom:1rem;
-        padding-left: 20px;
-
-        &>i.fa {
-            float: left;
-            line-height: inherit;
-            margin: 0 16px 0 -0.3rem;
-            font-size: 90%;
-        }
-    }
-}
 .history-version-item {
     background: #fbfbfb;
     border: 1px solid #fbfbfb;
     color: #fff;
-    line-height:1.3rem;
+    line-height: 1.3rem;
 
-    &.identical {
+    &.active {
         border: 1px solid #e5e5e5;
+        background-color: #efefef;
     }
 
-    &>i.fa {
+    .time {
+        display: block;
+        color: #777;
+        font-size: 0.9rem;
+    }
+    .remove {
+        float: right;
+        position: relative;
+        color: #d9534f;
+        display: none;
+    }
+
+    &.red {
+        margin-top:20px;
+        background-color: #FFF0F0;
+        border: 1px solid #FFF0F0;
+
+
+        > div {
+            color: #A00;
+        }
+        .fa {
+            color: darken(#FFF0F0, 25%);
+        }
+        &:hover {
+            border: 1px solid darken(#FFF0F0, 15%);
+        }
+    }
+
+    & > i.fa {
         color: #888;
         float: left;
         line-height: inherit;
@@ -81,6 +94,10 @@
     &:hover {
         border: 1px solid #bbb;
         cursor: pointer;
+
+        .remove {
+            display: inline-block;
+        }
     }
 
     padding: 9px 10px 10px 18px;
@@ -89,11 +106,11 @@
     margin-bottom: 5px;
     width: 100%;
 
-    transition-property: background, height, padding, margin, opacity;
-    transition-duration: 1s;
-    transition-timing-function: ease-out;
+    //transition-property: background, height, padding, margin, opacity;
+    //transition-duration: 1s;
+    //transition-timing-function: ease-out;
 
-    &>div {
+    & > div {
         padding-left: 25px;
         font-size: 90%;
         color: #333;
@@ -103,7 +120,7 @@
             color: #000;
         }
 
-        &>strong:first-child {
+        & > strong:first-child {
             display: block;
             color: #fff;
             border-bottom: 1px solid #eee;
@@ -112,7 +129,7 @@
             line-height: 2.5rem;
         }
 
-        &>a {
+        & > a {
             color: #eee;
             font-size: 95%;
         }
@@ -121,29 +138,29 @@
 
 .sc-np-popover {
     .imc-history {
-        min-width:300px;
-        padding:1rem;
+        min-width: 400px;
+        padding: 1rem;
     }
 }
+
 .imc-history {
-    height: 300px;
+    height: 350px;
 
     .sc-scroll-pane {
         top: 80px;
         left: 15px;
         right: 15px;
         background-color: #fff;
-        border:none;
+        border: none;
         padding: 0;
         margin: 0 0 1rem 0;
     }
     p {
         line-height: 1.4rem;
         margin-top: 0.7rem;
-        margin-bottom:1rem;
+        margin-bottom: 1rem;
         color: #777;
 
     }
-
 
 }
