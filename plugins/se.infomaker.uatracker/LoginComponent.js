@@ -21,7 +21,7 @@ class LoginComponent extends Component {
             .attr('type', 'text')
             .addClass('form-control')
             .ref('email')
-            .on('keydown', this.validateEmail)
+            .on('keyup', this.validateEmail)
             .on('blur', this.loadAvatar)
 
         emailGroup.append([emailLabel, emailInput, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar')])
@@ -42,6 +42,7 @@ class LoginComponent extends Component {
     }
 
     loadAvatar() {
+        this.validateEmail()
         if (this.isValidEmail()) {
             const email = this.refs.email.val()
             this.refs.avatar.extendProps({
@@ -59,7 +60,9 @@ class LoginComponent extends Component {
             return false
         }
     }
-
+    shouldRerender() {
+        return false
+    }
     validateEmail() {
         if (this.isValidEmail()) {
             this.send('dialog:enablePrimaryBtn')
