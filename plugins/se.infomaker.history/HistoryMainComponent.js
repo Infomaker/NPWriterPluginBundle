@@ -95,15 +95,6 @@ class HistoryMainComponent extends Component {
     }
     applyVersion(version, article) {
         // this function can fire onclick handler for any DOM-Element
-        function fireClickEvent(element) {
-            let evt = new window.MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true
-            });
-
-            element.dispatchEvent(evt);
-        }
 
         const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
         const uuidMatches = uuidRegex.exec(article.id)

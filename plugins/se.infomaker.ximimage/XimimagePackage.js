@@ -10,6 +10,8 @@ import XimimageFileProxy from "./XimimageFileProxy";
 import InsertImageUrlCommand from "./InsertImageUrlCommand";
 import ImageDisplay from "./ImageDisplay";
 import XimimageModule from "./XimimageModule"
+import isImage from './isImage'
+import InsertImageMacro from './InsertImageMacro'
 
 export default {
     name: 'ximimage',
@@ -21,6 +23,7 @@ export default {
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
         config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
+        config.addMacro(InsertImageMacro)
         config.addComponent('imageDisplay', ImageDisplay)
         config.addConverter('newsml', XimimageConverter)
         config.addDragAndDrop(DropImageFile)
@@ -31,6 +34,11 @@ export default {
             'se.infomaker.ximimage',
             'ximimagehandler',
             XimimageModule
+        )
+        config.addPluginModule(
+            'se.infomaker.ximimage',
+            'isImage',
+            isImage
         )
 
         config.addIcon('image', {'fontawesome': 'fa-image'})
