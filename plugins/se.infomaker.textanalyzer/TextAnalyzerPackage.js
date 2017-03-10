@@ -1,9 +1,11 @@
 import TextanalyzerComponent from './TextAnalyzerComponent'
+import PluginInformation from './PluginInfomation'
 
 export default {
     name: 'textanalyzer',
     id: 'se.infomaker.textanalyzer',
-    index: 5000,
+    version: '{{version}}',
+    metadata: PluginInformation,
     configure: function (config) {
 
         config.addLabel('Characters', {
