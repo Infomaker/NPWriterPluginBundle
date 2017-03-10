@@ -238,6 +238,9 @@ class StoryEditComponent extends Component {
         return false
     }
 
+    shouldRerender() {
+        return false;
+    }
 }
 
 export default StoryEditComponent

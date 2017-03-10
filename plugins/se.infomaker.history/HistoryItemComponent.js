@@ -1,52 +1,64 @@
-import {Component} from 'substance'
+import {Component, FontAwesomeIcon} from 'substance'
 import {moment} from 'writer'
 
 class HistoryItemComponent extends Component {
 
     render($$) {
-        var version = this.props.version;
+        const article = this.props.article;
+        const version = article.versions[0]
 
-        var icon, className, title;
+        let icon, title
 
-        if(this.context.api.newsItemArticle.firstElementChild.outerHTML === version.src) {
-            icon = 'fa fa-check';
-            title = this.getLabel('Identical with the current version');
-            className = 'identical'
+        let articleTitle = article.id;
+
+        let domParser = new DOMParser(),
+            dom = domParser.parseFromString(version.src, 'text/xml'),
+            headline = dom.querySelector('idf element[type="headline"]')
+
+        if (headline.textContent.length > 2) {
+            articleTitle = headline.textContent
         }
-        else {
-            icon = 'fa fa-hashtag'
-            className = 'not-identical'
+        const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+        const uuidMatches = uuidRegex.exec(article.id)
+        if(uuidMatches && uuidMatches.length > 0) {
+            icon = 'fa fa-cloud-upload'
+            title = this.getLabel('history-popover-existing-article') + '- ID: ' + article.id
+        } else {
+            icon = 'fa fa-hdd-o'
+            title = this.getLabel('history-popover-non-existing-article')
         }
 
-        var outer = $$('div')
-            .addClass('history-version-item light ' + className)
+        const outer = $$('div')
+            .addClass('history-version-item light')
+            .addClass(article.id === this.context.api.newsItem.getIdForArticle() ? 'active' : '')
             .append(
                 $$('i').addClass(icon).attr('title', title)
             ).on('click', () => {
-                this.props.applyVersion(version, this.props.article)
+                this.props.applyVersion(version, article)
             });
 
-        var inner = $$('div'),
+        const inner = $$('div'),
+            timeContainer = $$('span').addClass('time'),
             displayFormat = this.context.api.getConfigValue('se.infomaker.history', 'timeFormat')
 
+
+
+        let time = moment(version.time).from()
         if (displayFormat) {
-            inner.append(
-                $$('span').append(
-                    moment(version.time).format(displayFormat)
-                )
-            );
-        }
-        else {
-            inner.append(
-                $$('span').append(
-                    moment(version.time).from()
-                )
-            )
+            moment(version.time).format(displayFormat)
         }
 
-        if (version.action === 'saved') {
-            inner.addClass('saved');
-        }
+        timeContainer.append(time)
+
+        const removeArticleBtn = $$('button').addClass('remove').append($$(FontAwesomeIcon, {icon: 'fa-times'}))
+        removeArticleBtn.on('click', (e) => {
+            e.stopPropagation()
+            this.props.removeArticle(article)
+        })
+
+
+
+        inner.append([removeArticleBtn, articleTitle,timeContainer])
 
         outer.append(inner);
         return outer;

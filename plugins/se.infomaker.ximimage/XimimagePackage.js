@@ -9,6 +9,7 @@ import DropImageUUID from "./DropImageUUID";
 import XimimageFileProxy from "./XimimageFileProxy";
 import InsertImageUrlCommand from "./InsertImageUrlCommand";
 import ImageDisplay from "./ImageDisplay";
+import XimimageModule from "./XimimageModule"
 
 export default {
     name: 'ximimage',
@@ -25,6 +26,12 @@ export default {
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
         config.addDragAndDrop(DropImageUUID)
+
+        config.addPluginModule(
+            'se.infomaker.ximimage',
+            'ximimagehandler',
+            XimimageModule
+        )
 
         config.addIcon('image', {'fontawesome': 'fa-image'})
         config.addIcon('crop', {'fontawesome': 'fa-crop'})

@@ -49,13 +49,36 @@ export default({
         })
 
         config.addLabel('history-popover-headline', {
-            en: 'Change history',
-            sv: 'Ändringshistorik'
+            en: 'Unsaved articles',
+            sv: 'Osparade artiklar'
         })
 
         config.addLabel('history-popover-description', {
             en: 'Change history for this article.',
-            sv: 'Ändringshistorik för den här artikeln.'
+            sv: 'Här listas dina osparade artiklar.'
+        })
+
+        config.addLabel('history-popover-existing-article', {
+            en: 'Existing article.',
+            sv: 'Befintlig artikel.'
+        })
+        config.addLabel('history-popover-non-existing-article', {
+            en: 'New unsaved article',
+            sv: 'Ny osparad artikel'
+        })
+        config.addLabel('history-popover-no-items-description', {
+            en: 'No unsaved articles',
+            sv: 'Du har inga osparade artiklar'
+        })
+
+        config.addLabel('history-remove-all-button', {
+            en: 'Remove all',
+            sv: 'Rensa alla'
+        })
+
+        config.addLabel('history-remove-all-confirm', {
+            en: 'Yes I am sure',
+            sv: 'Ja, jag vill rensa alla'
         })
 
         config.addLabel('Identical with the current version', {

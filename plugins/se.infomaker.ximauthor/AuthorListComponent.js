@@ -24,15 +24,13 @@ class AuthorListComponent extends Component {
             // TODO: Watch this reference for memory leaks
             authorList.append($$(AuthorItem, {
                 author: author,
-                removeAuthor: this.deleteAuthorAndReference.bind(this)
+                removeAuthor: this.deleteAuthor.bind(this)
             }).ref(this.getIdForRef(author)));
         });
         return authorList;
     }
 
-    deleteAuthorAndReference(author) {
-        this.refs[this.getIdForRef(author)].remove()
-        delete this.refs[this.getIdForRef(author)]; //Manual remove reference
+    deleteAuthor(author) {
         this.props.removeAuthor(author);
     }
 }
