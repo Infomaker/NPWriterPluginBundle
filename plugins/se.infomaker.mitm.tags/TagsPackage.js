@@ -5,7 +5,7 @@ export default {
     id: 'se.infomaker.mitm.tags',
     name: 'mmtags',
     vendor: 'infomaker.se',
-
+    version: '{{version}}',
     configure: function(config) {
 
         config.addLabel('mmtags-could_not_load_uuid', {

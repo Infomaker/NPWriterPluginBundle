@@ -16,6 +16,7 @@ import InsertImageMacro from './InsertImageMacro'
 export default {
     name: 'ximimage',
     id: 'se.infomaker.ximimage',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Ximimage)
         config.addComponent(Ximimage.type, XimimageComponent)

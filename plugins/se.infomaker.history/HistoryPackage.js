@@ -5,6 +5,7 @@ import HistoryMainComponent from './HistoryMainComponent'
 export default({
     id: 'se.infomaker.history',
     name: 'history',
+    version: '{{version}}',
     configure: function(config) {
         // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 

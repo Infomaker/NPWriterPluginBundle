@@ -12,6 +12,7 @@ import XimpdfFileProxy from './XimpdfFileProxy'
 export default {
     name: 'ximpdf',
     id: 'se.infomaker.ximpdf',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Ximpdf)
         config.addComponent(Ximpdf.type, XimpdfComponent)

@@ -4,6 +4,7 @@ export default {
     name: 'publishflow',
     id: 'se.infomaker.publishflow',
     index: 100,
+    version: '{{version}}',
     configure: function (config) {
         config.addPopover(
             this.id + '_1',

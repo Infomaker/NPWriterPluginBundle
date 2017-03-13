@@ -4,6 +4,7 @@ export default {
     name: 'textanalyzer',
     id: 'se.infomaker.textanalyzer',
     index: 5000,
+    version: '{{version}}',
     configure: function (config) {
 
         config.addLabel('Characters', {
