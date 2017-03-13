@@ -5,6 +5,7 @@ import UATrackerComponent from './UATrackerComponent'
 export default {
     name: 'uatracker',
     id: 'se.infomaker.uatracker',
+    version: '{{version}}',
     configure: function(config) {
 
         config.addPopover(
