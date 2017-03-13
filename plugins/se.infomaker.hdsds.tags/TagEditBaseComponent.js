@@ -18,6 +18,9 @@ class TagEditBaseComponent extends Component {
         return this.context.api.router.createConceptItem(newsItem)
     }
 
+    shouldRerender() {
+        return false;
+    }
 
     /**
      * Creates, updates or delete an facebook link
@@ -101,7 +104,22 @@ class TagEditBaseComponent extends Component {
     }
 
     getSeeAlsoLinkByType(type) {
-        return find(this.props.tag.itemMeta.links.link, (link) => link['@type'] === type && link['@rel'] === 'irel:seeAlso')
+        // fixme: should really use loadash...
+        let links = this.props.tag.itemMeta.links.link
+
+        let foundLink = null
+        if (Array.isArray(links)) {
+            links.forEach((link) => {
+                if (link['@type'] === type && link['@rel'] === 'irel:seeAlso') {
+                    foundLink = link
+                }
+            })
+        } else if (links) {
+            if (links['@type'] === type && links['@rel'] === 'irel:seeAlso') {
+                foundLink = this.props.tag.itemMeta.links.link
+            }
+        }
+        return foundLink
     }
 
     render($$) {
