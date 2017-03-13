@@ -8,7 +8,10 @@ export default {
         const url = params.text
 
         // only react on 'break' (as medium does)
-        if (params.action !== 'break' && params.action !== 'paste') {
+        if (params.action !== 'paste') {
+            return
+        }
+        if(!url || url.length === 0) {
             return
         }
 
