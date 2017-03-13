@@ -114,7 +114,8 @@ function upload(file) {
                             });
                         });
                         const url = {
-                            url: pluginsUrl + '/' + prefix + '/' + fileName
+                            url: pluginsUrl + '/' + prefix + '/' + fileName,
+                            autoAdd: true
                         }
                         req.write(JSON.stringify(url));
                         req.end();

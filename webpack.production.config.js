@@ -39,7 +39,8 @@ function getPluginBuildSpec(dir) {
     });
     return result;
 }
-const version = process.env.VERSION
+const version = process.env.VERSION || 'dev'
+
 module.exports = {
     entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {

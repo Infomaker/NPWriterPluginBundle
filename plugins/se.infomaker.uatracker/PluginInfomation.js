@@ -7,6 +7,10 @@ export default {
         {
             name: "Andreas Kihlberg",
             email: "andreas.kihlberg@infomaker.se"
+        },
+        {
+            name: "Tobias Södergren",
+            email: "tobias.sodergren@infomaker.se"
         }
     ],
     media: [
