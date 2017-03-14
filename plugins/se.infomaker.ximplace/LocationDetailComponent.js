@@ -21,6 +21,13 @@ class LocationDetailComponent extends Component {
         })
     }
 
+    didMount() {
+        this.extendState({
+            shortDesc: this.getDescription('drol:short'),
+            longDesc: this.getDescription('drol:long')
+        })
+    }
+
     dispose() {
         super.dispose()
     }
@@ -157,9 +164,7 @@ class LocationDetailComponent extends Component {
      * @param {class} google
      */
     googleMapsLoaded(google) {
-
         this.google = google
-
 
         if (this.state.newLocation && this.state.query) { // If there is a new location and there is a query entered show that in map
             try {
@@ -174,8 +179,6 @@ class LocationDetailComponent extends Component {
         this.extendState({
             googleMapsLoaded: true
         })
-
-
     }
 
     /**
@@ -246,7 +249,7 @@ class LocationDetailComponent extends Component {
             location: props.location,
             editable: props.editable
         }
-        if(props.query) {
+        if (props.query) {
             newProps.query = props.query
         }
         this.extendState(newProps)
@@ -260,25 +263,15 @@ class LocationDetailComponent extends Component {
         }
     }
 
-    // shouldRerender(data) {
-    //     No need to rerender this
-        // return false
-    // }
-
-
     render($$) {
-
         let shortDesc = "",
             longDesc = ""
 
         const name = this.getNameForLocation()
 
-        if (this.state.googleMapsLoaded) { // wait until google maps is loaded in MapCompontent
-            shortDesc = this.getDescription('drol:short')
-            longDesc = this.getDescription('drol:long')
-
-            shortDesc = shortDesc ? shortDesc : ""
-            longDesc = longDesc ? longDesc : ""
+        if (this.state.googleMapsLoaded) { // wait until google maps is loaded in MapComponent
+            shortDesc = this._getCurrentDescription('drol:short')
+            longDesc = this._getCurrentDescription('drol:long')
 
             if (this.state.location.concept.metadata.object['@type'] === 'x-im/polygon') {
                 console.warn("Edit of polygons is not yet supported")
@@ -290,6 +283,7 @@ class LocationDetailComponent extends Component {
                 this.updateMapPosition()
             }
         }
+
         const el = $$('div')
 
         const formContainer = $$('form').addClass('location-form__container container').ref('formContainer').on('submit', (e) => {
@@ -347,6 +341,12 @@ class LocationDetailComponent extends Component {
                     .val(shortDesc['keyValue'])
                     .ref('locationShortDescInput')
             )
+
+            formGroupShortDesc.on('change', function () {
+                this.extendState({
+                    shortDesc: this.refs['locationShortDescInput'].val()
+                })
+            }.bind(this))
         }
         else {
             formGroupShortDesc.append(
@@ -367,6 +367,12 @@ class LocationDetailComponent extends Component {
                     .val(longDesc['keyValue'])
                     .ref('locationLongDescText')
             )
+
+            formGroupLongDesc.on('change', function () {
+                this.extendState({
+                    longDesc: this.refs['locationLongDescText'].val()
+                })
+            }.bind(this))
         }
         else {
             formGroupLongDesc.append(
@@ -398,7 +404,6 @@ class LocationDetailComponent extends Component {
         if (this.state.error) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-error').append(
                 this.context.i18n.t("ximplace-error-save"))))
-
         }
 
         return el
@@ -442,6 +447,12 @@ class LocationDetailComponent extends Component {
         else {
             return 'x-im/place'
         }
+    }
+
+    _getCurrentDescription(drol) {
+        let desc = drol === 'drol:short' ? this.state.shortDesc : this.state.longDesc
+
+        return desc || ''
     }
 }
 

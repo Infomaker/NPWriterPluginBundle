@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import { jxon } from 'writer'
+import {jxon} from 'writer'
 
 const {isObject, isArray, find} = writer.lodash
 
@@ -35,6 +35,10 @@ class ContentprofileDetailComponent extends Component {
             .catch(() => {
                 this.setState({error: true})
             })
+    }
+
+    shouldRerender() {
+        return false;
     }
 
     updateContentProfile() {

@@ -4,7 +4,7 @@ import "./scss/job.scss";
 export default {
     id: 'se.infomaker.newspilot.job',
     name: 'npjob',
-
+    version: '{{version}}',
     configure: function (config) {
         config.addSidebarTab('npjob', 'Newspilot Jobb')
 

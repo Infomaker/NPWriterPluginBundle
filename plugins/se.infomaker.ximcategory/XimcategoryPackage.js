@@ -4,7 +4,7 @@ import './scss/category.scss'
 export default {
     id: 'se.infomaker.ximcategory',
     name: 'ximcategory',
-
+    version: '{{version}}',
     configure: function(config) {
         config.addComponentToSidebarWithTabId(
             this.id,

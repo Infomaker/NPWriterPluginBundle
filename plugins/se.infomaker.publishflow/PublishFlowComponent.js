@@ -27,13 +27,20 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
-            this.defaultAction()
+            if(!this.saveInProgress) {
+                this.saveInProgress = true
+                this.defaultAction()
+            }
         });
     }
 
     dispose() {
-        api.events.off(pluginId, 'document:changed')
-        api.events.off(pluginId, 'document:saved')
+        api.events.off(pluginId, event.DOCUMENT_CHANGED)
+        api.events.off(pluginId, event.DOCUMENT_SAVED)
+        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
+        api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
+        api.events.off(pluginId, event.USERACTION_SAVE)
+        this._clearSaveTimeout();
     }
 
     getInitialState() {
@@ -414,6 +421,7 @@ class PublishFlowComponent extends Component {
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
+
         this._initSaveTimeout()
         api.newsItem.save()
         this.props.popover.disable()
@@ -445,6 +453,8 @@ class PublishFlowComponent extends Component {
      * Request creation of new article
      */
     _clearArticle() {
+        const url = api.router.getEndpoint()
+
         if (this.state.unsavedChanges) {
             api.ui.showMessageDialog(
                 [{
@@ -452,13 +462,13 @@ class PublishFlowComponent extends Component {
                     message: this.getLabel('Article contains unsaved changes. Continue without saving?')
                 }],
                 () => {
-                    api.article.clear(true)
+                    window.location.replace(url)
                 }
             )
-            return
+        } else {
+            window.location.replace(url)
         }
 
-        api.article.clear()
     }
 
     /**
@@ -532,6 +542,7 @@ class PublishFlowComponent extends Component {
      */
     _onDocumentSaveFailed() {
         this._clearSaveTimeout()
+        this.saveInProgress = false
 
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
@@ -584,6 +595,7 @@ class PublishFlowComponent extends Component {
      */
     _onDocumentSaved() {
         this._clearSaveTimeout()
+        this.saveInProgress = false
 
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()

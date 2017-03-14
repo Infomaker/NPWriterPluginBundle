@@ -1,5 +1,10 @@
 export default {
     execute: function(params, context) {
+
+        if (!params.text) {
+            return;
+        }
+
         let character = params.text.substr(
             params.start,
             params.end - params.start

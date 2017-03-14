@@ -8,6 +8,7 @@ import DropSocialEmbed from './DropSocialEmbed'
 export default {
     name: 'socialembed',
     id: 'se.infomaker.socialembed',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(SocialembedNode)
         config.addCommand('socialembed', SocialembedCommand)

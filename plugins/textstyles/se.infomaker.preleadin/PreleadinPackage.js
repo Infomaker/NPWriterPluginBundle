@@ -5,6 +5,7 @@ import PreleadinNode from './PreleadinNode'
 export default {
     name: 'preleadin',
     id: 'se.infomaker.preleadin',
+    version: '{{version}}',
     configure: function (config) {
 
         PreleadinNode.type = this.name

@@ -4,6 +4,7 @@ const {registerPlugin} = writer
 const validationPackage = {
     id: 'se.infomaker.defaultvalidation',
     name: 'defaultvalidation',
+    version: '{{version}}',
     configure: (config) => {
         config.addValidator(DefaultValidation)
     }

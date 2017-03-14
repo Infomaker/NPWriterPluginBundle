@@ -3,7 +3,7 @@ import PublicationChannelComponent from './PublicationchannelComponent'
 export default {
     id: 'se.infomaker.publicationchannel',
     name: 'publicationchannel',
-
+    version: '{{version}}',
     configure: function(config) {
 
         config.addLabel('publicationchannel-Channels', {

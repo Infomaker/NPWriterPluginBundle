@@ -114,7 +114,7 @@ class XimimageAddToBylineComponent extends Component {
                 ]),
                 $$('span').append(
                     $$('a').append(
-                        $$(FontAwesomeIcon, { icon: 'remove' })
+                        $$(FontAwesomeIcon, { icon: 'fa-times' })
                     )
                         .attr('title', this.getLabel('Remove'))
                         .on('click', function () {
@@ -145,8 +145,7 @@ class XimimageAddToBylineComponent extends Component {
     removeAuthor(author) {
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid
         delete this.refs['item-' + refid]
-
-        this.props.removeAuthor(author)
+        this.props.node.removeAuthor(author)
     }
 
     onClose() {

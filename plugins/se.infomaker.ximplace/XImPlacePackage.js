@@ -26,5 +26,6 @@ const id = "se.infomaker.ximplace"
 export default {
     id: id,
     name: "ximplace",
+    version: '{{version}}',
     configure: ximPlacePackageConfigure(id)
 }

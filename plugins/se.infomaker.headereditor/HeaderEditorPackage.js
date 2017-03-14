@@ -9,6 +9,7 @@ import {registerPlugin} from 'writer'
 const HeaderEditorPackage = {
     id: 'se.infomaker.headereditor',
     name: 'headereditor',
+    version: '{{version}}',
     configure: (config) => {
 
         config.addNode(HeaderEditorNode)

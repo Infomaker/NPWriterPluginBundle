@@ -10,6 +10,7 @@ import {platform} from 'substance'
 export default {
     name: 'ximteaser',
     id: 'se.infomaker.ximteaser',
+    version: '{{version}}',
     configure: function (config, pluginConfig) {
         config.addNode(Ximteaser)
         config.addComponent(Ximteaser.type, XimteaserComponent)
