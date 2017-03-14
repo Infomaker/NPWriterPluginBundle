@@ -15,17 +15,23 @@ class HistoryItemComponent extends Component {
             dom = domParser.parseFromString(version.src, 'text/xml'),
             headline = dom.querySelector('idf element[type="headline"]')
 
-        if (headline.textContent.length > 2) {
+        /**
+         * If headline is found use its textcontent, of not, get the first 60 characters from idf textcontent
+         */
+        if (headline && headline.textContent && headline.textContent.length > 2) {
             articleTitle = headline.textContent
+        } else if (dom.querySelector('idf')) {
+            if(dom.querySelector('idf').textContent) {
+                articleTitle = dom.querySelector('idf').textContent.substr(0, 60)
+            }
         }
-        const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-        const uuidMatches = uuidRegex.exec(article.id)
-        if(uuidMatches && uuidMatches.length > 0) {
-            icon = 'fa fa-cloud-upload'
-            title = this.getLabel('history-popover-existing-article') + '- ID: ' + article.id
-        } else {
+
+        if (article.id.indexOf('__temp__') === 0) {
             icon = 'fa fa-hdd-o'
             title = this.getLabel('history-popover-non-existing-article')
+        } else {
+            icon = 'fa fa-cloud-upload'
+            title = this.getLabel('history-popover-existing-article') + '- ID: ' + article.id
         }
 
         const outer = $$('div')
@@ -42,10 +48,9 @@ class HistoryItemComponent extends Component {
             displayFormat = this.context.api.getConfigValue('se.infomaker.history', 'timeFormat')
 
 
-
         let time = moment(version.time).from()
         if (displayFormat) {
-            moment(version.time).format(displayFormat)
+            time = moment(version.time).format(displayFormat)
         }
 
         timeContainer.append(time)
@@ -57,8 +62,7 @@ class HistoryItemComponent extends Component {
         })
 
 
-
-        inner.append([removeArticleBtn, articleTitle,timeContainer])
+        inner.append([removeArticleBtn, articleTitle, timeContainer])
 
         outer.append(inner);
         return outer;

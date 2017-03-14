@@ -5,6 +5,7 @@ import DatelineNode from './DatelineNode'
 export default {
     name: 'dateline',
     id: 'se.infomaker.dateline',
+    version: '{{version}}',
     configure: function (config) {
 
         DatelineNode.type = this.name

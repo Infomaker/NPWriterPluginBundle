@@ -123,9 +123,6 @@ class ImageDisplay extends Component {
             XimimageAddToBylineComponent,
             {
                 node: this.props.node,
-                removeAuthor: () => (author) => {
-                    this.props.node.removeAuthor(author)
-                },
                 addAuthor: (author) => {
                     this.props.node.addAuthor(author)
                 }

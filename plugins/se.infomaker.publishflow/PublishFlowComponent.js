@@ -35,11 +35,12 @@ class PublishFlowComponent extends Component {
     }
 
     dispose() {
-        api.events.off(pluginId, 'document:changed')
-        api.events.off(pluginId, 'document:saved')
+        api.events.off(pluginId, event.DOCUMENT_CHANGED)
+        api.events.off(pluginId, event.DOCUMENT_SAVED)
         api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
         api.events.off(pluginId, event.USERACTION_SAVE)
+        this._clearSaveTimeout();
     }
 
     getInitialState() {

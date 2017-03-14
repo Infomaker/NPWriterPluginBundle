@@ -11,6 +11,7 @@ import DropUri from './DropUri'
 export default {
     id: 'se.infomaker.youtubeembed',
     name: 'youtubeembed',
+    version: '{{version}}',
     configure: function(config) {
 
         // Add tool

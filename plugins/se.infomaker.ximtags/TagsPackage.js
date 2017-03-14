@@ -5,7 +5,7 @@ export default {
     id: 'se.infomaker.ximtags',
     name: 'ximtags',
     vendor: 'infomaker.se',
-
+    version: '{{version}}',
     configure: function(config) {
 
         config.addLabel('ximtags-could_not_load_uuid', {

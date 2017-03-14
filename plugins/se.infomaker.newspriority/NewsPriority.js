@@ -4,6 +4,7 @@ import NewsPriorityComponent from './NewsPriorityComponent'
 export default {
     name: 'newspriority',
     id: 'se.infomaker.newspriority',
+    version: '{{version}}',
     configure: function (config) {
 
         config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent)

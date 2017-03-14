@@ -6,6 +6,7 @@ import BlockquoteConverter from './BlockquoteConverter'
 const blockquotePackage = {
     id: 'se.infomaker.blockquote',
     name: 'blockquote',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Blockquote)
         config.addComponent(Blockquote.type, BlockquoteComponent)

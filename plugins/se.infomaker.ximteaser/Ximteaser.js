@@ -32,9 +32,9 @@ class Ximteaser extends BlockNode {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid)
             tx.set([this.id, 'uri'], uri)
-            tx.set([this.id, 'width'], width ? width.textContent : '')
-            tx.set([this.id, 'height'], height ? height.textContent : '')
-        }, {history: false})
+            tx.set([this.id, 'width'], width ? Number(width.textContent) : null)
+            tx.set([this.id, 'height'], height ? Number(height.textContent) : null)
+        })
     }
 
     /**

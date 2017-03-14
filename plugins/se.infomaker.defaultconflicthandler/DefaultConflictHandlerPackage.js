@@ -4,7 +4,7 @@ const {registerPlugin} = writer
 const conflictHandlerPackage = {
     id: 'se.infomaker.defaultconflicthandler',
     name: 'defaultconflicthandler',
-
+    version: '{{version}}',
     configure: (config) => {
         config.registerConflictHandler("server.conflict", DefaultConflictHandler)
 

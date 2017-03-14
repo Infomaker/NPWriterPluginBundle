@@ -1,4 +1,4 @@
-import { jxon, api, lodash } from 'writer'
+import { jxon, api, lodash, NilUUID } from 'writer'
 import { DefaultDOMElement, BlockNode } from 'substance'
 
 
@@ -116,6 +116,25 @@ class Ximimage extends BlockNode {
             this.updateAuthorFromConcept(author)
         }
 
+    }
+
+    removeAuthor(author) {
+        const authors = this.authors
+        for (let n = 0; n < authors.length; n++) {
+
+            if (!NilUUID.isNilUUID(author.uuid) && authors[n].uuid === author.uuid) {
+                authors.splice(n, 1)
+                break
+            }
+            else if (NilUUID.isNilUUID(author.uuid) && authors[n].name === author.name) {
+                authors.splice(n, 1)
+                break
+            }
+        }
+        // First add the authors to the node
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'authors'], authors)
+        })
     }
 
     /**

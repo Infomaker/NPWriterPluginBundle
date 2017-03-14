@@ -9,7 +9,10 @@ export default {
     name: 'uatracker',
     id: 'se.infomaker.uatracker',
     version: '{{version}}',
+<<<<<<< HEAD
     metadata: PluginInformation,
+=======
+>>>>>>> develop
     configure: function(config) {
 
         config.addPopover(

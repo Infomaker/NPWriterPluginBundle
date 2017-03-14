@@ -5,7 +5,7 @@ export default {
     id: 'se.infomaker.hdsds.tags',
     name: 'hdsdstags',
     vendor: 'infomaker.se',
-
+    version: '{{version}}',
     configure: function(config) {
 
         config.addLabel('hdsds-tagscould_not_load_uuid', {
