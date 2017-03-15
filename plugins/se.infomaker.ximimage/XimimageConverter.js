@@ -50,7 +50,7 @@ export default {
         if (newsItemConversion) {
             dataEl = el.find('data')
         } else {
-            dataEl = linkEl.find('data')
+            dataEl = el.find(':scope>links>link>data')
         }
         // Import data
 
