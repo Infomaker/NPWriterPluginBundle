@@ -19,7 +19,7 @@ export default {
         node.dataType = el.attr('type')
 
         // Import teaser data
-        const dataEl = el.find('data')
+        const dataEl = el.find(':scope > data')
         if (dataEl) {
             dataEl.children.forEach(function(child) {
                 if (child.tagName === 'text') {
