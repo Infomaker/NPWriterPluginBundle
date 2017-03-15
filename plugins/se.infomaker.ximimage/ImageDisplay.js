@@ -90,6 +90,12 @@ class ImageDisplay extends Component {
         imgContainer.append(actionsEl)
 
         let el = $$('div').addClass('sc-image-display')
+
+        if (!this.hasLoadingErrors && !imageFile.uuid) {
+            el.addClass('sm-pending')
+        }
+
+
         el.addClass('sm-' + this.props.isolatedNodeState)
         el.append(imgContainer)
 
