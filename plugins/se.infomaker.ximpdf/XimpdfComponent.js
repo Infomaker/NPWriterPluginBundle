@@ -31,27 +31,31 @@ class XimpdfComponent extends Component {
 
     }
     render($$) {
-        const doc = api.doc
-        const node = this.props.node
-        const fileNode = doc.get(node.pdfFile)
+        const fileNode = api.doc.get(this.props.node.pdfFile)
         const el = $$('div').addClass('im-blocknode__container ximpdf__container')
-        const textEditor = $$(TextPropertyEditor, {
-            tagName: 'div',
-            path: [this.props.node.id, 'text'],
-            doc: this.props.doc
-        })
-            .ref('text')
-            .addClass('im-blocknode__content')
 
-        const loadingSpan = $$('span')
-            .append('Loading...')
-            .addClass('text-pdf')
+        if (!fileNode.uuid) {
+            el.addClass('sm-pending')
+            el.append([
+                this.renderHeader($$, fileNode),
+                $$('div')
+                    .addClass('im-blocknode__content')
+                    .append('...')
+            ])
 
-        if (fileNode.uuid) {
-            el.append([this.renderHeader($$, fileNode), textEditor])
-        } else {
-            el.append([this.renderHeader($$, fileNode), loadingSpan])
+            return el
         }
+
+        el.append([
+            this.renderHeader($$, fileNode),
+            $$(TextPropertyEditor, {
+                tagName: 'div',
+                path: [this.props.node.id, 'text'],
+                doc: this.props.doc
+            })
+                .ref('text')
+                .addClass('im-blocknode__content')
+        ])
 
         return el
     }

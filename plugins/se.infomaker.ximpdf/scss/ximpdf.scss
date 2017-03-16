@@ -1,10 +1,59 @@
-.ximpdf__container {
-
-  .pdf-link {
-    cursor: pointer;
-  }
+#x-im-pdf-fileupload {
+    display: none;
 }
 
-#x-im-pdf-fileupload {
-  display: none;
+.ximpdf__container {
+    .header {
+        & > i {
+            width: 14px !important;
+        }
+
+        a {
+            cursor: pointer;
+
+            &:after {
+                content: '\f08e';
+                font-family: FontAwesome;
+                padding-left: 8px;
+                vertical-align: middle;
+                font-size: 80%;
+            }
+        }
+    }
+
+
+    &.sm-pending {
+        opacity: 0.6;
+
+        .pdf-link {
+            cursor: default;
+            color: #444;
+        }
+
+        .header {
+            i {
+                opacity: 0;
+                width: 18px;
+            }
+
+            a {
+                &:after {
+                    content: ''
+                }
+            }
+
+            &:after {
+                position: absolute;
+                content: '\F1CE';
+                font-family: FontAwesome;
+
+                color: #000;
+                top: 9px;
+                left: 10px;
+
+                animation: fa-spin 1s infinite linear;
+                opacity: 0.8;
+            }
+        }
+    }
 }
