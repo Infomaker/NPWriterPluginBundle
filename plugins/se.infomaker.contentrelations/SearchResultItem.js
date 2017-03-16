@@ -11,7 +11,6 @@ class SearchResultItem extends Component {
     }
 
     didMount() {
-        this.dropLink = this._getDroplinkForItem(this.props.item)
     }
 
     render($$) {
@@ -30,7 +29,7 @@ class SearchResultItem extends Component {
             imType: imType,
             name: name
         }
-        let dropData = window.btoa(JSON.stringify(data))
+        let dropData = encodeURIComponent(JSON.stringify(data))
 
         switch (imType) {
             case 'article':
@@ -66,7 +65,7 @@ class SearchResultItem extends Component {
 
     _onDragStart(e) {
         e.stopPropagation()
-        e.dataTransfer.setData('text/uri-list', this.dropLink)
+        e.dataTransfer.setData('text/uri-list', this._getDroplinkForItem(this.props.item))
     }
 
     _getItem($$, item, type) {
