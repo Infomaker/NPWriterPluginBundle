@@ -10,13 +10,18 @@
 
         a {
             cursor: pointer;
+            color: #444;
 
             &:after {
-                content: '\f08e';
-                font-family: FontAwesome;
-                padding-left: 8px;
-                vertical-align: middle;
-                font-size: 80%;
+                content: '\F08E';
+                    font-family: FontAwesome;
+                    padding-left: 8px;
+                    vertical-align: text-top;
+                    color: #1795CD;
+            }
+
+            &:hover {
+                color: #1795CD;
             }
         }
     }
