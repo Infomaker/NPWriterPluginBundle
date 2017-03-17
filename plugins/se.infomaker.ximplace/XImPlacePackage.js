@@ -1,5 +1,11 @@
 import './scss/location.scss'
 import ximPlacePackageConfigure from './XimPlacePackageConfigure'
+import './media/ximplace-create.png'
+import './media/ximplace-edit.png'
+import './media/ximplace-polygon-full.png'
+import './media/ximplace-polygon-small.png'
+import './media/ximplace-sidebar.png'
+import PluginInformation from './PluginInfomation'
 
 
 /**
@@ -27,5 +33,6 @@ export default {
     id: id,
     name: "ximplace",
     version: '{{version}}',
+    metadata: PluginInformation,
     configure: ximPlacePackageConfigure(id)
 }
