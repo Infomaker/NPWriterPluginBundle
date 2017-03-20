@@ -57,7 +57,7 @@ class DropImageUUID extends DragAndDropHandler {
         const queryParamKey = 'data='
         const dataPosition = url.indexOf(queryParamKey)
         let encodedData = url.substr(dataPosition + queryParamKey.length, url.length)
-        return JSON.parse(window.atob(encodedData))
+        return JSON.parse(decodeURIComponent(encodedData))
     }
 
 }
