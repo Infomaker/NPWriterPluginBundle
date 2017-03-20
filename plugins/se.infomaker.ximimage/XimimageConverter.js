@@ -117,6 +117,8 @@ export default {
     },
 
     convertAuthors: function(node, authorLinks) {
+        let seen = new Map();
+
         return authorLinks.children.map(function (authorLinkEl) {
             if ("author" === authorLinkEl.getAttribute('rel')) {
                 const author = new Author(authorLinkEl.getAttribute('uuid'), authorLinkEl.getAttribute('title'), node.id)
@@ -130,6 +132,17 @@ export default {
             }
         }).filter((author) => {
             return author !== null
+        }).filter((author) => {
+            if (author.isSimpleAuthor) {
+                return true
+            }
+
+            if (seen.get(author.uuid) !== undefined) {
+                return false
+            } else {
+                seen.set(author.uuid, author)
+                return true
+            }
         })
     },
 
