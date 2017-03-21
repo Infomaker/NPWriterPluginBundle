@@ -25,7 +25,7 @@ class NewsPriorityComponent extends Component {
         this.defaultScoreIndex = api.getConfigValue(pluginId, 'defaultScoresIndex');
         this.defaultLifetimeIndex = api.getConfigValue(pluginId, 'defaultLifetimesIndex');
 
-        var newsValue = {
+        const newsValue = {
             score: this.scores[this.defaultScoreIndex].value,
             description: this.lifetimes[this.defaultLifetimeIndex].label,
             format: 'lifetimecode'
@@ -36,11 +36,11 @@ class NewsPriorityComponent extends Component {
     }
 
     updateState() {
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
+        let newsPriority = api.newsItem.getNewsPriority();
 
         if (!newsPriority) {
             // No news prio found in document, create a default template
-            var template = {
+            const template = {
                 '@id': idGenerator(),
                 '@type': "x-im/newsvalue",
                 data: {
@@ -54,7 +54,7 @@ class NewsPriorityComponent extends Component {
             template.data[this.durationKey] = this.lifetimes[this.defaultLifetimeIndex].value;
 
             api.newsItem.setNewsPriority('newspriority', template);
-            newsPriority = api.newsItem.getNewsPriority(pluginId);
+            newsPriority = api.newsItem.getNewsPriority();
 
             // For some reason when transforming an empty string in API it returns an empty object{}
             if (isObject(newsPriority.data[this.durationKey])) {
@@ -67,11 +67,7 @@ class NewsPriorityComponent extends Component {
             }
         }
 
-        if (Number(newsPriority.data.score) === Number(this.state.score)) {
-            return;
-        }
-
-        var newState = {
+        const newState = {
             score: newsPriority.data.score,
             description: newsPriority.data.description,
             format: newsPriority.data.format,
@@ -81,17 +77,19 @@ class NewsPriorityComponent extends Component {
         this.setState(newState);
     }
 
+    didMount() {
+        this.updateState();
+    }
+
     render($$) {
 
-        this.updateState();
+        const el = $$('div');
 
-        var el = $$('div');
-
-        var prioTitle = $$('h2').text(this.getLabel('newsvalue'));
+        const prioTitle = $$('h2').text(this.getLabel('newsvalue'));
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
-        var lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
+        const lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
         el.append(lifetimeTitle);
         if (this.lifetimes.length > 1) {
             el.append(this._renderLifeTime($$));
@@ -108,9 +106,9 @@ class NewsPriorityComponent extends Component {
     }
 
     _renderPriority($$) {
-        var prio = $$('div').addClass('btn-group')
+        const prio = $$('div').addClass('btn-group');
 
-        var buttons = this.scores.map((score) => {
+        const buttons = this.scores.map((score) => {
 
             const Tooltip = api.ui.getComponent('tooltip')
             return $$('button')
@@ -131,16 +129,16 @@ class NewsPriorityComponent extends Component {
                 .addClass('btn btn-secondary sc-np-btn')
                 .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
 
-        })
+        });
 
         prio.append(buttons)
         return prio;
     }
 
     _renderLifeTime($$) {
-        var lifetime = $$('div').addClass('btn-group lifetime')
+        const lifetime = $$('div').addClass('btn-group lifetime');
 
-        var buttons = this.lifetimes.map(function (lifetime) {
+        const buttons = this.lifetimes.map(function (lifetime) {
 
             const Tooltip = api.ui.getComponent('tooltip')
             return $$('button')
@@ -171,24 +169,24 @@ class NewsPriorityComponent extends Component {
 
 
     _renderDatetimeInput($$) {
-        var form = $$('form')
+        const form = $$('form')
             .attr('id', 'npLifetimeForm');
 
-        var fieldset = $$('fieldset').addClass('form-group').ref('datePickerFieldset');
+        const fieldset = $$('fieldset').addClass('form-group').ref('datePickerFieldset');
 
-        var text = this.getLabel('enter-date-and-time')
+        let text = this.getLabel('enter-date-and-time');
 
-        var endTime = api.newsItem.getNewsPriority('newspriority').data.end;
+        const endTime = api.newsItem.getNewsPriority().data.end;
         if (endTime !== "" && !isEmpty(endTime)) {
             text = '\u2713 ' + text;
         }
 
-        var small = $$('div').append($$('small')
+        const small = $$('div').append($$('small')
             .addClass('text-muted')
             .text(text)).addClass('hidden').ref('datePickerInstructionText');
 
 
-        var input = $$('input')
+        const input = $$('input')
             .attr('type', 'datetime-local')
             .addClass('form-control')
             .attr('id', 'npLifetimeInput')
@@ -237,7 +235,7 @@ class NewsPriorityComponent extends Component {
 
     setNewsPriority(score) {
         //$(ev.target).tooltip('hide');
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
+        const newsPriority = api.newsItem.getNewsPriority();
         newsPriority.data.score = score;
 
         api.newsItem.setNewsPriority(pluginId, newsPriority);
@@ -250,9 +248,9 @@ class NewsPriorityComponent extends Component {
     setLifetime(ev, lifetime) {
 
         //$(ev.target).tooltip('hide');
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
+        const newsPriority = api.newsItem.getNewsPriority();
 
-        for (var n = 0; n < this.lifetimes.length; n++) {
+        for (let n = 0; n < this.lifetimes.length; n++) {
             if (ev.target.textContent === this.lifetimes[n].label) {
                 newsPriority.data.description = this.lifetimes[n].label;
                 newsPriority.data[this.durationKey] = this.lifetimes[n].value;
@@ -260,7 +258,7 @@ class NewsPriorityComponent extends Component {
             }
         }
 
-        var extendedState = {};
+        const extendedState = {};
         if (this.extendedState && this.extendedState.end) {
             extendedState.end = this.extendedState.end;
         }
@@ -281,7 +279,7 @@ class NewsPriorityComponent extends Component {
 
     setLifetimeDatetime(ev) {
 
-        var newsPriority = api.newsItem.getNewsPriority(pluginId);
+        const newsPriority = api.newsItem.getNewsPriority();
 
         if (ev.target.value === "") {
             newsPriority.data.end = {};
