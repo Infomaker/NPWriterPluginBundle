@@ -3,44 +3,15 @@ class PublishFlowConfiguration {
     constructor(pluginId) {
         this.pluginId = pluginId
 
-        this.status = {
-            'imext:draft': {
-                'allowed': [
-                    'imext:done',
-                    'stat:usable',
-                    'stat:withheld'
-                ]
-            },
-            'imext:done': {
-                'allowed': [
-                    'stat:usable',
-                    'imext:draft',
-                    'stat:withheld'
-                ]
-            },
-            'stat:withheld': {
-                'allowed': [
-                    'stat:withheld',
-                    'stat:usable',
-                    'stat:canceled',
-                    'imext:draft'
-                ]
-            },
-            'stat:usable': {
-                'allowed': [
-                    'stat:usable',
-                    'stat:canceled'
-                ]
-            },
-            'stat:canceled': {
-                'allowed': [
-                    'imext:draft',
-                    'imext:done',
-                    'stat:usable',
-                    'stat:withheld'
-                ]
-            },
+        this.status = api.getConfigValue('se.infomaker.publishflow', 'workflow')
+    }
+
+    getActionDefinition(qcode) {
+        if (!this.status[qcode]) {
+            return null
         }
+
+        return this.status[qcode]
     }
 
     getAllowedActions(status) {
@@ -51,13 +22,6 @@ class PublishFlowConfiguration {
         return []
     }
 
-    setToDraft() {
-        this.setStatus('imext:draft', null, null)
-    }
-
-    setToDone() {
-        this.setStatus('imext:done', null, null)
-    }
 
     setToWithheld(from, to) {
         let fromObj = moment(from),
@@ -82,10 +46,9 @@ class PublishFlowConfiguration {
         )
     }
 
-    setToCanceled() {
-        this.setStatus('stat:canceled', null, null)
-    }
-
+    // FIXME: Most calls should not remove pubStart
+    // FIXME: stat:usable should set pubStart
+    // FIXME: stat:canceled should remove pubStart
     setStatus(qcode, pubStart, pubStop) {
         if (qcode) {
             api.newsItem.setPubStatus(

@@ -73,109 +73,12 @@ class PublishFlowComponent extends Component {
     }
 
     renderBody($$) {
-        let el = $$('div').addClass('sc-np-publish-body'),
-            actions = this.renderAllowedActions($$)
+        let el = $$('div').addClass('sc-np-publish-body')
 
-        switch (this.state.status.qcode) {
-            case 'imext:draft':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('This article is currently an unpublished draft')
-                    )
-                ])
-                break
+        el.append(this.renderCurrentStatus($$))
 
-            case 'imext:done':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article is currently pending approval')
-                    )
-                ])
-                break
+        el.append(this.renderAllowedActions($$))
 
-            case 'stat:withheld':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Scheduled')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article is scheduled to be published') +
-                        ' ' +
-                        moment(this.state.pubStart.value).fromNow()
-                    )
-                ])
-
-                var specEl = $$('p').addClass('dates').append([
-                    $$('span').append(
-                        this.getLabel('From') + ': '
-                    ),
-                    $$('strong').append(
-                        moment(this.state.pubStart.value).format('YYYY-MM-DD HH:mm')
-                    )
-                ])
-
-                if (this.state.pubStop) {
-                    let toObj = moment(this.state.pubStop.value)
-                    if (toObj.isValid()) {
-                        specEl.append([
-                            $$('br'),
-                            $$('span').append(
-                                this.getLabel('To') + ': '
-                            ),
-                            $$('strong').append(
-                                moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
-                            )
-                        ])
-                    }
-                }
-
-                el.append(specEl)
-
-                break
-
-            case 'stat:usable':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Republish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article was published') +
-                        ' ' +
-                        moment(this.state.pubStart.value).fromNow()
-                    )
-                ])
-                break
-
-            case 'stat:canceled':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article again?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article has been canceled and is no longer published')
-                    )
-                ])
-                break
-
-            default:
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Unknown state')
-                    ),
-                    $$('p').append(
-                        this.getLabel('This article has an unknown, unsupported, status')
-                    )
-                ])
-                break
-        }
-
-        el.append(actions)
         el.append(
             $$('div')
                 .css({
@@ -218,60 +121,100 @@ class PublishFlowComponent extends Component {
         return el
     }
 
+    renderCurrentStatus($$) {
+        const statusDef = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
+
+        if (statusDef === null) {
+            return [
+                $$('h2').append(
+                    this.getLabel('Unknown state')
+                ),
+                $$('p').append(
+                    this.getLabel('This article has an unknown, unsupported, status')
+                )
+            ]
+        }
+
+        const currentStatus = [
+            $$('h2').append(
+                this.getLabel(statusDef.statusTitle)
+            ),
+            $$('p').append(
+                this.getLabel(statusDef.statusDescription)
+            )
+        ]
+
+        //
+        // Todo: This addition is only working for stat:usable
+        //
+        if (this.state.pubStart !== null) {
+            currentStatus.push(
+                $$('p').append(
+                    ' ' + moment(this.state.pubStart.value).fromNow()
+                )
+            )
+        }
+
+        return currentStatus
+    }
+
     renderAllowedActions($$) {
         let actionsEl = $$('div')
             .addClass('sc-np-publish-actions')
 
-        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(action => {
-            switch (action) {
-                case 'imext:draft':
-                    actionsEl.append(this.renderActionDraft($$))
-                    break
-                case 'imext:done':
-                    actionsEl.append(this.renderActionDone($$))
-                    break
+        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(qcode => {
+            switch (qcode) {
                 case 'stat:withheld':
                     actionsEl.append(this.renderActionWithheld($$))
                     break
-                case 'stat:usable':
-                    actionsEl.append(this.renderActionUsable($$))
-                    break
-                case 'stat:canceled':
-                    actionsEl.append(this.renderActionCanceled($$))
-                    break
+
+                default:
+                    actionsEl.append(this.renderGenericAction($$, qcode))
             }
         })
 
         return actionsEl
     }
 
-    renderActionDraft($$) {
+    renderGenericAction($$, qcode) {
+        const action = this.publishFlowMgr.getActionDefinition(qcode)
+        if (action === null) {
+            return
+        }
+
+        let actionLabel = ''
+        if (!Array.isArray(action.actionLabel)) {
+            actionLabel = action.actionLabel
+        }
+        else if (qcode !== this.state.status.qcode) {
+            actionLabel = action.actionLabel[0]
+        }
+        else {
+            actionLabel = action.actionLabel[1]
+        }
+
+        let icon = ''
+        if (!Array.isArray(action.icon)) {
+            icon = action.icon
+        }
+        else if (qcode !== this.state.status.qcode) {
+            icon = action.icon[0]
+        }
+        else {
+            icon = action.icon[1]
+        }
+
         return $$('a').append([
-            $$('i').addClass('fa fa-pencil'),
+            $$('i').addClass('fa ' + icon),
             $$('span').append(
-                this.getLabel('Save as draft')
+                this.getLabel(actionLabel)
             )
         ])
-            .on('click', () => {
-                this._save(() => {
-                    this.publishFlowMgr.setToDraft()
-                })
+        .on('click', () => {
+            this._save(() => {
+                this.publishFlowMgr.setStatus(qcode, null, null)
             })
-    }
-
-    renderActionDone($$) {
-        return $$('a').append([
-            $$('i').addClass('fa fa-check-circle-o'),
-            $$('span').append(
-                this.getLabel('Ready for approval')
-            )
-        ])
-            .on('click', () => {
-                this._save(() => {
-                    this.publishFlowMgr.setToDone()
-                })
-            })
-
+        })
     }
 
     renderActionWithheld($$) {
@@ -372,49 +315,6 @@ class PublishFlowComponent extends Component {
         )
 
         return el
-    }
-
-    renderActionUsable($$) {
-        let el = $$('a')
-
-        if (this.state.status.qcode === 'stat:usable') {
-            el.append([
-                $$('i').addClass('fa fa-retweet'),
-                $$('span').append(
-                    this.getLabel('Republish article')
-                )
-            ])
-        }
-        else {
-            el.append([
-                $$('i').addClass('fa fa-send'),
-                $$('span').append(
-                    this.getLabel('Publish article')
-                )
-            ])
-        }
-
-        el.on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToUsable()
-            })
-        })
-
-        return el
-    }
-
-    renderActionCanceled($$) {
-        return $$('a').append([
-            $$('span').append(
-                $$('i').addClass('fa fa-ban'),
-                this.getLabel('Unpublish article')
-            )
-        ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToCanceled()
-            })
-        })
     }
 
     /**
