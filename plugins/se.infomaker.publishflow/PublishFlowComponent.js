@@ -77,6 +77,8 @@ class PublishFlowComponent extends Component {
 
         el.append(this.renderCurrentStatus($$))
 
+        el.append(this.renderScheduling($$))
+
         el.append(this.renderAllowedActions($$))
 
         el.append(
@@ -145,7 +147,7 @@ class PublishFlowComponent extends Component {
         ]
 
         //
-        // Todo: This addition is only working for stat:usable
+        // Todo: This is only working semi correctly for stat:usable
         //
         if (this.state.pubStart !== null) {
             currentStatus.push(
@@ -158,88 +160,14 @@ class PublishFlowComponent extends Component {
         return currentStatus
     }
 
-    renderAllowedActions($$) {
-        let actionsEl = $$('div')
-            .addClass('sc-np-publish-actions')
-
-        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(qcode => {
-            switch (qcode) {
-                case 'stat:withheld':
-                    actionsEl.append(this.renderActionWithheld($$))
-                    break
-
-                default:
-                    actionsEl.append(this.renderGenericAction($$, qcode))
-            }
-        })
-
-        return actionsEl
-    }
-
-    renderGenericAction($$, qcode) {
-        const action = this.publishFlowMgr.getActionDefinition(qcode)
-        if (action === null) {
-            return
-        }
-
-        let actionLabel = ''
-        if (!Array.isArray(action.actionLabel)) {
-            actionLabel = action.actionLabel
-        }
-        else if (qcode !== this.state.status.qcode) {
-            actionLabel = action.actionLabel[0]
-        }
-        else {
-            actionLabel = action.actionLabel[1]
-        }
-
-        let icon = ''
-        if (!Array.isArray(action.icon)) {
-            icon = action.icon
-        }
-        else if (qcode !== this.state.status.qcode) {
-            icon = action.icon[0]
-        }
-        else {
-            icon = action.icon[1]
-        }
-
-        return $$('a').append([
-            $$('i').addClass('fa ' + icon),
-            $$('span').append(
-                this.getLabel(actionLabel)
-            )
-        ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setStatus(qcode, null, null)
-            })
-        })
-    }
-
-    renderActionWithheld($$) {
-        let el = $$('div')
-            .addClass('sc-np-publish-action-section')
-            .ref('pfc-withheld')
-
-        el.append(
-            $$('a').append([
-                $$('i').addClass('fa fa-clock-o'),
-                $$('span').append(
-                    this.getLabel('Schedule for publish')
-                )
-            ])
-                .addClass('more')
-                .on('click', () => {
-                    if (this.refs['pfc-withheld'].hasClass('active')) {
-                        this.refs['pfc-withheld'].removeClass('active')
-                    }
-                    else {
-                        this.refs['pfc-withheld'].addClass('active')
-                    }
-                })
-        )
-
+    /**
+     * Render pubStart and pubStop fields
+     * @todo Improve UI, make slicker
+     *
+     * @param {object}
+     * @return {object}
+     */
+    renderScheduling($$) {
         let fromVal = '',
             toVal = '';
 
@@ -250,6 +178,9 @@ class PublishFlowComponent extends Component {
         if (this.state.pubStop) {
             toVal = moment(this.state.pubStop.value).format('YYYY-MM-DDTHH:mm')
         }
+
+        let el = $$('div')
+            .addClass('sc-np-publish-action-section')
 
         el.append(
             $$('div')
@@ -268,7 +199,19 @@ class PublishFlowComponent extends Component {
                         })
                         .addClass('form-control')
                         .ref('pfc-lbl-withheld-from')
-                        .val(fromVal),
+                        .val(fromVal)
+                        .on('change', () => {
+                            try {
+                                this.publishFlowMgr.setPubStart(this.refs['pfc-lbl-withheld-from'].val())
+                            }
+                            catch(ex) {
+                                return
+                            }
+                            this.extendState({
+                                pubStart: api.newsItem.getPubStart()
+                            })
+                            this._onDocumentChanged()
+                        }),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
@@ -281,40 +224,97 @@ class PublishFlowComponent extends Component {
                         })
                         .addClass('form-control')
                         .ref('pfc-lbl-withheld-to')
-                        .val(toVal),
-                    $$('div')
-                        .addClass('sc-np-publish-action-section-content-actions')
-                        .append(
-                            $$('button')
-                                .addClass('sc-np-btn btn-primary')
-                                .append(
-                                    this.getLabel('Save')
-                                )
-                        )
-                        .on('click', () => {
+                        .val(toVal)
+                        .on('change', () => {
                             try {
-                                var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
-                                    toVal = this.refs['pfc-lbl-withheld-to'].val()
-                                this._save(() => {
-                                    this.publishFlowMgr.setToWithheld(
-                                        fromVal,
-                                        toVal
-                                    )
-                                })
+                                this.publishFlowMgr.setPubStop(this.refs['pfc-lbl-withheld-to'].val())
                             }
-                            catch (ex) {
-                                this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
-                                window.setTimeout(() => {
-                                    this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
-                                }, 500)
-                                return false
+                            catch(ex) {
+                                return
                             }
+                            this.extendState({
+                                pubStop: api.newsItem.getPubStop()
+                            })
+                            this._onDocumentChanged()
                         })
-
                 ])
         )
 
         return el
+    }
+
+    /**
+     * Render all allowed actions for the current status
+     *
+     * @param {object}
+     * @return {object}
+     */
+    renderAllowedActions($$) {
+        let actionsEl = $$('div')
+            .addClass('sc-np-publish-actions')
+
+        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(qcode => {
+            actionsEl.append(this.renderGenericAction($$, qcode))
+        })
+
+        return actionsEl
+    }
+
+    /**
+     * Render a generic action button in the action list. If actionLabel and
+     * actionIcon contains an array this indicates that the second label/icon
+     * should be used for when the current status is the same as the wanted
+     * action. I e When you want to have a label "republish" instead of
+     * "publish" for the what is essentially the same action.
+     *
+     * @todo Fetch pubStart/pubStop values for action === 'set'
+     *
+     * @param {object}
+     * @param {string} The qcode for the action to render
+     * @return {object}
+     */
+    renderGenericAction($$, qcode) {
+        const action = this.publishFlowMgr.getActionDefinition(qcode)
+        if (action === null) {
+            return
+        }
+
+        // Which label should be used
+        let actionLabel = ''
+        if (!Array.isArray(action.actionLabel)) {
+            actionLabel = action.actionLabel
+        }
+        else if (qcode !== this.state.status.qcode) {
+            actionLabel = action.actionLabel[0]
+        }
+        else {
+            actionLabel = action.actionLabel[1]
+        }
+
+        // Which icon should be used
+        let icon = ''
+        if (!Array.isArray(action.icon)) {
+            icon = action.icon
+        }
+        else if (qcode !== this.state.status.qcode) {
+            icon = action.icon[0]
+        }
+        else {
+            icon = action.icon[1]
+        }
+
+        // Render element
+        return $$('a').append([
+            $$('i').addClass('fa ' + icon),
+            $$('span').append(
+                this.getLabel(actionLabel)
+            )
+        ])
+        .on('click', () => {
+            this._save(() => {
+                this.publishFlowMgr.executeAction(qcode)
+            })
+        })
     }
 
     /**

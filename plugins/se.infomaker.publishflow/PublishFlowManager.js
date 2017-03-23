@@ -23,56 +23,117 @@ class PublishFlowConfiguration {
     }
 
 
-    setToWithheld(from, to) {
-        let fromObj = moment(from),
-            toObj = moment(to)
+    // setToWithheld(from, to) {
+    //     let fromObj = moment(from),
+    //         toObj = moment(to)
+    //
+    //     if (!fromObj.isValid()) {
+    //         throw new Error('Invalid from date and time')
+    //     }
+    //
+    //     this.setStatus(
+    //         'stat:withheld',
+    //         {value: fromObj.format('YYYY-MM-DDTHH:mm:ssZ')},
+    //         !toObj.isValid() ? null : {value: toObj.format('YYYY-MM-DDTHH:mm:ssZ')}
+    //     )
+    // }
+    //
+    // setToUsable() {
+    //     this.setStatus(
+    //         'stat:usable',
+    //         {value: moment().format('YYYY-MM-DDTHH:mm:ssZ')},
+    //         null
+    //     )
+    // }
 
-        if (!fromObj.isValid()) {
-            throw new Error('Invalid from date and time')
+    executeAction(qcode, pubStart, pubStop) {
+        const action = this.getActionDefinition(qcode)
+        if (action === null) {
+            return
         }
 
-        this.setStatus(
-            'stat:withheld',
-            {value: fromObj.format('YYYY-MM-DDTHH:mm:ssZ')},
-            !toObj.isValid() ? null : {value: toObj.format('YYYY-MM-DDTHH:mm:ssZ')}
+        this.setPubStatus(qcode)
+
+        if (typeof action.actions !== 'object') {
+            return
+        }
+
+        switch(action.actions.pubStart) {
+            case 'set':
+                this.setPubStart(pubStart)
+                break
+
+            case 'update':
+                this.setPubStart(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                break
+
+            case 'clear':
+                this.setPubStart(null)
+                break
+        }
+
+        switch(action.actions.pubStart) {
+            case 'set':
+                this.setPubStop(pubStop)
+                break
+
+            case 'update':
+                this.setPubStop(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                break
+
+            case 'clear':
+                this.setPubStop(null)
+                break
+        }
+    }
+
+    setPubStatus(qcode) {
+        api.newsItem.setPubStatus(
+            this.pluginId,
+            {
+                qcode: qcode
+            }
         )
     }
 
-    setToUsable() {
-        this.setStatus(
-            'stat:usable',
-            {value: moment().format('YYYY-MM-DDTHH:mm:ssZ')},
-            null
-        )
-    }
-
-    // FIXME: Most calls should not remove pubStart
-    // FIXME: stat:usable should set pubStart
-    // FIXME: stat:canceled should remove pubStart
-    setStatus(qcode, pubStart, pubStop) {
-        if (qcode) {
-            api.newsItem.setPubStatus(
-                this.pluginId,
-                {
-                    qcode: qcode
-                }
-            )
-        }
-
-        if (pubStart === null) {
+    setPubStart(value) {
+        if (value === null) {
             api.newsItem.removePubStart(this.pluginId)
-        }
-        else if (typeof pubStart !== 'undefined') {
-            api.newsItem.setPubStart(this.pluginId, pubStart)
+            return
         }
 
-        if (pubStop === null) {
+        const obj = moment(value)
+
+        if (!obj.isValid()) {
+            throw new Error('Invalid datetime for pubStart')
+        }
+
+        api.newsItem.setPubStart(
+            this.pluginId,
+            {
+                value: obj.format('YYYY-MM-DDTHH:mm:ssZ')
+            }
+        )
+    }
+
+    setPubStop(value) {
+        if (value === null) {
             api.newsItem.removePubStop(this.pluginId)
-        }
-        else if (typeof pubStop !== 'undefined') {
-            api.newsItem.setPubStop(this.pluginId, pubStop)
+            return
         }
 
+        const obj = moment(value)
+
+        if (!obj.isValid()) {
+            throw new Error('Invalid datetime for pubStop')
+        }
+
+        api.newsItem.setPubStop(
+            this.pluginId,
+            {
+                value: obj.format('YYYY-MM-DDTHH:mm:ssZ')
+            }
+        )
     }
 }
 
