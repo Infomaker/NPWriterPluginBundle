@@ -1,53 +1,6 @@
 .sc-np-publishflow {
-    width: 300px;
+    width: 250px;
     margin: 15px;
-
-    .sc-np-date-time {
-        padding: 0 15px 0 45px;
-
-        label,
-        input {
-            clear: both;
-            font-size: 80%;
-            width: auto;
-        }
-
-        label {
-            display: block;
-            margin-bottom: -10px;
-            line-height: 1.4rem;
-        }
-
-        input {
-            display: inline-block;
-            margin-bottom: 4px;
-            position: relative;
-            overflow: visible;
-        }
-
-        input:required:invalid,
-        input:focus:invalid {
-            background: #FFF0F0;
-
-            &::after {
-                font-family: FontAwesome;
-                content: "\f00d";
-                position: absolute;
-                right: -25px;
-                color: #d9534f;
-            }
-        }
-
-        input:required:valid {
-            &::after {
-                font-family: FontAwesome;
-                content: "\f00c";
-                position: absolute;
-                right: -25px;
-                color: #5cb85c;
-            }
-        }
-    }
 
     .sc-np-publish-body {
 
@@ -140,43 +93,74 @@
                 }
             }
 
-            div.sc-np-publish-action-section {
-                div.sc-np-publish-action-section-content {
-                    display: none;
-                    margin-top: -6px;
+        }
 
-                    div.sc-np-publish-action-section-content-actions {
-                        button {
-                            font-size: 90%;
-                            line-height: 90%;
-                        }
-                    }
+        div.sc-np-publish-action-section {
+            background: #fafafa;
+            margin: 15px -15px -15px -15px;
+            border-top: 1px solid #ddd;
+            padding: 0 0 10px 0;
+
+            .sc-np-date-time {
+                padding: 10px 15px 0 15px;
+
+                label,
+                input {
+                    clear: both;
+                    font-size: 80%;
+                    width: auto;
                 }
 
-                &.active {
+                label {
                     display: block;
-                    background: #fafafa;
-                    padding-bottom: 15px;
+                    margin-bottom: -10px;
+                    line-height: 1.4rem;
+                }
 
-                    a {
-                        color: #000;
-                        &.more::after {
-                            content: "\f0d8";
-                            color: #000;
-                        }
-                    }
+                input {
+                    display: inline-block;
+                    margin-bottom: 4px;
+                    position: relative;
+                    overflow: visible;
+                    width: 225px;
+                }
 
-                    i {
-                        opacity: 1;
-                    }
+                input:required:invalid,
+                input:focus:invalid {
+                    background: #FFF0F0;
 
-                    div.sc-np-publish-action-section-content {
-                        display: block;
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\f00d";
+                        position: absolute;
+                        right: -25px;
+                        color: #d9534f;
                     }
                 }
 
+                input:required:valid {
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\f00c";
+                        position: absolute;
+                        right: -25px;
+                        color: #5cb85c;
+                    }
+                }
             }
 
+            strong {
+                display: none;
+                margin-left: -30px;
+                font-size: 80%;
+            }
+        }
+
+        .sc-np-other-actions {
+            padding: 10px;
+            background: #fafafa;
+            height: 60px;
+            margin: -15px;
         }
     }
 }

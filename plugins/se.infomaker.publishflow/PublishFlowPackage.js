@@ -56,12 +56,12 @@ export default {
             sv: 'Artiklen är schemalagd för publicering'
         })
 
-        config.addLabel('From', {
-            sv: 'Från'
+        config.addLabel('Publish from', {
+            sv: 'Publicera från'
         })
 
-        config.addLabel('To', {
-            sv: 'Till'
+        config.addLabel('Publish to', {
+            sv: 'Publicera till'
         })
 
         config.addLabel('Republish article?', {
@@ -155,6 +155,14 @@ export default {
 
         config.addLabel('Please try again', {
             sv: 'Vänligen prova igen'
+        })
+
+        config.addLabel('A valid publication start time required for this status', {
+            sv: 'För att sätta denna status krävs en korrekt tid för publiceringsstart'
+        })
+
+        config.addLabel('A valid publication stop time required for this status', {
+            sv: 'För att sätta denna status krävs en korrekt tid för publiceringstopp'
         })
     }
 }

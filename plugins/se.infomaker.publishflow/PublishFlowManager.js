@@ -22,69 +22,50 @@ class PublishFlowConfiguration {
         return []
     }
 
-
-    // setToWithheld(from, to) {
-    //     let fromObj = moment(from),
-    //         toObj = moment(to)
-    //
-    //     if (!fromObj.isValid()) {
-    //         throw new Error('Invalid from date and time')
-    //     }
-    //
-    //     this.setStatus(
-    //         'stat:withheld',
-    //         {value: fromObj.format('YYYY-MM-DDTHH:mm:ssZ')},
-    //         !toObj.isValid() ? null : {value: toObj.format('YYYY-MM-DDTHH:mm:ssZ')}
-    //     )
-    // }
-    //
-    // setToUsable() {
-    //     this.setStatus(
-    //         'stat:usable',
-    //         {value: moment().format('YYYY-MM-DDTHH:mm:ssZ')},
-    //         null
-    //     )
-    // }
-
     executeAction(qcode, pubStart, pubStop) {
         const action = this.getActionDefinition(qcode)
         if (action === null) {
             return
         }
 
+
+        if (typeof action.actions === 'object') {
+            switch(action.actions.pubStart) {
+                case 'required':
+                    if (!moment(pubStart).isValid()) {
+                        throw new Error('A valid publication start time required for this status')
+                    }
+                    this.setPubStart(pubStart)
+                    break
+
+                case 'set':
+                    this.setPubStart(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                    break
+
+                case 'clear':
+                    this.setPubStart(null)
+                    break
+            }
+
+            switch(action.actions.pubStop) {
+                case 'required':
+                    if (!moment(pubStop).isValid()) {
+                        throw new Error('A valid publication stop time required for this status')
+                    }
+                    this.setPubStop(pubStop)
+                    break
+
+                case 'set':
+                    this.setPubStop(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                    break
+
+                case 'clear':
+                    this.setPubStop(null)
+                    break
+            }
+        }
+
         this.setPubStatus(qcode)
-
-        if (typeof action.actions !== 'object') {
-            return
-        }
-
-        switch(action.actions.pubStart) {
-            case 'set':
-                this.setPubStart(pubStart)
-                break
-
-            case 'update':
-                this.setPubStart(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
-                break
-
-            case 'clear':
-                this.setPubStart(null)
-                break
-        }
-
-        switch(action.actions.pubStart) {
-            case 'set':
-                this.setPubStop(pubStop)
-                break
-
-            case 'update':
-                this.setPubStop(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
-                break
-
-            case 'clear':
-                this.setPubStop(null)
-                break
-        }
     }
 
     setPubStatus(qcode) {

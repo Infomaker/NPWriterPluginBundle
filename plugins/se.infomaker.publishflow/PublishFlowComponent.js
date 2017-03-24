@@ -83,11 +83,7 @@ class PublishFlowComponent extends Component {
 
         el.append(
             $$('div')
-                .css({
-                    'float': 'left',
-                    'padding-bottom': '13px',
-                    'width': '100%'
-                })
+                .addClass('sc-np-other-actions')
                 .append([
                     $$('button')
                         .attr({
@@ -146,17 +142,6 @@ class PublishFlowComponent extends Component {
             )
         ]
 
-        //
-        // Todo: This is only working semi correctly for stat:usable
-        //
-        if (this.state.pubStart !== null) {
-            currentStatus.push(
-                $$('p').append(
-                    ' ' + moment(this.state.pubStart.value).fromNow()
-                )
-            )
-        }
-
         return currentStatus
     }
 
@@ -189,7 +174,7 @@ class PublishFlowComponent extends Component {
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-from')
                         .append(
-                            this.getLabel('From')
+                            this.getLabel('Publish from')
                         ),
                     $$('input')
                         .attr({
@@ -215,7 +200,7 @@ class PublishFlowComponent extends Component {
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
-                            this.getLabel('To')
+                            this.getLabel('Publish to')
                         ),
                     $$('input')
                         .attr({
@@ -305,14 +290,33 @@ class PublishFlowComponent extends Component {
 
         // Render element
         return $$('a').append([
-            $$('i').addClass('fa ' + icon),
+            $$('i')
+                .addClass('fa ' + icon)
+                .css('color', (action.color ? action.color : '#888888')),
             $$('span').append(
                 this.getLabel(actionLabel)
             )
         ])
         .on('click', () => {
             this._save(() => {
-                this.publishFlowMgr.executeAction(qcode)
+                try {
+                    this.publishFlowMgr.executeAction(
+                        qcode,
+                        this.refs['pfc-lbl-withheld-from'].val(),
+                        this.refs['pfc-lbl-withheld-to'].val()
+                    )
+                }
+                catch(ex) {
+                    api.ui.showMessageDialog(
+                        [{
+                            type: 'error',
+                            message: this.getLabel(ex.message)
+                        }],
+                        () => {}
+                    )
+
+                    return false
+                }
             })
         })
     }
@@ -365,7 +369,8 @@ class PublishFlowComponent extends Component {
                     window.location.replace(url)
                 }
             )
-        } else {
+        }
+        else {
             window.location.replace(url)
         }
 
@@ -418,7 +423,9 @@ class PublishFlowComponent extends Component {
         this._saveState()
 
         if (beforeSaveFunc) {
-            beforeSaveFunc()
+            if (false === beforeSaveFunc()) {
+                return
+            }
         }
 
         this.defaultAction()
