@@ -10,18 +10,7 @@ import {
 
 class FactBoxComponent extends Component {
 
-    grabFocus() {
-        const title = this.refs.title
-        const start = title.textContent === 'Rubrik' ? 0 : title.textContent.length
-        this.context.editorSession.setSelection({
-            type: 'property',
-            path: title.getPath(),
-            startOffset: start,
-            endOffset: title.textContent.length
-        })
-    }
-
-    render ($$) {
+    render($$) {
         const el = $$('div')
         el.addClass('factbox-node im-blocknode__container')
         el.append(this.renderHeader($$))
@@ -41,7 +30,7 @@ class FactBoxComponent extends Component {
     renderHeader($$) {
         return $$('div')
             .append([
-                $$(FontAwesomeIcon, { icon: 'fa-bullhorn' })
+                $$(FontAwesomeIcon, {icon: 'fa-bullhorn'})
             ])
             .addClass('header')
     }
@@ -51,21 +40,39 @@ class FactBoxComponent extends Component {
      */
     renderTitleEditor($$, vignette) {
         const field = vignette ? 'vignette' : 'title'
-        const titleContainer = $$('div').addClass('im-blocknode__content full-width')
+        const titleContainer = $$('div').addClass('im-blocknode__content full-width im-fact-field')
+
+        const inputContainer = $$('div')
+        const inputPlaceholder = $$('div').append(this.getLabel(field)).ref('ph-' + field)
+
+        if (!this.props.node[field]) {
+            inputPlaceholder.addClass('im-placeholder-visible')
+        }
+
         const titleEditor = $$(TextPropertyEditor, {
             path: [this.props.node.id, field],
             doc: this.props.doc
-        }).ref(field).addClass('factbox-title')
+        }).ref(field)
+            .on('focus', () => {
+                this.refs['ph-' + field].removeClass('im-placeholder-visible')
+            })
+            .on('blur', () => {
+                if (!this.props.node[field]) {
+                    this.refs['ph-' + field].addClass('im-placeholder-visible')
+                }
+            })
 
-        const icon = $$(FontAwesomeIcon, { icon: 'fa-header' })
+        inputContainer.append([titleEditor, inputPlaceholder])
 
-        titleContainer.append([icon, titleEditor])
+        const icon = $$(FontAwesomeIcon, {icon: 'fa-header'})
+        titleContainer.append([icon, inputContainer])
+
         return titleContainer
     }
 
     renderContainerEditor($$) {
         return $$(ContainerEditor, {
-            name: 'factEditor',
+            name: 'factEditor' + this.props.node.id,
             containerId: this.containerNode().id,
             textTypes: [],
             commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]

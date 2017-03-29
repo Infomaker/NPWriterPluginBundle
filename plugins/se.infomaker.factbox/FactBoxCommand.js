@@ -19,8 +19,8 @@ class FactBoxCommand extends InsertNodeCommand {
             const node = {
                 type: 'factbox',
                 id: id,
-                title: 'Rubrik',
-                vignette: 'Fakta',
+                title: '',
+                vignette: '',
                 nodes: [container.id]
             }
 

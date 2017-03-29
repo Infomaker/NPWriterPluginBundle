@@ -1,8 +1,33 @@
 .factbox-node {
   .im-blocknode__content {
-     div {
+    &.im-fact-field {
       margin-top: 10px;
+
+      & > div {
+        position: relative;
+
+        & > div:first-child {
+          padding-left: 30px;
+        }
+
+        & > div:last-child {
+          z-index: -1;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 30px;
+
+          opacity: 0;
+
+          &.im-placeholder-visible {
+            opacity: 0.5;
+          }
+        }
+
+      }
     }
+
     .fa {
       width: 20px;
       float: left;

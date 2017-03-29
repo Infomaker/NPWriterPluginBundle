@@ -15,8 +15,14 @@ export default {
         config.addComponent('factbox', FactBoxComponent)
         config.addConverter('newsml', FactBoxConverter)
 
-        config.addLabel('Headline', {
-            sv: 'Rubrik'
+        config.addLabel('title', {
+            sv: 'Rubrik',
+            en: 'Headline'
+        })
+
+        config.addLabel('vignette', {
+            sv: 'Fakta',
+            en: 'Fact'
         })
     }
 }
