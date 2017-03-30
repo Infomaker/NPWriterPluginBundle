@@ -24,5 +24,9 @@ export default {
             sv: 'Fakta',
             en: 'Fact'
         })
+
+        config.addLabel('Factbox', {
+            sv: 'Faktaruta'
+        })
     }
 }

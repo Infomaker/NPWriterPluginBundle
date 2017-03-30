@@ -30,7 +30,8 @@ class FactBoxComponent extends Component {
     renderHeader($$) {
         return $$('div')
             .append([
-                $$(FontAwesomeIcon, {icon: 'fa-bullhorn'})
+                $$(FontAwesomeIcon, {icon: 'fa-bullhorn'}),
+                $$('span').append(this.getLabel('Factbox'))
             ])
             .addClass('header')
     }
