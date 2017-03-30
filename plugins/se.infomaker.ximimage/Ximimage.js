@@ -1,4 +1,4 @@
-import { jxon, api, lodash, NilUUID } from 'writer'
+import { jxon, api, lodash as _, NilUUID } from 'writer'
 import { DefaultDOMElement, BlockNode } from 'substance'
 
 
@@ -89,14 +89,21 @@ class Ximimage extends BlockNode {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid ? uuid : '')
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
-            tx.set([this.id, 'caption'], text ? text.textContent : '')
-            tx.set([this.id, 'credit'], credit ? credit.textContent : '')
+            if (isUnset(this.caption)) {
+                tx.set([this.id, 'caption'], text ? text.textContent : '')
+            }
+            if (isUnset(this.credit)) {
+                tx.set([this.id, 'credit'], credit ? credit.textContent : '')
+            }
             tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
             tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
-            tx.set([this.id, 'authors'], convertedAuthors)
+            if (isUnset(this.authors)) {
+                tx.set([this.id, 'authors'], convertedAuthors)
+            }
         })
 
     }
+
 
     addAuthor(author) {
         const authors = this.authors
@@ -172,7 +179,7 @@ class Ximimage extends BlockNode {
 
         function iterateObject(target, name) {
             Object.keys(target).forEach(function (key) {
-                if (lodash.isObject(target[key])) {
+                if (_.isObject(target[key])) {
                     iterateObject(target[key], name);
                 } else if (key === name) {
                     match = target[key];
@@ -297,6 +304,24 @@ class Ximimage extends BlockNode {
 
     }
 }
+
+function isUnset(field) {
+    if (field === undefined || field === null) {
+        return true;
+    }
+
+    if (_.isString(field) && field.trim() === "") {
+        return true;
+    }
+
+    //noinspection RedundantIfStatementJS
+    if (_.isArray(field) && field.length === 0) {
+        return true;
+    }
+
+    return false;
+}
+
 
 Ximimage.isResource = true
 
