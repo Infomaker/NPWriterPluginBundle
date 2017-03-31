@@ -48,9 +48,24 @@ fs.readdir(distFolder, (err, files) => {
         })
         .forEach((file) => {
             pluginFiles.push(file)
-
         })
     start()
+})
+
+fs.readdir(path.join(distFolder, 'media'), (err, files) => {
+    files
+        .map((file) => {
+            return path.join(distFolder, 'media', file);
+        })
+        .filter((file) => {
+            return fs.statSync(file).isFile();
+        })
+        .forEach((file) => {
+            console.log("File", file);
+            // pluginFiles.push(file)
+            upload(file, 'media/')
+        })
+    // start()
 })
 
 function start() {
@@ -66,7 +81,7 @@ function start() {
 
 }
 
-function upload(file) {
+function upload(file, subfolder) {
     const fileName = path.basename(file)
     const fileType = path.extname(file).split('.').pop()
     return new Promise((resolve, reject) => {
@@ -78,10 +93,13 @@ function upload(file) {
             if (err) {
                 throw err;
             }
+            if(!subfolder) {
+                subfolder = ''
+            }
 
             let uploadFileObject = {
                 Bucket: bucketName,
-                Key: prefix ? prefix + '/' + fileName : fileName,
+                Key: prefix ? prefix + '/' +subfolder+ fileName : fileName,
                 Body: fileData,
                 ContentType: getContentTypeForExtension(fileType)
             }
@@ -89,9 +107,9 @@ function upload(file) {
             s3.putObject(uploadFileObject, (err, data) => {
 
                 const options = {
-                    host: "localhost",
+                    host: "34.252.227.249",
                     path: "/api/v1/plugins/url",
-                    port: "3001",
+                    port: "3000",
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -107,6 +125,7 @@ function upload(file) {
                         let req = http.request(options, function (res) {
 
                             res.on("data", function (data) {
+                                console.log("data",data);
                             });
                             res.on("end", function () {
                                 resolve()
@@ -117,6 +136,7 @@ function upload(file) {
                             url: pluginsUrl + '/' + prefix + '/' + fileName,
                             autoAdd: true
                         }
+                        console.log("Request", url);
                         req.write(JSON.stringify(url));
                         req.end();
                     } else {

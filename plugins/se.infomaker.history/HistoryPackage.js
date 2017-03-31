@@ -1,11 +1,14 @@
 import './scss/history.scss'
-
+import './media/recovery2.png'
+import './media/recovery.png'
+import PluginInformation from './PluginInformation'
 import HistoryMainComponent from './HistoryMainComponent'
 
 export default({
     id: 'se.infomaker.history',
     name: 'history',
     version: '{{version}}',
+    metadata: PluginInformation,
     configure: function(config) {
         // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
