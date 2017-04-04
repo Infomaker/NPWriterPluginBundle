@@ -23,6 +23,8 @@ import Category from "../se.infomaker.ximcategory/index";
 import Channel from "../se.infomaker.ximchannel/index";
 import XImSection from "../se.infomaker.ximsection/index";
 import DefaultConflictHandler from "../se.infomaker.defaultconflicthandler/DefaultConflictHandlerPackage"
+import FactBox from "../se.infomaker.factbox/index"
+
 /**
  * Text styles
  */
@@ -74,6 +76,7 @@ import UATrackerIndex from '../se.infomaker.uatracker/index'
     Channel()
     XImSection()
     DefaultConflictHandler()
+    FactBox()
 
     // Textstyles
     BlockQuotePackage()
