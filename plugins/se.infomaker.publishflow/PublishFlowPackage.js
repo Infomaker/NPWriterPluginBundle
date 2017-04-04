@@ -32,9 +32,51 @@ export default {
             sv: 'Uppdatera *'
         })
 
-        config.addLabel('Cancel', {
-            sv: 'Avbryt'
+        config.addLabel('Publish from', {
+            sv: 'Publiceras från'
         })
+
+        config.addLabel('Publish to', {
+            sv: 'Publiceras till'
+        })
+
+        config.addLabel('Unknown state', {
+            sv: 'Okänd status'
+        })
+
+        config.addLabel('This article has an unknown, unsupported, status', {
+            sv: 'Artikeln har en okänd eller felaktig status'
+        })
+
+        config.addLabel('Create a new article', {
+            sv: 'Skapa en ny artikel'
+        })
+
+        config.addLabel('Create a new copy of this article', {
+            sv: 'Skapa en kopia på den här artikeln'
+        })
+
+        config.addLabel('Article contains unsaved changes. Continue without saving?', {
+            sv: 'Artikeln innehåller osparade ändringar. Fortsätt utan att spara?'
+        })
+
+        config.addLabel('Whoops, the save operation timed out', {
+            sv: 'Hoppsan, det tog för lång tid att spara artikeln'
+        })
+
+        config.addLabel('Please try again', {
+            sv: 'Vänligen prova igen'
+        })
+
+        config.addLabel('A valid publication start time required for this status', {
+            sv: 'För att sätta denna status krävs en korrekt tid för publiceringsstart'
+        })
+
+        config.addLabel('A valid publication stop time required for this status', {
+            sv: 'För att sätta denna status krävs en korrekt tid för publiceringstopp'
+        })
+
+        /*
 
         config.addLabel('Publish article?', {
             sv: 'Publicera artikeln?'
@@ -56,12 +98,8 @@ export default {
             sv: 'Artiklen är schemalagd för publicering'
         })
 
-        config.addLabel('Publish from', {
-            sv: 'Publicera från'
-        })
-
-        config.addLabel('Publish to', {
-            sv: 'Publicera till'
+        config.addLabel('Article has been canceled and is no longer published', {
+            sv: 'Artikeln har blivit avpublicerad och är ej längre publicerad'
         })
 
         config.addLabel('Republish article?', {
@@ -74,18 +112,6 @@ export default {
 
         config.addLabel('Publish article again?', {
             sv: 'Publicera artikeln igen?'
-        })
-
-        config.addLabel('Article has been canceled and is no longer published', {
-            sv: 'Artikeln har blivit avpublicerad och är ej längre publicerad'
-        })
-
-        config.addLabel('Unknown state', {
-            sv: 'Okänd status'
-        })
-
-        config.addLabel('This article has an unknown, unsupported, status', {
-            sv: 'Artikeln har en okänd eller felaktig status'
         })
 
         config.addLabel('Save as draft', {
@@ -136,33 +162,6 @@ export default {
             en: 'Unpublished',
             sv: 'Avpublicerad'
         })
-
-        config.addLabel('Create a new article', {
-            sv: 'Skapa en ny artikel'
-        })
-
-        config.addLabel('Create a new copy of this article', {
-            sv: 'Skapa en kopia på den här artikeln'
-        })
-
-        config.addLabel('Article contains unsaved changes. Continue without saving?', {
-            sv: 'Artikeln innehåller osparade ändringar. Fortsätt utan att spara?'
-        })
-
-        config.addLabel('Oops, the save operation timed out', {
-            sv: 'Hoppsan, det tog för lång tid att spara artikeln'
-        })
-
-        config.addLabel('Please try again', {
-            sv: 'Vänligen prova igen'
-        })
-
-        config.addLabel('A valid publication start time required for this status', {
-            sv: 'För att sätta denna status krävs en korrekt tid för publiceringsstart'
-        })
-
-        config.addLabel('A valid publication stop time required for this status', {
-            sv: 'För att sätta denna status krävs en korrekt tid för publiceringstopp'
-        })
+        */
     }
 }

@@ -135,7 +135,7 @@ class PublishFlowComponent extends Component {
 
         const currentStatus = [
             $$('h2').append(
-                this.getLabel(statusDef.statusTitle)
+                this.getLabel(statusDef.actionName)
             ),
             $$('p').append(
                 this.getLabel(statusDef.statusDescription)
@@ -147,14 +147,15 @@ class PublishFlowComponent extends Component {
 
     /**
      * Render pubStart and pubStop fields
-     * @todo Improve UI, make slicker
      *
      * @param {object}
      * @return {object}
      */
     renderScheduling($$) {
+        const action = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
+
         let fromVal = '',
-            toVal = '';
+            toVal = ''
 
         if (this.state.pubStart) {
             fromVal = moment(this.state.pubStart.value).format('YYYY-MM-DDTHH:mm')
@@ -167,6 +168,20 @@ class PublishFlowComponent extends Component {
         let el = $$('div')
             .addClass('sc-np-publish-action-section')
 
+        let pubStartAttribs = {
+            id: 'pfc-lbl-withheld-from',
+            type: 'datetime-local'
+        }
+
+        let pubStopAttribs = {
+            id: 'pfc-lbl-withheld-to',
+            type: 'datetime-local'
+        }
+
+        if (this.state.status.qcode === 'stat:usable') {
+            pubStartAttribs.disabled = true
+        }
+        
         el.append(
             $$('div')
                 .addClass('sc-np-publish-action-section-content sc-np-date-time')
@@ -177,11 +192,7 @@ class PublishFlowComponent extends Component {
                             this.getLabel('Publish from')
                         ),
                     $$('input')
-                        .attr({
-                            id: 'pfc-lbl-withheld-from',
-                            type: 'datetime-local',
-                            required: true
-                        })
+                        .attr(pubStartAttribs)
                         .addClass('form-control')
                         .ref('pfc-lbl-withheld-from')
                         .val(fromVal)
@@ -203,10 +214,7 @@ class PublishFlowComponent extends Component {
                             this.getLabel('Publish to')
                         ),
                     $$('input')
-                        .attr({
-                            id: 'pfc-lbl-withheld-to',
-                            type: 'datetime-local'
-                        })
+                        .attr(pubStopAttribs)
                         .addClass('form-control')
                         .ref('pfc-lbl-withheld-to')
                         .val(toVal)
@@ -521,27 +529,29 @@ class PublishFlowComponent extends Component {
      * Update UI
      */
     _updateStatus(updateButtonSavedLabel, unsavedChanges) {
+        const statusDef = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
+
         if (updateButtonSavedLabel) {
             this._updateButton(unsavedChanges)
         }
 
         if (this.state.status.qcode === 'stat:usable') {
             this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode) +
+                statusDef.statusTitle,
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
             this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode) +
+                statusDef.statusTitle,
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else {
             this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode)
+                statusDef.statusTitle
             )
         }
     }
