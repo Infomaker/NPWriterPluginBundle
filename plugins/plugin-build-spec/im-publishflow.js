@@ -1,4 +1,4 @@
-import Index from "../se.infomaker.publishflow2/index";
+import Index from "../se.infomaker.publishflow/index";
 
 (() => {
     Index()
