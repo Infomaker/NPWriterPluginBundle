@@ -3,7 +3,7 @@ import './scss/publishflow.scss'
 
 const {Component} = substance
 const {api, moment, event} = writer
-const pluginId = 'se.infomaker.publishflow'
+const pluginId = 'se.infomaker.publishflow2'
 const TIMEOUT = 30000
 
 class PublishFlowComponent extends Component {
@@ -181,7 +181,7 @@ class PublishFlowComponent extends Component {
         if (this.state.status.qcode === 'stat:usable') {
             pubStartAttribs.disabled = true
         }
-        
+
         el.append(
             $$('div')
                 .addClass('sc-np-publish-action-section-content sc-np-date-time')

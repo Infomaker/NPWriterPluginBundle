@@ -1,6 +1,7 @@
 import CharacterTransformation from "../se.infomaker.charactertransformation/index";
 import TextAnalyzer from "../se.infomaker.textanalyzer/index";
 import PublishFlow from "../se.infomaker.publishflow/index";
+import PublishFlow2 from "../se.infomaker.publishflow2/index";
 import SocialEmbed from "../se.infomaker.socialembed/index";
 import NewsPriority from "../se.infomaker.newspriority/index";
 import XImteaser from "../se.infomaker.ximteaser/index";
@@ -58,6 +59,7 @@ import UATrackerIndex from '../se.infomaker.uatracker/index'
     SocialEmbed()
     XImteaser()
     PublishFlow()
+    PublishFlow2()
     NewsPriority()
     HeaderEditor()
     XImAuthor()
