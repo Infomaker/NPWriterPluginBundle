@@ -78,7 +78,7 @@ class GenderComponent extends Component {
 
             btn.append(icon)
 
-            if (this.state['gender'] === props.id) {
+            if (this.state[this.pluginName] === props.id) {
                 btn.addClass('active')
             }
 
@@ -97,6 +97,15 @@ class GenderComponent extends Component {
      * @param gender
      */
     saveMeta(gender) {
+
+        // Reset state if you click same button again
+        if(this.state[this.pluginName] === gender.id) {
+            api.newsItem.removeLinkContentMetaByTypeAndRel(this.pluginName, this.linkType, this.linkRel)
+            this.extendState({
+                [this.pluginName]: null
+            })
+            return
+        }
 
         const link = {
                 '@title': gender.title,
