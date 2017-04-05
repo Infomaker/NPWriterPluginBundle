@@ -13,18 +13,29 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
-
+const fs = require('fs')
 console.log("\n ----------------------------")
 console.log(" Plugin development build ")
 console.log(" ----------------------------\n")
 
+function getPluginBuildSpec(dir) {
+    const result = {}
+    const list = fs.readdirSync(dir);
+
+    // For every file in the list
+    list.forEach(function (file) {
+        const basename = file.substr(0, file.length - 3);
+        result[basename] = dir + '/' + basename;
+    });
+    return result;
+}
 const version = process.env.VERSION || 'dev'
 
 module.exports = {
-    entry: "./plugins/plugin-build-spec/im-writer.js",
+    entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
-        filename: "index.js",
-        path: "dist",
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js"
     },
     externals: {
         "substance": "substance",
@@ -86,7 +97,7 @@ module.exports = {
         failOnError: true
     },
     plugins: [
-        new ExtractTextPlugin("style.css"),
+        new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
           'process.env': {
             'NODE_ENV': JSON.stringify('development')
