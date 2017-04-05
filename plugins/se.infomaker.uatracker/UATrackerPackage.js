@@ -21,7 +21,21 @@ export default {
             UATrackerComponent
         )
 
-        // Login Component
+
+        config.addConfigItem(this.id, {
+            key: 'host',
+            type: 'string',
+            optional: false,
+            description: 'The websocket host that UATracker talks to'
+        })
+
+        config.addConfigItem(this.id, {
+            key: 'customerKey',
+            type: 'string',
+            optional: false,
+            description: 'customerKey'
+        })
+
 
         config.addLabel('We would like you to enter email and name', {
             en: 'We would like you to enter email and name. This information is shared with other people that opens the same articles as you',
