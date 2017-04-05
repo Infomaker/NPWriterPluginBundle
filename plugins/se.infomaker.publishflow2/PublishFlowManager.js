@@ -3,7 +3,7 @@ class PublishFlowConfiguration {
     constructor(pluginId) {
         this.pluginId = pluginId
 
-        this.status = api.getConfigValue('se.infomaker.publishflow', 'workflow')
+        this.status = api.getConfigValue('se.infomaker.publishflow2', 'workflow')
     }
 
     getActionDefinition(qcode) {

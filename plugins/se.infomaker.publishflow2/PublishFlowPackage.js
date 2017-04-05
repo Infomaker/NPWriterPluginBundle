@@ -1,8 +1,8 @@
 import PublishFlowComponent from './PublishFlowComponent'
 
 export default {
-    name: 'publishflow',
-    id: 'se.infomaker.publishflow',
+    name: 'publishflow2',
+    id: 'se.infomaker.publishflow2',
     index: 100,
     version: '{{version}}',
     configure: function (config) {
