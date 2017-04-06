@@ -1,5 +1,5 @@
 import {InsertNodeCommand} from 'substance'
-import {idGenerator} from 'writer'
+import {api, idGenerator} from 'writer'
 
 class FactBoxCommand extends InsertNodeCommand {
 
@@ -21,7 +21,8 @@ class FactBoxCommand extends InsertNodeCommand {
                 id: id,
                 title: '',
                 vignette: '',
-                nodes: [container.id]
+                nodes: [container.id],
+                inlineTextUri: this.getDefaultInlineTextUri()
             }
 
             container.show(placeholder.id)
@@ -46,6 +47,24 @@ class FactBoxCommand extends InsertNodeCommand {
         return {
             disabled: isDisabled
         }
+    }
+
+    /**
+     * Get the default inline-text uri, e.g. im://inline-text/factbox, from configuration.
+     * If no configuration, null is returned.
+     *
+     * @returns {*}
+     */
+    getDefaultInlineTextUri() {
+        let defaultInlineTextUri = null
+
+        api.getConfigValue('se.infomaker.factbox', 'inlineTexts', []).forEach((inlineText) => {
+            if (inlineText.default) {
+                defaultInlineTextUri = inlineText.uri
+            }
+        })
+
+        return defaultInlineTextUri
     }
 }
 

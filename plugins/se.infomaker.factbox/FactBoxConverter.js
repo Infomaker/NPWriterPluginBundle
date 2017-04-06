@@ -1,5 +1,5 @@
-import { DefaultDOMElement } from 'substance'
-import { idGenerator } from 'writer'
+import {DefaultDOMElement} from 'substance'
+import {api, idGenerator} from 'writer'
 import DOMFilter from './DOMFilter'
 import ContainerContent from './ContainerContent'
 
@@ -11,7 +11,11 @@ export default {
     tagName: 'object',
 
     matchElement: (el) => {
-        return el.is('object') && el.attr('type') === 'x-cmbr/fact'
+        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/inline-text')
+
+        console.debug('inline-text plugin configured for type:', type)
+
+        return el.is('object') && el.attr('type') === type
     },
 
     /**
@@ -33,6 +37,12 @@ export default {
         })
 
         node.nodes = [container.id]
+
+        // Get inline-text link if any (optional)
+        const link = el.find('links > link[rel="inline-text"]')
+        if (link) {
+            node.inlineTextUri = link.attr('uri')
+        }
 
         /*
          Create a new `div` that is used to "parse" our HTML string by setting it to the wrappers `innerHTML`.
@@ -67,12 +77,13 @@ export default {
 
         const containerContent = new ContainerContent(container, converter)
         const filter = new DOMFilter(containerContent.fragment(), containerContent.tagNames())
+        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/inline-text')
 
         const $$ = converter.$$
         el.removeAttr('id')
         el.attr({
             id: node.id,
-            type: 'x-cmbr/fact',
+            type: type,
             title: node.title,
         })
 
@@ -84,5 +95,14 @@ export default {
 
         const vignette = $$('subject').append(node.vignette)
         el.append($$('data').append([vignette, text]))
+
+        // Export inline-text link if any (optional)
+        if (node.inlineTextUri) {
+            const link = $$('link').attr({
+                uri: node.inlineTextUri,
+                rel: 'inline-text'
+            })
+            el.append($$('links').append(link))
+        }
     }
 }
