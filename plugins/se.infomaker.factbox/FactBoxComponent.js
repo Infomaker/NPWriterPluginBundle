@@ -160,10 +160,11 @@ class FactBoxComponent extends Component {
     }
 
     renderContainerEditor($$) {
+
         return $$(ContainerEditor, {
             name: 'factEditor' + this.props.node.id,
             containerId: this.containerNode().id,
-            textTypes: [],
+            textTypes: writer.api.configurator.getTextTypes(),
             commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
         }).ref('editor').addClass('fact-editor')
     }
