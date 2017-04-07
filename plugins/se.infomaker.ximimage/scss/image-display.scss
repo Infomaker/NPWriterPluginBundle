@@ -62,6 +62,24 @@
         display: none;
     }
 
+    &.sm-pending .se-image-container {
+        opacity: 0.8;
+
+        &:after {
+            position: absolute;
+            content: '\f1ce';
+            font-family: FontAwesome;
+            font-size: 40px;
+            color: #fff;
+            top: 50%;
+            left: 50%;
+            margin: -20px 0px 0px -20px;
+            animation: fa-spin 1s infinite linear;
+            opacity: 0.6;
+            text-shadow: 0px 0px 2px #000;
+        }
+    }
+
     /* Show actions depending on isolated node state */
     &.sm-focused > .se-image-container,
     &.sm-selected > .se-image-container  {

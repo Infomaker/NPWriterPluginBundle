@@ -104,7 +104,7 @@ class ChannelItemComponent extends Component {
         for (var i = 0; i < definition.length; i++) {
             let item = definition[i]
 
-            if (item["@role"] !== "drol:short") {
+            if (!item || item["@role"] !== "drol:short") {
                 continue
             }
 

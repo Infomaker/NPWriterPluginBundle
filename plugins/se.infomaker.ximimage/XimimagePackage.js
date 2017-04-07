@@ -27,9 +27,9 @@ export default {
         config.addMacro(InsertImageMacro)
         config.addComponent('imageDisplay', ImageDisplay)
         config.addConverter('newsml', XimimageConverter)
+        config.addDragAndDrop(DropImageUUID)
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
-        config.addDragAndDrop(DropImageUUID)
 
         config.addPluginModule(
             'se.infomaker.ximimage',

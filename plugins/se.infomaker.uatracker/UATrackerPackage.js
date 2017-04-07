@@ -1,5 +1,4 @@
 import './style.scss'
-import './readme.md'
 import './media/uatracker.png'
 import './media/uatracker-login.png'
 

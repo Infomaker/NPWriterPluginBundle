@@ -255,7 +255,7 @@ class XimteaserComponent extends Component {
         const dataPosition = url.indexOf(queryParamKey)
         if(dataPosition > -1) {
             let encodedData = url.substr(dataPosition + queryParamKey.length, url.length)
-            return JSON.parse(window.atob(encodedData))
+            return JSON.parse(decodeURIComponent(encodedData))
         } else {
             return false
         }
