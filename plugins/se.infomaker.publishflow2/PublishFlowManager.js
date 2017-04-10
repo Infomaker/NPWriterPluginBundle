@@ -78,6 +78,13 @@ class PublishFlowConfiguration {
     }
 
     setPubStart(value) {
+        const action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+        if (typeof action.actions === 'object' && action.actions.pubStart === 'required') {
+            if (!moment(value).isValid()) {
+                throw new Error('A valid publication start time required for this status')
+            }
+        }
+
         if (value === null) {
             api.newsItem.removePubStart(this.pluginId)
             return
@@ -98,6 +105,13 @@ class PublishFlowConfiguration {
     }
 
     setPubStop(value) {
+        const action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+        if (typeof action.actions === 'object' && action.actions.pubStop === 'required') {
+            if (!moment(value).isValid()) {
+                throw new Error('A valid publication stop time required for this status')
+            }
+        }
+
         if (value === null) {
             api.newsItem.removePubStop(this.pluginId)
             return

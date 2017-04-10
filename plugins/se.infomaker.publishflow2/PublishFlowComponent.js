@@ -195,6 +195,21 @@ class PublishFlowComponent extends Component {
             pubStarttimeAttribs.disabled = true
         }
 
+        if (this.state.status.qcode === 'stat:withheld') {
+            const action = this.publishFlowMgr.getActionDefinition(api.newsItem.getPubStatus().qcode)
+            if (typeof action.actions === 'object') {
+                if (action.actions.pubStart === 'required') {
+                    pubStartdateAttribs.required = true
+                    pubStarttimeAttribs.required = true
+                }
+
+                if (action.actions.pubStop === 'required') {
+                    pubStopdateAttribs.required = true
+                    pubStoptimeAttribs.required = true
+                }
+            }
+        }
+
         el.append(
             $$('div')
                 .addClass('sc-np-publish-action-section-content sc-np-date-time')
@@ -211,18 +226,7 @@ class PublishFlowComponent extends Component {
                             .ref('pfc-lbl-withheld-fromdate')
                             .val(fromDateVal)
                             .on('change', () => {
-                                try {
-                                    this.publishFlowMgr.setPubStart(
-                                        this.refs['pfc-lbl-withheld-fromdate'].val()
-                                        + 'T'
-                                        + this.refs['pfc-lbl-withheld-fromtime'].val()
-                                    )
-                                    this.extendState({pubStart: api.newsItem.getPubStart()})
-                                    this._onDocumentChanged()
-                                }
-                                catch(ex) {
-                                    return
-                                }
+                                this._setPubStart()
                             }),
                         $$('input')
                             .attr(pubStarttimeAttribs)
@@ -230,18 +234,7 @@ class PublishFlowComponent extends Component {
                             .ref('pfc-lbl-withheld-fromtime')
                             .val(fromTimeVal)
                             .on('change', () => {
-                                try {
-                                    this.publishFlowMgr.setPubStart(
-                                        this.refs['pfc-lbl-withheld-fromdate'].val()
-                                        + 'T'
-                                        + this.refs['pfc-lbl-withheld-fromtime'].val()
-                                    )
-                                    this.extendState({pubStart: api.newsItem.getPubStart()})
-                                    this._onDocumentChanged()
-                                }
-                                catch(ex) {
-                                    return
-                                }
+                                this._setPubStart()
                             })
                     ]),
                     $$('label')
@@ -256,18 +249,7 @@ class PublishFlowComponent extends Component {
                             .ref('pfc-lbl-withheld-todate')
                             .val(toDateVal)
                             .on('change', () => {
-                                try {
-                                    this.publishFlowMgr.setPubStop(
-                                        this.refs['pfc-lbl-withheld-todate'].val()
-                                        + 'T'
-                                        + this.refs['pfc-lbl-withheld-totime'].val()
-                                    )
-                                    this.extendState({pubStop: api.newsItem.getPubStop()})
-                                    this._onDocumentChanged()
-                                }
-                                catch(ex) {
-                                    return
-                                }
+                                this._setPubStop()
                             }),
                         $$('input')
                             .attr(pubStoptimeAttribs)
@@ -275,24 +257,77 @@ class PublishFlowComponent extends Component {
                             .ref('pfc-lbl-withheld-totime')
                             .val(toTimeVal)
                             .on('change', () => {
-                                try {
-                                    this.publishFlowMgr.setPubStop(
-                                        this.refs['pfc-lbl-withheld-todate'].val()
-                                        + 'T'
-                                        + this.refs['pfc-lbl-withheld-totime'].val()
-                                    )
-                                    this.extendState({pubStop: api.newsItem.getPubStop()})
-                                    this._onDocumentChanged()
-                                }
-                                catch(ex) {
-                                    return
-                                }
+                                this._setPubStop()
                             })
                     ])
                 ])
         )
 
         return el
+    }
+
+    _setPubStart() {
+        let date = this.refs['pfc-lbl-withheld-fromdate'].val(),
+            time = this.refs['pfc-lbl-withheld-fromtime'].val(),
+            dateTime = null
+
+        if (date !== "" && time !== "") {
+            dateTime = date + "T" + time
+        }
+        else if (date !== "" && time === "") {
+            dateTime = date + "T00:00"
+        }
+
+        if (this.state.pubStart === dateTime) {
+            return
+        }
+
+        try {
+            this.publishFlowMgr.setPubStart(dateTime)
+            this.extendState({pubStart: api.newsItem.getPubStart()})
+            this._onDocumentChanged() // Have to do this to make sure we get our own change
+        }
+        catch(ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: ex.message
+                }],
+                () => {}
+            )
+        }
+    }
+
+    _setPubStop() {
+        let date = this.refs['pfc-lbl-withheld-todate'].val(),
+            time = this.refs['pfc-lbl-withheld-totime'].val(),
+            dateTime = null
+
+        if (date !== "" && time !== "") {
+            dateTime = date + "T" + time
+        }
+        else if (date !== "" && time === "") {
+            dateTime = date + "T00:00"
+        }
+
+        if (this.state.pubStop === dateTime) {
+            return
+        }
+
+        try {
+            this.publishFlowMgr.setPubStop(dateTime)
+            this.extendState({pubStop: api.newsItem.getPubStop()})
+            this._onDocumentChanged() // Have to do this to make sure we get our own change
+        }
+        catch(ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: ex.message
+                }],
+                () => {}
+            )
+        }
     }
 
     /**
@@ -371,8 +406,6 @@ class PublishFlowComponent extends Component {
                         qcode,
                         this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
                         this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
-                        // this.refs['pfc-lbl-withheld-from'].val(),
-                        // this.refs['pfc-lbl-withheld-to'].val()
                     )
                 }
                 catch(ex) {
@@ -598,14 +631,14 @@ class PublishFlowComponent extends Component {
 
         if (this.state.status.qcode === 'stat:usable') {
             this.props.popover.setStatusText(
-                statusDef.statusTitle,
+                statusDef.statusTitle +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
             this.props.popover.setStatusText(
-                statusDef.statusTitle,
+                statusDef.statusTitle +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
