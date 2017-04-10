@@ -214,7 +214,7 @@ class PublishFlowComponent extends Component {
                                 try {
                                     this.publishFlowMgr.setPubStart(
                                         this.refs['pfc-lbl-withheld-fromdate'].val()
-                                        + ' '
+                                        + 'T'
                                         + this.refs['pfc-lbl-withheld-fromtime'].val()
                                     )
                                     this.extendState({pubStart: api.newsItem.getPubStart()})
@@ -233,7 +233,7 @@ class PublishFlowComponent extends Component {
                                 try {
                                     this.publishFlowMgr.setPubStart(
                                         this.refs['pfc-lbl-withheld-fromdate'].val()
-                                        + ' '
+                                        + 'T'
                                         + this.refs['pfc-lbl-withheld-fromtime'].val()
                                     )
                                     this.extendState({pubStart: api.newsItem.getPubStart()})
@@ -259,7 +259,7 @@ class PublishFlowComponent extends Component {
                                 try {
                                     this.publishFlowMgr.setPubStop(
                                         this.refs['pfc-lbl-withheld-todate'].val()
-                                        + ' '
+                                        + 'T'
                                         + this.refs['pfc-lbl-withheld-totime'].val()
                                     )
                                     this.extendState({pubStop: api.newsItem.getPubStop()})
@@ -278,7 +278,7 @@ class PublishFlowComponent extends Component {
                                 try {
                                     this.publishFlowMgr.setPubStop(
                                         this.refs['pfc-lbl-withheld-todate'].val()
-                                        + ' '
+                                        + 'T'
                                         + this.refs['pfc-lbl-withheld-totime'].val()
                                     )
                                     this.extendState({pubStop: api.newsItem.getPubStop()})
@@ -369,8 +369,10 @@ class PublishFlowComponent extends Component {
                 try {
                     this.publishFlowMgr.executeAction(
                         qcode,
-                        this.refs['pfc-lbl-withheld-from'].val(),
-                        this.refs['pfc-lbl-withheld-to'].val()
+                        this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
+                        this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+                        // this.refs['pfc-lbl-withheld-from'].val(),
+                        // this.refs['pfc-lbl-withheld-to'].val()
                     )
                 }
                 catch(ex) {
