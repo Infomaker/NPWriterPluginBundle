@@ -152,34 +152,47 @@ class PublishFlowComponent extends Component {
      * @return {object}
      */
     renderScheduling($$) {
-        const action = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
-
-        let fromVal = '',
-            toVal = ''
+        let fromDateVal = '',
+            fromTimeVal = '',
+            toDateVal = '',
+            toTimeVal = ''
 
         if (this.state.pubStart) {
-            fromVal = moment(this.state.pubStart.value).format('YYYY-MM-DDTHH:mm')
+            fromDateVal = moment(this.state.pubStart.value).format('YYYY-MM-DD')
+            fromTimeVal = moment(this.state.pubStart.value).format('HH:mm')
         }
 
         if (this.state.pubStop) {
-            toVal = moment(this.state.pubStop.value).format('YYYY-MM-DDTHH:mm')
+            toDateVal = moment(this.state.pubStop.value).format('YYYY-MM-DD')
+            toTimeVal = moment(this.state.pubStop.value).format('HH:mm')
         }
 
         let el = $$('div')
             .addClass('sc-np-publish-action-section')
 
-        let pubStartAttribs = {
-            id: 'pfc-lbl-withheld-from',
-            type: 'datetime-local'
+        let pubStartdateAttribs = {
+            id: 'pfc-lbl-withheld-fromdate',
+            type: 'date'
         }
 
-        let pubStopAttribs = {
-            id: 'pfc-lbl-withheld-to',
-            type: 'datetime-local'
+        let pubStarttimeAttribs = {
+            id: 'pfc-lbl-withheld-fromtime',
+            type: 'time'
+        }
+
+        let pubStopdateAttribs = {
+            id: 'pfc-lbl-withheld-todate',
+            type: 'date'
+        }
+
+        let pubStoptimeAttribs = {
+            id: 'pfc-lbl-withheld-totime',
+            type: 'time'
         }
 
         if (this.state.status.qcode === 'stat:usable') {
-            pubStartAttribs.disabled = true
+            pubStartdateAttribs.disabled = true
+            pubStarttimeAttribs.disabled = true
         }
 
         el.append(
@@ -191,45 +204,91 @@ class PublishFlowComponent extends Component {
                         .append(
                             this.getLabel('Publish from')
                         ),
-                    $$('input')
-                        .attr(pubStartAttribs)
-                        .addClass('form-control')
-                        .ref('pfc-lbl-withheld-from')
-                        .val(fromVal)
-                        .on('change', () => {
-                            try {
-                                this.publishFlowMgr.setPubStart(this.refs['pfc-lbl-withheld-from'].val())
-                            }
-                            catch(ex) {
-                                return
-                            }
-                            this.extendState({
-                                pubStart: api.newsItem.getPubStart()
+                    $$('div').append([
+                        $$('input')
+                            .attr(pubStartdateAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-fromdate')
+                            .val(fromDateVal)
+                            .on('change', () => {
+                                try {
+                                    this.publishFlowMgr.setPubStart(
+                                        this.refs['pfc-lbl-withheld-fromdate'].val()
+                                        + ' '
+                                        + this.refs['pfc-lbl-withheld-fromtime'].val()
+                                    )
+                                    this.extendState({pubStart: api.newsItem.getPubStart()})
+                                    this._onDocumentChanged()
+                                }
+                                catch(ex) {
+                                    return
+                                }
+                            }),
+                        $$('input')
+                            .attr(pubStarttimeAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-fromtime')
+                            .val(fromTimeVal)
+                            .on('change', () => {
+                                try {
+                                    this.publishFlowMgr.setPubStart(
+                                        this.refs['pfc-lbl-withheld-fromdate'].val()
+                                        + ' '
+                                        + this.refs['pfc-lbl-withheld-fromtime'].val()
+                                    )
+                                    this.extendState({pubStart: api.newsItem.getPubStart()})
+                                    this._onDocumentChanged()
+                                }
+                                catch(ex) {
+                                    return
+                                }
                             })
-                            this._onDocumentChanged()
-                        }),
+                    ]),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
                             this.getLabel('Publish to')
                         ),
-                    $$('input')
-                        .attr(pubStopAttribs)
-                        .addClass('form-control')
-                        .ref('pfc-lbl-withheld-to')
-                        .val(toVal)
-                        .on('change', () => {
-                            try {
-                                this.publishFlowMgr.setPubStop(this.refs['pfc-lbl-withheld-to'].val())
-                            }
-                            catch(ex) {
-                                return
-                            }
-                            this.extendState({
-                                pubStop: api.newsItem.getPubStop()
+                    $$('div').append([
+                        $$('input')
+                            .attr(pubStopdateAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-todate')
+                            .val(toDateVal)
+                            .on('change', () => {
+                                try {
+                                    this.publishFlowMgr.setPubStop(
+                                        this.refs['pfc-lbl-withheld-todate'].val()
+                                        + ' '
+                                        + this.refs['pfc-lbl-withheld-totime'].val()
+                                    )
+                                    this.extendState({pubStop: api.newsItem.getPubStop()})
+                                    this._onDocumentChanged()
+                                }
+                                catch(ex) {
+                                    return
+                                }
+                            }),
+                        $$('input')
+                            .attr(pubStoptimeAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-totime')
+                            .val(toTimeVal)
+                            .on('change', () => {
+                                try {
+                                    this.publishFlowMgr.setPubStop(
+                                        this.refs['pfc-lbl-withheld-todate'].val()
+                                        + ' '
+                                        + this.refs['pfc-lbl-withheld-totime'].val()
+                                    )
+                                    this.extendState({pubStop: api.newsItem.getPubStop()})
+                                    this._onDocumentChanged()
+                                }
+                                catch(ex) {
+                                    return
+                                }
                             })
-                            this._onDocumentChanged()
-                        })
+                    ])
                 ])
         )
 
