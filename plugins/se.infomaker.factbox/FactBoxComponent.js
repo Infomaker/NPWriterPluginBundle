@@ -9,6 +9,7 @@ import {
 } from 'substance'
 
 import {api} from 'writer'
+import FieldEditor from './FieldEditor'
 
 class FactBoxComponent extends Component {
 
@@ -29,6 +30,7 @@ class FactBoxComponent extends Component {
         const el = $$('div')
         el.addClass('factbox-node im-blocknode__container')
         el.append(this.renderHeader($$))
+        el.append($$(FieldEditor, {node: this.props.node, field: 'title'}))
         el.append(this.renderTitleEditor($$, true))
         el.append(this.renderTitleEditor($$))
         el.append(this.renderContainerEditor($$))
@@ -160,11 +162,10 @@ class FactBoxComponent extends Component {
     }
 
     renderContainerEditor($$) {
-
         return $$(ContainerEditor, {
             name: 'factEditor' + this.props.node.id,
-            containerId: this.containerNode().id,
-            textTypes: writer.api.configurator.getTextTypes(),
+            containerId: this.props.node.id,
+            textTypes: [],
             commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
         }).ref('editor').addClass('fact-editor')
     }

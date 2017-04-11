@@ -1,5 +1,4 @@
 import {Component} from "substance"
-import {api} from "writer"
 import ToggleComponent from "./ToggleComponent"
 
 class ArticleOptionsComponent extends Component {

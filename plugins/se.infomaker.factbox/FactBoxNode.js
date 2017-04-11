@@ -1,6 +1,6 @@
-import {BlockNode} from 'substance'
+import {Container} from 'substance'
 
-class FactBoxNode extends BlockNode {}
+class FactBoxNode extends Container {}
 
 FactBoxNode.isResource = false
 

@@ -1,7 +1,5 @@
 import {DefaultDOMElement} from 'substance'
 import {api, idGenerator} from 'writer'
-import DOMFilter from './DOMFilter'
-import ContainerContent from './ContainerContent'
 
 /**
  * Converts between NewsML and editor nodes.
@@ -11,10 +9,7 @@ export default {
     tagName: 'object',
 
     matchElement: (el) => {
-        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/inline-text')
-
-        console.debug('inline-text plugin configured for type:', type)
-
+        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/content-part')
         return el.is('object') && el.attr('type') === type
     },
 
@@ -29,57 +24,43 @@ export default {
             node.vignette = el.find('subject').text()
         }
 
-        // Create the container node that holds our fact text.
-        const container = converter.createNode({
-            type: 'container',
-            id: node.id + '-container',
-            nodes: []
-        })
-
-        node.nodes = [container.id]
-
         // Get inline-text link if any (optional)
-        const link = el.find('links > link[rel="inline-text"]')
+        const link = el.find('links > link[rel="content-part"]')
         if (link) {
             node.inlineTextUri = link.attr('uri')
         }
 
-        /*
-         Create a new `div` that is used to "parse" our HTML string by setting it to the wrappers `innerHTML`.
-         We then loop each of the created paragraph nodes and create `DefautltDOMElement`s from those.
-         Those elements can then be used to use the `annotatedText` function on the converter to create annotated
-         editor nodes that we append to our container node.
-         */
-        const text = el.find('text').text()
-        const wrapper = document.createElement('div')
-        wrapper.innerHTML = text
-        const paragraphs = Array.prototype.slice.call(wrapper.childNodes)
-        paragraphs.map((p) => new DefaultDOMElement.parseHTML(p.outerHTML)).forEach((p) => {
-            const pNode = converter.createNode({
-                type: 'paragraph',
-                id: idGenerator(),
+        const text = el.find('text')
+        if(text) {
+            text.children.forEach((child) => {
+                const childNode = converter.convertElement(child)
+                node.nodes.push(childNode.id)
             })
-            container.nodes.push(pNode.id)
-            pNode.content = converter.annotatedText(p, [pNode.id, 'content'])
-        })
+        }
     },
 
     /**
      * Export a factbox to NewsML.
      */
     export: (node, el, converter) => {
-        const id = node.id
-        const nodes = node.document.getNodes()
-        const container = Object.keys(nodes)
-            .map((key) => nodes[key])
-            .filter((itm) => itm.id === id + '-container')
-            .pop()
-
-        const containerContent = new ContainerContent(container, converter)
-        const filter = new DOMFilter(containerContent.fragment(), containerContent.tagNames())
-        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/inline-text')
-
         const $$ = converter.$$
+        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/content-part')
+        const output = api.getConfigValue('se.infomaker.factbox', 'output', 'idf')
+
+        const text = $$('text')
+            .attr('format', output)
+
+        let children
+        if('html' === output) {
+            // converter = writer.api.configurator.createExporter('html')
+            // children = converter.convertContainer(node)
+            // text.innerHTML = $$('content').append(children).innerHTML
+        } else if('idf' === output) {
+            children = converter.convertContainer(node)
+            text.append(children)
+        } else {
+            throw new Error('Not a valid output format')
+        }
         el.removeAttr('id')
         el.attr({
             id: node.id,
@@ -88,10 +69,10 @@ export default {
         })
 
         // Wrap contents in CDATA tags to please the XML gods.
-        const html = '<![CDATA[' + filter.output().replace(']]>', ']]&gt;') + ']]>'
-        const text = $$('text')
-        text.innerHTML = html
-        text.attr('format', 'html')
+        // const html = '<![CDATA[' + filter.output().replace(']]>', ']]&gt;') + ']]>'
+        // const text = $$('text').append(children)
+        // text.innerHTML = html
+        text.attr('format', output)
 
         const vignette = $$('subject').append(node.vignette)
         el.append($$('data').append([vignette, text]))

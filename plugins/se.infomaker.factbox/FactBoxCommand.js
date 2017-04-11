@@ -4,31 +4,28 @@ import {api, idGenerator} from 'writer'
 class FactBoxCommand extends InsertNodeCommand {
 
     execute(params) {
+        const id = idGenerator()
+        let defaultText
         params.editorSession.transaction((tx) => {
-            const id = idGenerator()
             const placeholder = tx.create({
                 type: tx.getSchema().getDefaultTextType(),
                 content: ''
             })
-
-            const container = tx.create({
-                type: 'container',
-                id: id + '-container'
-            })
+            defaultText = placeholder
 
             const node = {
                 type: 'factbox',
                 id: id,
                 title: '',
                 vignette: '',
-                nodes: [container.id],
-                inlineTextUri: this.getDefaultInlineTextUri()
+                inlineTextUri: this.getDefaultInlineTextUri(),
+                nodes: [placeholder.id]
             }
-
-            container.show(placeholder.id)
-
             tx.insertBlockNode(node)
         })
+        const doc = params.editorSession.getDocument()
+        const fact = doc.get(id)
+        fact.show(defaultText.id)
     }
 
     /**
