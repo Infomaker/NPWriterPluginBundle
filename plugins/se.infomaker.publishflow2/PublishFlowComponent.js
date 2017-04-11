@@ -502,7 +502,7 @@ class PublishFlowComponent extends Component {
      * Execute creation of a new article copy
      */
     _createDuplicate() {
-        this.publishFlowMgr.setToDraft()
+        this.publishFlowMgr.setPubStatus('imext:draft')
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
