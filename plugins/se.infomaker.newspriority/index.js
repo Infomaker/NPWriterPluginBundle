@@ -1,5 +1,5 @@
 import NewsPriority from './NewsPriority'
-const {registerPlugin} = writer
+import {registerPlugin} from "writer"
 
 (() => {
     if (registerPlugin) {

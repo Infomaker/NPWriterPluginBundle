@@ -1,7 +1,7 @@
 import './scss/contentrelations.scss'
 
 import ContentRelationsPckage from './ContentrelationsPackage'
-const { registerPlugin } = writer
+import {registerPlugin} from "writer"
 
 (() => {
     if (registerPlugin) {
