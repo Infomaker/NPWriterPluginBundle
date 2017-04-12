@@ -20,13 +20,13 @@ import BlockQuotePackage from '../textstyles/se.infomaker.blockquote/BlockquoteP
 import ParagraphPackage from '../textstyles/se.infomaker.paragraph/ParagraphPackage'
 import SubheadlinePackage from '../textstyles/se.infomaker.subheadline/SubheadlinePackage'
 import HeadlinePackage from '../textstyles/se.infomaker.headline/HeadlinePackage'
-import Madmansrow from '../textstyles/se.infomaker.madmansrow/Madmansrow'
-import Drophead from '../textstyles/se.infomaker.drophead/Drophead'
-import Pagedateline from '../textstyles/se.infomaker.pagedateline/Pagedateline'
-import Dateline from '../textstyles/se.infomaker.dateline/Dateline'
-import Preleadin from '../textstyles/se.infomaker.preleadin/Preleadin'
-import Preamble from '../textstyles/se.infomaker.preamble/Preamble'
-import Factbody from '../textstyles/se.infomaker.factbody/Factbody'
+import Madmansrow from '../textstyles/se.infomaker.madmansrow/index'
+import Drophead from '../textstyles/se.infomaker.drophead/index'
+import Pagedateline from '../textstyles/se.infomaker.pagedateline/index'
+import Dateline from '../textstyles/se.infomaker.dateline/index'
+import Preleadin from '../textstyles/se.infomaker.preleadin/index'
+import Preamble from '../textstyles/se.infomaker.preamble/index'
+import Factbody from '../textstyles/se.infomaker.factbody/index'
 
 (() => {
     BlockQuotePackage()

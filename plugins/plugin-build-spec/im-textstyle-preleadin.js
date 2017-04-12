@@ -1,4 +1,4 @@
-import Index from "../textstyles/se.infomaker.preleadin/Preleadin";
+import Index from "../textstyles/se.infomaker.preleadin/index";
 
 (() => {
     Index()
