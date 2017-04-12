@@ -1,16 +1,13 @@
 import './scss/drophead.scss'
-
 import DropheadPackage from './DropheadPackage'
+import {registerPlugin} from 'writer'
 
-const {registerPlugin} = writer
-
-
-export default () => {
+(() => {
     if (registerPlugin) {
         registerPlugin(DropheadPackage)
     } else {
         console.error("Could not register plugin");
     }
-}
+})()
 
 

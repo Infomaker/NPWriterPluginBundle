@@ -1,12 +1,10 @@
+import XImPlacePackagePolygon from '../se.infomaker.ximplace/XImPlacePackagePolygon'
 import {registerPlugin} from 'writer'
-import XimstoryPackage from './XimstoryPackage'
 
 (() => {
     if (registerPlugin) {
-        registerPlugin(XimstoryPackage)
+        registerPlugin(XImPlacePackagePolygon)
     } else {
         console.info("Register method not yet available");
     }
 })()
-
-
