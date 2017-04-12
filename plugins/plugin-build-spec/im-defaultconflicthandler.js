@@ -1,5 +1,5 @@
-import Package from "../se.infomaker.defaultconflicthandler/DefaultConflictHandlerPackage"
+import Index from "../se.infomaker.defaultconflicthandler/index"
 
 (() => {
-    Package()
+    Index()
 })()
