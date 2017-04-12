@@ -36,21 +36,21 @@ module.exports = {
     },
     module: {
         loaders: [
-            {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: 'url-loader?limit=100000'
-            },
-            {
-                test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style', 'css!sass')
-            },
-            {
-                test: /\.js?$/,
-                exclude: /(node_modules)/,
-                loaders: [
-                    'babel?presets[]=stage-0,presets[]=es2015-node6'
-                ]
-            }
+          {
+            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+            loader: 'url-loader?limit=100000'
+          },
+          {
+              test: /\.scss$/,
+              loader: ExtractTextPlugin.extract('style', 'css!sass')
+          },
+          {
+              test: /\.js?$/,
+              exclude: /(node_modules)/,
+              loaders: [
+                  'babel?presets[]=stage-0,presets[]=es2015'
+              ]
+          }
         ],
         preLoaders: [
             { test: /\.js?$/, loader: 'eslint', exclude: /node_modules/ },
