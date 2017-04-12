@@ -4,6 +4,8 @@ const path = require('path')
 
 const bucketName = process.env.AWS_S3_BUCKET_NAME
 
+const prefix = process.env.AWS_S3_DIRECTORY
+
 if (!bucketName) {
     throw new Error("No bucket specified")
     process.exitCode(1)
@@ -55,7 +57,7 @@ fs.readdir(distFolder, (err, files) => {
 
                 let uploadFileObject = {
                     Bucket: bucketName,
-                    Key: fileName,
+                    Key: prefix ? prefix + '/' + fileName : fileName,
                     Body: fileData,
                     ContentType: getContentTypeForExtension(fileType)
                 }

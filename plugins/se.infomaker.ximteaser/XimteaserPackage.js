@@ -10,6 +10,7 @@ import {platform} from 'substance'
 export default {
     name: 'ximteaser',
     id: 'se.infomaker.ximteaser',
+    version: '{{version}}',
     configure: function (config, pluginConfig) {
         config.addNode(Ximteaser)
         config.addComponent(Ximteaser.type, XimteaserComponent)
@@ -32,6 +33,14 @@ export default {
         config.addLabel('Insert Teaser', {
             en: 'Insert Teaser',
             sv: 'Infoga puff'
+        })
+        config.addLabel('teaser-add-image', {
+            en: 'Add image',
+            sv: 'Lägg till bild'
+        })
+        config.addLabel('teaser-replace-image', {
+            en: 'Replace image',
+            sv: 'Ersätt bild'
         })
     }
 }

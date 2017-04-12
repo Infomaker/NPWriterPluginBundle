@@ -1,6 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {jxon} from 'writer'
-import {isArray} from 'lodash'
 
 class ContentprofileItemComponent extends Component {
     constructor(...args) {
@@ -99,7 +98,7 @@ class ContentprofileItemComponent extends Component {
 
     updateTagItemName(tagItem, loadedTag) {
         if (loadedTag && loadedTag.definition) {
-            var definition = isArray(loadedTag.definition) ? loadedTag.definition : [loadedTag.definition]
+            var definition = Array.isArray(loadedTag.definition) ? loadedTag.definition : [loadedTag.definition]
 
             for (var i = 0; i < definition.length; i++) {
                 var item = definition[i]

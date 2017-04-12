@@ -7,6 +7,7 @@ import ContentRelationsDropHandler from './ContentRelationsDropHandler'
 export default {
     name: 'contentrelations',
     id: 'se.infomaker.contentrelations',
+    version: '{{version}}',
     configure: function(config) {
 
         config.addSidebarTab('contentrelations', 'Relaterat innehåll')

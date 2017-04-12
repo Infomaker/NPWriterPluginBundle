@@ -4,7 +4,6 @@ import {Component} from 'substance'
 // var $$ = Component.$$;
 import {FontAwesomeIcon} from 'substance'
 import {jxon, api} from 'writer'
-import {isArray} from 'lodash'
 
 
 class LocationItemComponent extends Component {
@@ -111,13 +110,13 @@ class LocationItemComponent extends Component {
 
     }
 
-    toggleTooltip(ev) {
+    toggleTooltip() {
         this.refs.tooltip.extendProps({
             show: true
         })
     }
 
-    hideTooltip(ev) {
+    hideTooltip() {
         this.refs.tooltip.extendProps({
             show: false
         })
@@ -126,7 +125,7 @@ class LocationItemComponent extends Component {
 
     static getShortDescription(loadedTag) {
         if (loadedTag.concept && loadedTag.concept.definition) {
-            const definition = isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
+            const definition = Array.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (let i = 0; i < definition.length; i++) {
                 const item = definition[i]
                 if (item["@role"] === "drol:short") {

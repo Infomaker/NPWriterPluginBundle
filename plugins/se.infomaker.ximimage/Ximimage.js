@@ -1,4 +1,4 @@
-import { jxon, api, NilUUID, lodash } from 'writer'
+import { jxon, api, lodash as _, NilUUID } from 'writer'
 import { DefaultDOMElement, BlockNode } from 'substance'
 
 
@@ -52,8 +52,6 @@ class Ximimage extends BlockNode {
         if(!converterRegistry) {
             converterRegistry = context.editorSession.converterRegistry
         }
-        // Create a newsML importer
-        const newsMLImporter = this.getNewsMLImporter()
 
         // Get the converter for newsml
         const newsMLConverters = converterRegistry.get('newsml')
@@ -66,6 +64,7 @@ class Ximimage extends BlockNode {
      * This method is called from NPFile when file is uploaded.
      *
      * @param {DOMDoucment} newsItemDOMDocument
+     * @param context
      */
     handleDOMDocument(newsItemDOMDocument, context) {
         const newsItemDOMElement = DefaultDOMElement.parseXML(newsItemDOMDocument.documentElement.outerHTML)
@@ -90,14 +89,21 @@ class Ximimage extends BlockNode {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'uuid'], uuid ? uuid : '')
             tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
-            tx.set([this.id, 'caption'], text ? text.textContent : '')
-            tx.set([this.id, 'credit'], credit ? credit.textContent : '')
-            tx.set([this.id, 'width'], width ? width.textContent : '')
-            tx.set([this.id, 'height'], height ? height.textContent : '')
-            tx.set([this.id, 'authors'], convertedAuthors)
-        }, { history: false })
+            if (isUnset(this.caption)) {
+                tx.set([this.id, 'caption'], text ? text.textContent : '')
+            }
+            if (isUnset(this.credit)) {
+                tx.set([this.id, 'credit'], credit ? credit.textContent : '')
+            }
+            tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
+            tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
+            if (isUnset(this.authors)) {
+                tx.set([this.id, 'authors'], convertedAuthors)
+            }
+        })
 
     }
+
 
     addAuthor(author) {
         const authors = this.authors
@@ -117,6 +123,25 @@ class Ximimage extends BlockNode {
             this.updateAuthorFromConcept(author)
         }
 
+    }
+
+    removeAuthor(author) {
+        const authors = this.authors
+        for (let n = 0; n < authors.length; n++) {
+
+            if (!NilUUID.isNilUUID(author.uuid) && authors[n].uuid === author.uuid) {
+                authors.splice(n, 1)
+                break
+            }
+            else if (NilUUID.isNilUUID(author.uuid) && authors[n].name === author.name) {
+                authors.splice(n, 1)
+                break
+            }
+        }
+        // First add the authors to the node
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'authors'], authors)
+        })
     }
 
     /**
@@ -150,11 +175,11 @@ class Ximimage extends BlockNode {
 
     }
     findAttribute(object, attribute) {
-        var match;
+        let match
 
         function iterateObject(target, name) {
             Object.keys(target).forEach(function (key) {
-                if (lodash.isObject(target[key])) {
+                if (_.isObject(target[key])) {
                     iterateObject(target[key], name);
                 } else if (key === name) {
                     match = target[key];
@@ -279,6 +304,24 @@ class Ximimage extends BlockNode {
 
     }
 }
+
+function isUnset(field) {
+    if (field === undefined || field === null) {
+        return true;
+    }
+
+    if (_.isString(field) && field.trim() === "") {
+        return true;
+    }
+
+    //noinspection RedundantIfStatementJS
+    if (_.isArray(field) && field.length === 0) {
+        return true;
+    }
+
+    return false;
+}
+
 
 Ximimage.isResource = true
 

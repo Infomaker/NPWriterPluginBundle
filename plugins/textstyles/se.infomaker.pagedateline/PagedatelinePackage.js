@@ -5,6 +5,7 @@ import PagedatelineNode from './PagedatelineNode'
 export default {
     name: 'pagedateline',
     id: 'se.infomaker.pagedateline',
+    version: '{{version}}',
     configure: function (config) {
 
         PagedatelineNode.type = this.name

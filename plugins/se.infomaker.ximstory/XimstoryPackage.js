@@ -5,7 +5,7 @@ import StoryMainComponent from './StoryMainComponent'
 export default {
     id: 'se.infomaker.ximstory',
     name: 'ximstory',
-
+    version: '{{version}}',
     configure: function(config) {
         config.addLabel('ximstory-could_not_load_uuid', {
             en: 'This item could not be loaded. UUID: ',

@@ -4,6 +4,7 @@ export default {
     name: 'publishflow',
     id: 'se.infomaker.publishflow',
     index: 100,
+    version: '{{version}}',
     configure: function (config) {
         config.addPopover(
             this.id + '_1',
@@ -19,8 +20,16 @@ export default {
             sv: 'Spara'
         })
 
+        config.addLabel('Update', {
+            sv: 'Uppdatera'
+        })
+
         config.addLabel('Save *', {
             sv: 'Spara *'
+        })
+
+        config.addLabel('Update *', {
+            sv: 'Uppdatera *'
         })
 
         config.addLabel('Cancel', {
@@ -138,6 +147,14 @@ export default {
 
         config.addLabel('Article contains unsaved changes. Continue without saving?', {
             sv: 'Artikeln innehåller osparade ändringar. Fortsätt utan att spara?'
+        })
+
+        config.addLabel('Oops, the save operation timed out', {
+            sv: 'Hoppsan, det tog för lång tid att spara artikeln'
+        })
+
+        config.addLabel('Please try again', {
+            sv: 'Vänligen prova igen'
         })
     }
 }

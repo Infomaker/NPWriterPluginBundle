@@ -7,6 +7,7 @@ import ParagraphConverter from './ParagraphConverter'
 const paragraphPackage = {
     id: 'se.infomaker.paragraph',
     name: 'paragraph',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Paragraph)
         config.addComponent(Paragraph.type, ParagraphComponent)

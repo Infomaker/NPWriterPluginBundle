@@ -5,6 +5,7 @@ import SubheadlineConverter from './SubheadlineConverter'
 export default {
     id: 'se.infomaker.subheadline',
     name: 'subheadline',
+    version: '{{version}}',
     configure: function(config) {
         config.addNode(Subheadline)
         config.addComponent(Subheadline.type, SubheadlineComponent)

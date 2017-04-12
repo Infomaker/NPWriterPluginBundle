@@ -5,6 +5,7 @@ import BlockquoteConverter from './BlockquoteConverter'
 export default {
     id: 'se.infomaker.blockquote',
     name: 'blockquote',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Blockquote)
         config.addComponent(Blockquote.type, BlockquoteComponent)

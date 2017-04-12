@@ -1,9 +1,8 @@
 import {Component} from 'substance'
-import {lodash, jxon} from 'writer'
+import {jxon} from 'writer'
 
-const isArray = lodash.isArray
-const isObject = lodash.isObject
-const find = lodash.find
+const {isObject, isArray, find} = writer.lodash
+
 
 class ContentprofileDetailComponent extends Component {
 
@@ -36,6 +35,10 @@ class ContentprofileDetailComponent extends Component {
             .catch(() => {
                 this.setState({error: true})
             })
+    }
+
+    shouldRerender() {
+        return false;
     }
 
     updateContentProfile() {

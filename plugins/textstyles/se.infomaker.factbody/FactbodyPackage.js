@@ -5,6 +5,7 @@ import FactbodyNode from './FactbodyNode'
 export default {
     name: 'factbody',
     id: 'se.infomaker.factbody',
+    version: '{{version}}',
     configure: function (config) {
 
         FactbodyNode.type = this.name

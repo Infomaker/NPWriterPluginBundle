@@ -89,13 +89,13 @@ class CategoryItemComponent extends Component {
         return tagItem;
     }
 
-    toggleTooltip(ev) {
+    toggleTooltip() {
         this.refs.tooltip.extendProps({
             show: true
         })
     }
 
-    hideTooltip(ev) {
+    hideTooltip() {
         this.refs.tooltip.extendProps({
             show: false
         })
@@ -106,9 +106,9 @@ class CategoryItemComponent extends Component {
             return
         }
 
-        var definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
-        for (var i = 0; i < definition.length; i++) {
-            var item = definition[i]
+        const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition];
+        for (let i = 0; i < definition.length; i++) {
+            const item = definition[i];
 
             if (item["@role"] === "drol:short") {
                 if (item["keyValue"] && item["keyValue"].length > 0) {

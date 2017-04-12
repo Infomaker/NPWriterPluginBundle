@@ -1,0 +1,73 @@
+.uatracker-login {
+    p {
+        margin:15px 0;
+    }
+    .form-group {
+        position: relative;
+    }
+    .avatar__container {
+        float: right;
+        position: absolute;
+        right: 5px;
+        bottom: 2px;
+
+        img {
+            width: 24px;
+            height:24px;
+        }
+        .fa-user {
+            width: 24px;
+            height: 24px;
+            font-size: 24px;
+            margin-right:0;
+        }
+    }
+}
+.uatracker {
+    margin:15px;
+    max-width: 400px;
+    .active-user {
+        float: right;
+        font-size:0.8rem;
+        color: #565656;
+    }
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+    p {
+        color: #777;
+        white-space:normal;
+        margin-bottom: 0.7rem
+    }
+    .btn {
+        float:right;
+        margin-top:15px;
+    }
+    ul.user-list {
+
+        list-style: none;
+        padding:0;
+        margin:0 -15px;
+
+        li {
+            font-size:1.1rem;
+            border-bottom:1px solid #ddd;
+            padding: 0 15px;
+            
+            .author__name {
+                cursor: auto;
+            }
+            &.current {
+                font-weight:bold;
+            }
+            .username {
+
+            }
+            .timestamp {
+                float:right
+            }
+        }
+    }
+}

@@ -67,16 +67,12 @@ class AuthorMainComponent extends Component {
     }
 
     removeAuthor(author) {
-        try {
-            if (NilUUID.isNilUUID(author.uuid)) {
-                api.newsItem.removeAuthorByTitle(this.name, author.title);
-            } else {
-                api.newsItem.removeAuthorByUUID(this.name, author.uuid);
-            }
-            this.reloadAuthors();
-        } catch (e) {
-            console.error(e);
+        if (NilUUID.isNilUUID(author.uuid)) {
+            api.newsItem.removeAuthorByTitle(this.name, author.title);
+        } else {
+            api.newsItem.removeAuthorByUUID(this.name, author.uuid);
         }
+        this.reloadAuthors();
     }
 
     addAuthor(author) {

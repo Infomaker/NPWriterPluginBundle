@@ -47,7 +47,7 @@ class SearchComponent extends Component {
         var tmpSearch = $$('div').ref('tmpSearchContainer')
         el.append(tmpSearch)
 
-        var container = $$('div').ref('searchContainer').addClass('search-component__main clearfix')
+        var container = $$('div').ref('searchComponent').addClass('search-component__main clearfix')
 
 
         if (this.state.googleMapsLoaded) {
@@ -111,15 +111,19 @@ class SearchComponent extends Component {
     }
 
     search(e) {
+        const inputValue = this.refs.searchInput.val()
         this.extendState({
-            isSearching: true
+            isSearching: true,
+            query: inputValue
         })
         e.preventDefault()
         var request = {
-            query: this.refs.searchInput.val()
+            query: inputValue
         }
         var service = new this.google.maps.places.PlacesService(this.refs.tmpSearchContainer.el.el)
         service.textSearch(request, this.searchDone.bind(this))
+
+
     }
 
 

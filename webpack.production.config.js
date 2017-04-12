@@ -38,6 +38,7 @@ function getPluginBuildSpec(dir) {
     });
     return result;
 }
+const version = process.env.VERSION || 'dev'
 
 module.exports = {
     entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
@@ -75,8 +76,21 @@ module.exports = {
             }
         ],
         preLoaders: [
-            {test: /\.js?$/, loader: 'eslint', exclude: /node_modules/}
-
+            {test: /\.js?$/, loader: 'eslint', exclude: /node_modules/},
+            {
+                test: /\.js$/,
+                loader: 'string-replace',
+                query: {
+                    multiple: [
+                        {
+                            search: '{{version}}',
+                            replace: version,
+                            flags: 'g'
+                        }
+                    ]
+                },
+                flags: 'g'
+            }
         ]
     },
     cssLoader: {

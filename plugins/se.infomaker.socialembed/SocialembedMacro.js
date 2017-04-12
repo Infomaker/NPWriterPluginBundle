@@ -5,7 +5,7 @@ export default {
         const text = params.text
 
         // only react on 'break' (as medium does)
-        if (params.action !== 'break') {
+        if (params.action !== 'break' && params.action !== 'paste') {
             return
         }
         // only react of we find a HTTP URL

@@ -3,7 +3,7 @@ import XimsectionComponent from './XimsectionComponent'
 export default {
     id: 'se.infomaker.ximsection',
     name: 'ximsection',
-
+    version: '{{version}}',
     configure: function (config) {
 
         config.addLabel('ximsection-Sections', {
