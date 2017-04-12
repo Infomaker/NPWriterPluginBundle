@@ -1,38 +1,22 @@
 /*
-|--------------------------------------------------------------------------
-| Development config file
-|--------------------------------------------------------------------------
-|
-| This is you webpack development config.
-| Please leave it as it is.
-|
-*/
+ |--------------------------------------------------------------------------
+ | Development config file
+ |--------------------------------------------------------------------------
+ */
 
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const autoprefixer = require('autoprefixer');
-const fs = require('fs')
+const PluginBundler = require('./utils/PluginBundler')
+
 console.log("\n ----------------------------")
 console.log(" Plugin development build ")
 console.log(" ----------------------------\n")
 
-function getPluginBuildSpec(dir) {
-    const result = {}
-    const list = fs.readdirSync(dir);
-
-    // For every file in the list
-    list.forEach(function (file) {
-        const basename = file.substr(0, file.length - 3);
-        result[basename] = dir + '/' + basename;
-    });
-    return result;
-}
 const version = process.env.VERSION || 'dev'
 
 module.exports = {
-    entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
+    entry: PluginBundler.getPluginBuildSpec(),
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js"
@@ -44,29 +28,29 @@ module.exports = {
 
     devtool: 'source-map',
     devServer: {
-      historyApiFallback: true,
-      inline: true,
-      compress: false,
-      port: 5001,
+        historyApiFallback: true,
+        inline: true,
+        compress: false,
+        port: 5001,
         host: '0.0.0.0'
     },
     module: {
         loaders: [
-          {
-            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-            loader: 'url-loader?limit=100000'
-          },
-          {
-              test: /\.scss$/,
-              loader: ExtractTextPlugin.extract('style', 'css!sass')
-          },
-          {
-              test: /\.js?$/,
-              exclude: /(node_modules)/,
-              loaders: [
-                  'babel?presets[]=stage-0,presets[]=es2015-node6'
-              ]
-          }
+            {
+                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                loader: 'url-loader?limit=100000'
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract('style', 'css!sass')
+            },
+            {
+                test: /\.js?$/,
+                exclude: /(node_modules)/,
+                loaders: [
+                    'babel?presets[]=stage-0,presets[]=es2015-node6'
+                ]
+            }
         ],
         preLoaders: [
             { test: /\.js?$/, loader: 'eslint', exclude: /node_modules/ },
@@ -100,9 +84,9 @@ module.exports = {
     plugins: [
         new ExtractTextPlugin("[name].css"),
         new webpack.DefinePlugin({
-          'process.env': {
-            'NODE_ENV': JSON.stringify('development')
-          }
+            'process.env': {
+                'NODE_ENV': JSON.stringify('development')
+            }
         })
     ]
 };
