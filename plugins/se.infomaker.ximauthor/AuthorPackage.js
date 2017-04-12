@@ -6,6 +6,7 @@ import AuthorValidation from './AuthorValidation'
 export default {
     id: 'se.infomaker.ximauthor',
     name: 'ximauthor',
+    version: '{{version}}',
     configure: function (config) {
         config.addLabel('validation-no-author', {
             en: 'No author specified',

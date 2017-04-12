@@ -1,0 +1,47 @@
+
+.tag-edit {
+    padding: 0 1rem;
+}
+
+.tag-edit-base {
+    padding: 1rem;
+    text-align: center;
+
+    small.text-muted {
+        display: block;
+        color: #686d71;
+        padding: 0 0 1.5rem 0;
+        font-size: 80%;
+        font-weight: normal;
+        opacity: 0.9;
+    }
+
+    button {
+        display: inline-block;
+        text-align: center;
+        padding: 0 1rem;
+        span {
+            font-size:1rem;
+            font-weight: 700;
+            color:rgba(0, 0, 0, 0.74902);
+        }
+        .fa {
+            width:100%;
+            font-size:2rem;
+            color: #999;
+        }
+
+        &:hover {
+            span {
+                color:rgba(0, 0, 0, 0.9);
+            }
+            .fa {
+                color: darken(#999, 20%);
+            }
+        }
+    }
+}
+
+.pad-top {
+    padding-top: 3rem !important;
+}

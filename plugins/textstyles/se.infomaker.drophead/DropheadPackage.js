@@ -5,6 +5,7 @@ import DropheadNode from './DropheadNode'
 export default {
     name: 'drophead',
     id: 'se.infomaker.drophead',
+    version: '{{version}}',
     configure: function (config) {
 
         DropheadNode.type = this.name

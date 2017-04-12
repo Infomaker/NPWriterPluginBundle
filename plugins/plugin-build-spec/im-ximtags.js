@@ -1,4 +1,4 @@
-import Index from "../se.infomaker.tags/index";
+import Index from '../se.infomaker.ximtags/index'
 
 (() => {
     Index()

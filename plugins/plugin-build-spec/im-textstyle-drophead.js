@@ -1,4 +1,4 @@
-import Index from "../textstyles/se.infomaker.drophead/Drophead";
+import Index from "../textstyles/se.infomaker.drophead/index";
 
 (() => {
     Index()

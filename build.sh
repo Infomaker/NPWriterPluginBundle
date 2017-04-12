@@ -24,6 +24,15 @@ else
   awsbucketname=$3
 fi
 
+if [[ -n $4 ]]; then
+  awsdirectory=$4
+fi
+
+git_tag=dev
+if [[ -n $5 ]]; then
+  git_tag=$5
+fi
+
 
 rm -rf dist
 
@@ -31,7 +40,7 @@ echo Installing dependencies
 npm install
 
 echo Running build for production
-npm run build
+VERSION=$git_tag npm run build
 
 
 if [[ $? -ne 0 ]]; then
@@ -42,7 +51,11 @@ fi
 echo "Publishing plugins to $awsbucketname"
 echo "{\"Plugins\": \"#$(git rev-parse --short HEAD)\"}" > dist/versions.json
 
-AWS_ACCESS_KEY_ID=$awsaccesskey  AWS_SECRET_ACCESS_KEY=$awssecretkey AWS_S3_BUCKET_NAME=$awsbucketname node s3Upload.js
+AWS_ACCESS_KEY_ID=$awsaccesskey \
+AWS_SECRET_ACCESS_KEY=$awssecretkey \
+AWS_S3_BUCKET_NAME=$awsbucketname \
+AWS_S3_DIRECTORY=$awsdirectory \
+node s3Upload.js
 
 
 

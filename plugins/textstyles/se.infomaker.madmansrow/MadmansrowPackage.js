@@ -5,6 +5,7 @@ import MadmansrowNode from './MadmansrowNode'
 export default {
     name: 'madmansrow',
     id: 'se.infomaker.madmansrow',
+    version: '{{version}}',
     configure: function (config) {
 
         MadmansrowNode.type = this.name

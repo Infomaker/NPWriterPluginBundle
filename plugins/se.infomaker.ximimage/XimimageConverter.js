@@ -50,7 +50,7 @@ export default {
         if (newsItemConversion) {
             dataEl = el.find('data')
         } else {
-            dataEl = linkEl.find('data')
+            dataEl = el.find(':scope>links>link>data')
         }
         // Import data
 
@@ -85,42 +85,6 @@ export default {
                 if (child.tagName === 'height') {
                     node.height = parseInt(child.text(), 10)
                 }
-
-                if (child.tagName === 'crops' && child.children.length > 0) {
-                    var crops = {crops: []};
-
-                    child.children.forEach(function (crop) {
-                        if (crop.children.length === 0) {
-                            // Sanity check
-                            return;
-                        }
-
-                        if (crop.tagName === 'width') {
-                            crops.width = crop.text();
-                        }
-                        else if (crop.tagName === 'height') {
-                            crops.height = crop.text();
-                        }
-                        else {
-                            var x = crop.find('x'),
-                                y = crop.find('y'),
-                                width = crop.find('width'),
-                                height = crop.find('height');
-
-                            crops.crops.push({
-                                name: crop.attr('name'),
-                                x: x.text(),
-                                y: y.text(),
-                                width: width.text(),
-                                height: height.text()
-                            });
-                        }
-                    });
-
-                    if (crops.crops.length) {
-                        node.crops = crops;
-                    }
-                }
             })
         }
 
@@ -136,9 +100,25 @@ export default {
         if (authorLinks) {
             node.authors = this.convertAuthors(node, authorLinks)
         }
+
+        // Import softcrops
+        if (!newsItemConversion) {
+            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            let softcrops = imageModule.importSoftcropLinks(
+                linkEl.find('links')
+            )
+
+            if (softcrops.length) {
+                node.crops = {
+                    crops: softcrops
+                }
+            }
+        }
     },
 
     convertAuthors: function(node, authorLinks) {
+        let seen = new Map();
+
         return authorLinks.children.map(function (authorLinkEl) {
             if ("author" === authorLinkEl.getAttribute('rel')) {
                 const author = new Author(authorLinkEl.getAttribute('uuid'), authorLinkEl.getAttribute('title'), node.id)
@@ -152,6 +132,17 @@ export default {
             }
         }).filter((author) => {
             return author !== null
+        }).filter((author) => {
+            if (author.isSimpleAuthor) {
+                return true
+            }
+
+            if (seen.get(author.uuid) !== undefined) {
+                return false
+            } else {
+                seen.set(author.uuid, author)
+                return true
+            }
         })
     },
 
@@ -194,26 +185,12 @@ export default {
             }
         })
 
+        const imageLinks = $$('links')
+
         // Add crops to data
         if (node.crops) {
-            let crops = $$('crops')
-
-            for (var x in node.crops.crops) {
-                if (node.crops.crops.hasOwnProperty(x)) {
-                    var origCrop = node.crops.crops[x];
-
-                    crops.append(
-                        $$('crop').attr('name', origCrop.name).append([
-                            $$('x').append(origCrop.x),
-                            $$('y').append(origCrop.y),
-                            $$('width').append(origCrop.width),
-                            $$('height').append(origCrop.height)
-                        ])
-                    )
-                }
-            }
-
-            data.append(crops)
+            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            imageModule.exportSoftcropLinks($$, imageLinks, node.crops.crops)
         }
 
 
@@ -224,9 +201,8 @@ export default {
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
 
-        if (node.authors.length) {
 
-            const authorLinks = $$('links')
+        if (node.authors.length) {
             const authorLink = node.authors.map((author) => {
                 const authorLink = $$('link').attr({
                     rel: 'author',
@@ -243,8 +219,12 @@ export default {
                 }
                 return authorLink
             })
-            authorLinks.append(authorLink)
-            link.append(authorLinks)
+
+            imageLinks.append(authorLink)
+        }
+
+        if (imageLinks.children.length > 0) {
+            link.append(imageLinks)
         }
 
         el.append(

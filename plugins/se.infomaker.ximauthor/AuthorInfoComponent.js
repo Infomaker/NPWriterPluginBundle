@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {isObject, find} from 'lodash'
+const {isObject, find} = writer.lodash
 
 class AuthorInfoComponent extends Component {
 

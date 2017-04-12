@@ -4,6 +4,7 @@ import './scss/publishflow.scss'
 const {Component} = substance
 const {api, moment, event} = writer
 const pluginId = 'se.infomaker.publishflow'
+const TIMEOUT = 30000
 
 class PublishFlowComponent extends Component {
     constructor(...args) {
@@ -26,13 +27,20 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
-            this.defaultAction()
+            if(!this.saveInProgress) {
+                this.saveInProgress = true
+                this.defaultAction()
+            }
         });
     }
 
     dispose() {
-        api.events.off(pluginId, 'document:changed')
-        api.events.off(pluginId, 'document:saved')
+        api.events.off(pluginId, event.DOCUMENT_CHANGED)
+        api.events.off(pluginId, event.DOCUMENT_SAVED)
+        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
+        api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
+        api.events.off(pluginId, event.USERACTION_SAVE)
+        this._clearSaveTimeout();
     }
 
     getInitialState() {
@@ -49,11 +57,7 @@ class PublishFlowComponent extends Component {
     }
 
     didMount() {
-        this.props.popover.setButtonText(
-            this.getLabel('Save')
-        )
-
-        this._updateStatus()
+        this._updateStatus(true, false)
 
         if (!api.browser.isSupported()) {
             this.props.popover.disable()
@@ -180,17 +184,6 @@ class PublishFlowComponent extends Component {
                     'width': '100%'
                 })
                 .append([
-                    $$('button')
-                        .addClass('sc-np-btn btn-secondary')
-                        .css({
-                            'float': 'right'
-                        })
-                        .append(
-                            this.getLabel('Cancel')
-                        )
-                        .on('click', () => {
-                            this.props.popover.close()
-                        }),
                     $$('button')
                         .attr({
                             title: this.getLabel('Create a new article')
@@ -350,7 +343,7 @@ class PublishFlowComponent extends Component {
                         .addClass('sc-np-publish-action-section-content-actions')
                         .append(
                             $$('button')
-                                .addClass('sc-np-btn btn-secondary')
+                                .addClass('sc-np-btn btn-primary')
                                 .append(
                                     this.getLabel('Save')
                                 )
@@ -428,15 +421,40 @@ class PublishFlowComponent extends Component {
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
+
+        this._initSaveTimeout()
         api.newsItem.save()
         this.props.popover.disable()
         this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+    }
+
+    _failTimeout() {
+        this._onDocumentSaveFailed();
+        api.ui.showNotification(
+            'invalidate',
+            api.getLabel("Whoops, the save operation timed out"),
+            api.getLabel("Please try again")
+        );
+    }
+
+    _initSaveTimeout() {
+        this._clearSaveTimeout();
+        this._saveTimeout = setTimeout(this._failTimeout.bind(this), TIMEOUT)
+    }
+
+    _clearSaveTimeout() {
+        if (this._saveTimeout) {
+            clearTimeout(this._saveTimeout)
+            this._saveTimeout = undefined;
+        }
     }
 
     /**
      * Request creation of new article
      */
     _clearArticle() {
+        const url = api.router.getEndpoint()
+
         if (this.state.unsavedChanges) {
             api.ui.showMessageDialog(
                 [{
@@ -444,13 +462,13 @@ class PublishFlowComponent extends Component {
                     message: this.getLabel('Article contains unsaved changes. Continue without saving?')
                 }],
                 () => {
-                    api.article.clear(true)
+                    window.location.replace(url)
                 }
             )
-            return
+        } else {
+            window.location.replace(url)
         }
 
-        api.article.clear()
     }
 
     /**
@@ -523,6 +541,9 @@ class PublishFlowComponent extends Component {
      * When save fails, restore previous state and update UI
      */
     _onDocumentSaveFailed() {
+        this._clearSaveTimeout()
+        this.saveInProgress = false
+
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
@@ -562,9 +583,7 @@ class PublishFlowComponent extends Component {
      * When document is marked unsaved
      */
     _onDocumentChanged() {
-        this.props.popover.setButtonText(
-            this.getLabel('Save *')
-        )
+        this._updateButton(true)
 
         this.extendState({
             unsavedChanges: true
@@ -575,6 +594,9 @@ class PublishFlowComponent extends Component {
      * When saved, update state and UI
      */
     _onDocumentSaved() {
+        this._clearSaveTimeout()
+        this.saveInProgress = false
+
         this.props.popover.setIcon('fa-ellipsis-h')
         this.props.popover.enable()
 
@@ -582,7 +604,7 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            unsavedChanges: true
+            unsavedChanges: false
         })
 
         this._updateStatus(true)
@@ -593,16 +615,7 @@ class PublishFlowComponent extends Component {
      */
     _updateStatus(updateButtonSavedLabel, unsavedChanges) {
         if (updateButtonSavedLabel) {
-            if (unsavedChanges === true) {
-                this.props.popover.setButtonText(
-                    this.getLabel('Save *')
-                )
-            }
-            else {
-                this.props.popover.setButtonText(
-                    this.getLabel('Save')
-                )
-            }
+            this._updateButton(unsavedChanges)
         }
 
         if (this.state.status.qcode === 'stat:usable') {
@@ -624,6 +637,17 @@ class PublishFlowComponent extends Component {
                 this.getLabel(this.state.status.qcode)
             )
         }
+    }
+
+    _updateButton(unsavedChanges) {
+        let caption = (this.state.status.qcode === 'stat:usable') ? 'Update' : 'Save'
+        if (unsavedChanges) {
+            caption += ' *'
+        }
+
+        this.props.popover.setButtonText(
+            this.getLabel(caption)
+        )
     }
 }
 

@@ -1,4 +1,4 @@
-import Index from '../se.infomaker.hdsds.channelselector/index'
+import Index from "../se.infomaker.hdsds.channelselector/index";
 
 (() => {
     Index()

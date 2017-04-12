@@ -12,6 +12,10 @@ class HtmlembedComponent extends Component {
         return el;
     }
 
+    grabFocus() {
+        this.editEmbedhtml()
+    }
+
     renderHeader($$) {
         return $$('div')
             .append([

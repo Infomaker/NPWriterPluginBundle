@@ -7,6 +7,7 @@ import HeaderEditorConverter from './HeaderEditorConverter'
 export default {
     id: 'se.infomaker.headereditor',
     name: 'headereditor',
+    version: '{{version}}',
     configure: (config) => {
 
         config.addNode(HeaderEditorNode)

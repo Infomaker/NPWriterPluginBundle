@@ -5,6 +5,7 @@ import PreambleNode from './PreambleNode'
 export default {
     name: 'preamble',
     id: 'se.infomaker.preamble',
+    version: '{{version}}',
     configure: function (config) {
 
         PreambleNode.type = this.name

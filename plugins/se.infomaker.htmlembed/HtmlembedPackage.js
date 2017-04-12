@@ -13,6 +13,7 @@ import HtmlembedEditCommand from './HtmlembedEditCommand'
 const htmlEmbedPackage = {
     id: 'se.infomaker.htmlembed',
     name: 'htmlembed',
+    version: '{{version}}',
     configure: (config) => {
 
         config.addContentMenuTopTool(htmlEmbedPackage.name, HtmlembedTool)

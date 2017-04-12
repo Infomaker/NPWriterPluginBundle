@@ -5,6 +5,7 @@ import HeadlineConverter from './HeadlineConverter'
 export default {
     id: 'se.infomaker.headline',
     name: 'headline',
+    version: '{{version}}',
     configure: function (config) {
         config.addNode(Headline)
         config.addComponent(Headline.type, HeadlineComponent)

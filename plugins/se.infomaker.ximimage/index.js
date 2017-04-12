@@ -3,12 +3,12 @@ import './scss/ximimage.scss'
 import './scss/imagecropper.scss'
 
 import XimimagePackage from './XimimagePackage'
-const { registerPlugin } = writer
+import {registerPlugin} from "writer"
 
-export default () => {
+(() => {
     if (registerPlugin) {
         registerPlugin(XimimagePackage)
     } else {
         console.info("Register method not yet available");
     }
-}
+})()

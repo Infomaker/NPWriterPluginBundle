@@ -50,10 +50,11 @@ class StoryItemComponent extends Component {
                 displayNameEl.on('click', () => {
                     this.showStory(displayName)
                 })
+
+                this.updateTagItemName(displayNameEl, this.state.loadedItem)
             }
 
             displayNameEl.attr('title', displayName)
-            this.updateTagItemName(displayNameEl, this.state.loadedItem)
 
             displayNameEl.attr('data-toggle', 'tooltip')
                 .attr('data-placement', 'bottom')
@@ -96,7 +97,7 @@ class StoryItemComponent extends Component {
 
 
     updateTagItemName(tagItem, loadedTag) {
-        if (loadedTag.concept && loadedTag.concept.definition) {
+        if (loadedTag && loadedTag.concept && loadedTag.concept.definition) {
             const definition = _.isArray(loadedTag.concept.definition) ? loadedTag.concept.definition : [loadedTag.concept.definition]
             for (let i = 0; i < definition.length; i++) {
                 const item = definition[i]
