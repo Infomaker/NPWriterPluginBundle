@@ -1,4 +1,4 @@
-import registerPlugin from 'writer'
+import {registerPlugin} from 'writer'
 import validationPackage from './DefaultvalidationPackage'
 
 (() => {
