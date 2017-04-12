@@ -1,7 +1,6 @@
 import DefaultConflictHandler from "./DefaultConflictHandler";
-const {registerPlugin} = writer
 
-const conflictHandlerPackage = {
+export default {
     id: 'se.infomaker.defaultconflicthandler',
     name: 'defaultconflicthandler',
     version: '{{version}}',
@@ -24,14 +23,3 @@ const conflictHandlerPackage = {
         })
     }
 }
-
-
-export default () => {
-    if (registerPlugin) {
-        registerPlugin(conflictHandlerPackage)
-    } else {
-        console.info("Register method not yet available");
-    }
-}
-
-
