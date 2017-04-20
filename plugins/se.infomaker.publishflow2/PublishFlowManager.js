@@ -28,7 +28,6 @@ class PublishFlowConfiguration {
             return
         }
 
-
         if (typeof action.actions === 'object') {
             switch(action.actions.pubStart) {
                 case 'required':
@@ -43,7 +42,7 @@ class PublishFlowConfiguration {
                     break
 
                 case 'clear':
-                    this.setPubStart(null)
+                    this.setPubStart(null, qcode)
                     break
             }
 
@@ -60,7 +59,7 @@ class PublishFlowConfiguration {
                     break
 
                 case 'clear':
-                    this.setPubStop(null)
+                    this.setPubStop(null, qcode)
                     break
             }
         }
@@ -77,8 +76,18 @@ class PublishFlowConfiguration {
         )
     }
 
-    setPubStart(value) {
-        const action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+    setPubStart(value, qcode) {
+        let action
+
+        if (typeof qcode === 'string') {
+            // Use next action definition
+            action = this.getActionDefinition(qcode)
+        }
+        else {
+            // Use current action definition
+            action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+        }
+
         if (typeof action.actions === 'object' && action.actions.pubStart === 'required') {
             if (!moment(value).isValid()) {
                 throw new Error('A valid publication start time required for this status')
@@ -104,8 +113,18 @@ class PublishFlowConfiguration {
         )
     }
 
-    setPubStop(value) {
-        const action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+    setPubStop(value, qcode) {
+        let action
+
+        if (typeof qcode === 'string') {
+            // Use next action definition
+            action = this.getActionDefinition(qcode)
+        }
+        else {
+            // Use current action definition
+            action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+        }
+
         if (typeof action.actions === 'object' && action.actions.pubStop === 'required') {
             if (!moment(value).isValid()) {
                 throw new Error('A valid publication stop time required for this status')
