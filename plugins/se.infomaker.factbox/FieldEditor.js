@@ -9,18 +9,16 @@ class FieldEditor extends Component {
         }
     }
 
-    shouldRerender() {
-        const newNode = arguments[0].node
 
-        console.log(newNode, newNode[this.props.field]);
-
-        if(newNode[this.props.field].content === this.props.node[this.props.field].content) {
-            return false
-        }
-        return true
-    }
 
     render($$) {
+
+        console.log("this.state.hasFocus", this.state.hasFocus);
+
+        if(!this.props.field || !this.props.node) {
+            console.warn('Missing props, field or node')
+            return $$('span')
+        }
 
         const field = this.props.field
         const node = this.props.node
@@ -38,7 +36,7 @@ class FieldEditor extends Component {
             inputPlaceholder.removeClass('im-placeholder-visible')
         }
 
-        console.log("this.state.hasFocus", this.state.hasFocus);
+
         // const elem = (this.refs[field]) ? this.refs[field].getNativeElement() : null
         // if (!this.props.node[field] && document.activeElement !== elem) {
         //     inputPlaceholder.addClass('im-placeholder-visible')

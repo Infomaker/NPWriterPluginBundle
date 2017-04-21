@@ -30,9 +30,10 @@ class FactBoxComponent extends Component {
         const el = $$('div')
         el.addClass('factbox-node im-blocknode__container')
         el.append(this.renderHeader($$))
-        el.append($$(FieldEditor, {node: this.props.node, field: 'title'}))
-        el.append(this.renderTitleEditor($$, true))
-        el.append(this.renderTitleEditor($$))
+
+        el.append($$(FieldEditor, {node: this.props.node, field: 'title'}).ref('titleFieldEditor'))
+        // el.append(this.renderTitleEditor($$, true))
+        // el.append(this.renderTitleEditor($$))
         el.append(this.renderContainerEditor($$))
         return el
     }
