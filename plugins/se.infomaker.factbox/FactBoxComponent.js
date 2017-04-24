@@ -31,9 +31,18 @@ class FactBoxComponent extends Component {
         el.addClass('factbox-node im-blocknode__container')
         el.append(this.renderHeader($$))
 
-        el.append($$(FieldEditor, {node: this.props.node, field: 'title'}).ref('titleFieldEditor'))
-        // el.append(this.renderTitleEditor($$, true))
-        // el.append(this.renderTitleEditor($$))
+        el.append($$(FieldEditor, {
+            node: this.props.node,
+            field: 'title',
+            placeholder: api.getConfigValue('se.infomaker.factbox', 'placeholderText.title', 'title')
+        }).ref('titleFieldEditor'))
+
+        el.append($$(FieldEditor, {
+            node: this.props.node,
+            field: 'vignette',
+            placeholder: api.getConfigValue('se.infomaker.factbox', 'placeholderText.vignette', 'vignette')
+        }).ref('vignetteFieldEditor'))
+
         el.append(this.renderContainerEditor($$))
         return el
     }
@@ -52,7 +61,7 @@ class FactBoxComponent extends Component {
 
     renderType($$) {
         if (this.state.inlineTexts && this.state.inlineTexts.length > 0) {
-            return this.renderTypeDropDown($$)
+            return this.renderDropDown($$)
         } else {
             return $$('span').append(api.getConfigValue('se.infomaker.factbox', 'standaloneDefault', 'Unknown'))
         }
@@ -85,6 +94,16 @@ class FactBoxComponent extends Component {
             showInlineTextMenu: false,
             inlineTexts: this.state.inlineTexts
         })
+    }
+
+    renderDropDown($$) {
+
+        const list = $$('ul')
+        const inlineTextElements = this.state.inlineTexts.map((text) => {
+            return $$('li').append(text)
+        })
+        list.append(inlineTextElements)
+        return list
     }
 
     renderTypeDropDown($$) {
@@ -124,43 +143,6 @@ class FactBoxComponent extends Component {
         }).append(components)
     }
 
-    /**
-     * Renders the editor for the factbox's title.
-     */
-    renderTitleEditor($$, vignette) {
-        const field = vignette ? 'vignette' : 'title'
-        const titleContainer = $$('div').addClass('im-blocknode__content full-width im-fact-field')
-
-        const inputContainer = $$('div')
-        const inputPlaceholderText = api.getConfigValue('se.infomaker.factbox', 'placeholderText.' + field, field)
-
-        const inputPlaceholder = $$('div').append(inputPlaceholderText).ref('ph-' + field)
-        const elem = (this.refs[field]) ? this.refs[field].getNativeElement() : null
-
-        if (!this.props.node[field] && document.activeElement !== elem) {
-            inputPlaceholder.addClass('im-placeholder-visible')
-        }
-
-        const titleEditor = $$(TextPropertyEditor, {
-            path: [this.props.node.id, field],
-            doc: this.props.doc
-        }).ref(field)
-            .on('focus', () => {
-                this.refs['ph-' + field].removeClass('im-placeholder-visible')
-            })
-            .on('blur', () => {
-                if (!this.props.node[field]) {
-                    this.refs['ph-' + field].addClass('im-placeholder-visible')
-                }
-            })
-
-        inputContainer.append([titleEditor, inputPlaceholder])
-
-        const icon = $$(FontAwesomeIcon, {icon: 'fa-header'})
-        titleContainer.append([icon, inputContainer])
-
-        return titleContainer
-    }
 
     renderContainerEditor($$) {
         return $$(ContainerEditor, {
@@ -173,13 +155,6 @@ class FactBoxComponent extends Component {
 
     toggleMenu() {
         this.extendState({showInlineTextMenu: !this.state.showInlineTextMenu})
-    }
-
-    /**
-     * Returns the container node for this component.
-     */
-    containerNode() {
-        return this.context.doc.data.nodes[this.props.node.id + '-container']
     }
 
 }

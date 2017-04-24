@@ -123,6 +123,36 @@
                     position: relative;
                     overflow: visible;
                     width: 225px;
+                    padding: 0.4rem 0.5rem;
+                }
+
+                input:after {
+                    opacity: 0.4;
+                    font-family: "FontAwesome";
+                    position: absolute;
+                    right: 13px;
+                    top: 9px;
+                }
+
+                input[type="date"] {
+                    width: 62%;
+                    margin-right:2%;
+                }
+                input[type="date"]:after {
+                    content: "\f271";
+                }
+                input[type="date"]:hover:after {
+                    content: "";
+                }
+
+                input[type="time"] {
+                    width: 36%;
+                }
+                input[type="time"]:after {
+                    content: "\f017";
+                }
+                input[type="time"]:hover:after {
+                    content: "";
                 }
 
                 input:required:invalid,
