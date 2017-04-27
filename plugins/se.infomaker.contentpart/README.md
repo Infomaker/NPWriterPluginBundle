@@ -29,7 +29,7 @@ this element is omitted.
     "data": {
         "type": "x-im/content-part",
         "disableUseOfAnnotationTools": true,
-        "inlineTexts": [
+        "contentpartTypes": [
             {
                 "uri": "im://content-part/fact",
                 "name": "Faktaruta"
@@ -54,5 +54,6 @@ this element is omitted.
 
 The `placeholderText` serves the placeholder text to be displayed in the input fields when field missing value.
  
-If `inlineTexts` is optional. If omitted no dropdown will be displayed, instead value of `standaloneDefault` is 
-displayed.
+At least one contentpartType should be specified
+ 
+At leaser one contentpartType should be marked as default

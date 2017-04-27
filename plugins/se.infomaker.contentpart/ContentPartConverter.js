@@ -8,7 +8,7 @@ export default {
     tagName: 'object',
 
     matchElement: (el) => {
-        // If we need to enable support for another type.
+        // If we need to enable support for another type, specify in config
         //const type = api.getConfigValue('se.infomaker.contentpart', 'type', 'x-im/content-part')
 
         const type = 'x-im/content-part'

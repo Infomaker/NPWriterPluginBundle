@@ -73,6 +73,12 @@ class ContentPartComponent extends Component {
 
     }
 
+    /**
+     * When selecting a content part type in a drop down list
+     * Update `contentpartUri` property on the node
+     * and change the component state to hide the dropdown
+     * @param inlineText
+     */
     selectInlineText(inlineText) {
         api.editorSession.transaction((tx) => {
             tx.set([this.props.node.id, 'contentpartUri'], inlineText.uri)
@@ -104,40 +110,3 @@ class ContentPartComponent extends Component {
 ContentPartComponent.fullWidth = true
 
 export default ContentPartComponent
-
-/* renderTypeDropDown($$) {
- let dropdownButton = $$('button').addClass('btn btn-secondary dropdown-toggle').attr({
- id: 'w-inlinetext-main-select',
- type: 'button',
- 'data-toggle': 'dropdown'
- }).append([
- this.getSelectedContentPartName()
- ])
-
- dropdownButton.on('click', () => {
- this.toggleMenu();
- return false
- })
-
- dropdownButton.ref('dropdownButton')
- let components = [dropdownButton];
-
- if (this.state.showInlineTextMenu) {
- const inlineTextElements = this.state.inlineTexts.map((inlineText) => {
- return $$('button').addClass('dropdown-item').append(
- inlineText.name
- ).on('click', () => {
- this.selectInlineText(inlineText)
- })
- })
-
- const inlineTextMenu = $$('div').addClass('dropdown-menu').append(
- inlineTextElements
- )
- components = [...components, inlineTextMenu]
- }
-
- return $$('div').attr({id: 'w-inlinetext-main'}).addClass('dropdown').attr({
- 'aria-labelledby': 'w-inlinetext-main-select'
- }).append(components)
- }*/
