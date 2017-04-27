@@ -299,7 +299,6 @@ class XimteaserComponent extends Component {
         this.shouldDownloadMetadataForImageUri = true
         // Fetch the image
         const uuid = dropData.uuid
-        const nodeId = idGenerator()
         const teaserNode = this.props.node
 
         if (!dropData.uuid) {

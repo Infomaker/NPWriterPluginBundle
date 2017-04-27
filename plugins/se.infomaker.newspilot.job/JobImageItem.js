@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component} from 'substance'
 
 import JobImageInfoComponent from './JobImageInfoComponent'
 
