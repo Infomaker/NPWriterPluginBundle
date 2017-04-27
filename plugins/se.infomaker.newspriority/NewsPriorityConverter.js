@@ -1,12 +1,16 @@
 export default {
-    type: 'news-priority',
+    type: 'newsvalue',
+    tagName: 'object',
     matchElement: function(el) {
+        console.log("IS news?",el.is('object[type="x-im/newsvalue"]') );
+
         return el.is('object[type="x-im/newsvalue"]')
     },
 
     // <object id="RYaudnAJj8gQ" type="x-im/newsvalue"><data><score>3</score><description>30D</description><text>PT6H</text><format>lifetimecode</format><end></end><duration>2538000</duration></data></object></metadata>
 
     import: function(el, node) {
+        console.log("Import newsvalue", el);
         let data = el.find('data')
         if (!data) throw new Error('<data> is mandatory for x-im/newsvalue')
         node.score = Number(data.find('score').textContent)

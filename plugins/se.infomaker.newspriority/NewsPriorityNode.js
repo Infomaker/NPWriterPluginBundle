@@ -2,7 +2,7 @@ import { DocumentNode } from 'substance'
 
 class NewsPriorityNode extends DocumentNode {}
 
-NewsPriorityNode.type = 'news-priority'
+NewsPriorityNode.type = 'newsvalue'
 
 NewsPriorityNode.schema = {
     score: 'number',

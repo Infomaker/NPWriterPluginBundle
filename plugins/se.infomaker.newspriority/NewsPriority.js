@@ -7,9 +7,10 @@ export default {
     name: 'newspriority',
     id: 'se.infomaker.newspriority',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent)
+        console.log("Run configure");
+        config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent, pluginConfig, ['newsvalue'])
 
         config.addNode(NewsPriorityNode)
         config.addConverter('newsml', NewsPriorityConverter)

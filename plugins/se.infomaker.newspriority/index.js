@@ -2,6 +2,7 @@ import NewsPriority from './NewsPriority'
 import {registerPlugin} from "writer"
 
 (() => {
+    console.log("Run index!");
     if (registerPlugin) {
         registerPlugin(NewsPriority)
     } else {

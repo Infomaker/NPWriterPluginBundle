@@ -1,12 +1,12 @@
 const {Component} = substance
-const {api, moment, idGenerator} = writer
+const {api, moment, idGenerator, NPWriterSidebarComponent} = writer
 const {isObject, isEmpty} = writer.lodash
 const pluginId = 'se.infomaker.newspriority'
 
 // var idGen = require('writer/utils/IdGenerator');
 // var isObject = require('lodash/isObject');
 
-class NewsPriorityComponent extends Component {
+class NewsPriorityComponent extends NPWriterSidebarComponent {
 
     constructor(...args) {
         super(...args)
@@ -15,14 +15,6 @@ class NewsPriorityComponent extends Component {
             api.clearNewsPriority('newspriority');
             this.rerender();
         });
-
-        this.context.editorSession.onRender('document', this._onDocumentChange, this, { path: ['newsvalue'] })
-    }
-
-    _onDocumentChange(change) {
-        if (change.isAffected('newsvalue')) {
-            this.rerender()
-        }
     }
 
     getInitialState() {
