@@ -5,13 +5,13 @@ TODO: migrate to InlineText plugin...
 The plugin adds an object to the idf.
 
 ```xml
-<object id="MTUwLDE4Miw1NCwxMjc" type="x-cmbr/fact" title="Lorem ipsum">
+<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="Lorem ipsum">
     <data>
         <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
         <text format="html"><![CDATA[<p>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</p>]]></text>
     </data>
     <links>
-        <link uri="im://inline-text/fact" rel="inline-text"/>
+        <link uri="im://content-part/fact" rel="content-part"/>
     </links>
 </object>
 ```
@@ -27,24 +27,20 @@ this element is omitted.
     "enabled": true,
     "mandatory": true,
     "data": {
-        "type": "x-cmbr/fact",
-        "disableUseOfAnnotationToolsForFields": [
-            "title",
-            "vignette"
-        ],
-        "standaloneDefault": "Fakta",
+        "type": "x-im/content-part",
+        "disableUseOfAnnotationTools": true,
         "inlineTexts": [
             {
-                "uri": "im://inline-text/fact",
+                "uri": "im://content-part/fact",
                 "name": "Faktaruta"
             },
             {
-                "uri": "im://inline-text/factbox",
+                "uri": "im://content-part/factbox",
                 "name": "Faktabox",
                 "default": true
             },
             {
-                "uri": "im://inline-text/stick",
+                "uri": "im://content-part/stick",
                 "name": "Sticka"
             }
         ],

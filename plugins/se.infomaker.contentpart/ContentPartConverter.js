@@ -1,20 +1,22 @@
-import {DefaultDOMElement} from 'substance'
-import {api, idGenerator} from 'writer'
+import {api} from 'writer'
 
 /**
  * Converts between NewsML and editor nodes.
  */
 export default {
-    type: 'factbox',
+    type: 'contentpart',
     tagName: 'object',
 
     matchElement: (el) => {
-        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/content-part')
+        // If we need to enable support for another type.
+        //const type = api.getConfigValue('se.infomaker.contentpart', 'type', 'x-im/content-part')
+
+        const type = 'x-im/content-part'
         return el.is('object') && el.attr('type') === type
     },
 
     /**
-     * Import a factbox element from NewsML.
+     * Import a contentpart element from NewsML.
      */
     import: (el, node, converter) => {
         node.id = el.attr('id')
@@ -27,7 +29,7 @@ export default {
         // Get inline-text link if any (optional)
         const link = el.find('links > link[rel="content-part"]')
         if (link) {
-            node.inlineTextUri = link.attr('uri')
+            node.contentpartUri = link.attr('uri')
         }
 
         const text = el.find('text')
@@ -40,18 +42,22 @@ export default {
     },
 
     /**
-     * Export a factbox to NewsML.
+     * Export a contentpart to NewsML.
      */
     export: (node, el, converter) => {
         const $$ = converter.$$
-        const type = api.getConfigValue('se.infomaker.factbox', 'type', 'x-im/content-part')
-        const output = api.getConfigValue('se.infomaker.factbox', 'output', 'idf')
+        const output = api.getConfigValue('se.infomaker.contentpart', 'output', 'idf')
+
+        // If we need to enable support for another type.
+        //const type = api.getConfigValue('se.infomaker.contentpart', 'type', 'x-im/content-part')
+        const type = 'x-im/content-part'
 
         const text = $$('text')
             .attr('format', output)
 
         let children
         if('html' === output) {
+            console.warn('HTML output not yet implemented')
             // converter = writer.api.configurator.createExporter('html')
             // children = converter.convertContainer(node)
             // text.innerHTML = $$('content').append(children).innerHTML
@@ -78,10 +84,10 @@ export default {
         el.append($$('data').append([vignette, text]))
 
         // Export inline-text link if any (optional)
-        if (node.inlineTextUri) {
+        if (node.contentpartUri) {
             const link = $$('link').attr({
-                uri: node.inlineTextUri,
-                rel: 'inline-text'
+                uri: node.contentpartUri,
+                rel: 'content-part'
             })
             el.append($$('links').append(link))
         }

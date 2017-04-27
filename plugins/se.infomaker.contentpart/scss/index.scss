@@ -1,4 +1,22 @@
-.factbox-node {
+.sm-selected,
+.sm-focused {
+    .drop-down-headline-wrapper {
+        .fa {
+            display: inline;
+        }
+    }
+}
+.drop-down-headline-wrapper {
+    .clickable-drown-down {
+        cursor: pointer;
+    }
+
+    .fa {
+        color: #565656;
+        display: none;
+    }
+}
+.contentpart-node {
 
     .dropdown-toggle {
         &:before {
@@ -79,13 +97,25 @@
     .available-content-part__list {
         position: absolute;
         z-index: 10;
+        padding:0;
         list-style-type:none;
-        padding:10px;
         border-radius:3px;
         margin:5px 0 0 24px;
         border:1px solid #ddd;
         box-shadow: 1px 1px 11px -2px rgba(0, 0, 0, 0.2);
         background-color: #ffffff;
+
+        li {
+            padding:5px 10px;
+            cursor: pointer;
+
+            &.active {
+                font-weight:bold;
+            }
+            &:hover {
+                background-color: #efefef;
+            }
+        }
     }
 
     .header {
@@ -94,35 +124,6 @@
         }
     }
     .im-blocknode__content {
-
-
-        &.im-fact-field {
-            margin-top: 10px;
-
-            & > div {
-                position: relative;
-
-                & > div:first-child {
-                    padding-left: 30px;
-                }
-
-                & > div:last-child {
-                    z-index: -1;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 30px;
-
-                    opacity: 0;
-
-                    &.im-placeholder-visible {
-                        opacity: 0.5;
-                    }
-                }
-
-            }
-        }
 
         .fa {
             width: 20px;
@@ -133,7 +134,7 @@
         }
     }
 
-    .fact-editor {
+    .contentpart-editor {
         margin-top: 10px;
         padding: 4px;
         border: 1px solid rgba(0, 0, 0, .2);

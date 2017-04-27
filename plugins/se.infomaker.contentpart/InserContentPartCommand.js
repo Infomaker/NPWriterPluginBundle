@@ -1,7 +1,7 @@
 import {InsertNodeCommand} from 'substance'
 import {api, idGenerator} from 'writer'
 
-class FactBoxCommand extends InsertNodeCommand {
+class InserContentPartCommand extends InsertNodeCommand {
 
     execute(params) {
         const id = idGenerator()
@@ -14,18 +14,18 @@ class FactBoxCommand extends InsertNodeCommand {
             defaultText = placeholder
 
             const node = {
-                type: 'factbox',
+                type: 'contentpart',
                 id: id,
                 title: '',
                 vignette: '',
-                inlineTextUri: this.getDefaultInlineTextUri(),
+                contentpartUri: this.getDefaultContentPartUri(),
                 nodes: [placeholder.id]
             }
             tx.insertBlockNode(node)
         })
         const doc = params.editorSession.getDocument()
-        const fact = doc.get(id)
-        fact.show(defaultText.id)
+        const contentpart = doc.get(id)
+        contentpart.show(defaultText.id)
     }
 
     /**
@@ -47,22 +47,25 @@ class FactBoxCommand extends InsertNodeCommand {
     }
 
     /**
-     * Get the default inline-text uri, e.g. im://inline-text/factbox, from configuration.
+     * Get the default inline-text uri, e.g. im://inline-text/contentpart, from configuration.
      * If no configuration, null is returned.
      *
      * @returns {*}
      */
-    getDefaultInlineTextUri() {
-        let defaultInlineTextUri = null
+    getDefaultContentPartUri() {
+        let defaultContentpartUri = null
 
-        api.getConfigValue('se.infomaker.factbox', 'inlineTexts', []).forEach((inlineText) => {
+        api.getConfigValue('se.infomaker.contentpart', 'contentpartTypes', []).forEach((inlineText) => {
             if (inlineText.default) {
-                defaultInlineTextUri = inlineText.uri
+                defaultContentpartUri = inlineText.uri
             }
         })
+        if(defaultContentpartUri === null) {
+            console.error('No content-part-type defined as default')
+        }
 
-        return defaultInlineTextUri
+        return defaultContentpartUri
     }
 }
 
-export default FactBoxCommand
+export default InserContentPartCommand
