@@ -17,7 +17,6 @@ export default class Auth {
             storeCredentials(user, password)
             if (checkUrl) {
                 let authHeader = Auth.getAuthHeader();
-                console.log(authHeader.get('Authorization'))
                 fetch(checkUrl, {headers: authHeader, mode: 'cors'})
                     .then((response) => {
 

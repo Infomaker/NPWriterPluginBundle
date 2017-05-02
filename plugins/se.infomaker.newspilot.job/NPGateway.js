@@ -8,7 +8,6 @@ export default class NPGateway {
         this.comm = new NewspilotComm(host, username, password, this.queryUpdates.bind(this))
         this.comm.connect()
             .then(() => {
-                console.log('Connected to Newspilot');
                 const request = {
                     quid: idGenerator(),
                     query: getQuery(jobId)
@@ -17,7 +16,7 @@ export default class NPGateway {
                 this.query = this.comm.addQuery(request.quid, request.quid, request.query)
                 this.nodeMap = new Map();
             })
-            .catch((e) => console.log("Error", e))
+            .catch((e) => console.error("Error", e))
     }
 
     queryUpdates(query, events) {
@@ -33,7 +32,7 @@ export default class NPGateway {
                     this.nodeMap.delete(event.id)
                     break
                 default:
-                    console.log("Unknown event type", event.eventType)
+                    // console.log("Unknown event type", event.eventType)
             }
         }
 
@@ -43,7 +42,6 @@ export default class NPGateway {
 
     disconnect() {
         if (this.comm) {
-            console.log("Disconnecting from Newspilot")
             this.comm.disconnect()
         }
     }
