@@ -5,13 +5,12 @@ class InserContentPartCommand extends InsertNodeCommand {
 
     execute(params) {
         const id = idGenerator()
-        let defaultText
+
         params.editorSession.transaction((tx) => {
-            const placeholder = tx.create({
+            const emptyParamNode = tx.create({
                 type: tx.getSchema().getDefaultTextType(),
                 content: ''
             })
-            defaultText = placeholder
 
             const node = {
                 type: 'contentpart',
@@ -19,13 +18,10 @@ class InserContentPartCommand extends InsertNodeCommand {
                 title: '',
                 vignette: '',
                 contentpartUri: this.getDefaultContentPartUri(),
-                nodes: [placeholder.id]
+                nodes: [emptyParamNode.id]
             }
             tx.insertBlockNode(node)
         })
-        const doc = params.editorSession.getDocument()
-        const contentpart = doc.get(id)
-        contentpart.show(defaultText.id)
     }
 
     /**
