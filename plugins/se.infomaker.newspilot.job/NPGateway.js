@@ -21,6 +21,7 @@ export default class NPGateway {
 
     queryUpdates(query, events) {
         let imageProxyServer = api.getConfigValue('se.infomaker.newspilot.job', 'imageProxyServer')
+        let npAPIServer = api.getConfigValue('se.infomaker.newspilot.job', 'newspilotServer')
 
         for (let event of events) {
             switch (event.eventType) {
@@ -32,7 +33,7 @@ export default class NPGateway {
                     this.nodeMap.delete(event.id)
                     break
                 default:
-                    // console.log("Unknown event type", event.eventType)
+                // console.log("Unknown event type", event.eventType)
             }
         }
 
@@ -48,10 +49,10 @@ export default class NPGateway {
 
 }
 
-function getNode(currentValues, imageProxyServer) {
+function getNode(currentValues, imageProxyServer, npAPIServer) {
     return getTemplate({
         data: currentValues,
-        config: {urlEndpoint: imageProxyServer}
+        config: {urlEndpoint: imageProxyServer, npAPIEndpoint: npAPIServer}
     })
 }
 
@@ -78,11 +79,11 @@ function getSafeItemIntegerValue(value) {
 
 
 function getThumb(item) {
-    return `${item.config.urlEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`
+    return `${item.config.npAPIEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`
 }
 
 function getPreview(item) {
-    return `${item.config.urlEndpoint}/newspilot/preview?id=${item.data.id}&type=24`
+    return `${item.config.npAPIEndpoint}/newspilot/preview?id=${item.data.id}&type=24`
 }
 
 function getUrl(item) {
