@@ -21,13 +21,12 @@ export default class NPGateway {
 
     queryUpdates(query, events) {
         let imageProxyServer = api.getConfigValue('se.infomaker.newspilot.job', 'imageProxyServer')
-        let npAPIServer = api.getConfigValue('se.infomaker.newspilot.job', 'newspilotServer')
 
         for (let event of events) {
             switch (event.eventType) {
                 case "CREATE":
                 case "CHANGE":
-                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer, npAPIServer))
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer))
                     break
                 case "REMOVE":
                     this.nodeMap.delete(event.id)
@@ -49,10 +48,10 @@ export default class NPGateway {
 
 }
 
-function getNode(currentValues, imageProxyServer, npAPIServer) {
+function getNode(currentValues, imageProxyServer) {
     return getTemplate({
         data: currentValues,
-        config: {urlEndpoint: imageProxyServer, npAPIEndpoint: npAPIServer}
+        config: {urlEndpoint: imageProxyServer}
     })
 }
 
@@ -79,11 +78,15 @@ function getSafeItemIntegerValue(value) {
 
 
 function getThumb(item) {
-    return `${item.config.npAPIEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`
+    return getWriterProxyUrl(`${item.config.urlEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`)
 }
 
 function getPreview(item) {
-    return `${item.config.npAPIEndpoint}/newspilot/preview?id=${item.data.id}&type=24`
+    return getWriterProxyUrl(`${item.config.urlEndpoint}/newspilot/preview?id=${item.data.id}&type=24`)
+}
+
+function getWriterProxyUrl(url) {
+    return `${api.router.getEndpoint()}/api/resourceproxy?${encodeURIComponent(url)}`
 }
 
 function getUrl(item) {
