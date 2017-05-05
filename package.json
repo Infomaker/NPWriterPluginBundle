@@ -42,7 +42,7 @@
     "webpack-uglify-js-plugin": "^1.1.9"
   },
   "dependencies": {
-    "cropjs": "^1.0.4",
+    "cropjs": "^1.1.0",
     "google-maps-api-loader": "^0.3.0",
     "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git",
     "socket.io-client": "^1.7.2"

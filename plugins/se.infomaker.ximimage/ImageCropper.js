@@ -39,11 +39,17 @@ class ImageCropper extends Component {
     }
 
     createCrop(name, selected, definedCrop) {
+        // If there are no defined crops, new crops should be usable by default
+        const usable = this.props.crops.length === 0
+
         this.cropEditor.addSoftcrop(
             name,
             selected,
             definedCrop[0],
-            definedCrop[1]
+            definedCrop[1],
+            null,
+            null,
+            usable
         )
     }
 
@@ -97,6 +103,10 @@ class ImageCropper extends Component {
             crops = []
 
         data.crops.forEach( (crop) => {
+            if (!crop.usable) {
+                return
+            }
+            
             crops.push({
                 name: crop.id,
                 x: crop.x / data.width,
