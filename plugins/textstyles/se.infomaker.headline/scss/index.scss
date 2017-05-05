@@ -8,4 +8,8 @@
     -moz-font-feature-settings: "liga" 0, "clig" 0;
     -webkit-font-feature-settings: "liga" 0, "clig" 0;
     font-feature-settings: "liga" 0, "clig" 0;
+
+    strong {
+        font-family: 'LatoWebBlack', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    }
 }
