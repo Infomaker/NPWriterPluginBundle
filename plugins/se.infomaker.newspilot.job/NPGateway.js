@@ -86,7 +86,7 @@ function getPreview(item) {
 }
 
 function getWriterProxyUrl(url) {
-    return `${api.router.getEndpoint()}/api/resourceproxy?${encodeURIComponent(url)}`
+    return `${api.router.getEndpoint()}/api/resourceproxy?url=${encodeURIComponent(url)}`
 }
 
 function getUrl(item) {
