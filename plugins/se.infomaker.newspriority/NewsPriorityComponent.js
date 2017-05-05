@@ -25,7 +25,7 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
         this.defaultScoreIndex = api.getConfigValue(pluginId, 'defaultScoresIndex');
         this.defaultLifetimeIndex = api.getConfigValue(pluginId, 'defaultLifetimesIndex');
 
-        var newsValue = {
+        let newsValue = {
             score: this.scores[this.defaultScoreIndex].value,
             description: this.lifetimes[this.defaultLifetimeIndex].label,
             format: 'lifetimecode'
@@ -33,57 +33,10 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
 
         newsValue[this.durationKey] = this.lifetimes[this.defaultLifetimeIndex].value;
         return newsValue;
-    }
 
-    updateState() {
-       /* var newsPriority = api.newsItem.getNewsPriority(pluginId);
-
-        if (!newsPriority) {
-            // No news prio found in document, create a default template
-            var template = {
-                '@id': idGenerator(),
-                '@type': "x-im/newsvalue",
-                data: {
-                    description: this.lifetimes[this.defaultLifetimeIndex].label,
-                    end: "",
-                    format: "lifetimecode",
-                    score: this.scores[this.defaultScoreIndex].value
-                }
-            };
-
-            template.data[this.durationKey] = this.lifetimes[this.defaultLifetimeIndex].value;
-
-            api.newsItem.setNewsPriority('newspriority', template);
-            newsPriority = api.newsItem.getNewsPriority(pluginId);
-
-            // For some reason when transforming an empty string in API it returns an empty object{}
-            if (isObject(newsPriority.data[this.durationKey])) {
-                newsPriority.data[this.durationKey] = template.data[this.durationKey];
-            }
-
-        } else {
-            if (newsPriority.data.end && !this.extendedState) {
-                this.extendedState = {end: newsPriority.data.end};
-            }
-        }
-
-        if (Number(newsPriority.data.score) === Number(this.state.score)) {
-            return;
-        }
-
-        var newState = {
-            score: newsPriority.data.score,
-            description: newsPriority.data.description,
-            format: newsPriority.data.format,
-            end: newsPriority.data.end
-        };
-        newState[this.durationKey] = newsPriority.data[this.durationKey];
-        this.setState(newState);*/
     }
 
     render($$) {
-
-        // this.updateState();
 
         const el = $$('div'),
             prioTitle = $$('h2').text(this.getLabel('newsvalue'));
@@ -91,13 +44,7 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
-        // var lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
-        // el.append(lifetimeTitle);
-        // if (this.lifetimes.length > 1) {
-        //     el.append(this._renderLifeTime($$));
-        // }
-
-        // el.append(this._renderDatetimeInput($$).ref('datePickerComponent'));
+        this.node = this.props.nodes[0]
 
         return el;
 
@@ -111,6 +58,7 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
         const prio = $$('div').addClass('btn-group'),
             Tooltip = api.ui.getComponent('tooltip')
 
+        const node = this.props.nodes[0]
         const buttons = this.scores.map((score) => {
             return $$('button')
                 .append([
@@ -128,7 +76,7 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
                         })
                 ])
                 .addClass('btn btn-secondary sc-np-btn')
-                .addClass(parseInt(this.context.api.newsItem.getNewsPriority(), 10) === score.value ? "active" : "")
+                .addClass(parseInt(node.score, 10) === score.value ? "active" : "")
         })
 
         prio.append(buttons)
@@ -176,7 +124,9 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
 
         var text = this.getLabel('enter-date-and-time')
 
-        var endTime = api.newsItem.getNewsPriority('newspriority').data.end;
+        const node = this.props.nodes[0]
+
+        var endTime = node.end;
         if (endTime !== "" && !isEmpty(endTime)) {
             text = '\u2713 ' + text;
         }
@@ -217,24 +167,11 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
         return form;
     }
 
-    /*
-     toggleTooltip(ev) {
-     $(ev.target).tooltip('toggle');
-     ev.target.timeout = window.setTimeout(function () {
-     this.hideTooltip(ev)
-     }.bind(this), 3000)
-     }
-
-     hideTooltip(ev) {
-     if (ev.target.timeout) {
-     window.clearTimeout(ev.target.timeout);
-     ev.target.timeout = undefined;
-     }
-     $(ev.target).tooltip('hide');
-     }*/
-
     setNewsPriority(score) {
-        api.newsItem.setNewsPriority(pluginId, score);
+        const node = this.props.nodes[0]
+        this.context.api.editorSession.transaction((tx) => {
+            tx.set([node.id, 'score'], score)
+        })
     }
 
     setLifetime(ev, lifetime) {
