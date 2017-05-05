@@ -28,13 +28,16 @@ class DefaultValidation extends Validator {
         }
 
         if (headlines.length === 0) {
-            messageMethod('The article is missing a headline which might make it hard to find.')
+            messageMethod(
+                api.getLabel('The article is missing a headline which might make it hard to find.')
+            )
         }
         else if (headlines[0].childNodes.length === 0 ||
             headlines[0].firstChild.textContent.trim() === '') {
 
-            messageMethod('The first headline in the article should not be empty.')
-
+            messageMethod(
+                api.getLabel('The first headline in the article should not be empty.')
+            )
         }
     }
 }

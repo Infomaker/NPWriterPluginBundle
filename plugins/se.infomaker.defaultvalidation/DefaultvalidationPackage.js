@@ -6,6 +6,15 @@ const validationPackage = {
     name: 'defaultvalidation',
     version: '{{version}}',
     configure: (config) => {
+
+        config.addLabel('The first headline in the article should not be empty.', {
+            sv: 'Artikelns översta rubrik borde inte vara tom.'
+        })
+
+        config.addLabel('The article is missing a headline which might make it hard to find.', {
+            sv: 'Artikeln saknar rubrik.'
+        })
+
         config.addValidator(DefaultValidation)
     }
 }
@@ -19,5 +28,3 @@ export default () => {
         console.info("Register method not yet available");
     }
 }
-
-
