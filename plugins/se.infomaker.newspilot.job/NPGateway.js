@@ -27,7 +27,7 @@ export default class NPGateway {
             switch (event.eventType) {
                 case "CREATE":
                 case "CHANGE":
-                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer))
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer, npAPIServer))
                     break
                 case "REMOVE":
                     this.nodeMap.delete(event.id)
