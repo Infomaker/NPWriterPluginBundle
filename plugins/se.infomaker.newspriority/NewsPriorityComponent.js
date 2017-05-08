@@ -59,6 +59,9 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
             Tooltip = api.ui.getComponent('tooltip')
 
         const node = this.props.nodes[0]
+        if(!node) {
+            return
+        }
         const buttons = this.scores.map((score) => {
             return $$('button')
                 .append([
