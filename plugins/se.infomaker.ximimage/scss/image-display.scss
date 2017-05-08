@@ -49,11 +49,41 @@
                 display: inline-block;
                 width: 40px;
                 height: 40px;
+                line-height: 40px;
                 text-align: center;
-                background: rgba(0,0,0,0.7);
+                background: rgba(0,0,0,0.5);
                 border-radius: 20px;
                 margin-left: 5px;
                 color: #fff;
+                position: relative;
+
+                i {
+                    color: #fff;
+                    &.text-danger {
+                        color: rgba(255, 66, 66, 0.5);
+                    }
+                }
+
+                em {
+                    position: absolute;
+                    top: -6px;
+                    right: -5px;
+                    height: 20px;
+                    line-height: 20px;
+                    padding: 0 4px 1px 4px;
+                    min-width: 20px;
+                    border-radius: 16px;
+
+                    font-size: 85%;
+                    font-style: normal;
+                    font-weight: bold;
+                    color: #fff;
+                    background: rgba(0, 171, 80, 0.6);
+
+                    &.se-warning {
+                        background: rgba(229, 48, 15, 0.6);
+                    }
+                }
             }
         }
     }

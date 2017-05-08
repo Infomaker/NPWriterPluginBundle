@@ -74,8 +74,9 @@ export default {
         config.addLabel('Add to byline', {
             sv: 'Lägg till byline'
         })
-        // config.addLabel('', {
-        //     sv: ''
-        // })
+
+        config.addLabel('Remove', {
+            sv: 'Ta bort'
+        })
     }
 }

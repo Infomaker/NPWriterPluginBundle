@@ -80,12 +80,44 @@ class ImageDisplay extends Component {
         }
 
         if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
+            const configuredCrops = api.getConfigValue(this.props.parentId, 'crops', [])
+            let currentCrops = 0
+            let cropBadgeClass = false
+
+            if(this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
+                currentCrops = this.props.node.crops.crops.length
+            }
+
+            const definedCrops = (Array.isArray(configuredCrops)) ? configuredCrops.length : Object.keys(configuredCrops).length
+            if (currentCrops < definedCrops) {
+                cropBadgeClass = 'se-warning'
+            }
+
             actionsEl.append(
                 $$(Button, {
                     icon: 'crop'
-                }).on('click', this._openCropper)
+                })
+                .on('click', this._openCropper)
+                .append(
+                    $$('em').append(
+                        currentCrops
+                    )
+                    .addClass(cropBadgeClass)
+                )
             )
         }
+
+        // TODO: Implement correctly
+        // const disableCrop = $$('span')
+        //     .addClass('fa-stack fa-lg')
+        //     .append([
+        //         $$('i').addClass('fa fa-crop fa-stack-1x'),
+        //         $$('i').addClass('fa fa-ban fa-stack-2x text-danger')
+        //     ])
+        //
+        // actionsEl.append(
+        //     $$(Button).append(disableCrop)
+        // )
 
         imgContainer.append(actionsEl)
 

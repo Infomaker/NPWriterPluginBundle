@@ -21,6 +21,8 @@ needs to be whitelisted in Newspilot network (to allow Newspilot Writer download
 Job Plugin obviously need access to Newspilot Server API to extract information regarding article
 in Newspilot.
 
+Preview and thumb are rendered using Writer server as proxy to access NP Image Server.
+
 ## Configuration
 ```
 {

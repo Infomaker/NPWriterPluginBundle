@@ -32,7 +32,7 @@ export default class NPGateway {
                     this.nodeMap.delete(event.id)
                     break
                 default:
-                    // console.log("Unknown event type", event.eventType)
+                // console.log("Unknown event type", event.eventType)
             }
         }
 
@@ -78,11 +78,15 @@ function getSafeItemIntegerValue(value) {
 
 
 function getThumb(item) {
-    return `${item.config.urlEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`
+    return getWriterProxyUrl(`${item.config.urlEndpoint}/newspilot/thumb?id=${item.data.id}&type=24`)
 }
 
 function getPreview(item) {
-    return `${item.config.urlEndpoint}/newspilot/preview?id=${item.data.id}&type=24`
+    return getWriterProxyUrl(`${item.config.urlEndpoint}/newspilot/preview?id=${item.data.id}&type=24`)
+}
+
+function getWriterProxyUrl(url) {
+    return `${api.router.getEndpoint()}/api/resourceproxy?url=${encodeURIComponent(url)}`
 }
 
 function getUrl(item) {
