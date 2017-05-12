@@ -23,9 +23,10 @@ class Ximimage extends BlockNode {
         })
     }
 
-    setSoftcropData(data) {
+    setSoftcropData(cropData, disableAutomaticCrop) {
         api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'crops'], data);
+            tx.set([this.id, 'crops'], cropData);
+            tx.set([this.id, 'disableAutomaticCrop'], disableAutomaticCrop)
         })
     }
 
@@ -332,7 +333,7 @@ Ximimage.define({
     imageFile: { type: 'file' },
     width: { type: 'number', optional: true },
     height: { type: 'number', optional: true },
-
+    disableAutomaticCrop: { type: 'boolean', optional: true, default: false },
     errorMessage: { type: 'string', optional: true },
     crops: { type: 'object', default: [] },
     authors: { type: 'array', default: [] },

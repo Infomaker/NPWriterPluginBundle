@@ -85,6 +85,10 @@ export default {
                 if (child.tagName === 'height') {
                     node.height = parseInt(child.text(), 10)
                 }
+
+                if (child.tagName === 'disableAutomaticCrop') {
+                    node.disableAutomaticCrop = (child.text() === 'true') ? true : false
+                }
             })
         }
 
@@ -161,7 +165,10 @@ export default {
 
         var data = $$('data').append([
             $$('width').append(String(node.width)),
-            $$('height').append(String(node.height))
+            $$('height').append(String(node.height)),
+            $$('disableAutomaticCrop').append(
+                String(!node.disableAutomaticCrop ? 'false' : 'true')
+            )
         ])
 
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []

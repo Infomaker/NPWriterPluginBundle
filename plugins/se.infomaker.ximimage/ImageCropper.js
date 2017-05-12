@@ -1,11 +1,25 @@
 import { Component } from 'substance'
-
 const {api} = writer
 
 /*
   Used in ImageDisplay
 */
 class ImageCropper extends Component {
+    constructor(...args) {
+        super(...args)
+    }
+
+    getInitialState() {
+        return {
+            disableAutomaticCrop: this.props.disableAutomaticCrop === true ? true : false
+        }
+    }
+
+    // Never rerender this component as the crop looses it
+    shouldRerender(newProps, newState) {
+        return false
+    }
+
     didMount() {
         this.cropEditor = new IMSoftcrop.Editor( // eslint-disable-line
             'ximimage__softcrop',
@@ -20,6 +34,8 @@ class ImageCropper extends Component {
 
         let definedCrops = api.getConfigValue(this.props.parentId, 'crops', []),
             encodedSrc = encodeURIComponent(this.props.src)
+
+        this.disableAutomaticCrop = this.props.disableAutomaticCrop
 
         this.cropEditor.addImage(
             '/api/resourceproxy?url=' + encodedSrc,
@@ -88,10 +104,26 @@ class ImageCropper extends Component {
     }
 
     render($$) {
-        return $$('div')
-            .attr('id', 'ximimage__softcrop')
-            .addClass('sc-image-cropper')
-            .ref('cropper')
+        const Toggle = this.getComponent('toggle')
+
+        return $$('div').append([
+            $$('div')
+                .attr('id', 'ximimage__softcrop')
+                .addClass('sc-image-cropper')
+                .ref('cropper'),
+            $$('div').append(
+                $$(Toggle, {
+                    id: 'crop-toggle',
+                    label: this.getLabel('Disable automatic crop in frontend'),
+                    checked: this.state.disableAutomaticCrop,
+                    onToggle: (checked) => {
+                        this.extendState({
+                            disableAutomaticCrop: checked
+                        })
+                    }
+                })
+            ).addClass('se-crop-options')
+        ])
     }
 
     onClose(status) {
@@ -106,7 +138,7 @@ class ImageCropper extends Component {
             if (!crop.usable) {
                 return
             }
-            
+
             crops.push({
                 name: crop.id,
                 x: crop.x / data.width,
@@ -116,9 +148,7 @@ class ImageCropper extends Component {
             })
         })
 
-        this.props.callback({
-            crops: crops
-        });
+        this.props.callback({ crops: crops }, this.state.disableAutomaticCrop);
     }
 }
 

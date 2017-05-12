@@ -78,5 +78,9 @@ export default {
         config.addLabel('Remove', {
             sv: 'Ta bort'
         })
+
+        config.addLabel('Disable automatic crop in frontend', {
+            sv: 'Använd inte automatisk crop vid utvisning'
+        })
     }
 }
