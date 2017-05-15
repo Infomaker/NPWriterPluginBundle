@@ -59,6 +59,7 @@ export default {
         node.alttext = ''
         node.credit = ''
         node.alignment = ''
+        node.disableAutomaticCrop = false
 
         if (dataEl) {
             dataEl.children.forEach(function (child) {
@@ -90,6 +91,15 @@ export default {
                     node.disableAutomaticCrop = (child.text() === 'true') ? true : false
                 }
             })
+
+            const flagsEl = dataEl.find(':scope>flags')
+            if (flagsEl) {
+                flagsEl.children.forEach(childEl => {
+                    if (childEl.text() === 'disableAutomaticCrop') {
+                        node.disableAutomaticCrop = true
+                    }
+                })
+            }
         }
 
         // Import author links
@@ -166,10 +176,15 @@ export default {
         var data = $$('data').append([
             $$('width').append(String(node.width)),
             $$('height').append(String(node.height)),
-            $$('disableAutomaticCrop').append(
-                String(!node.disableAutomaticCrop ? 'false' : 'true')
-            )
         ])
+
+        if (node.disableAutomaticCrop) {
+            data.append(
+                $$('flags').append(
+                    $$('flag').append('disableAutomaticCrop')
+                )
+            )
+        }
 
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []
         fields.forEach(obj => {
