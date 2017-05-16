@@ -16,9 +16,10 @@ class Ximteaser extends BlockNode {
         }
     }
 
-    setSoftcropData(data) {
+    setSoftcropData(data, disableAutomaticCrop) {
         api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'crops'], data);
+            tx.set([this.id, 'crops'], data)
+            tx.set([this.id, 'disableAutomaticCrop'], disableAutomaticCrop)
         })
     }
 
@@ -93,7 +94,8 @@ Ximteaser.define({
 
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
-    crops: {type: 'object', default: []}
+    crops: {type: 'object', default: []},
+    disableAutomaticCrop: { type: 'boolean', optional: true, default: false }
 })
 
 export default Ximteaser
