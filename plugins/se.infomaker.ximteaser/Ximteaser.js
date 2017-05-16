@@ -3,10 +3,13 @@ import {api} from 'writer'
 class Ximteaser extends BlockNode {
 
     getImageFile() {
-        if (this.imageFile) {
-            return this.document.get(this.imageFile)
+        if (!this.imageFile) {
+            return
         }
 
+        // FIXME: This should not be done if already done
+        // Right now this is done multiple times.
+        return this.document.get(this.imageFile)
     }
 
     getUrl() {
