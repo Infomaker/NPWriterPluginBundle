@@ -16,7 +16,7 @@ class ImageCropper extends Component {
     }
 
     // Never rerender this component as the crop looses it
-    shouldRerender(newProps, newState) {
+    shouldRerender(newProps, newState) { // eslint-disable-line
         return false
     }
 
