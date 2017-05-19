@@ -1,5 +1,5 @@
 import {lodash, api} from "writer";
-import insertImage from "./insertImage";
+import insertImage from "../models/insertImage";
 import {DragAndDropHandler} from "substance";
 
 // Implements a file drop handler
@@ -9,6 +9,7 @@ class DropImageFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
+        debugger
         const nodeId = insertImage(tx, params.file)
         const maxIterations = 500
 

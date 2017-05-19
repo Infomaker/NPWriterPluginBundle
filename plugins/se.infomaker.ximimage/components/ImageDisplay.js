@@ -1,7 +1,7 @@
 import {Component, Button, FontAwesomeIcon} from "substance";
 import {api} from "writer";
 import ImageCropper from "./ImageCropper";
-import XimimageAddToBylineComponent from "./XimimageAddToBylineComponent";
+import AddToByline from "./AddToByline";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -158,7 +158,7 @@ class ImageDisplay extends Component {
 
     _openAddToByline() {
         api.ui.showDialog(
-            XimimageAddToBylineComponent,
+            AddToByline,
             {
                 node: this.props.node,
                 addAuthor: (author) => {

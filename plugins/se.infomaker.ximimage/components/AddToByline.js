@@ -1,6 +1,6 @@
 import { Component, FontAwesomeIcon } from "substance";
 import { NilUUID, api } from "writer";
-import Author from './Author'
+import Author from '../models/Author'
 
 class XimimageAddToBylineComponent extends Component {
 

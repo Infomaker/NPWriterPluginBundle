@@ -1,5 +1,5 @@
 import {NilUUID, idGenerator, api} from 'writer'
-import Author from './Author'
+import Author from './models/Author'
 
 export default {
     type: 'ximimage',
