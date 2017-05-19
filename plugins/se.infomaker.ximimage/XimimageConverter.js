@@ -36,6 +36,7 @@ export default {
 
         if (linkEl && linkEl.attr('uri')) {
             node.uri = linkEl.attr('uri')
+            imageFile.uri = linkEl.attr('uri')
         }
 
         if (linkEl && linkEl.attr('url')) {
