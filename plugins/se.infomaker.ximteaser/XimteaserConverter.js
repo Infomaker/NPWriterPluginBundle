@@ -31,6 +31,15 @@ export default {
                 }
 
             })
+
+            const flagsEl = dataEl.find(':scope>flags')
+            if (flagsEl) {
+                flagsEl.children.forEach(childEl => {
+                    if (childEl.text() === 'disableAutomaticCrop') {
+                        node.disableAutomaticCrop = true
+                    }
+                })
+            }
         }
 
         // Handle image link in teaser
@@ -160,6 +169,15 @@ export default {
                 converter.annotatedText([node.id, 'subject'])
             ))
         }
+
+        if (node.disableAutomaticCrop) {
+            data.append(
+                $$('flags').append(
+                    $$('flag').append('disableAutomaticCrop')
+                )
+            )
+        }
+        
         el.append(data)
 
         let fileNode = node.document.get(node.imageFile)

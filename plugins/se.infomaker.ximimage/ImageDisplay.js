@@ -194,8 +194,9 @@ class ImageDisplay extends Component {
                 width: this.props.node.width,
                 height: this.props.node.height,
                 crops: this.props.node.crops.crops || [],
-                callback: (crops) => {
-                    this.props.node.setSoftcropData(crops)
+                disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                callback: (crops, disableAutomaticCrop) => {
+                    this.props.node.setSoftcropData(crops, disableAutomaticCrop)
                 }
             },
             {
