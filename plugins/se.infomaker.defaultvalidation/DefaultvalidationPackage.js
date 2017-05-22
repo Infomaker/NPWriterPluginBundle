@@ -15,6 +15,22 @@ const validationPackage = {
             sv: 'Artikeln saknar rubrik.'
         })
 
+        config.addLabel('Looks like the first headline is not correct.', {
+            sv: 'Det ser ut som om översta rubriken inte är korrekt.'
+        })
+
+        config.addLabel('The article must have a least one publication channel.', {
+            sv: 'Artikeln måste ha minst en publiceringskanal.'
+        })
+
+        config.addLabel('Main channel is missing.', {
+            sv: 'Artikeln saknar huvudkanal.'
+        })
+
+        config.addLabel('At least one category must be chosen.', {
+            sv: 'Minst en kategori måste väljas.'
+        })
+
         config.addValidator(DefaultValidation)
     }
 }
