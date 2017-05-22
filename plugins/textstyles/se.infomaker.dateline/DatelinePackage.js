@@ -23,11 +23,11 @@ export default {
         })
         config.addLabel('dateline', {
             en: 'Dateline',
-            sv: 'Ortdatering'
+            sv: 'Ortsdatering'
         })
         config.addLabel('dateline.content', {
             en: 'Dateline',
-            sv: 'Ortdatering'
+            sv: 'Ortsdatering'
         })
     }
 }

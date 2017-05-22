@@ -1,4 +1,4 @@
-import insertImage from './insertImage'
+import insertImage from './models/insertImage'
 import {api, WriterCommand} from 'writer'
 
 /*

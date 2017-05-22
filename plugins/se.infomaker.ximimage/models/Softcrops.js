@@ -1,4 +1,4 @@
-class XimimageModule {
+class Softcrops {
     constructor(api) {
         this.api = api
     }
@@ -65,4 +65,4 @@ class XimimageModule {
     }
 }
 
-export default XimimageModule
+export default Softcrops

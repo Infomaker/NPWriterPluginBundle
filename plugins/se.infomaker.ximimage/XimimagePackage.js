@@ -1,17 +1,22 @@
-import XimimageComponent from "./XimimageComponent";
-import XimimageConverter from "./XimimageConverter";
 import Ximimage from "./Ximimage";
+import XimimageConverter from "./XimimageConverter";
+
+import XimimageComponent from "./components/Ximimage";
+import ImageDisplayComponent from "./components/ImageDisplay";
+
+import DropImageFile from "./drop/File";
+import DropImageUri from "./drop/Uri";
+import DropImageUUID from "./drop/Uuid";
+
+import XimimageFileProxy from "./XimimageFileProxy";
+
 import InsertImagesTool from "./InsertImagesTool";
 import InsertImagesCommand from "./InsertImagesCommand";
-import DropImageFile from "./DropImageFile";
-import DropImageUri from "./DropImageUri";
-import DropImageUUID from "./DropImageUUID";
-import XimimageFileProxy from "./XimimageFileProxy";
 import InsertImageUrlCommand from "./InsertImageUrlCommand";
-import ImageDisplay from "./ImageDisplay";
-import XimimageModule from "./XimimageModule"
-import isImage from './isImage'
 import InsertImageMacro from './InsertImageMacro'
+
+import Softcrops from "./models/Softcrops"
+import isImage from './models/isImage'
 
 export default {
     name: 'ximimage',
@@ -25,8 +30,10 @@ export default {
         config.addCommand('insert-images', InsertImagesCommand)
         config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
         config.addMacro(InsertImageMacro)
-        config.addComponent('imageDisplay', ImageDisplay)
+        config.addComponent('imageDisplay', ImageDisplayComponent)
         config.addConverter('newsml', XimimageConverter)
+
+        // Drop handlers
         config.addDragAndDrop(DropImageUUID)
         config.addDragAndDrop(DropImageFile)
         config.addDragAndDrop(DropImageUri)
@@ -34,8 +41,9 @@ export default {
         config.addPluginModule(
             'se.infomaker.ximimage',
             'ximimagehandler',
-            XimimageModule
+            Softcrops
         )
+
         config.addPluginModule(
             'se.infomaker.ximimage',
             'isImage',
@@ -77,6 +85,10 @@ export default {
 
         config.addLabel('Remove', {
             sv: 'Ta bort'
+        })
+
+        config.addLabel('Disable automatic crop in frontend', {
+            sv: 'Använd inte automatisk crop vid utvisning'
         })
     }
 }
