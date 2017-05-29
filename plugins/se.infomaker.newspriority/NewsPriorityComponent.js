@@ -22,6 +22,9 @@ class NewsPriorityComponent extends NPWriterSidebarComponent {
         this.scores = api.getConfigValue(pluginId, 'scores');
         this.lifetimes = api.getConfigValue(pluginId, 'lifetimes');
         this.durationKey = api.getConfigValue(pluginId, 'durationKey');
+
+        console.log("Get duration key", this.durationKey);
+
         this.defaultScoreIndex = api.getConfigValue(pluginId, 'defaultScoresIndex');
         this.defaultLifetimeIndex = api.getConfigValue(pluginId, 'defaultLifetimesIndex');
 

@@ -9,7 +9,6 @@ export default {
     version: '{{version}}',
     configure: function (config, pluginConfig) {
 
-        console.log("Run configure");
         config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent, pluginConfig, ['newsvalue'])
 
         config.addNode(NewsPriorityNode)
@@ -27,5 +26,8 @@ export default {
             en: 'Enter date and time',
             sv: 'Ange datum och tid'
         })
+
+
+
     }
 }

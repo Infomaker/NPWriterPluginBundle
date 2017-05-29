@@ -27,7 +27,7 @@ module.exports = {
     "comma-dangle": [2, "only-multiline"],
     "no-cond-assign": 2,
     "no-console": [1, { allow: ["warn", "info", "error", "assert"] }],
-    "no-constant-condition": 2,
+    "no-constant-condition": 0,
     "no-control-regex": 2,
     "no-debugger": 1,
     "no-dupe-args": 2,

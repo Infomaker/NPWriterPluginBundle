@@ -1,0 +1,56 @@
+{
+  "name": "npwriter-plugin-bundle",
+  "version": "0.0.1",
+  "description": "Infomaker plugin bundle for Newspilot Writer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.production.config.js",
+    "dev": "webpack-dev-server --config webpack.config.js --hot --progress --colors --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Infomaker/NPWriterDevKit.git"
+  },
+  "author": "Andreas Kihlberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Infomaker/NPWriterPluginBundle/issues"
+  },
+  "homepage": "https://github.com/Infomaker/NPWriterPluginBundle#readme",
+  "devDependencies": {
+    "autoprefixer": "^6.5.1",
+    "aws-sdk": "^2.6.14",
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015-node6": "^0.3.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "copy-webpack-plugin": "^3.0.1",
+    "css-loader": "^0.25.0",
+    "eslint": "^3.8.1",
+    "eslint-loader": "^1.6.0",
+    "express": "^4.14.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.10.0",
+    "node-sass": "^3.10.1",
+    "sass-loader": "^4.0.2",
+<<<<<<< HEAD
+    "string-replace": "^0.2.0",
+=======
+>>>>>>> develop
+    "string-replace-loader": "^1.0.5",
+    "style-loader": "^0.13.1",
+    "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-uglify-js-plugin": "^1.1.9"
+  },
+  "dependencies": {
+    "cropjs": "^1.0.4",
+    "google-maps-api-loader": "^0.3.0",
+    "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git",
+    "socket.io-client": "^1.7.2"
+  }
+}

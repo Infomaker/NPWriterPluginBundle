@@ -2,21 +2,20 @@ export default {
     type: 'newsvalue',
     tagName: 'object',
     matchElement: function(el) {
-        console.log("IS news?",el.is('object[type="x-im/newsvalue"]') );
-
         return el.is('object[type="x-im/newsvalue"]')
     },
 
     // <object id="RYaudnAJj8gQ" type="x-im/newsvalue"><data><score>3</score><description>30D</description><text>PT6H</text><format>lifetimecode</format><end></end><duration>2538000</duration></data></object></metadata>
 
     import: function(el, node) {
-        console.log("Import newsvalue", el);
+
         let data = el.find('data')
+        console.log("Import newsvalue", data.find('duration').textContent);
         if (!data) throw new Error('<data> is mandatory for x-im/newsvalue')
         node.score = Number(data.find('score').textContent)
         node.description = data.find('description').textContent
         node.format = data.find('format').textContent
-        node.duration = Number(data.find('duration').textContent)
+        // node.duration = Number(data.find('duration').textContent)
         let end = data.find('end')
         if (end) {
             node.end = end.textContent
@@ -31,7 +30,7 @@ export default {
         data.append($$('score').text(node.score))
         data.append($$('description').text(node.description))
         data.append($$('format').text(node.format))
-        data.append($$('duration').text(node.duration))
+        // data.append($$('duration').text(node.duration))
 
         if(node.end) {
             data.append($$('end').text(node.end))
