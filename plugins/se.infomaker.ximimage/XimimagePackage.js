@@ -39,14 +39,12 @@ export default {
         config.addDragAndDrop(DropImageUri)
 
         config.addPluginModule(
-            'se.infomaker.ximimage',
-            'ximimagehandler',
+            'se.infomaker.ximimage.ximimagehandler',
             Softcrops
         )
 
         config.addPluginModule(
-            'se.infomaker.ximimage',
-            'isImage',
+            'se.infomaker.ximimage.isImage',
             isImage
         )
 
