@@ -35,24 +35,25 @@ class ImageExtension extends Component {
         return el
     }
 
-    renderInputField($$, id, name, value) {
+    renderInputField($$, key, name, value) {
         return $$('div')
             .addClass('form-group flexible-label')
             .append (
                 $$('input')
+                    .ref(key)
                     .on('change', () => {
-                        // FIXME: Handle change via props callback
+                        this.props.onChange(key, this.refs[key].val())
                     })
                     .addClass('form-control')
                     .attr({
                         required: 'required',
                         type: 'text',
-                        id: 'imext-' + id,
+                        id: 'imext-' + key,
                         placeholder: this.getLabel(name)
                     })
                     .val(value),
                 $$('label')
-                    .attr('for', 'imext-' + id)
+                    .attr('for', 'imext-' + key)
                     .append(
                         this.getLabel(name)
                     )
@@ -70,7 +71,7 @@ class ImageExtension extends Component {
                     label: this.getLabel(name),
                     checked: value ? true : false,
                     onToggle: (checked) => {
-                        // FIXME: Handle change via props callback
+                        this.props.onChange(id, checked)
                     }
                 })
             )
