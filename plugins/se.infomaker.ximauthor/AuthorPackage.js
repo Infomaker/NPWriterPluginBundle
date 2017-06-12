@@ -57,9 +57,6 @@ export default {
         config.addLabel('Save', {
             sv: 'Spara'
         })
-        config.addLabel('Cancel', {
-            sv: 'Ångra'
-        })
         config.addLabel('ximauthors-invalid-url', {
             en: 'Invalid URL',
             sv: 'Ogiltig URL'
