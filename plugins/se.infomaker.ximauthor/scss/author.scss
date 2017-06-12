@@ -59,7 +59,6 @@
     width: 24px;
     height: 24px;
     vertical-align: text-bottom;
-    //@include border-radius(12px);
   }
 
   .button__container {
@@ -72,11 +71,23 @@
     float: right;
     margin-right: 10px;
     display: none;
-    //color: $red;
 
     &.active {
       display: inline;
 
     }
   }
+}
+
+.pad-top {
+  padding-top: 3rem !important;
+}
+
+.error-label {
+  font-size: 0.9rem;
+  color: red;
+}
+
+.author-edit {
+  padding: 0 1rem;
 }
