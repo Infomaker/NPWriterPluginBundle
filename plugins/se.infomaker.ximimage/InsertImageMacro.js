@@ -15,7 +15,7 @@ export default {
             return
         }
 
-        const isImage = api.getPluginModule('se.infomaker.ximimage', 'isImage')
+        const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
 
         if(isImage(url, api)) {
             editorSession.executeCommand('ximimage-insert-image-url', {

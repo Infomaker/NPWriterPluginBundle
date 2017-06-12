@@ -117,7 +117,7 @@ export default {
 
         // Import softcrops
         if (!newsItemConversion) {
-            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
             let softcrops = imageModule.importSoftcropLinks(
                 linkEl.find('links')
             )
@@ -211,7 +211,7 @@ export default {
 
         // Add crops to data
         if (node.crops) {
-            let imageModule = api.getPluginModule('se.infomaker.ximimage', 'ximimagehandler')
+            let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
             imageModule.exportSoftcropLinks($$, imageLinks, node.crops.crops)
         }
 
