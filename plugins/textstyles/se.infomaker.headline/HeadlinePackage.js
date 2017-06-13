@@ -21,9 +21,16 @@ const headlinePackage = {
             de: 'Headline',
             sv: 'Rubrik'
         }
+
         config.addLabel('headline.content', headlineLbl)
+
         config.addLabel('headline', headlineLbl)
 
+        config.addLabel('headline.short', {
+            en: 'H1',
+            de: 'H1',
+            sv: 'RUB'
+        })
     }
 };
 
@@ -34,4 +41,3 @@ export default () => {
         console.info("Register method not yet available");
     }
 }
-

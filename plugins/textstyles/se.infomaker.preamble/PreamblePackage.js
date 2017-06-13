@@ -22,13 +22,21 @@ export default {
             name: this.name,
             data: {type: PreambleNode.type}
         })
+
         config.addLabel('preamble', {
             en: 'Preamble',
             sv: 'Ingress'
         })
+
         config.addLabel('preamble.content', {
             en: 'Preamble',
             sv: 'Ingress'
+        })
+
+        config.addLabel('preamble.short', {
+            en: 'Pre',
+            de: 'Pre',
+            sv: 'Ing'
         })
     }
 }
