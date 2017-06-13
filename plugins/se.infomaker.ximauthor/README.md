@@ -6,11 +6,14 @@ the `noSearch` entry may be set to true to disable search.
 
 The configuration entry `handleConceptAuthors` decides whether the plugin should
  create authors as `Concepts or not`.
+ 
+ E.g.
 
 ```json
 {
   "data":{
-    "noSearch": true
+    "handleConceptAuthors": true,
+    "noSearch": false
   }
 }
 ```
