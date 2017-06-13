@@ -109,10 +109,25 @@ class AuthorItemComponent extends AuthorBaseComponent {
                 this.setState({
                     author: author
                 });
+
+                this._updateAuthor()
             })
             .catch((error) => {
                 console.error('Failed to load author with id', this.props.uuid, 'Error was:', error)
             })
+    }
+
+    _updateAuthor() {
+        const email = this._getDataElement('email')
+        const author = {
+            name: this._getFullName()
+        }
+
+        if (email) {
+            author['email'] = email
+        }
+
+        this.context.api.newsItem.updateAuthorWithUUID('ximauthor', this.props.uuid, author)
     }
 
     /**
