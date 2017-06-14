@@ -33,9 +33,9 @@ class AuthorItemComponent extends AuthorBaseComponent {
             return $$('div')
         }
 
-        const fullName = this._getFullName()
-        const email = this._getDataElement('email')
-        const links = this._getItemMetaLinks()
+        const fullName = this.getFullName()
+        const email = this.getDataElement('email')
+        const links = this.getItemMetaLinks()
 
         const el = $$('li')
             .addClass('authors__list-item')
@@ -118,16 +118,7 @@ class AuthorItemComponent extends AuthorBaseComponent {
     }
 
     _updateAuthor() {
-        const email = this._getDataElement('email')
-        const author = {
-            name: this._getFullName()
-        }
-
-        if (email) {
-            author['email'] = email
-        }
-
-        this.context.api.newsItem.updateAuthorWithUUID('ximauthor', this.props.uuid, author)
+        this.context.api.newsItem.updateAuthorWithUUID('ximauthor', this.props.uuid, this.createUpdateAuthorLinkObject())
     }
 
     /**
@@ -155,7 +146,7 @@ class AuthorItemComponent extends AuthorBaseComponent {
      * Show information about the author in AuthorInfoComponent rendered in a dialog
      */
     showInformation() {
-        const name = this._getFullName()
+        const name = this.getFullName()
         const handleConceptAuthors = this.context.api.getConfigValue('se.infomaker.ximauthor', 'handleConceptAuthors')
 
         if (!handleConceptAuthors) {
