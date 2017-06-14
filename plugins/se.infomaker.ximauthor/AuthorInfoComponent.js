@@ -16,10 +16,10 @@ class AuthorInfoComponent extends AuthorBaseComponent {
 
     render($$) {
         const el = $$('div').addClass('author__info')
-        const description = this._getDefinition('drol:long')
+        const description = this.getDefinition('drol:long')
 
-        const email = this._getDataElement('email')
-        const phone = this._getDataElement('phone')
+        const email = this.getDataElement('email')
+        const phone = this.getDataElement('phone')
 
         if (description) {
             const descriptionEl = $$('p').append(description)

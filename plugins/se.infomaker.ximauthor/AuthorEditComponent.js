@@ -37,7 +37,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const firstName = this._createInputComponent(
             $$,
             this.getLabel('First name'),
-            this._getItemMetaExtProperty('imext:firstName'),
+            this.getItemMetaExtProperty('imext:firstName'),
             REF_FIRST_NAME,
             'col-sm-6',
             false
@@ -46,7 +46,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const lastName = this._createInputComponent(
             $$,
             this.getLabel('Last name'),
-            this._getItemMetaExtProperty('imext:lastName'),
+            this.getItemMetaExtProperty('imext:lastName'),
             REF_LAST_NAME,
             'col-sm-6',
             false
@@ -55,7 +55,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const email = this._createInputComponent(
             $$,
             this.getLabel('Email'),
-            this._getDataElement('email'),
+            this.getDataElement('email'),
             REF_EMAIL,
             'col-sm-6',
             false
@@ -64,7 +64,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const phone = this._createInputComponent(
             $$,
             this.getLabel('Phone'),
-            this._getDataElement('phone'),
+            this.getDataElement('phone'),
             REF_PHONE,
             'col-sm-6',
             false
@@ -73,7 +73,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const facebookLink = this._createInputComponent(
             $$,
             this.getLabel('Facebook'),
-            this._getItemMetaLinkAttribute('x-im/social+facebook', 'url'),
+            this.getItemMetaLinkAttribute('x-im/social+facebook', 'url'),
             REF_SEE_ALSO_LINK_FACEBOOK,
             'col-12',
             false
@@ -82,7 +82,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const twitterLink = this._createInputComponent(
             $$,
             this.getLabel('Twitter'),
-            this._getItemMetaLinkAttribute('x-im/social+twitter', 'url'),
+            this.getItemMetaLinkAttribute('x-im/social+twitter', 'url'),
             REF_SEE_ALSO_LINK_TWITTER,
             'col-12',
             false
@@ -91,7 +91,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const shortDesc = this._createInputComponent(
             $$,
             this.getLabel('Short description'),
-            this._getDefinition('drol:short'),
+            this.getDefinition('drol:short'),
             REF_SHORT_DESC,
             'col-12',
             false
@@ -100,7 +100,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         const longDesc = this._createInputComponent(
             $$,
             this.getLabel('Long description'),
-            this._getDefinition('drol:long'),
+            this.getDefinition('drol:long'),
             REF_LONG_DESC,
             'col-12',
             true
@@ -175,7 +175,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         if (!uuid) {
             this._createAuthorConcept(authorConcept, fullNameVal)
         } else {
-            this._updateAuthorConcept(uuid, authorConcept, fullNameVal, emailVal)
+            this._updateAuthorConcept(uuid, authorConcept)
         }
     }
 
@@ -290,14 +290,14 @@ class AuthorEditComponent extends AuthorBaseComponent {
     /**
      * Creates author concept and add author link to newsItem.
      *
-     * @param authorConcept Author concept.
+     * @param authorDocument Author concept.
      * @param fullName      First and last name of author.
      * @private
      */
-    _createAuthorConcept(authorConcept, fullName) {
-        this.context.api.router.createConceptItem(authorConcept.documentElement.outerHTML)
+    _createAuthorConcept(authorDocument, fullName) {
+        this.context.api.router.createConceptItem(authorDocument.documentElement.outerHTML)
             .then((uuid) => {
-                authorConcept.querySelector('conceptItem').setAttribute('guid', uuid)
+                authorDocument.querySelector('conceptItem').setAttribute('guid', uuid)
 
                 this.context.api.newsItem.addAuthor(this.name, {
                     uuid: uuid,
@@ -308,10 +308,11 @@ class AuthorEditComponent extends AuthorBaseComponent {
                     this.extendState({errors: null})
                 }
 
+                // AuthorItemComponent will update links in article
                 this.closeAndReload()
             })
             .catch(() => {
-                console.error('Error creating concept with xml:', authorConcept.documentElement.outerHTML)
+                console.error('Error creating concept with xml:', authorDocument.documentElement.outerHTML)
                 this._setError(this.getLabel('ximauthors-error-save'))
             })
     }
@@ -321,24 +322,18 @@ class AuthorEditComponent extends AuthorBaseComponent {
      *
      * @param uuid          UUID for author concept.
      * @param authorConcept Author concept.
-     * @param fullName      First and last name of author.
      * @param email         Email of author.
      * @private
      */
-    _updateAuthorConcept(uuid, authorConcept, fullName, email) {
+    _updateAuthorConcept(uuid, authorConcept) {
         this.context.api.router.updateConceptItem(uuid, authorConcept.documentElement.outerHTML)
             .then(() => {
-                this.context.api.newsItem.updateAuthorWithUUID(this.name, uuid, {
-                    name: fullName,
-                    email: email
-                })
-
                 if (this._componentHasErrors()) {
                     this.extendState({errors: null})
                 }
 
+                // AuthorItemComponent will update links in article
                 this.closeAndReload()
-
             })
             .catch(() => {
                 console.error('Error updating concept with xml:', authorConcept.documentElement.outerHTML)
