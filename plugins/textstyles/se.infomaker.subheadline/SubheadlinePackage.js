@@ -21,10 +21,17 @@ const subheadlinePackage = {
             de: 'Subheadline',
             sv: 'Underrubrik'
         })
+
         config.addLabel('subheadline.content', {
             en: 'Subheadline',
             de: 'Subheadline',
             sv: 'Underrubrikrik'
+        })
+
+        config.addLabel('subheadline.short', {
+            en: 'H2',
+            de: 'H2',
+            sv: 'UR'
         })
     }
 }

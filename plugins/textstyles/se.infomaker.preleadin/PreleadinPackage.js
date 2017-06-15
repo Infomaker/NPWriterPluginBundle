@@ -32,7 +32,7 @@ export default {
             sv: 'Överingress'
         })
 
-        config.addLabel('prealeadin.short', {
+        config.addLabel('preleadin.short', {
             en: 'PL',
             de: 'PL',
             sv: 'ÖI'
