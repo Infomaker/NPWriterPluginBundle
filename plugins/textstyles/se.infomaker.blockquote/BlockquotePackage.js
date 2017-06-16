@@ -11,19 +11,28 @@ const blockquotePackage = {
         config.addNode(Blockquote)
         config.addComponent(Blockquote.type, BlockquoteComponent)
         config.addConverter('newsml', BlockquoteConverter)
+
         config.addTextType({
             name: 'blockquote',
             data: {type: 'blockquote'}
         })
+
         config.addLabel('blockquote', {
             en: 'Blockquote',
             de: 'Blockequote',
             sv: 'Citat'
         })
+
         config.addLabel('blockquote.content', {
             en: 'Blockequote',
             de: 'Blockequote',
             sv: "Citat"
+        })
+
+        config.addLabel('blockquote.short', {
+            en: 'QUO',
+            de: 'QUO',
+            sv: "CIT"
         })
     }
 };
@@ -36,4 +45,3 @@ export default () => {
         console.info("Register method not yet available");
     }
 }
-

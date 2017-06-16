@@ -1,15 +1,14 @@
-import {Component, TextPropertyComponent} from 'substance'
+import TextstyleComponent from '../TextstyleComponent'
 
-class BlockquoteComponent extends Component {
+class BlockquoteComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-paragraph sc-blockquote')
-            .attr("data-id", this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, "content"]
-            }))
+        return super.render($$, {
+            textClassName: 'sc-blockquote',
+            labelClassName: '',
+            shortLabel: this.getLabel('blockquote.short'),
+            longLabel: this.getLabel('blockquote')
+        })
     }
 }
-
 
 export default BlockquoteComponent
