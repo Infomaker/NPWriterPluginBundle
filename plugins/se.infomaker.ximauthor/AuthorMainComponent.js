@@ -1,16 +1,14 @@
 import {Component} from 'substance'
-import {api, NilUUID} from 'writer'
+import {api, NilUUID, jxon, idGenerator} from 'writer'
 import AuthorListComponent from './AuthorListComponent'
+import AuthorEditComponent from './AuthorEditComponent'
+import AuthorTemplate from './template/author'
 
 class AuthorMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
         this.name = 'ximauthor'
-    }
-
-    didMount() {
-
     }
 
     getInitialState() {
@@ -28,10 +26,11 @@ class AuthorMainComponent extends Component {
     render($$) {
         const noSearch = api.getConfigValue(this.props.pluginConfigObject.id, 'noSearch');
 
-        const el = $$('div').ref('authorContainer').addClass('authors').append($$('h2').append(this.getLabel('Authors')));
+        const el = $$('div').ref('authorContainer').addClass('authors')
+            .append($$('h2')
+                .append(this.getLabel('Authors')));
 
         let searchComponent
-
         if (noSearch) {
             const AuthorAddComponent = this.context.componentRegistry.get('form-add');
 
@@ -85,8 +84,60 @@ class AuthorMainComponent extends Component {
     }
 
     createAuthor(authorTemp) {
-        api.newsItem.addSimpleAuthor(this.name, authorTemp.inputValue);
+        const handleConceptAuthors = api.getConfigValue(
+            'se.infomaker.ximauthor',
+            'handleConceptAuthors'
+        )
+
+        // Support for noSearch is to be backward compatible
+        const noSearch = api.getConfigValue(
+            'se.infomaker.ximauthor',
+            'noSearch'
+        )
+
+        if (!handleConceptAuthors || noSearch) {
+            api.newsItem.addSimpleAuthor(this.name, authorTemp.inputValue);
+            this.reloadAuthors()
+        } else {
+            const author = this._loadTemplate(authorTemp.inputValue)
+
+            this._updateObjectId(author)
+
+            this.context.api.ui.showDialog(AuthorEditComponent,
+                {
+                    author: author,
+                    close: this.closeFromDialog.bind(this),
+                    couldNotLoad: this.state.couldNotLoad
+                },
+                {
+                    primary: this.getLabel('Save'),
+                    title: this.getLabel('ximauthors-save') + ' ' + authorTemp.inputValue,
+                    global: true
+                }
+            )
+        }
+    }
+
+    closeFromDialog() {
         this.reloadAuthors()
+    }
+
+    _updateObjectId(author) {
+        author.concept.metadata.object['@id'] = idGenerator()
+    }
+
+    _loadTemplate(fullName) {
+        const parser = new DOMParser();
+        const authorXml = parser.parseFromString(AuthorTemplate.author, 'text/xml').firstChild
+
+        const nameArray = fullName.split(' ')
+        const firstName = nameArray.shift()
+        const lastName = nameArray.join(' ')
+
+        authorXml.querySelector('itemMeta itemMetaExtProperty[type="imext:firstName"]').setAttribute('value', firstName)
+        authorXml.querySelector('itemMeta itemMetaExtProperty[type="imext:lastName"]').setAttribute('value', lastName)
+
+        return jxon.build(authorXml)
     }
 }
 

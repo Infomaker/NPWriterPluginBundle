@@ -10,7 +10,6 @@ class AuthorValidation extends Validator {
         if(api.newsItem.getAuthors().length === 0) {
             this.addWarning(api.getLabel('validation-no-author'))
         }
-
     }
 }
 

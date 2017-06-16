@@ -1,45 +1,42 @@
-import {Component, FontAwesomeIcon} from 'substance'
-const {isObject, find} = writer.lodash
+import {FontAwesomeIcon} from 'substance'
+import AuthorBaseComponent from './AuthorBaseComponent'
 
-class AuthorInfoComponent extends Component {
+
+class AuthorInfoComponent extends AuthorBaseComponent {
 
     constructor(...args) {
         super(...args)
     }
 
-    dispose() {
-        // TODO: How to dispose?
-        super.dispose()
+    getInitialState() {
+        return {
+            author: this.props.author
+        }
     }
 
     render($$) {
-        // TODO: add support for avatar?
-        let el = $$('div').addClass('author__info')
+        const el = $$('div').addClass('author__info')
+        const description = this.getDefinition('drol:long')
 
-        let description = find(this.props.author.definition, function (def) {
-            return def['@role'] === 'drol:long'
-        });
+        const email = this.getDataElement('email')
+        const phone = this.getDataElement('phone')
 
         if (description) {
-            var descriptionEl = $$('p').append(description['keyValue'])
+            const descriptionEl = $$('p').append(description)
             el.append(descriptionEl);
         }
 
-        let email = this.findAttribute(this.props.author, 'email')
         if (email) {
-            let emailEl = $$('a')
-                .append($$(FontAwesomeIcon, {icon: 'fa-envelope-o'}))
-                .attr('href', 'mailto:' + email)
+            const emailEl = $$('a')
+                .append($$(FontAwesomeIcon, {icon: 'fa-envelope-o'})).attr('href', 'mailto:' + email)
                 .append(email)
 
             el.append(emailEl)
         }
 
-        let phone = this.findAttribute(this.props.author, 'phone')
         if (phone) {
             let phoneEl = $$('a')
-                .append($$(FontAwesomeIcon, {icon: 'fa-phone'}))
-                .attr('href', 'tel:' + phone)
+                .append($$(FontAwesomeIcon, {icon: 'fa-phone'})).attr('href', 'tel:' + phone)
                 .append(phone)
 
             el.append(phoneEl)
@@ -48,27 +45,7 @@ class AuthorInfoComponent extends Component {
         return el
     }
 
-    // TODO: Should be refactored to util somewhere
-    findAttribute(object, attribute) {
-        let match;
-
-        function iterateObject(target, name) {
-            Object.keys(target).forEach(function (key) {
-                if (isObject(target[key])) {
-                    iterateObject(target[key], name);
-                } else if (key === name) {
-                    match = target[key];
-                }
-            })
-        }
-
-        iterateObject(object, attribute)
-
-        return match ? match : undefined;
-    }
-
-    onClose(/* status */) {
-      // TODO: What to do?
+    onClose() {
     }
 }
 
