@@ -6,11 +6,12 @@ function getNewspilotRestUrl(newspilotServer, articleId) {
 
 export default class NPFetcher {
 
-    static getArticle(newspilotServer, articleId) {
+    static getArticle(newspilotHostName, articleId) {
         return new Promise((resolve, reject) => {
+            const newspilotServer = NPFetcher.getNewspilotServer(newspilotHostName)
             const url = getNewspilotRestUrl(newspilotServer, articleId)
-            const headers = Auth.getAuthHeader(Auth.getCredentials());
 
+            const headers = Auth.getAuthHeader(Auth.getCredentials());
             headers.append('Accept', 'application/json')
 
             fetch(url, {headers: headers, mode: 'cors'})
@@ -25,6 +26,10 @@ export default class NPFetcher {
                     reject(e)
                 })
         })
+    }
+
+    static getNewspilotServer(hostName) {
+        return 'https://' + hostName + ':8443'
     }
 
 }

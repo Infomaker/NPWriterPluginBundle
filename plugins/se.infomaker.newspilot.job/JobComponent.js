@@ -54,15 +54,13 @@ class JobComponent extends Component {
             return
         }
 
-        const newspilotServer = this.getNewspilotServer()
+        const newspilotHostName = this.getNewspilotHostName()
 
-        const newspilotHost = this.extractDomain(newspilotServer)
-
-        NPFetcher.getArticle(newspilotServer, this.state.articleId)
+        NPFetcher.getArticle(newspilotHostName, this.state.articleId)
             .then((article) => {
                 let {user, password} = Auth.getCredentials()
                 this.gateway = new NPGateway(
-                    newspilotHost, user, password, article.jobId, this.updateModel.bind(this)
+                    newspilotHostName, user, password, article.jobId, this.updateModel.bind(this)
                 )
                 this.extendState({error: undefined})
             })
@@ -70,7 +68,6 @@ class JobComponent extends Component {
                 this.extendState({error: e})
             })
     }
-
 
     reconnect() {
         try {
@@ -82,34 +79,15 @@ class JobComponent extends Component {
         this.initGateway()
     }
 
-
     getNewspilotLoginUrl() {
-        return this.getNewspilotServer() + '/newspilot/rest/users/me'
+        return NPFetcher.getNewspilotServer(this.getNewspilotHostName()) + '/newspilot/rest/users/me'
     }
 
-    getNewspilotServer() {
-        return api.getConfigValue('se.infomaker.newspilot.job', 'newspilotServer')
-    }
-
-    extractDomain(url) {
-        let domain;
-
-        // Find & remove protocol (http, ftp, etc.) and get domain
-        if (url.indexOf("://") > -1) {
-            domain = url.split('/')[2];
-        }
-        else {
-            domain = url.split('/')[0];
-        }
-
-        // Find & remove port number
-        domain = domain.split(':')[0];
-
-        return domain;
+    getNewspilotHostName() {
+        return api.getConfigValue('se.infomaker.newspilot.job', 'newspilotHostName')
     }
 
     render($$) {
-
         const el = $$('div').addClass('npjob')
 
         if (this.state.articleId > 0) {
@@ -141,7 +119,6 @@ class JobComponent extends Component {
 
         return el;
     }
-
 }
 
 export default JobComponent
