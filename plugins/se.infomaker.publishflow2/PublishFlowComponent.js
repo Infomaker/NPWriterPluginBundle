@@ -44,7 +44,7 @@ class PublishFlowComponent extends Component {
     }
 
     getInitialState() {
-        let status = api.newsItem.getPubStatus()
+        let status = {qcode: 'imext:draft'} //api.newsItem.getPubStatus()
         this.publishFlowMgr = new PublishFlowManager(pluginId)
 
         return {

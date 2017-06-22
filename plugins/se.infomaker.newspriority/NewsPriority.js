@@ -3,6 +3,30 @@ import NewsPriorityComponent from './NewsPriorityComponent'
 import NewsPriorityNode from './NewsPriorityNode'
 import NewsPriorityConverter from './NewsPriorityConverter'
 
+class NewsPriorityAPI {
+
+    static match(params) {
+        console.log(`Request Match:: ${params}`)
+        return true
+    }
+
+    execute(tx, params) {
+        console.log(`Request Execute:: ${tx} - ${params}`)
+        console.log('Doc', params.collabSession.document, 'Nodes', params.collabSession.document.getNodes())
+
+        const {req} = params
+
+        if(req.query.info) {
+            const newsprio = tx.get('RYaudnAJj8gQ')
+            return JSON.stringify(newsprio)
+        } else {
+            const score = req.query.score ? req.query.score : 1
+            return tx.set(['RYaudnAJj8gQ', 'score'], parseInt(score,10))
+        }
+
+    }
+}
+
 export default {
     name: 'newspriority',
     id: 'se.infomaker.newspriority',
@@ -27,6 +51,7 @@ export default {
             sv: 'Ange datum och tid'
         })
 
+        if(config.addAPI) config.addAPI(NewsPriorityAPI)
 
 
     }

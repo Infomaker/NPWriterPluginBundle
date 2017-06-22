@@ -1,4 +1,6 @@
 import PublishFlowComponent from './PublishFlowComponent'
+import PublishFlowNode from './PublishFlowNode'
+import PublishFlowConverter from './PublishFlowConverter'
 
 export default {
     name: 'publishflow2',
@@ -15,6 +17,9 @@ export default {
             },
             PublishFlowComponent
         )
+
+        config.addNode(PublishFlowNode)
+        config.addConverter('newsml', PublishFlowConverter)
 
         config.addLabel('Save', {
             sv: 'Spara'
