@@ -1,15 +1,14 @@
-const {Component, TextPropertyComponent} = substance
+import TextstyleComponent from '../TextstyleComponent'
 
-class PreleadinComponent extends Component {
-
+class PreleadinComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-preleadin')
-            .attr('data-id', this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, 'content']
-            }));
+        return super.render($$, {
+            textClassName: 'sc-preleadin',
+            labelClassName: '',
+            shortLabel: this.getLabel('preleadin.short'),
+            longLabel: this.getLabel('preleadin')
+        })
     }
 }
 
-export default PreleadinComponent;
+export default PreleadinComponent

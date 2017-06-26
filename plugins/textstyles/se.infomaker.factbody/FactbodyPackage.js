@@ -22,13 +22,20 @@ export default {
             name: this.name,
             data: {type: FactbodyNode.type}
         })
+
         config.addLabel('factbody', {
             en: 'Factbody',
             sv: 'Infotext'
         })
+
         config.addLabel('factbody.content', {
             en: 'Factbody',
             sv: 'Infotext'
+        })
+
+        config.addLabel('factbody.short', {
+            en: 'FCT',
+            sv: 'IT'
         })
     }
 }

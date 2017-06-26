@@ -1,15 +1,14 @@
-const {Component, TextPropertyComponent} = substance
+import TextstyleComponent from '../TextstyleComponent'
 
-class PreambleComponent extends Component {
-
+class FactbodyComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-fact-body')
-            .attr('data-id', this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, 'content']
-            }));
+        return super.render($$, {
+            textClassName: 'sc-fact-body',
+            labelClassName: '',
+            shortLabel: this.getLabel('factbody.short'),
+            longLabel: this.getLabel('factbody')
+        })
     }
 }
 
-export default PreambleComponent;
+export default FactbodyComponent

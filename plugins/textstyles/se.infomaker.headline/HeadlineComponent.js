@@ -1,13 +1,13 @@
-import {Component, TextPropertyComponent} from 'substance'
+import TextstyleComponent from '../TextstyleComponent'
 
-class HeadlineComponent extends Component {
+class HeadlineComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-headline')
-            .attr('data-id', this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, 'content']
-            }))
+        return super.render($$, {
+            textClassName: 'sc-headline',
+            labelClassName: 'sc-headline-label',
+            shortLabel: this.getLabel('headline.short'),
+            longLabel: this.getLabel('headline')
+        })
     }
 }
 

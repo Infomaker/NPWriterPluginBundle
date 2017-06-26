@@ -21,13 +21,20 @@ export default {
             name: this.name,
             data: {type: DropheadNode.type}
         })
+
         config.addLabel('drophead', {
             en: 'Drophead',
             sv: 'Nedryckare'
         })
+
         config.addLabel('drophead.content', {
             en: 'Drophead',
             sv: 'Nedryckare'
+        })
+
+        config.addLabel('drophead.short', {
+            en: 'DH',
+            sv: 'NED'
         })
     }
 }
