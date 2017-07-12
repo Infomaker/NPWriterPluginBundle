@@ -1,4 +1,4 @@
-import insertImage from "./insertImage";
+import insertImage from "../models/insertImage";
 import {DragAndDropHandler} from "substance";
 import {api} from "writer";
 
@@ -10,7 +10,7 @@ class DropImageUri extends DragAndDropHandler {
     }
 
     match(params) {
-        const isImage = api.getPluginModule('se.infomaker.ximimage', 'isImage')
+        const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
 
         return params.type === 'uri' && isImage(params.uri, api)
     }

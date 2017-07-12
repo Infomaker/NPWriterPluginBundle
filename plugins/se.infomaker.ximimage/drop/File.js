@@ -1,5 +1,5 @@
 import {lodash, api} from "writer";
-import insertImage from "./insertImage";
+import insertImage from "../models/insertImage";
 import {DragAndDropHandler} from "substance";
 
 // Implements a file drop handler
@@ -11,16 +11,23 @@ class DropImageFile extends DragAndDropHandler {
     drop(tx, params) {
         const nodeId = insertImage(tx, params.file)
         const maxIterations = 500
+        const doc = api.editorSession.getDocument()
+
+
 
         let iterations = 0
         let intervalId = setInterval(() => {
-            if (tx._state === 'idle') {
+            if (doc.get(nodeId)) {
                 clearInterval(intervalId)
                 this.sync(tx, nodeId)
             }
             else if (iterations++ > maxIterations) {
+                console.error('Newly inserted node still not available, BAILING OUT!')
                 clearInterval(intervalId)
                 this.showErrorNotification(tx, nodeId, 'Failed adding image due to internal transaction state not finishing')
+            }
+            else {
+                console.warn('Newly inserted node not yet availabel, waiting...')
             }
         }, 50)
     }

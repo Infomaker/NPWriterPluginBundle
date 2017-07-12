@@ -21,13 +21,20 @@ export default {
             name: this.name,
             data: {type: DatelineNode.type}
         })
+
         config.addLabel('dateline', {
             en: 'Dateline',
-            sv: 'Ortdatering'
+            sv: 'Ortsdatering'
         })
+
         config.addLabel('dateline.content', {
             en: 'Dateline',
-            sv: 'Ortdatering'
+            sv: 'Ortsdatering'
+        })
+
+        config.addLabel('dateline.short', {
+            en: 'DT',
+            sv: 'DAT'
         })
     }
 }

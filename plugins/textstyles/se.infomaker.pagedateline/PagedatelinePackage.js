@@ -21,13 +21,20 @@ export default {
             name: this.name,
             data: {type: PagedatelineNode.type}
         })
+
         config.addLabel('pagedateline', {
             en: 'Pagedateline',
             sv: 'Vinjett'
         })
+
         config.addLabel('pagedateline.content', {
             en: 'Pagedateline',
             sv: 'Vinjett'
+        })
+
+        config.addLabel('pagedateline.short', {
+            en: 'PDL',
+            sv: 'VIN'
         })
     }
 }
