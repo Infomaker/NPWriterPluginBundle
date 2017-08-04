@@ -16,6 +16,10 @@ class YoutubeEmbedComponent extends Component {
         api.editorSession.off(this)
     }
 
+    shouldRerender() {
+        return this.props.node.hasPayload() ? false : true
+    }
+
     grabFocus() {
         let startTime = this.refs.startTime
         this.context.editorSession.setSelection({
@@ -37,7 +41,9 @@ class YoutubeEmbedComponent extends Component {
         const content = $$('div')
             .addClass('im-blocknode__content full-width')
 
-        const thumbnail = $$('img').attr('src', this.props.node.thumbnail_url).attr('style', 'width:100%')
+
+        //<iframe width="560" height="315" src="https://www.youtube.com/embed/fvlkV_FhuEY" frameborder="0" allowfullscreen></iframe>
+        const embedContainer = $$('div').html(this.props.node.html)
 
         const startTimeEditor = $$(TextPropertyEditor, {
             tagName: 'div',
@@ -45,7 +51,7 @@ class YoutubeEmbedComponent extends Component {
             doc: this.props.doc
         }).ref('startTime').addClass('start-time-editor')
 
-        content.append(thumbnail)
+        content.append(embedContainer)
         content.append($$(FontAwesomeIcon, {icon: 'fa-clock-o'}))
         content.append(startTimeEditor)
         return content
