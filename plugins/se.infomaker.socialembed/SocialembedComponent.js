@@ -1,27 +1,25 @@
 import {Component, FontAwesomeIcon} from 'substance'
+import TwitterComponent from './TwitterComponent'
+import FacebookComponent from './FacebookComponent'
+import {api} from 'writer'
 
 class SocialembedComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this.rerender, this, {path: [this.props.node.id]})
         this.context.api.document.triggerFetchResourceNode(this.props.node, {history: false})
-
-        /**
-         *   // api.browser.addExternalScript('//platform.twitter.com/widgets.js').then(() => {
-            //     twttr.widgets.load(this.refs.embedContent.el.el).then((e) => {
-            //         setTimeout(() => {
-            //             api.editorSession.transaction((tx) => {
-            //                 tx.set([node.id, 'html'], this.refs.embedContent.el.el.innerHTML)
-            //             })
-            //         }, 500)
-            //
-            //     })
-            // })
-         */
     }
 
     dispose() {
         this.context.editorSession.off(this)
+    }
+
+    shouldRerender(props) {
+        const node = this.props.node
+        if (node.hasPayload()) {
+            return false
+        }
+        return true
     }
 
     render($$) {
@@ -36,13 +34,11 @@ class SocialembedComponent extends Component {
 
         // Only when HTML has been resolved
         if (node.hasPayload()) {
-
             const innerEl = $$('div').ref('embed-container')
             const headerEl = this.renderHeader($$, node)
             const contentEl = this.renderContent($$, node)
 
             innerEl.append([headerEl, contentEl])
-
             el.append(innerEl)
 
         } else if (node.errorMessage) {
@@ -57,10 +53,32 @@ class SocialembedComponent extends Component {
         return el
     }
 
-    renderContent($$, node) {
+    getDefaultRenderer($$) {
+        return this.getContentContainer($$).html(this.props.node.html)
+    }
+
+
+    /**
+     * Returns a div component with correct class and ref
+     * @param $$
+     */
+    getContentContainer($$) {
         return $$('div').ref('embedContent')
             .addClass('im-blocknode__content full-width')
-            .html(node.html)
+    }
+
+    renderContent($$, node) {
+        const availableRenderComponents = [
+            {linkType: 'x-im/tweet', component: TwitterComponent},
+            {linkType: 'x-im/facebook-post', component: FacebookComponent}
+        ]
+
+        const renderComponent = availableRenderComponents.find((component) => {
+            return component.linkType === node.linkType
+        })
+
+        return renderComponent ? this.getContentContainer($$).append($$(renderComponent.component, {node: node})) : this.getDefaultRenderer($$)
+
     }
 
     renderHeader($$, node) {

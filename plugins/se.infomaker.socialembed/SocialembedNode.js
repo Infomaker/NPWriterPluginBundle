@@ -81,7 +81,7 @@ class SocialembedNode extends BlockNode {
                     parentNode.insertBefore(newImgNode, parentNode.firstChild)
                     json.html = tplNode.innerHTML
                 }
-                catch(ex) {
+                catch (ex) {
                     // FIXME: Maybe tell the user or log that this does not work no longer
                 }
 
@@ -123,11 +123,14 @@ class SocialembedNode extends BlockNode {
         if (matches && matches.length === 2) {
             postId = matches[1];
         }
+        //<div class="fb-page" data-href="https://www.facebook.com/Paras-Design-393209377418188" data-tabs="timeline" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"></div>
 
         api.router.get('/api/resourceproxy', {url: apiBase})
             .then(response => api.router.checkForOKStatus(response))
             .then(response => api.router.toJson(response))
             .then(json => {
+
+                let newHtml = json.html.replace('fb-post', 'fb-post" data-adapt-container-width="true')
                 cb(null, {
                     author: json.author_url,
                     html: json.html,

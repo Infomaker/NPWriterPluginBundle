@@ -12,6 +12,8 @@ module.exports = {
   "globals": {
     "Promise": true,
     "Map": true,
+    "twttr": true,
+    "FB": true,
     'expect': true,
     'it': true,
     'describe': true,
