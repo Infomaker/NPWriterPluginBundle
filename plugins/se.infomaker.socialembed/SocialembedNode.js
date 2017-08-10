@@ -130,7 +130,6 @@ class SocialembedNode extends BlockNode {
             .then(response => api.router.toJson(response))
             .then(json => {
 
-                let newHtml = json.html.replace('fb-post', 'fb-post" data-adapt-container-width="true')
                 cb(null, {
                     author: json.author_url,
                     html: json.html,

@@ -1,7 +1,6 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import TwitterComponent from './TwitterComponent'
 import FacebookComponent from './FacebookComponent'
-import {api} from 'writer'
 
 class SocialembedComponent extends Component {
 
@@ -14,12 +13,10 @@ class SocialembedComponent extends Component {
         this.context.editorSession.off(this)
     }
 
-    shouldRerender(props) {
+    shouldRerender() {
         const node = this.props.node
-        if (node.hasPayload()) {
-            return false
-        }
-        return true
+        return !node.hasPayload();
+
     }
 
     render($$) {
