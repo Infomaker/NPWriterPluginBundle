@@ -1,5 +1,6 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
 import {lodash} from 'writer'
+
 const find = lodash.find
 
 class TagEditBaseComponent extends Component {
@@ -144,7 +145,20 @@ class TagEditBaseComponent extends Component {
             .on('click', this.createTopic)
 
         el.append($$('small').addClass('text-muted').append(this.getLabel('ximtags-type-question-label')))
-        el.append([personBtn, organisationBtn, topicBtn])
+
+        var buttons = []
+
+        if (this.checkEditable('x-im/person')) {
+            buttons.push(personBtn)
+        }
+        if (this.checkEditable("x-im/organisation")) {
+            buttons.push(organisationBtn)
+        }
+        if (this.checkEditable("x-im/topic")) {
+            buttons.push(topicBtn)
+        }
+
+        el.append(buttons)
 
         if (this.props.exists) {
             el.append($$('div').addClass('pad-top').append($$('div').addClass('alert alert-info').append(
@@ -158,6 +172,12 @@ class TagEditBaseComponent extends Component {
 
         return el
     }
+
+    checkEditable(type) {
+        let tagConfig = this.props.tagsConfig
+        return tagConfig[type] && tagConfig[type].editable
+    }
+
 
     createPerson() {
         this.send('close')

@@ -103,7 +103,8 @@ class TagsMainComponent extends Component {
                     close: this.closeFromDialog.bind(this),
                     createPerson: this.createPerson.bind(this),
                     createOrganisation: this.createOrganisation.bind(this),
-                    createTopic: this.createTopic.bind(this)
+                    createTopic: this.createTopic.bind(this),
+                    tagsConfig: api.getConfigValue('se.infomaker.ximtags', 'tags')
                 }, {
                     primary: false,
                     title: this.getLabel('ximtags-create') + " " + tag.inputValue,
