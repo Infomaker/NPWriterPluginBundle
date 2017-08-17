@@ -1,46 +1,26 @@
 import {Component} from "substance"
-import ToggleComponent from "./ToggleComponent"
+import {api} from "writer"
 
 class ArticleOptionsComponent extends Component {
-
-    /**
-     * Setup config for plugin
-     */
-    setupConfig() {
-        this.pluginName = 'artilceoptions'
-        this.options = this.context.api.getConfigValue(
-            'se.infomaker.articleoptions',
-            'options'
-        )
-    }
 
     /**
      * Initial state
      */
     getInitialState() {
-        this.setupConfig()
-    }
+        this.pluginName = 'articleoptions'
+        this.options = this.context.api.getConfigValue(
+            'se.infomaker.articleoptions',
+            'options'
+        )
 
-    /**
-     * Render options
-     *
-     * @param $$
-     * @returns {*}
-     */
-    renderOptions($$) {
-        const optionGroupDiv = $$('div').addClass('option-group-' + this.pluginName)
+        Object.keys(this.options).forEach(id => {
+            const links = api.newsItem.getContentMetaLinkByType(
+                this.pluginName,
+                this.options[id].type
+            )
 
-        Object.keys(this.options).forEach((option) => {
-
-            const toggleBtn = $$(ToggleComponent, {
-                option: this.options[option],
-                pluginName: this.pluginName
-            })
-
-            optionGroupDiv.append(toggleBtn)
+            this.options[id].checked = (links && links.length > 0)
         })
-
-        return optionGroupDiv
     }
 
     /**
@@ -58,6 +38,68 @@ class ArticleOptionsComponent extends Component {
             .append(btns)
 
         return el
+    }
+
+    /**
+     * Render options
+     *
+     * @param $$
+     * @returns {*}
+     */
+    renderOptions($$) {
+        const optionGroupDiv = $$('div').addClass('option-group-' + this.pluginName)
+        const Toggle = api.ui.getComponent('toggle')
+
+        Object.keys(this.options).forEach((id) => {
+            const option = this.options[id]
+            optionGroupDiv.append(
+                $$(Toggle, {
+                    id: id,
+                    label: option.label,
+                    checked: option.checked,
+                    onToggle: (checked) => {
+                        option.checked = checked
+                        this.updateMetadata(option)
+                    }
+                })
+            )
+        })
+
+        return optionGroupDiv
+    }
+
+    updateMetadata(option) {
+        try {
+            if (!option.checked) {
+                this.removeMetadataLink(option)
+            }
+            else {
+                this.addMetadataLink(option)
+            }
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    removeMetadataLink(option) {
+        api.newsItem.removeLinkContentMetaByTypeAndRel(
+            this.pluginName,
+            option.type,
+            option.rel
+        )
+    }
+
+    addMetadataLink(option) {
+        api.newsItem.addContentMetaLink(
+            this.pluginName,
+            {
+                '@title': option.label,
+                '@uri': option.uri + '/' + option.id,
+                '@rel': option.rel,
+                '@type': option.type
+            }
+        )
     }
 }
 
