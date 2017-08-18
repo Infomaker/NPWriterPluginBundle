@@ -15,6 +15,6 @@ export default {
         config.addComponent(SocialembedNode.type, SocialembedComponent)
         config.addConverter('newsml', SocialembedConverter)
         config.addMacro(SocialembedMacro)
-        config.addDragAndDrop(DropSocialEmbed)
+        config.addDropHandler(new DropSocialEmbed())
     }
 }

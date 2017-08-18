@@ -27,7 +27,7 @@ export default {
         // Add node
         config.addNode(YoutubeEmbedNode)
 
-        config.addDragAndDrop(DropUri)
+        config.addDropHandler(new DropUri())
         config.addMacro(YoutubeEmbedMacro)
 
     }
