@@ -34,9 +34,9 @@ export default {
         config.addConverter('newsml', XimimageConverter)
 
         // Drop handlers
-        config.addDragAndDrop(DropImageUUID)
-        config.addDragAndDrop(DropImageFile)
-        config.addDragAndDrop(DropImageUri)
+        config.addDropHandler(new DropImageUUID())
+        config.addDropHandler(new DropImageFile())
+        config.addDropHandler(new DropImageUri())
 
         config.addPluginModule(
             'se.infomaker.ximimage.ximimagehandler',

@@ -20,8 +20,8 @@ export default {
         config.addContentMenuTopTool('insert-pdfs', InsertPdfsTool)
         config.addCommand('insert-pdfs', InsertPdfsCommand)
         config.addNode(XimpdfFileNode)
-        config.addDragAndDrop(DropPdfFile)
-        config.addDragAndDrop(DropPdfUri)
+        config.addDropHandler(new DropPdfFile())
+        config.addDropHandler(new DropPdfUri())
         config.addMacro(XimpdfMacro)
         config.addFileProxy(XimpdfFileProxy)
         config.addLabel('Insert PDF document', {
