@@ -21,13 +21,20 @@ export default {
             name: this.name,
             data: {type: MadmansrowNode.type}
         })
+
         config.addLabel('madmansrow', {
             en: 'Madmansrow',
             sv: 'Dårrad'
         })
+
         config.addLabel('madmansrow.content', {
             en: 'Madmansrow',
             sv: 'Dårrad'
+        })
+
+        config.addLabel('madmansrow.short', {
+            en: 'MAD',
+            sv: 'DÅR'
         })
     }
 }

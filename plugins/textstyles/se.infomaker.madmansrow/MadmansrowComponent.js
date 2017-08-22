@@ -1,15 +1,14 @@
-const {Component, TextPropertyComponent} = substance
+import TextstyleComponent from '../TextstyleComponent'
 
-class MadmansrowComponent extends Component {
-
+class MadmansrowComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-madmansrow')
-            .attr('data-id', this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, 'content']
-            }));
+        return super.render($$, {
+            textClassName: 'sc-madmansrow',
+            labelClassName: 'sc-madmansrow-label',
+            shortLabel: this.getLabel('madmansrow.short'),
+            longLabel: this.getLabel('madmansrow')
+        })
     }
 }
 
-export default MadmansrowComponent;
+export default MadmansrowComponent

@@ -36,6 +36,10 @@ The `tags` config decides what types of concepts that are handled by the plugin.
 Please note that `tags` must correspond with Concept backend configuration for `tags` search so that the same
 concept types are used both in plugin and in Concept backend.
 
+If editable is true, the tag may be created and updated. If false, the tag is not possible to create and just the information about
+the tag is shown when clicking on an existing tag.
+
+
 ## Tag concept format
 See [Concept Items](https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem).
 

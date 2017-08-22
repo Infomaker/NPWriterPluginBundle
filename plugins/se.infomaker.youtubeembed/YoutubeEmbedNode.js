@@ -4,6 +4,21 @@ import {api} from 'writer'
 class YoutubeEmbedNode extends BlockNode {
 
     /**
+     * Parses the string embed code and changes the width value
+     * @param {string} initialHTML
+     */
+    getEmbedCode(initialHTML) {
+        const temp = document.createElement('div');
+        temp.innerHTML = initialHTML
+
+        const youtubeEmbedElement = temp.firstChild
+        youtubeEmbedElement.setAttribute('width', '100%')
+
+        return youtubeEmbedElement.outerHTML
+    }
+
+
+    /**
      * Method called from a resourcemanager to fetch asynchronos payload
      *
      * @param context
@@ -18,10 +33,12 @@ class YoutubeEmbedNode extends BlockNode {
         api.router.get('/api/resourceproxy/', {url: apiUrl})
             .then(response => response.json())
             .then(json => {
+
+                const html = this.getEmbedCode(json.html)
                 cb(
                     null,
                     {
-                        html:json.html,
+                        html:html,
                         uri:url,
                         thumbnail_url: json.thumbnail_url,
                         title: json.title

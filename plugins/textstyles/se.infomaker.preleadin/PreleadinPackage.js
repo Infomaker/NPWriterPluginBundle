@@ -21,13 +21,22 @@ export default {
             name: this.name,
             data: {type: PreleadinNode.type}
         })
+
         config.addLabel('preleadin', {
             en: 'Preleadin',
             sv: 'Överingress'
         })
+
         config.addLabel('preleadin.content', {
             en: 'Preleadin',
             sv: 'Överingress'
         })
+
+        config.addLabel('preleadin.short', {
+            en: 'PL',
+            de: 'PL',
+            sv: 'ÖI'
+        })
+
     }
 }

@@ -12,7 +12,7 @@ export default {
 
         config.addSidebarTab('contentrelations', 'Relaterat innehåll')
         config.addComponentToSidebarWithTabId('contentrelations', 'contentrelations', ContentRelationsMainComponent)
-        config.addDragAndDrop(ContentRelationsDropHandler)
+        config.addDropHandler(new ContentRelationsDropHandler())
         config.addComponent('contentrelations', ContentRelationsComponent)
         config.addNode(ContentRelationsNode)
         config.addConverter('newsml', ContentRelationsConverter)

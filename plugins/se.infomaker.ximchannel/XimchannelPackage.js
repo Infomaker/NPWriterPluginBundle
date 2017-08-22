@@ -3,7 +3,7 @@ import './scss/conceptchannel.scss'
 
 export default {
     id: 'se.infomaker.ximchannel',
-    name: 'concept-channel',
+    name: 'ximchannel',
     version: '{{version}}',
     configure: function(config) {
         config.addComponentToSidebarWithTabId(

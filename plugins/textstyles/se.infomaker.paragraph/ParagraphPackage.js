@@ -16,13 +16,20 @@ const paragraphPackage = {
             name: 'paragraph',
             data: {type: 'paragraph'}
         })
+
         config.addLabel('paragraph', {
             en: 'Paragraph',
             de: 'Paragraph'
         })
+
         config.addLabel('paragraph.content', {
             en: 'Paragraph',
             de: 'Paragraph'
+        })
+
+        config.addLabel('paragraph.short', {
+            en: '¶',
+            sv: '¶'
         })
     }
 };
@@ -34,4 +41,3 @@ export default () => {
         console.info("Register method not yet available");
     }
 }
-

@@ -1,13 +1,13 @@
-import {Component, TextPropertyComponent} from 'substance'
+import TextstyleComponent from '../TextstyleComponent'
 
-class ParagraphComponent extends Component {
+class ParagraphComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-paragraph')
-            .attr("data-id", this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, "content"]
-            }))
+        return super.render($$, {
+            textClassName: 'sc-paragraph',
+            labelClassName: '',
+            shortLabel: this.getLabel('paragraph.short'),
+            longLabel: this.getLabel('paragraph')
+        })
     }
 }
 

@@ -1,15 +1,14 @@
-const {Component, TextPropertyComponent} = substance
+import TextstyleComponent from '../TextstyleComponent'
 
-class DatelineComponent extends Component {
-
+class DatelineComponent extends TextstyleComponent {
     render($$) {
-        return $$('div')
-            .addClass('sc-dateline')
-            .attr('data-id', this.props.node.id)
-            .append($$(TextPropertyComponent, {
-                path: [this.props.node.id, 'content']
-            }));
+        return super.render($$, {
+            textClassName: 'sc-dateline',
+            labelClassName: 'sc-dateline-label',
+            shortLabel: this.getLabel('dateline.short'),
+            longLabel: this.getLabel('dateline')
+        })
     }
 }
 
-export default DatelineComponent;
+export default DatelineComponent

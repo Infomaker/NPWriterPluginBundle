@@ -1,17 +1,13 @@
-import { Component, TextPropertyComponent } from 'substance'
+import TextstyleComponent from '../TextstyleComponent'
 
-class SubheadlineComponent extends Component {
+class SubheadlineComponent extends TextstyleComponent {
     render($$) {
-        let node = this.props.node;
-
-        return $$('div')
-            .addClass("sc-subheadline sc-level-" + node.level)
-            .attr('data-id', node.id)
-            .append(
-                $$(TextPropertyComponent, {
-                    path: [node.id, 'content']
-                })
-            )
+        return super.render($$, {
+            textClassName: 'sc-subheadline',
+            labelClassName: 'sc-subheadline-label',
+            shortLabel: this.getLabel('subheadline.short'),
+            longLabel: this.getLabel('subheadline')
+        })
     }
 }
 
