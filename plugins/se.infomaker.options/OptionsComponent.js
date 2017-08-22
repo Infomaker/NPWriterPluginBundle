@@ -24,13 +24,14 @@ class OptionsComponent extends Component {
         const SelectComponent = api.ui.getComponent('select')
 
         return $$('div')
-        .append(
-            $$(SelectComponent, {
-                list: this.state.list,
-                onChangeList: (list, selected) => this.onChangeList(list, selected),
-                onChangeToggleList: (list, selected) => this.onChangeToggleList(list, selected)
-            })
-        )
+            .append(
+                $$(SelectComponent, {
+                    list: this.state.list,
+                    onChangeList: (list, selected) => this.onChangeList(list, selected),
+                    onChangeToggleList: (list, selected) => this.onChangeToggleList(list, selected),
+                    isSelected: (data) => this.isSelected(data)
+                })
+            )
     }
 
 
@@ -144,25 +145,68 @@ class OptionsComponent extends Component {
      * @param selectedOption The option clicked in the list
      */
     onChangeToggleList(selectedList, selectedOption) {
-        if (this.getDefaultValue(selectedList) === selectedOption.title) {
-            this.context.api.newsItem.removeLinkContentMetaByTypeAndRel(
-                selectedOption.uri,
-                selectedList.link.type,
-                selectedList.link.rel
-            )
+
+        const existingLinks = this.context.api.newsItem.getContentMetaLinkByType(
+            this.pluginName,
+            selectedOption.type
+        )
+
+        let found = false
+        for (let i = 0; i < existingLinks.length; i++) {
+            if (existingLinks[i]["@uri"] === selectedOption.uri) {
+                found = true
+                break
+            }
         }
-        else {
-            this.context.api.newsItem.addContentMetaLink(selectedOption.uri, {
-                '@rel': selectedList.link.rel,
-                '@title': selectedOption.title,
-                '@type': selectedList.link.type,
-                '@uri': selectedOption.uri
-            })
+
+        if (this.options.multivalue) {
+            if (found) {
+                this.context.api.newsItem.removeLinkContentMetaByTypeAndRel(
+                    selectedOption.uri,
+                    selectedOption.type || selectedList.link.type,
+                    selectedOption.rel || selectedList.link.rel
+                )
+            }
+            else {
+                this.context.api.newsItem.addContentMetaLink(selectedOption.uri, {
+                    '@rel': selectedOption.rel || selectedList.link.rel,
+                    '@title': selectedOption.title,
+                    '@type': selectedOption.type || selectedList.link.type,
+                    '@uri': selectedOption.uri
+                })
+            }
+        } else {
+            this.clearContentMetaLinks(selectedList)
+            if (!found) {
+                this.context.api.newsItem.addContentMetaLink(selectedOption.uri, {
+                    '@rel': selectedOption.rel || selectedList.link.rel,
+                    '@title': selectedOption.title,
+                    '@type': selectedOption.type || selectedList.link.type,
+                    '@uri': selectedOption.uri
+                })
+            }
         }
 
         this.setState({
-            list: this.getListFilledWithDefaultValues(selectedList)
+            list: this.getListFilledWithDefaultValues(this.state.list)
         })
+
+    }
+
+    /**
+     * Responsible for reporting whether a specific list data element is selected or not
+     *
+     * @param data The element to check
+     * @return True if selected, false otherwise
+     */
+    isSelected(data) {
+        const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, data.type)
+        for (let i = 0; i < selectedItems.length; i++) {
+            if (selectedItems[i]["@uri"] === data.uri) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
