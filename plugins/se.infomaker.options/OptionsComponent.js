@@ -11,13 +11,8 @@ class OptionsComponent extends Component {
         this.options = this.props.pluginConfigObject.pluginConfigObject.data.options
 
         return {
-            list: this.getListFilledWithDefaultValues(this.options)
+            list: this.options
         }
-
-        // this.options = this.context.api.getConfigValue(
-        //     this.props.pluginConfigObject.id,
-        //     'options'
-        // )
     }
 
     render($$) {
@@ -28,64 +23,11 @@ class OptionsComponent extends Component {
                 $$(SelectComponent, {
                     list: this.state.list,
                     onChangeList: this.onChangeList.bind(this),
-                    onChangeToggleList: this.onChangeToggleList.bind(this),
                     isSelected: this.isSelected.bind(this)
                 })
             )
     }
 
-
-    /**
-     * Fetches content-meta-link from newsml and reads 'title' field from link
-     * Stores this value as 'defaultValue' to list if it exists as one of list values
-     * (and for nested lists also, if available)
-     *
-     * @param list
-     * @returns {*}
-     */
-    getListFilledWithDefaultValues(list) {
-        /* Read '@title' from content meta link */
-        const contentMetaLink = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, list.link.type)
-        let linkTitle = ''
-        if (contentMetaLink.length > 0 && contentMetaLink[0].hasOwnProperty('@title')) {
-            linkTitle = contentMetaLink[0]['@title']
-        }
-
-        /* Store title as 'defaultValue' property in list */
-        if (list.hasOwnProperty('defaultValue')) {
-            delete list.defaultValue
-        }
-
-        for (let i = 0; i < list.values.length; i++) {
-            const value = list.values[i]
-
-            if (value.title === linkTitle) {
-                list.defaultValue = linkTitle
-            }
-
-            /* Perform recursive filling of default values if nested list found */
-            if (value.hasOwnProperty('list')) {
-                value.list = this.getListFilledWithDefaultValues(value.list)
-            }
-        }
-
-        return list
-    }
-
-    /**
-     * Inserts contentMeta links to newsml (removes duplicates before inserting)
-     *
-     * @param link
-     * @param option
-     */
-    addContentMetaLinkToNewsml(link, option) {
-        this.context.api.newsItem.addContentMetaLink(this.pluginName, {
-            '@rel': link.rel,
-            '@title': option.title,
-            '@type': link.type,
-            '@uri': option.uri
-        })
-    }
 
     /**
      * Removes earlier selected options as well as selected sub options
@@ -118,33 +60,12 @@ class OptionsComponent extends Component {
     }
 
     /**
-     * Event handler to manage insert/delete of contentMeta links when 'button' or 'dropdown' list changes
-     * (handles changes in nested lists also, if available)
-     *
-     * @param selectedList The list being clicked on
-     * @param selectedOption The option clicked in the list
-     */
-    onChangeList(selectedList, selectedOption) {
-        this.clearContentMetaLinks(selectedList)
-        this.addContentMetaLinkToNewsml(selectedList.link, selectedOption)
-
-        if (selectedOption.hasOwnProperty('list')) {
-            this.onChangeList(selectedOption.list, selectedOption.list.values[0])
-        }
-        else {
-            this.setState({
-                list: this.getListFilledWithDefaultValues(this.state.list)
-            })
-        }
-    }
-
-    /**
      * Event handler to manage insert/delete of contentMeta links when 'toggle' list changes
      *
      * @param selectedList The list being clicked on
      * @param selectedOption The option clicked in the list
      */
-    onChangeToggleList(selectedList, selectedOption) {
+    onChangeList(selectedList, selectedOption) {
 
         const existingLinks = this.context.api.newsItem.getContentMetaLinkByType(
             this.pluginName,
@@ -190,7 +111,7 @@ class OptionsComponent extends Component {
         }
 
         this.setState({
-            list: this.getListFilledWithDefaultValues(this.state.list)
+            list: this.state.list
         })
 
     }
