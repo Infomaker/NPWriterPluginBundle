@@ -10,11 +10,17 @@ export default {
     id: 'se.infomaker.socialembed',
     version: '{{version}}',
     configure: function (config) {
+
+        config.addLabel('Click link to view content', {
+            sv: 'Klicka för att visa innehåll'
+        })
+
         config.addNode(SocialembedNode)
         config.addCommand('socialembed', SocialembedCommand)
         config.addComponent(SocialembedNode.type, SocialembedComponent)
         config.addConverter('newsml', SocialembedConverter)
         config.addMacro(SocialembedMacro)
         config.addDropHandler(new DropSocialEmbed())
+
     }
 }
