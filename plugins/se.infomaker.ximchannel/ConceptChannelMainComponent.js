@@ -6,7 +6,7 @@ class ConceptMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'concept-channel'
+        this.name = 'ximchannel'
     }
 
     reload() {

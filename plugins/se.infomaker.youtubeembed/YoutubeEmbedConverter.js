@@ -44,8 +44,30 @@ export default {
         const data = $$('data');
         data.append($$('start').append(seconds));
 
-        el.removeAttr('data-id');
-        el.append(data);
+        const api = converter.context.api
+        const configLabel = api.getConfigValue('se.infomaker.youtubeembed', 'alternateLinkTitle', 'Click link to view content')
+        const label = api.getLabel(configLabel)
+
+        const alternateLink = converter.$$('link'),
+            alternateImageLink = $$('link')
+
+        alternateLink.attr({
+            rel: 'alternate',
+            type: 'text/html',
+            url: node.url,
+            title: label
+        })
+
+        // Create the image/alternate
+        alternateImageLink.attr({
+            rel: 'alternate',
+            type: 'image/jpg',
+            url: node.thumbnail_url
+        })
+
+        el.removeAttr('data-id')
+        el.append(data)
+        el.append([alternateLink, alternateImageLink])
 
     }
 }

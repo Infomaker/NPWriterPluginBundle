@@ -88,6 +88,7 @@ class SocialembedNode extends BlockNode {
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
+                    data: json,
                     uri: `im://instagram/${json.media_id}`,
                     url: url,
                     title: json.title,
@@ -133,6 +134,7 @@ class SocialembedNode extends BlockNode {
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
+                    data: json,
                     uri: `im://facebook-post/${postId}`,
                     url: json.url,
                     linkType: 'x-im/facebook-post',
@@ -164,6 +166,7 @@ class SocialembedNode extends BlockNode {
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
+                    data: json,
                     uri: `im://tweet/${twitterPostId[1]}`,
                     url: json.url,
                     linkType: 'x-im/tweet',
@@ -192,6 +195,7 @@ class SocialembedNode extends BlockNode {
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
+                    data: json,
                     uri: `im://vimeo/${json.video_id}`,
                     url: url,
                     title: json.title,
@@ -220,6 +224,7 @@ class SocialembedNode extends BlockNode {
                 cb(null, {
                     author: json.author_url,
                     html: json.html,
+                    data: json,
                     uri: `im://soundcloud/${encodeURIComponent(json.author_name + '.' + json.title)}`,
                     url: url,
                     title: json.title,
@@ -243,7 +248,7 @@ SocialembedNode.define({
     type: 'socialembed',
     dataType: 'string',
     url: 'string',
-    data: {type: 'string', optional: true},
+    data: {type: 'object', optional: true},
     // errorMessage is part of the resource contract
     errorMessage: {type: 'string', optional: true},
     // Payload (after embed has been resolved)
@@ -252,7 +257,8 @@ SocialembedNode.define({
     linkType: {type: 'string', optional: true},
     author: {type: 'string', optional: true},
     socialChannel: {type: 'string', optional: true},
-    socialChannelIcon: {type: 'string', optional: true}
+    socialChannelIcon: {type: 'string', optional: true},
+    alternate: { type: 'object', optional: true }
 })
 
 export default SocialembedNode
