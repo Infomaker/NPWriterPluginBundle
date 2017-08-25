@@ -27,9 +27,9 @@ class OptionsComponent extends Component {
             .append(
                 $$(SelectComponent, {
                     list: this.state.list,
-                    onChangeList: (list, selected) => this.onChangeList(list, selected),
-                    onChangeToggleList: (list, selected) => this.onChangeToggleList(list, selected),
-                    isSelected: (data) => this.isSelected(data)
+                    onChangeList: this.onChangeList.bind(this),
+                    onChangeToggleList: this.onChangeToggleList.bind(this),
+                    isSelected: this.isSelected.bind(this)
                 })
             )
     }
@@ -45,7 +45,7 @@ class OptionsComponent extends Component {
      */
     getListFilledWithDefaultValues(list) {
         /* Read '@title' from content meta link */
-        const contentMetaLink = this.context.api.newsItem.getContentMetaLinkByType(list.link.uri, list.link.type)
+        const contentMetaLink = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, list.link.type)
         let linkTitle = ''
         if (contentMetaLink.length > 0 && contentMetaLink[0].hasOwnProperty('@title')) {
             linkTitle = contentMetaLink[0]['@title']
@@ -79,7 +79,7 @@ class OptionsComponent extends Component {
      * @param option
      */
     addContentMetaLinkToNewsml(link, option) {
-        this.context.api.newsItem.addContentMetaLink(option.uri, {
+        this.context.api.newsItem.addContentMetaLink(this.pluginName, {
             '@rel': link.rel,
             '@title': option.title,
             '@type': link.type,
@@ -148,27 +148,29 @@ class OptionsComponent extends Component {
 
         const existingLinks = this.context.api.newsItem.getContentMetaLinkByType(
             this.pluginName,
-            selectedOption.type
+            selectedOption.type || selectedList.link.type
         )
 
         let found = false
         for (let i = 0; i < existingLinks.length; i++) {
             if (existingLinks[i]["@uri"] === selectedOption.uri) {
-                found = true
-                break
+                found = true;
+                break;
             }
         }
 
-        if (this.options.multivalue) {
+
+        if (selectedList.multivalue || this.options.multivalue) {
+
             if (found) {
-                this.context.api.newsItem.removeLinkContentMetaByTypeAndRel(
-                    selectedOption.uri,
-                    selectedOption.type || selectedList.link.type,
-                    selectedOption.rel || selectedList.link.rel
+                this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
+                    this.pluginName,
+                    selectedList.link.type,
+                    (link) => link.getAttribute('uri') === selectedOption.uri
                 )
             }
             else {
-                this.context.api.newsItem.addContentMetaLink(selectedOption.uri, {
+                this.context.api.newsItem.addContentMetaLink(this.pluginName, {
                     '@rel': selectedOption.rel || selectedList.link.rel,
                     '@title': selectedOption.title,
                     '@type': selectedOption.type || selectedList.link.type,
@@ -178,7 +180,7 @@ class OptionsComponent extends Component {
         } else {
             this.clearContentMetaLinks(selectedList)
             if (!found) {
-                this.context.api.newsItem.addContentMetaLink(selectedOption.uri, {
+                this.context.api.newsItem.addContentMetaLink(this.pluginName, {
                     '@rel': selectedOption.rel || selectedList.link.rel,
                     '@title': selectedOption.title,
                     '@type': selectedOption.type || selectedList.link.type,
@@ -199,14 +201,22 @@ class OptionsComponent extends Component {
      * @param data The element to check
      * @return True if selected, false otherwise
      */
-    isSelected(data) {
-        const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, data.type)
+    isSelected(list, data) {
+
+        const listType = (list && list.link && list.link.type) ? list.link.type : undefined
+
+        const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, listType || this._getLinkType())
+
         for (let i = 0; i < selectedItems.length; i++) {
             if (selectedItems[i]["@uri"] === data.uri) {
                 return true;
             }
         }
         return false;
+    }
+
+    _getLinkType() {
+        return this.state.list.link.type
     }
 }
 
