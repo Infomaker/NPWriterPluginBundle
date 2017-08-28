@@ -142,6 +142,9 @@ The button component, configured with **button** stacks horizontally and support
 
     [Value 1] [Value 2] [Value 3]
     [Value 4]
+    
+Buttons also have support for icons prepending the name. It is configured in the 'values' section and the value
+is any of the Font Awesome icons from http://fontawesome.io/icons/    
 
 #### Example configuration
 
@@ -157,7 +160,8 @@ The button component, configured with **button** stacks horizontally and support
                   "values": [
                     {
                       "uri": "im://articleoptions/premium",
-                      "title": "Premium"
+                      "title": "Premium",
+                      "icon" : "fa-star-o"
                     },
                     ...
 
