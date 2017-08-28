@@ -14,7 +14,8 @@ content meta links. Here's an example where a user marked the article as being '
 
 ## Configuration
 
-Options are specified as a specific type. Each type has a configurable number of options to choose from.
+
+Options are specified, in the writer client configuration file, as a specific type. Each type has a configurable number of options to choose from.
 
     {
           "id": "se.infomaker.options",
@@ -82,9 +83,26 @@ The fourth option 'Article tone' has a sub-list defined with three options.
 It's a toggle style and since multivalue is set to true, it is possible to select any number of these options.
 
 
-It is possible to define a completely different set of options by defining the plugin multiple times in the configuration file.
+The option plugin supports being defined multiple times in the configuration file so that
+completely different options may be handled by this plugin. *The id must be set to different values
+in order for this to function, e.g.*
 
-
+     {
+        "id": "se.infomaker.socialoptions",
+        "name": "socialoptions",
+        "url": "http://localhost:5001/im-options.js",
+        "enabled": true,
+        "mandatory": true,
+            ...
+    },
+    {
+        "id": "se.infomaker.articletone",
+        "name": "articletone",
+        "url": "http://localhost:5001/im-options.js",
+        "enabled": true,
+        "mandatory": true,
+            ...
+    }        
 
 
 ## Components to represent selectable values
