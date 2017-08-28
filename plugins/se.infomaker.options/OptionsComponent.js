@@ -80,8 +80,7 @@ class OptionsComponent extends Component {
             }
         }
 
-
-        if (selectedList.multivalue || this.options.multivalue) {
+        if (selectedList.multivalue || (selectedList.multivalue === undefined && this.options.multivalue)) {
 
             if (found) {
                 this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
@@ -89,6 +88,16 @@ class OptionsComponent extends Component {
                     selectedList.link.type,
                     (link) => link.getAttribute('uri') === selectedOption.uri
                 )
+
+                if (selectedOption.list && selectedOption.list.link && selectedOption.list.link.type) {
+
+                    // Remove children for removed elements
+                    this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
+                        this.pluginName,
+                        selectedOption.list.link.type,
+                        () => true
+                    )
+                }
             }
             else {
                 this.context.api.newsItem.addContentMetaLink(this.pluginName, {
