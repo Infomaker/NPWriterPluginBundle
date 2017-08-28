@@ -85,11 +85,11 @@ It's a toggle style and since multivalue is set to true, it is possible to selec
 
 The option plugin supports being defined multiple times in the configuration file so that
 completely different options may be handled by this plugin. *The id must be set to different values
-in order for this to function, e.g.*
+in order for this to function. The name must be set to **options** in order for plugin to register*.
 
      {
         "id": "se.infomaker.socialoptions",
-        "name": "socialoptions",
+        "name": "options",
         "url": "http://localhost:5001/im-options.js",
         "enabled": true,
         "mandatory": true,
@@ -97,7 +97,7 @@ in order for this to function, e.g.*
     },
     {
         "id": "se.infomaker.articletone",
-        "name": "articletone",
+        "name": "options",
         "url": "http://localhost:5001/im-options.js",
         "enabled": true,
         "mandatory": true,
