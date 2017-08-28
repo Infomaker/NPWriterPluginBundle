@@ -83,7 +83,8 @@ const socialEmbedConverter = {
 
         const $$ = converter.$$
         const alternateLink = $$('link'),
-            alternateImageLink = $$('link')
+            alternateImageLink = $$('link'),
+            imageData = $$('data')
 
         // Create the text/html link
         alternateLink.attr({
@@ -100,6 +101,16 @@ const socialEmbedConverter = {
             url: node.data.thumbnail_url
         })
 
+        if(node.data.thumbnail_width) {
+            imageData.append($$('width').append(node.data.thumbnail_width))
+        }
+        if(node.data.thumbnail_height) {
+            imageData.append($$('height').append(node.data.thumbnail_height))
+        }
+
+        if(imageData.childNodes.length > 0) {
+            alternateImageLink.append(imageData)
+        }
         return [alternateLink, alternateImageLink]
     },
 
