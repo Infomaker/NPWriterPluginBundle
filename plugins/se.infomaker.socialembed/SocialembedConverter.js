@@ -101,6 +101,7 @@ const socialEmbedConverter = {
             url: node.data.thumbnail_url
         })
 
+        // Check if we have width and height of thumbail
         if(node.data.thumbnail_width) {
             imageData.append($$('width').append(node.data.thumbnail_width))
         }

@@ -40,6 +40,7 @@ class YoutubeEmbedNode extends BlockNode {
                     {
                         html:html,
                         uri:url,
+                        data: json,
                         thumbnail_url: json.thumbnail_url,
                         title: json.title
                     },
@@ -69,6 +70,7 @@ YoutubeEmbedNode.isResource = true
 YoutubeEmbedNode.define({
     type: 'youtubeembed',
     dataType: 'string',
+    data: { type: 'object', optional: true },
     url: 'string',
     start: { type: 'string', default: '00:00' },
     errorMessage: { type: 'string', optional: true },

@@ -49,7 +49,8 @@ export default {
         const label = api.getLabel(configLabel)
 
         const alternateLink = converter.$$('link'),
-            alternateImageLink = $$('link')
+            alternateImageLink = $$('link'),
+            imageData = $$('data')
 
         alternateLink.attr({
             rel: 'alternate',
@@ -64,7 +65,17 @@ export default {
             type: 'image/jpg',
             url: node.thumbnail_url
         })
+        // Check if we have width and height of thumbail
+        if(node.data.thumbnail_width) {
+            imageData.append($$('width').append(node.data.thumbnail_width))
+        }
+        if(node.data.thumbnail_height) {
+            imageData.append($$('height').append(node.data.thumbnail_height))
+        }
 
+        if(imageData.childNodes.length > 0) {
+            alternateImageLink.append(imageData)
+        }
         el.removeAttr('data-id')
         el.append(data)
         el.append([alternateLink, alternateImageLink])
