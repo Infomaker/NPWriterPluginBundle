@@ -87,6 +87,9 @@ The option plugin supports being defined multiple times in the configuration fil
 completely different options may be handled by this plugin. *The id must be set to different values
 in order for this to function. The name must be set to **options** in order for plugin to register*.
 
+Also, **the URL must be unique** in order for the plugin to load multiple times. This can be achieved
+by appending "?..." to the URL. 
+
      {
         "id": "se.infomaker.socialoptions",
         "name": "options",
@@ -98,7 +101,7 @@ in order for this to function. The name must be set to **options** in order for 
     {
         "id": "se.infomaker.articletone",
         "name": "options",
-        "url": "http://localhost:5001/im-options.js",
+        "url": "http://localhost:5001/im-options.js?2",
         "enabled": true,
         "mandatory": true,
             ...
