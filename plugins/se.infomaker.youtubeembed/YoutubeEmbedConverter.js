@@ -66,11 +66,11 @@ export default {
             url: node.thumbnail_url
         })
         // Check if we have width and height of thumbail
-        if(node.data.thumbnail_width) {
-            imageData.append($$('width').append(node.data.thumbnail_width))
+        if(node.oembed.thumbnail_width) {
+            imageData.append($$('width').append(node.oembed.thumbnail_width))
         }
-        if(node.data.thumbnail_height) {
-            imageData.append($$('height').append(node.data.thumbnail_height))
+        if(node.oembed.thumbnail_height) {
+            imageData.append($$('height').append(node.oembed.thumbnail_height))
         }
 
         if(imageData.childNodes.length > 0) {
