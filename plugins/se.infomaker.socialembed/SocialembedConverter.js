@@ -57,26 +57,20 @@ const socialEmbedConverter = {
 
         const configKeysForLinkType = new Map()
         configKeysForLinkType.set('x-im/instagram', 'alternateInstagramTitle')
-        // configKeysForLinkType.set('x-im/tweet', 'alternateTwitterTitle')
+        configKeysForLinkType.set('x-im/tweet', 'alternateTwitterTitle')
         configKeysForLinkType.set('x-im/facebook-post', 'alternateFacebookTitle')
 
-
-        const configKey = configKeysForLinkType.get(linkType)
+        let configKey = configKeysForLinkType.get(linkType)
         if(!configKey) {
-            console.log(`Missing config key for ${linkType}`)
+            configKey = 'alternateDefaultTitle'
         }
-        const configLabel = converter.context.api.getConfigValue('se.infomaker.socialembed', configKey)
-        console.log(`${configLabel}`)
+        let configLabel = converter.context.api.getConfigValue('se.infomaker.socialembed', configKey, '{author_name} posted on {provider_name}')
 
-        /*
-        author_name
-        author_url
-        text
-        provider_name
-        provider_url
-         */
-
-
+        configLabel = configLabel.replace('{author_name}', data.author_name)
+        configLabel = configLabel.replace('{author_url}', data.author_url)
+        configLabel = configLabel.replace('{provider_name}', data.provider_name)
+        configLabel = configLabel.replace('{provider_url}', data.provider_url)
+        configLabel = configLabel.replace('{text}', data.title ? data.title : '')
         return configLabel
     },
 

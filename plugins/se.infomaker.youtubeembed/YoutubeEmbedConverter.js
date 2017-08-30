@@ -45,8 +45,14 @@ export default {
         data.append($$('start').append(seconds));
 
         const api = converter.context.api
-        const configLabel = api.getConfigValue('se.infomaker.youtubeembed', 'alternateLinkTitle', 'Click link to view content')
-        const label = api.getLabel(configLabel)
+        let configLabel = api.getConfigValue('se.infomaker.youtubeembed', 'alternateLinkTitle', 'Click link to view content')
+
+        const oembed = node.oembed
+        configLabel = configLabel.replace('{author_name}', oembed.author_name)
+        configLabel = configLabel.replace('{author_url}', oembed.author_url)
+        configLabel = configLabel.replace('{provider_name}', oembed.provider_name)
+        configLabel = configLabel.replace('{provider_url}', oembed.provider_url)
+        configLabel = configLabel.replace('{text}', oembed.title ? oembed.title : '')
 
         const alternateLink = converter.$$('link'),
             alternateImageLink = $$('link'),
@@ -56,7 +62,7 @@ export default {
             rel: 'alternate',
             type: 'text/html',
             url: node.url,
-            title: label
+            title: configLabel
         })
 
         // Create the image/alternate
@@ -66,11 +72,11 @@ export default {
             url: node.thumbnail_url
         })
         // Check if we have width and height of thumbail
-        if(node.oembed.thumbnail_width) {
-            imageData.append($$('width').append(node.oembed.thumbnail_width))
+        if(oembed.thumbnail_width) {
+            imageData.append($$('width').append(oembed.thumbnail_width))
         }
-        if(node.oembed.thumbnail_height) {
-            imageData.append($$('height').append(node.oembed.thumbnail_height))
+        if(oembed.thumbnail_height) {
+            imageData.append($$('height').append(oembed.thumbnail_height))
         }
 
         if(imageData.childNodes.length > 0) {
