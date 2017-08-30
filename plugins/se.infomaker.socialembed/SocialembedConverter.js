@@ -53,6 +53,27 @@ const socialEmbedConverter = {
     },
 
 
+    _createTitleForAlternateLink: (linkType, data, converter) => {
+
+        const configKeysForLinkType = new Map()
+        configKeysForLinkType.set('x-im/instagram', 'alternateInstagramTitle')
+        configKeysForLinkType.set('x-im/tweet', 'alternateTwitterTitle')
+        configKeysForLinkType.set('x-im/facebook-post', 'alternateFacebookTitle')
+
+        let configKey = configKeysForLinkType.get(linkType)
+        if(!configKey) {
+            configKey = 'alternateDefaultTitle'
+        }
+        let configLabel = converter.context.api.getConfigValue('se.infomaker.socialembed', configKey, '{author_name} posted on {provider_name}')
+
+        configLabel = configLabel.replace('{author_name}', data.author_name)
+        configLabel = configLabel.replace('{author_url}', data.author_url)
+        configLabel = configLabel.replace('{provider_name}', data.provider_name)
+        configLabel = configLabel.replace('{provider_url}', data.provider_url)
+        configLabel = configLabel.replace('{text}', data.title ? data.title : '')
+        return configLabel
+    },
+
     /**
      * Create a default alternate link containing the URL to the resource
      * @param node
@@ -66,7 +87,7 @@ const socialEmbedConverter = {
             rel: 'alternate',
             type: 'text/html',
             url: node.url,
-            title: socialEmbedConverter._getTranslatableTitle(converter)
+            title:  socialEmbedConverter._createTitleForAlternateLink(node.linkType, node.oembed, converter)
         })
         return alternateLink
     },
@@ -81,6 +102,8 @@ const socialEmbedConverter = {
      */
     _createAlternateLinkForInstagram: (node, converter) => {
 
+
+
         const $$ = converter.$$
         const alternateLink = $$('link'),
             alternateImageLink = $$('link'),
@@ -91,22 +114,22 @@ const socialEmbedConverter = {
             rel: 'alternate',
             type: 'text/html',
             url: node.url,
-            title: socialEmbedConverter._getTranslatableTitle(converter)
+            title: socialEmbedConverter._createTitleForAlternateLink(node.linkType, node.oembed, converter)
         })
 
         // Create the image/alternate
         alternateImageLink.attr({
             rel: 'alternate',
             type: 'image/jpg',
-            url: node.data.thumbnail_url
+            url: node.oembed.thumbnail_url
         })
 
         // Check if we have width and height of thumbail
-        if(node.data.thumbnail_width) {
-            imageData.append($$('width').append(node.data.thumbnail_width))
+        if(node.oembed.thumbnail_width) {
+            imageData.append($$('width').append(node.oembed.thumbnail_width))
         }
-        if(node.data.thumbnail_height) {
-            imageData.append($$('height').append(node.data.thumbnail_height))
+        if(node.oembed.thumbnail_height) {
+            imageData.append($$('height').append(node.oembed.thumbnail_height))
         }
 
         if(imageData.childNodes.length > 0) {
