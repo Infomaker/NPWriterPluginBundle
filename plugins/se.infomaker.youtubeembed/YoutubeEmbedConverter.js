@@ -44,8 +44,47 @@ export default {
         const data = $$('data');
         data.append($$('start').append(seconds));
 
-        el.removeAttr('data-id');
-        el.append(data);
+        const api = converter.context.api
+        let configLabel = api.getConfigValue('se.infomaker.youtubeembed', 'alternateLinkTitle', 'Click link to view content')
+
+        const oembed = node.oembed
+        configLabel = configLabel.replace('{author_name}', oembed.author_name)
+        configLabel = configLabel.replace('{author_url}', oembed.author_url)
+        configLabel = configLabel.replace('{provider_name}', oembed.provider_name)
+        configLabel = configLabel.replace('{provider_url}', oembed.provider_url)
+        configLabel = configLabel.replace('{text}', oembed.title ? oembed.title : '')
+
+        const alternateLink = converter.$$('link'),
+            alternateImageLink = $$('link'),
+            imageData = $$('data')
+
+        alternateLink.attr({
+            rel: 'alternate',
+            type: 'text/html',
+            url: node.url,
+            title: configLabel
+        })
+
+        // Create the image/alternate
+        alternateImageLink.attr({
+            rel: 'alternate',
+            type: 'image/jpg',
+            url: node.thumbnail_url
+        })
+        // Check if we have width and height of thumbail
+        if(oembed.thumbnail_width) {
+            imageData.append($$('width').append(oembed.thumbnail_width))
+        }
+        if(oembed.thumbnail_height) {
+            imageData.append($$('height').append(oembed.thumbnail_height))
+        }
+
+        if(imageData.childNodes.length > 0) {
+            alternateImageLink.append(imageData)
+        }
+        el.removeAttr('data-id')
+        el.append(data)
+        el.append([alternateLink, alternateImageLink])
 
     }
 }
