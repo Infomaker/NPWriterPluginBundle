@@ -1,5 +1,12 @@
 import DefaultValidation from './DefaultValidation'
-const {registerPlugin} = writer
+const {registerPlugin, Hook, api} = writer
+
+class TestHook {
+    execute() {
+        debugger
+        console.log(`hello`)
+    }
+}
 
 const validationPackage = {
     id: 'se.infomaker.defaultvalidation',
@@ -32,6 +39,7 @@ const validationPackage = {
         })
 
         config.addValidator(DefaultValidation)
+        config.addHook('before:save', TestHook)
     }
 }
 
