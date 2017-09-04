@@ -6,30 +6,37 @@ import TeaserContainerTool from './TeaserContainerTool'
 import TeaserContainerConverter from './TeaserContainerConverter'
 import InsertTeaserContainerCommand from './InsertTeaserContainerCommand'
 
+import TeaserConverter from './TeaserConverter'
+import TeaserNode from './TeaserNode'
+
 export default {
     name: 'ximteaser2',
     id: 'se.infomaker.ximteaser2',
     version: '{{version}}',
     configure: function (config, pluginConfig) {
 
+
+        // Container
         config.addNode(TeaserContainerNode)
         config.addComponent(TeaserContainerNode.type, TeaserContainerComponent)
-
         config.addConverter('newsml', TeaserContainerConverter)
-
         config.addContentMenuTopTool('ximteasercontainer', TeaserContainerTool)
         config.addCommand('ximteasercontainer', InsertTeaserContainerCommand, pluginConfig)
-
-        // config.addCommand('ximteaserinsertimage', XimteaserInsertImageCommand, pluginConfig)
-
-        // config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
-
 
         if (platform.isMac) {
             config.addKeyboardShortcut('cmd+alt+t', { command: 'ximteasercontainer' })
         } else {
             config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' })
         }
+
+        // config.addCommand('ximteaserinsertimage', XimteaserInsertImageCommand, pluginConfig)
+
+        // config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
+
+
+        // Teaser
+        config.addConverter('newsml', TeaserConverter)
+        config.addNode(TeaserNode)
 
         config.addLabel('Insert Teaser', {
             en: 'Insert Teaser',

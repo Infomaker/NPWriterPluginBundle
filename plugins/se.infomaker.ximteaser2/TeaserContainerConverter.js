@@ -4,10 +4,14 @@ export default {
     tagName: 'object',
 
     matchElement: (el) => {
-        return false
+        return el.is('object') && el.attr('type') === 'x-im/teasercontainer'
     },
 
     import: (el, node, converter) => {
+        node.nodes = el.children.map((child) => {
+            const childNode = converter.convertElement(child)
+            return childNode.id
+        })
 
     },
 

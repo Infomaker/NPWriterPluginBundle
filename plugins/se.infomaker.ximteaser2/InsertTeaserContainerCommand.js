@@ -75,7 +75,6 @@ class InsertTeaserContainerCommand extends WriterCommand {
 
         return {
             type: 'ximteasercontainer',
-            dataType: 'x-im/teaser',
             id: idGenerator(),
         }
 
