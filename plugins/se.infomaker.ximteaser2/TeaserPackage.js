@@ -1,13 +1,16 @@
 import {platform} from 'substance'
-
+import './scss/index.scss'
 import TeaserContainerNode from './TeaserContainerNode'
 import TeaserContainerComponent from './TeaserContainerComponent'
 import TeaserContainerTool from './TeaserContainerTool'
 import TeaserContainerConverter from './TeaserContainerConverter'
 import InsertTeaserContainerCommand from './InsertTeaserContainerCommand'
 
+import InsertTeaserCommand from './InsertTeaserCommand'
 import TeaserConverter from './TeaserConverter'
 import TeaserNode from './TeaserNode'
+
+import {idGenerator} from 'writer'
 
 export default {
     name: 'ximteaser2',
@@ -29,6 +32,16 @@ export default {
             config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' })
         }
 
+
+        config.addPluginModule('teaserTemplate', (type, label) => {
+            return {
+                type: 'ximteaser',
+                dataType: type,
+                label: label,
+                id: idGenerator()
+            }
+        })
+
         // config.addCommand('ximteaserinsertimage', XimteaserInsertImageCommand, pluginConfig)
 
         // config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
@@ -37,6 +50,7 @@ export default {
         // Teaser
         config.addConverter('newsml', TeaserConverter)
         config.addNode(TeaserNode)
+        config.addCommand('insertTeaser', InsertTeaserCommand)
 
         config.addLabel('Insert Teaser', {
             en: 'Insert Teaser',

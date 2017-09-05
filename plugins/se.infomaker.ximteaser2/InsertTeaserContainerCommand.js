@@ -42,6 +42,13 @@ class InsertTeaserContainerCommand extends WriterCommand {
 
         editorSession.transaction((tx) => {
             // Select the first node to the selection
+
+            const generateTeaserTemplate = editorSession.api.getPluginModule('teaserTemplate')
+            const teaserNode = generateTeaserTemplate('x-im/teaser', 'Teaser')
+
+            const containerNode = this.getEmptyTeaserContainerNode()
+            tx.create(teaserNode)
+
             const firstNodeId = doc.getNodes()['body'].nodes[0];
 
             tx.setSelection(doc.createSelection({
@@ -50,7 +57,8 @@ class InsertTeaserContainerCommand extends WriterCommand {
                 path: [firstNodeId, 'content'],
                 startOffset: 0
             }))
-            tx.insertBlockNode(this.getEmptyTeaserNode())
+            tx.insertBlockNode(containerNode)
+            containerNode.nodes.push(teaserNode.id)
         })
     }
 
@@ -62,7 +70,7 @@ class InsertTeaserContainerCommand extends WriterCommand {
         const editorSession = params.editorSession
         editorSession.transaction((tx) => {
             const body = tx.get('body');
-            const node = tx.create(this.getEmptyTeaserNode());
+            const node = tx.create(this.getEmptyTeaserContainerNode());
             body.show(node.id);
         })
     }
@@ -71,11 +79,12 @@ class InsertTeaserContainerCommand extends WriterCommand {
      * Get an empty object for a ximteaser node
      * @returns {{type: string, dataType: string, id: *, uuid: string, url: string, imageType: string, title: string, text: string}}
      */
-    getEmptyTeaserNode() {
+    getEmptyTeaserContainerNode() {
 
         return {
             type: 'ximteasercontainer',
             id: idGenerator(),
+            nodes: []
         }
 
     }

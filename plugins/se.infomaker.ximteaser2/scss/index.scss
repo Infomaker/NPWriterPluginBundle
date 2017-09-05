@@ -1,0 +1,22 @@
+.teaser-menu {
+
+    list-style-type:none;
+    margin:0;
+    padding:0;
+
+    .fa {
+        display: none;
+    }
+    li {
+        float: left;
+        margin-right:15px;
+    }
+}
+
+.sm-selected {
+    .teaser-menu {
+        .fa {
+            display: inline-block;
+        }
+    }
+}
