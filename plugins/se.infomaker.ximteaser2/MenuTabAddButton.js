@@ -4,6 +4,10 @@ class MenuTabAddButton extends Component {
 
 
     render($$) {
+
+        if(this.props.items.length === 0) {
+            return $$('span')
+        }
         const item = $$('li').append($$(FontAwesomeIcon, {icon: 'fa-plus'}))
 
         const dropdown = $$('ul')

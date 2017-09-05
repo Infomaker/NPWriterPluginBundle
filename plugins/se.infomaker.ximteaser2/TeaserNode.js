@@ -12,7 +12,6 @@ TeaserNode.define({
     imageFile: {type: 'file', optional: true},
     uuid: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
-    label: {type: 'string', optional: false},
     title: {type: 'text', optional: false, default: ''},
     subject: {type: 'string', optional: false, default: ''},
     text: {type: 'string', optional: false, default: ''},

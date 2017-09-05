@@ -22,8 +22,8 @@ class TeaserContainerComponent extends Component {
     }
 
 
-    addTeaser({type, label}) {
-        this.context.editorSession.executeCommand('insertTeaser', {type: type, label: label, teaserContainerNode: this.props.node})
+    addTeaser({type}) {
+        this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
     }
 
     removeTeaser(teaserNode) {
@@ -38,16 +38,17 @@ class TeaserContainerComponent extends Component {
     }
 
     render($$) {
-        console.log(this.props.node)
 
         const el = $$('div').addClass('im-blocknode__container')
 
         el.append($$(TeaserContainerMenu, {
             node: this.props.node,
+            availableTeaserTypes: this.context.api.getConfigValue('se.infomaker.ximteaser2', 'types', []),
             removeTeaser: this.removeTeaser.bind(this),
-            addTeaser: this.addTeaser.bind(this),
-            teaserTypes: this.context.api.getConfigValue('se.infomaker.ximteaser2', 'types', [])
+            addTeaser: this.addTeaser.bind(this)
         }))
+
+
         return el
     }
 

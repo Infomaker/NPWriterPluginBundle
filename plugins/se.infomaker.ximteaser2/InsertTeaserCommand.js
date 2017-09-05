@@ -2,11 +2,11 @@ import {WriterCommand, idGenerator} from 'writer'
 
 class InsertTeaserCommand extends WriterCommand {
     execute(params, context) {
-        const {type, label, teaserContainerNode} = params
+        const {type, teaserContainerNode} = params
         const {editorSession, api} = context
 
         const generateTeaserTemplate = api.getPluginModule('teaserTemplate')
-        const teaserTemplate = generateTeaserTemplate(type, label)
+        const teaserTemplate = generateTeaserTemplate(type)
 
         editorSession.transaction(tx => {
             tx.create(teaserTemplate)

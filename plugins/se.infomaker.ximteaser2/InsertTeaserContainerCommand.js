@@ -24,10 +24,10 @@ class InsertTeaserContainerCommand extends WriterCommand {
             return false
         }
 
-        if(teaserPosition === 'top') {
-            this.insertTeaserAtTop(params)
+        if (teaserPosition === 'top') {
+            this.insertTeaserAtTop(params, api)
         } else {
-            this.insertTeaserAtBottom(params)
+            this.insertTeaserAtBottom(params, api)
         }
         // teaserPosition === 'top' ? this.insertTeaserAtTop(params) : this.insertTeaserAtBottom(params)
     }
@@ -35,7 +35,7 @@ class InsertTeaserContainerCommand extends WriterCommand {
     /**
      * Insert an empty teaser container at top of the document
      */
-    insertTeaserAtTop(params) {
+    insertTeaserAtTop(params, api) {
 
         const editorSession = params.editorSession
         const doc = editorSession.getDocument()
@@ -43,11 +43,8 @@ class InsertTeaserContainerCommand extends WriterCommand {
         editorSession.transaction((tx) => {
             // Select the first node to the selection
 
-            const generateTeaserTemplate = editorSession.api.getPluginModule('teaserTemplate')
-            const teaserNode = generateTeaserTemplate('x-im/teaser', 'Teaser')
-
             const containerNode = this.getEmptyTeaserContainerNode()
-            tx.create(teaserNode)
+            const teaserNode = this.createInitialTeaserNode(tx, api)
 
             const firstNodeId = doc.getNodes()['body'].nodes[0];
 
@@ -62,16 +59,39 @@ class InsertTeaserContainerCommand extends WriterCommand {
         })
     }
 
+    createInitialTeaserNode(tx, api) {
+        const generateTeaserTemplate = api.getPluginModule('teaserTemplate')
+        const teaserNode = generateTeaserTemplate('x-im/teaser', 'Teaser')
+        tx.create(teaserNode)
+        return teaserNode
+    }
+
     /**
-     * Insert an empty teaser at bottom of the document
+     * Insert an empty teaser container with a teaser at bottom of the document
      * @param params
      */
-    insertTeaserAtBottom(params) {
+    insertTeaserAtBottom(params, api) {
         const editorSession = params.editorSession
+        const doc = editorSession.getDocument()
+
+        const containerNode = this.getEmptyTeaserContainerNode()
+
         editorSession.transaction((tx) => {
             const body = tx.get('body');
-            const node = tx.create(this.getEmptyTeaserContainerNode());
+            const teaserNode = this.createInitialTeaserNode(tx, api)
+            const node = tx.create(containerNode)
+            containerNode.nodes.push(teaserNode.id)
             body.show(node.id);
+        })
+
+        editorSession.transaction(tx => {
+            const sel = doc.createSelection({
+                type: 'node',
+                nodeId: containerNode.id,
+                containerId: 'body',
+                surfaceId: 'body'
+            })
+            tx.setSelection(sel)
         })
     }
 

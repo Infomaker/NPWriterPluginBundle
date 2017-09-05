@@ -33,11 +33,10 @@ export default {
         }
 
 
-        config.addPluginModule('teaserTemplate', (type, label) => {
+        config.addPluginModule('teaserTemplate', (type) => {
             return {
                 type: 'ximteaser',
                 dataType: type,
-                label: label,
                 id: idGenerator()
             }
         })
