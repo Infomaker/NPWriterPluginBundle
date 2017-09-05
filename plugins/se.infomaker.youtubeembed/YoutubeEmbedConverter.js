@@ -37,7 +37,8 @@ export default {
         if (node.start && node.start.indexOf(':') > -1) {
             const startTime = node.start.split(':');
             seconds = parseInt(startTime[0], 10) * 60 + parseInt(startTime[1], 10);
-        } else {
+        }
+        else {
             seconds = node.start;
         }
 
@@ -71,10 +72,12 @@ export default {
             type: 'image/jpg',
             url: node.thumbnail_url
         })
+
         // Check if we have width and height of thumbail
         if(oembed.thumbnail_width) {
             imageData.append($$('width').append(oembed.thumbnail_width))
         }
+
         if(oembed.thumbnail_height) {
             imageData.append($$('height').append(oembed.thumbnail_height))
         }
@@ -82,9 +85,15 @@ export default {
         if(imageData.childNodes.length > 0) {
             alternateImageLink.append(imageData)
         }
+
         el.removeAttr('data-id')
-        el.append(data)
-        el.append([alternateLink, alternateImageLink])
+        el.append([
+            data,
+            $$('links').append([
+                alternateLink,
+                alternateImageLink
+            ])
+        ])
 
     }
 }
