@@ -50,7 +50,7 @@ class TeaserContainerMenu extends Component {
 
         item.append([typeIcon, title, icon])
 
-        item.on('click', () => {
+        icon.on('click', () => {
             this.props.removeTeaser(teaserNode)
         })
 

@@ -6,15 +6,62 @@
 
     .fa-trash {
         display: none;
+        cursor: pointer;
     }
     li {
         float: left;
         margin-right:15px;
+        padding-right:12.58px;
+    }
+
+    .add-teaser {
+        position: relative;
+    }
+    .dropdown {
+        position: absolute;
+        background-color: #fff;
+        list-style: none;
+        margin:0;
+        padding:10px;
+        border: 1px solid #dddddd;
+        left:-15px;
+        top:30px;
+
+        li {
+            float: none;
+        }
+    }
+
+    .dropdown:after, .dropdown:before {
+        bottom: 100%;
+        left: 20px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .dropdown:after {
+        border-color: rgba(255, 255, 255, 0);
+        border-bottom-color: #ffffff;
+        border-width: 11px;
+        margin-left: -11px;
+    }
+    .dropdown:before {
+        border-color: rgba(221, 221, 221, 0);
+        border-bottom-color: #dddddd;
+        border-width: 12px;
+        margin-left: -12px;
     }
 }
 
 .sm-selected {
     .teaser-menu {
+        li {
+            padding-right:0;
+        }
         .fa {
             display: inline-block;
         }

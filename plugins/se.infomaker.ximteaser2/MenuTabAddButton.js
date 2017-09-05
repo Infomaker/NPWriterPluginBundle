@@ -1,24 +1,43 @@
 import {Component, FontAwesomeIcon} from 'substance'
 
+
 class MenuTabAddButton extends Component {
 
+    getInitialState() {
+        return {
+            dropdownActive: false
+        }
+    }
 
     render($$) {
 
         if(this.props.items.length === 0) {
             return $$('span')
         }
-        const item = $$('li').append($$(FontAwesomeIcon, {icon: 'fa-plus'}))
-
-        const dropdown = $$('ul')
-        const dropdownItems = this.props.items.map((item) => {
-            return $$('li').append(item.label).on('click', () => {
-                this.props.add(item)
+        const item = $$('li')
+            .addClass('add-teaser')
+            .append($$(FontAwesomeIcon, {icon: 'fa-plus'}))
+            .on('click', () => {
+                this.setState({
+                    dropdownActive: !this.state.dropdownActive
+                })
             })
-        })
-        dropdown.append(dropdownItems)
 
-        item.append(dropdown)
+
+        if(this.state.dropdownActive) {
+            const dropdown = $$('ul').addClass('dropdown shaded-box')
+            const dropdownItems = this.props.items.map((item) => {
+                const teaserIcon = $$(FontAwesomeIcon, {icon: item.icon})
+                return $$('li').append([teaserIcon, item.label]).on('click', () => {
+                    this.props.add(item)
+                })
+            })
+            dropdown.append(dropdownItems)
+
+            item.append(dropdown)
+
+        }
+
         return item
     }
 }
