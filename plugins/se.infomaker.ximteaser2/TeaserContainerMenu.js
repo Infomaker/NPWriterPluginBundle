@@ -42,6 +42,11 @@ class TeaserContainerMenu extends Component {
     getMenuItem($$, teaserNode) {
         const item = $$('li')
 
+        if(this.props.activeTeaserId === teaserNode.id) {
+            item.addClass('active')
+        }
+
+
         const teaserConfig = this.getConfigForTeaserType(teaserNode.dataType)
 
         const typeIcon = $$(FontAwesomeIcon, {icon: teaserConfig.icon})
@@ -49,6 +54,10 @@ class TeaserContainerMenu extends Component {
         const icon = $$(FontAwesomeIcon, {icon: 'fa-trash'})
 
         item.append([typeIcon, title, icon])
+
+        title.on('click', () => {
+            this.props.selectTeaser(teaserNode)
+        })
 
         icon.on('click', () => {
             this.props.removeTeaser(teaserNode)

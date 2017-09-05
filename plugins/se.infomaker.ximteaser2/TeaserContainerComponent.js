@@ -1,7 +1,14 @@
 import {Component} from 'substance'
 import TeaserContainerMenu from './TeaserContainerMenu'
+import TeaserComponent from './TeaserComponent'
 
 class TeaserContainerComponent extends Component {
+
+    getInitialState() {
+        return {
+            activeTeaserId: this.props.node.nodes[0]
+        }
+    }
 
     didMount() {
 
@@ -37,17 +44,27 @@ class TeaserContainerComponent extends Component {
         this.rerender()
     }
 
+    selectTeaser(teaserNode) {
+        this.setState({
+            activeTeaserId: teaserNode.id
+        })
+    }
+
     render($$) {
 
         const el = $$('div').addClass('im-blocknode__container')
 
         el.append($$(TeaserContainerMenu, {
             node: this.props.node,
+            activeTeaserId: this.state.activeTeaserId,
             availableTeaserTypes: this.context.api.getConfigValue('se.infomaker.ximteaser2', 'types', []),
             removeTeaser: this.removeTeaser.bind(this),
-            addTeaser: this.addTeaser.bind(this)
+            addTeaser: this.addTeaser.bind(this),
+            selectTeaser: this.selectTeaser.bind(this)
         }))
 
+        const teaser = $$(TeaserComponent, {node: this.context.doc.get(this.state.activeTeaserId)})
+        el.append(teaser)
 
         return el
     }

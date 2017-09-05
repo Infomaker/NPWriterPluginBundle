@@ -3,7 +3,13 @@
     list-style-type:none;
     margin:0;
     padding:0;
+    background-color: #ddd;
 
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
     .fa-trash {
         display: none;
         cursor: pointer;
@@ -12,11 +18,17 @@
         float: left;
         margin-right:15px;
         padding-right:12.58px;
+        background-color: #ddd;
+        
+        &.active {
+            background-color: #fff;
+        }
     }
 
     .add-teaser {
         position: relative;
     }
+    
     .dropdown {
         position: absolute;
         background-color: #fff;
