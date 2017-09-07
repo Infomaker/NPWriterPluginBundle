@@ -4,17 +4,16 @@ class TeaserComponent extends Component {
 
     render($$) {
 
-        const el = $$('div')
+        const el = $$('div').addClass('teaser-container')
 
-        const titleEditor = $$(TextPropertyEditor, {
-            tagName: 'div',
-            path: [this.props.node.id, 'title'],
-            disabled: Boolean(this.props.disabled)
-        }).ref('title').addClass('x-im-teaser-title')
+        const FieldEditor = this.context.api.ui.getComponent('field-editor')
+        el.append($$(FieldEditor, {
+            node: this.props.node,
+            multiLine: true,
+            field: 'title',
+            placeholder: 'Title'
+        }).ref('titleFieldEditor'))
 
-        const icon = $$(FontAwesomeIcon, {icon: 'fa-header'})
-
-        el.append([icon, titleEditor])
         return el
     }
 

@@ -22,7 +22,12 @@ class TeaserContainerComponent extends Component {
                 })
             }
 
-            if(change.isAffected(this.props.node.id)) {
+            this.props.node.nodes.forEach(childNodeId => {
+                if (change.isAffected(childNodeId)) {
+                    this.rerender()
+                }
+            })
+            if (change.isAffected(this.props.node.id)) {
                 this.rerender()
             }
         }, this)
@@ -61,10 +66,13 @@ class TeaserContainerComponent extends Component {
             removeTeaser: this.removeTeaser.bind(this),
             addTeaser: this.addTeaser.bind(this),
             selectTeaser: this.selectTeaser.bind(this)
-        }))
+        }).ref('menu'))
 
-        const teaser = $$(TeaserComponent, {node: this.context.doc.get(this.state.activeTeaserId)})
-        el.append(teaser)
+        const currentTeaserNode = this.context.doc.get(this.state.activeTeaserId)
+        if(currentTeaserNode) {
+            const teaser = $$(TeaserComponent, {node: this.context.doc.get(this.state.activeTeaserId)}).ref('currentTeaser')
+            el.append(teaser)
+        }
 
         return el
     }

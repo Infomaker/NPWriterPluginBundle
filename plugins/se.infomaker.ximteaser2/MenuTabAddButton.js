@@ -14,9 +14,12 @@ class MenuTabAddButton extends Component {
         if(this.props.items.length === 0) {
             return $$('span')
         }
+
+        const plusIcon = $$(FontAwesomeIcon, {icon: 'fa-plus'})
+        const addText = $$('span').append(` ${this.getLabel('Add new teaser')}`)
         const item = $$('li')
-            .addClass('add-teaser')
-            .append($$(FontAwesomeIcon, {icon: 'fa-plus'}))
+            .addClass('add-teaser__button')
+            .append([plusIcon, addText])
             .on('click', () => {
                 this.setState({
                     dropdownActive: !this.state.dropdownActive
@@ -25,7 +28,7 @@ class MenuTabAddButton extends Component {
 
 
         if(this.state.dropdownActive) {
-            const dropdown = $$('ul').addClass('dropdown shaded-box')
+            const dropdown = $$('ul').addClass('add-teaser__dropdown-list shaded-box')
             const dropdownItems = this.props.items.map((item) => {
                 const teaserIcon = $$(FontAwesomeIcon, {icon: item.icon})
                 return $$('li').append([teaserIcon, item.label]).on('click', () => {
