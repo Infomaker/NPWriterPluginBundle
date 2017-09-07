@@ -1,7 +1,6 @@
 import './scss/author.scss'
 import './scss/_authorinfo.scss'
 import AuthorMainComponent from './AuthorMainComponent'
-import AuthorValidation from './AuthorValidation'
 
 export default {
     id: 'se.infomaker.ximauthor',
@@ -81,7 +80,7 @@ export default {
             en: 'Error updating author concept',
             sv: 'Fel vid uppdatering av författare-concept'
         })
-        config.addValidator(AuthorValidation)
+
         config.addComponentToSidebarWithTabId(this.id, 'main', AuthorMainComponent)
     }
 }
