@@ -8,12 +8,16 @@ class InsertTeaserCommand extends WriterCommand {
         const generateTeaserTemplate = api.getPluginModule('teaserTemplate')
         const teaserTemplate = generateTeaserTemplate(type)
 
+        let createdTeaserNode
         editorSession.transaction(tx => {
-            tx.create(teaserTemplate)
+            createdTeaserNode = tx.create(teaserTemplate)
+            console.log(createdTeaserNode)
             tx.set([teaserContainerNode.id, 'nodes'], [...teaserContainerNode.nodes, teaserTemplate.id])
         })
 
-        console.log(params)
+        if(createdTeaserNode) {
+            return createdTeaserNode
+        }
     }
 }
 

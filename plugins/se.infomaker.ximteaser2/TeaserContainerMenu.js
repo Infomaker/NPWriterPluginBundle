@@ -51,11 +51,16 @@ class TeaserContainerMenu extends Component {
 
         const typeIcon = $$(FontAwesomeIcon, {icon: teaserConfig.icon})
         const title = $$('span').addClass('title').append(teaserConfig.label)
-        const icon = $$(FontAwesomeIcon, {icon: 'fa-trash'})
+        const icon = $$(FontAwesomeIcon, {icon: 'fa-times'})
 
         item.append([typeIcon, title, icon])
 
-        title.on('click', () => {
+        icon.on('click', (e) => {
+            e.stopPropagation()
+            this.props.removeTeaser(teaserNode)
+        })
+
+        item.on('click', () => {
             this.props.selectTeaser(teaserNode)
         })
 

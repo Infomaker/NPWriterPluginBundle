@@ -1,66 +1,94 @@
 .sm-ximteasercontainer {
     .im-blocknode__container {
-        padding:0;
+        padding: 0;
+    }
+}
+
+.teaser-container {
+    background-color: #fff;
+    padding: 10px;
+
+    .im-field-editor:first-child {
+        margin-top: 0;
     }
 }
 
 .teaser-menu {
 
-    list-style-type:none;
-    margin:0;
-    padding:10px;
-    background-color: #ddd;
+    list-style-type: none;
+    margin: 0;
+    padding: 3px 0 0 3px;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
+    height: 30px;
 
     &:after {
         content: '';
         display: block;
         clear: both;
     }
-    .fa-trash {
+    .fa-times {
         display: none;
         cursor: pointer;
+        width: 12px;
+        padding: 0 3px 0 0;
     }
     li {
         float: left;
-        margin-right:15px;
-        padding-right:12.58px;
-        background-color: #ddd;
+        margin-right: 5px;
+        padding: 3px 15px 0 15px;
         cursor: pointer;
+        height: 29px;
+        font-size: 13px;
+        color: #444;
+
+        .fa {
+            color: #B1B1B1;
+
+        }
+
+        .title {
+            padding: 0 5px;
+        }
+
         &.active {
             background-color: #fff;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
         }
     }
 
     .add-teaser__button {
         position: relative;
         cursor: pointer;
-        color: #2e94b7;
-        font-size:14px;
+        color: #333;
+        padding-left:0;
+        margin-left:5px;
     }
-    
+
     .add-teaser__dropdown-list {
         min-width: 100%;
         width: 200px;
         position: absolute;
         background-color: #fff;
         list-style: none;
-        margin:0;
-        padding:0;
+        margin: 0;
+        padding: 0;
         border: 1px solid #dddddd;
-        left:-15px;
-        top:30px;
+        left: -15px;
+        top: 30px;
 
         li:last-child {
             border-bottom: none;
         }
         li {
             float: none;
-            padding:0 15px;
+            padding: 0 15px;
             background-color: #fff;
             border-bottom: 1px solid #ddd;
             margin: 1px;
-            height: 36px;
-            line-height: 36px;
+            height: 30px;
+            line-height: 30px;
             color: #666;
 
             &:hover {
@@ -71,7 +99,7 @@
             }
             .fa {
                 color: #2e94b7;
-                width:30px
+                width: 30px
             }
         }
     }
@@ -101,17 +129,16 @@
     }
 }
 
-.sm-selected {
+.sm-selected,
+.sm-focused {
     .teaser-menu {
-        li {
-            padding-right:0;
-        }
-        .fa {
-            display: inline-block;
-        }
-    }
-}
+        .active {
+            padding-right: 3px;
 
-.teaser-container {
-    padding:10px;
+            .fa-times {
+                display: inline-block;
+            }
+        }
+
+    }
 }

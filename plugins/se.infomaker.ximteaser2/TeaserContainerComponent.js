@@ -35,7 +35,7 @@ class TeaserContainerComponent extends Component {
 
 
     addTeaser({type}) {
-        this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        const res = this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
     }
 
     removeTeaser(teaserNode) {
@@ -46,7 +46,16 @@ class TeaserContainerComponent extends Component {
             }))
             tx.delete(teaserNode.id)
         })
-        this.rerender()
+
+        // If we remove the active teaser we set current teaser to the first one
+        if(teaserNode.id === this.state.activeTeaserId) {
+            this.setState({
+                activeTeaserId: this.props.node.nodes[0]
+            })
+        } else {
+            this.rerender()
+        }
+
     }
 
     selectTeaser(teaserNode) {

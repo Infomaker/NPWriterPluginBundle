@@ -4,7 +4,7 @@ class TeaserComponent extends Component {
 
     render($$) {
 
-        const el = $$('div').addClass('teaser-container')
+        const el = $$('div').addClass('teaser-container').ref('teaserContainer')
 
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
         el.append($$(FieldEditor, {
