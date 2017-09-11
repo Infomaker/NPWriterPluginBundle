@@ -38,7 +38,7 @@
         margin-right: 5px;
         padding: 3px 15px 0 15px;
         cursor: pointer;
-        height: 29px;
+        height: 27px;
         font-size: 13px;
         color: #444;
 
@@ -55,6 +55,8 @@
             background-color: #fff;
             border-top-left-radius: 3px;
             border-top-right-radius: 3px;
+            border: 1px solid #ddd;
+            border-bottom: none;
         }
     }
 

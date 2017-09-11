@@ -1,4 +1,5 @@
 import {Component} from 'substance'
+import {api} from 'writer'
 import TeaserContainerMenu from './TeaserContainerMenu'
 import TeaserComponent from './TeaserComponent'
 
@@ -11,7 +12,6 @@ class TeaserContainerComponent extends Component {
     }
 
     didMount() {
-
         // If teaser container is removed we need to make sure that child nodes also is deleted
         this.context.editorSession.onRender('document', (change, info, editorSession) => {
             if (info.action === 'delete' && change.deleted[this.props.node.id]) {
@@ -33,6 +33,9 @@ class TeaserContainerComponent extends Component {
         }, this)
     }
 
+    dispose() {
+        this.context.editorSession.off(this)
+    }
 
     addTeaser({type}) {
         this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
@@ -79,11 +82,52 @@ class TeaserContainerComponent extends Component {
 
         const currentTeaserNode = this.context.doc.get(this.state.activeTeaserId)
         if(currentTeaserNode) {
-            const teaser = $$(TeaserComponent, {node: this.context.doc.get(this.state.activeTeaserId)}).ref('currentTeaser')
+            const teaser = $$(TeaserComponent, {
+                node: currentTeaserNode,
+                isolatedNodeState: this.props.isolatedNodeState
+            }).ref('currentTeaser')
             el.append(teaser)
         }
 
         return el
+    }
+
+    /**
+     * Hook into substance's dropzones package
+     *
+     * @see Dropzones._computeDropzones
+     */
+    getDropzoneSpecs() {
+        const label = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
+
+        return [
+            {
+                component: this,
+                message: this.getLabel(label),
+                dropParams: {
+                    action: 'replace-image',
+                    nodeId: this.props.node.id,
+                }
+            }
+        ]
+    }
+
+    /**
+     * Handles onDragEnd event registered in substance's DragManager
+     *
+     * @see DragManager
+     * @param tx
+     * @param dragState
+     */
+    handleDrop(tx, dragState) {
+        api.editorSession.executeCommand('insertTeaserImage', {
+            data: {
+                activeTeaserId: this.state.activeTeaserId,
+                dragState,
+                tx
+            },
+            context: {node: this.props.node}
+        })
     }
 
 }

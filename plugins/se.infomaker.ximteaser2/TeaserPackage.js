@@ -9,6 +9,8 @@ import InsertTeaserContainerCommand from './InsertTeaserContainerCommand'
 import InsertTeaserCommand from './InsertTeaserCommand'
 import TeaserConverter from './TeaserConverter'
 import TeaserNode from './TeaserNode'
+import TeaserComponent from './TeaserComponent'
+import InsertTeaserImageCommand from './InsertTeaserImageCommand'
 
 import {idGenerator} from 'writer'
 
@@ -32,7 +34,6 @@ export default {
             config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' })
         }
 
-
         config.addPluginModule('se.infomaker.ximteaser2.teasertemplate', (type) => {
             return {
                 type: 'ximteaser',
@@ -41,15 +42,14 @@ export default {
             }
         })
 
-        // config.addCommand('ximteaserinsertimage', XimteaserInsertImageCommand, pluginConfig)
-
         // config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
-
 
         // Teaser
         config.addConverter('newsml', TeaserConverter)
         config.addNode(TeaserNode)
+        config.addComponent(TeaserComponent.type, TeaserComponent)
         config.addCommand('insertTeaser', InsertTeaserCommand)
+        config.addCommand('insertTeaserImage', InsertTeaserImageCommand)
 
         config.addLabel('Insert Teaser', {
             en: 'Insert Teaser',
