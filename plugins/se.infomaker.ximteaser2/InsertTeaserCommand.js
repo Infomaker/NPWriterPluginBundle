@@ -5,7 +5,7 @@ class InsertTeaserCommand extends WriterCommand {
         const {type, teaserContainerNode} = params
         const {editorSession, api} = context
 
-        const generateTeaserTemplate = api.getPluginModule('teaserTemplate')
+        const generateTeaserTemplate = api.getPluginModule('se.infomaker.ximteaser2.teasertemplate')
         const teaserTemplate = generateTeaserTemplate(type)
 
         let createdTeaserNode

@@ -33,7 +33,7 @@ export default {
         }
 
 
-        config.addPluginModule('teaserTemplate', (type) => {
+        config.addPluginModule('se.infomaker.ximteaser2.teasertemplate', (type) => {
             return {
                 type: 'ximteaser',
                 dataType: type,
