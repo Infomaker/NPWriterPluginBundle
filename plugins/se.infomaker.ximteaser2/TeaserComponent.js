@@ -18,7 +18,7 @@ class TeaserComponent extends Component {
                     multiLine: field.multiline ? field.multiline : false,
                     field: field.id,
                     icon: field.icon,
-                    placeholder: field.caption
+                    placeholder: field.placeholder
                 }).ref(`${field.id}FieldEditor`)
             })
 
