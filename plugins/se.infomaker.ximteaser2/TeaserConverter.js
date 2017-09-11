@@ -9,10 +9,7 @@ export default {
 
         const {api} = converter.context
         const teaserTypes = api.getConfigValue('se.infomaker.ximteaser2', 'types')
-        return teaserTypes.some(({type}) => {
-            return type === el.attr('type')
-        })
-
+        return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
     import: (el, node, converter) => {
@@ -33,7 +30,6 @@ export default {
                 if (child.tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
                 }
-
             })
 
             const flagsEl = dataEl.find(':scope>flags')

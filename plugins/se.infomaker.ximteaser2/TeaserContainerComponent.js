@@ -35,7 +35,7 @@ class TeaserContainerComponent extends Component {
 
 
     addTeaser({type}) {
-        const res = this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
     }
 
     removeTeaser(teaserNode) {

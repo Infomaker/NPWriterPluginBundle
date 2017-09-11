@@ -10,7 +10,6 @@ class TeaserContainerMenu extends Component {
             return this.getMenuItem($$, teaserNode)
         })
 
-
         teasers.push(this.getAddButton($$))
 
         return $$('ul').addClass('teaser-menu').append(teasers)
