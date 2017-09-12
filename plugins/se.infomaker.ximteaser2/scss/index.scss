@@ -11,6 +11,22 @@
     .im-field-editor:first-child {
         margin-top: 0;
     }
+
+    .x-im-teaser-field {
+        font-size: 90%;
+        padding: 8px 8px 0 0;
+    }
+
+    .x-im-teaser-icon {
+        opacity: 0.5;
+        float: left;
+        padding: 4px;
+        margin-right: 8px;
+    }
+
+    .x-im-teaser-input {
+        padding-left: 27px;
+    }
 }
 
 .teaser-menu {

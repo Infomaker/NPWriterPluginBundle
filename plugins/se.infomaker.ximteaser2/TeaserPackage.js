@@ -15,7 +15,7 @@ import InsertTeaserImageCommand from './InsertTeaserImageCommand'
 import {idGenerator} from 'writer'
 
 export default {
-    name: 'ximteaser2',
+    name: 'ximteaser',
     id: 'se.infomaker.ximteaser2',
     version: '{{version}}',
     configure: function (config, pluginConfig) {

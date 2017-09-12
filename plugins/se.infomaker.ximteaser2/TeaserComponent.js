@@ -1,4 +1,4 @@
-import {Component} from 'substance'
+import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 
 class TeaserComponent extends Component {
@@ -35,7 +35,6 @@ class TeaserComponent extends Component {
                     this.shouldDownloadMetadataForImageUri = false
                 })
             }
-
         }
     }
 
@@ -47,7 +46,7 @@ class TeaserComponent extends Component {
         const ImageDisplay = api.ui.getComponent('imageDisplay')
         if (this.props.node.imageFile) {
             el.append(
-                $$(ImageDisplay, { // Pass property to images if used in teaser and if drag should be disabled
+                $$(ImageDisplay, {
                     parentId: 'se.infomaker.ximteaser2',
                     node: this.props.node,
                     imageOptions: currentType.imageoptions,
@@ -55,20 +54,26 @@ class TeaserComponent extends Component {
                     removeImage: this.removeImage.bind(this)
                 }).ref('image')
             )
-
         }
 
-        const FieldEditor = api.ui.getComponent('field-editor')
-
         if(currentType.fields && currentType.fields.length) {
+            
             const editorFields = currentType.fields.map((field) => {
-                return $$(FieldEditor, {
-                    node: this.props.node,
-                    multiLine: field.multiline ? field.multiline : false,
-                    field: field.id,
-                    icon: field.icon,
-                    placeholder: field.placeholder
-                }).ref(`${field.id}FieldEditor`)
+                const fieldElement = $$('div').addClass('im-blocknode__content full-width x-im-teaser-field')
+                const fieldInput = $$(TextPropertyEditor, {
+                    path: [this.props.node.id, field.id],
+                    doc: this.props.node.doc
+                })
+                    .addClass('x-im-teaser-input')
+                    .ref(`${field.id}FieldEditor`)
+
+                const icon = $$(FontAwesomeIcon, { icon: field.icon || 'fa-header' })
+                    .attr('title', field.placeholder)
+                    .addClass('x-im-teaser-icon')
+
+                fieldElement.append([icon, fieldInput])
+
+                return fieldElement
             })
 
             el.append(editorFields)

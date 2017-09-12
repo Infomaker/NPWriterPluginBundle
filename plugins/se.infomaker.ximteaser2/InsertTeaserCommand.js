@@ -11,7 +11,6 @@ class InsertTeaserCommand extends WriterCommand {
         let createdTeaserNode
         editorSession.transaction(tx => {
             createdTeaserNode = tx.create(teaserTemplate)
-            console.log(createdTeaserNode)
             tx.set([teaserContainerNode.id, 'nodes'], [...teaserContainerNode.nodes, teaserTemplate.id])
         })
 
