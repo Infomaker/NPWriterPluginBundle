@@ -57,7 +57,7 @@ class TeaserComponent extends Component {
         }
 
         if(currentType.fields && currentType.fields.length) {
-            
+
             const editorFields = currentType.fields.map((field) => {
                 const fieldElement = $$('div').addClass('im-blocknode__content full-width x-im-teaser-field')
                 const fieldInput = $$(TextPropertyEditor, {

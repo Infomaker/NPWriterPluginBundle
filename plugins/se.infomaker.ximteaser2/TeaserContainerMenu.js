@@ -45,27 +45,26 @@ class TeaserContainerMenu extends Component {
             item.addClass('active')
         }
 
-
         const teaserConfig = this.getConfigForTeaserType(teaserNode.dataType)
-
         const typeIcon = $$(FontAwesomeIcon, {icon: teaserConfig.icon})
         const title = $$('span').addClass('title').append(teaserConfig.label)
-        const icon = $$(FontAwesomeIcon, {icon: 'fa-times'})
-
-        item.append([typeIcon, title, icon])
-
-        icon.on('click', (e) => {
-            e.stopPropagation()
-            this.props.removeTeaser(teaserNode)
-        })
+        const hasManyTeaserNodes = this.props.node.nodes.length > 1
 
         item.on('click', () => {
             this.props.selectTeaser(teaserNode)
         })
 
-        icon.on('click', () => {
-            this.props.removeTeaser(teaserNode)
-        })
+        item.append([typeIcon, title])
+
+        // Only render remove button when there are many teasers
+        if(hasManyTeaserNodes) {
+            const removeTeaserIcon = $$(FontAwesomeIcon, {icon: 'fa-times'})
+            removeTeaserIcon.on('click', (e) => {
+                e.stopPropagation()
+                this.props.removeTeaser(teaserNode)
+            })
+            item.append(removeTeaserIcon)
+        }
 
         return item
     }

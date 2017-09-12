@@ -44,15 +44,16 @@
         clear: both;
     }
     .fa-times {
-        display: none;
+        visibility: hidden;
         cursor: pointer;
         width: 12px;
         padding: 0 3px 0 0;
     }
+
     li {
         float: left;
         margin-right: 5px;
-        padding: 3px 15px 0 15px;
+        padding: 3px 3px 0 15px;
         cursor: pointer;
         height: 27px;
         font-size: 13px;
@@ -60,7 +61,6 @@
 
         .fa {
             color: #B1B1B1;
-
         }
 
         .title {
@@ -73,6 +73,11 @@
             border-top-right-radius: 3px;
             border: 1px solid #ddd;
             border-bottom: none;
+        }
+
+        // Fix padding for single teaser, when remove-icon is not rendered
+        &.active:not(.add-teaser__button) i:only-of-type + span {
+            padding-right: 15px;
         }
     }
 
@@ -154,7 +159,7 @@
             padding-right: 3px;
 
             .fa-times {
-                display: inline-block;
+                visibility: visible;
             }
         }
 
