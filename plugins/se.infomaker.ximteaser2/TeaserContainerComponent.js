@@ -11,7 +11,9 @@ class TeaserContainerComponent extends Component {
         }
     }
 
+
     didMount() {
+
         // If teaser container is removed we need to make sure that child nodes also is deleted
         this.context.editorSession.onRender('document', (change, info, editorSession) => {
             if (info.action === 'delete' && change.deleted[this.props.node.id]) {
@@ -38,7 +40,10 @@ class TeaserContainerComponent extends Component {
     }
 
     addTeaser({type}) {
-        this.context.editorSession.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        const newTeaserNode = this.context.commandManager.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        this.setState({
+            activeTeaserId: newTeaserNode.id
+        })
     }
 
     removeTeaser(teaserNode) {
