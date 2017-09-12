@@ -12,8 +12,8 @@ export default {
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
-    import: (el, node, converter) => {
-        const {api} = converter.context
+    import: function(el, node, converter) {
+        // const {api} = converter.context
 
         const nodeId = el.attr('id')
         node.title = el.attr('title') ? el.attr('title') : ''
@@ -71,15 +71,15 @@ export default {
             const linkDataEl = linkEl.find('data')
             if (linkDataEl) {
                 // New format, image data is found correctly in link data element
-                // this.importImageLinkData(linkDataEl, node)
+                this.importImageLinkData(linkDataEl, node)
             }
             else {
                 // Old, depcrecated format, image data is found in teaser data
-                // this.importImageLinkData(dataEl, node)
+                this.importImageLinkData(dataEl, node)
             }
 
             // Import softcrops if exists
-            // this.importSoftcrops(linkEl, node)
+            this.importSoftcrops(linkEl, node)
 
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
@@ -87,8 +87,35 @@ export default {
         }
     },
 
+    /**
+     * Import the image link structure
+     */
+    importSoftcrops: function(el, node) {
+        let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
+        let softcrops = imageModule.importSoftcropLinks(
+            el.find('links')
+        )
 
-    export: (node, el, converter) => {
+        if (softcrops.length) {
+            node.crops = {
+                crops: softcrops
+            }
+        }
+    },
+
+    importImageLinkData: function(el, node) {
+        el.children.forEach(function(child) {
+            if (child.tagName === 'width') {
+                node.width = parseInt(child.text(), 10)
+            }
+
+            if (child.tagName === 'height') {
+                node.height = parseInt(child.text(), 10)
+            }
+        })
+    },
+
+    export: function(node, el, converter) {
         const $$ = converter.$$
 
         el.removeAttr('data-id')

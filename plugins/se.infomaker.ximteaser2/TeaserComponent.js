@@ -50,6 +50,7 @@ class TeaserComponent extends Component {
                 $$(ImageDisplay, { // Pass property to images if used in teaser and if drag should be disabled
                     parentId: 'se.infomaker.ximteaser2',
                     node: this.props.node,
+                    imageOptions: currentType.imageoptions,
                     isolatedNodeState: this.props.isolatedNodeState,
                     removeImage: this.removeImage.bind(this)
                 }).ref('image')
