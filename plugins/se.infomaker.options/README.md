@@ -146,8 +146,10 @@ The button component, configured with **button** stacks horizontally and support
     [Value 1] [Value 2] [Value 3]
     [Value 4]
     
-Buttons also have support for icons prepending the name. It is configured in the 'values' section and the value
-is any of the Font Awesome icons from http://fontawesome.io/icons/    
+Buttons also have support for icons prepending the name. It is configured in the 'values' section, using the field 'icon'. The value
+is any of the Font Awesome icons from http://fontawesome.io/icons/.
+
+It is also possible to have an image icon, which is specified using the 'image' field in the value section.    
 
 #### Example configuration
 
@@ -166,6 +168,11 @@ is any of the Font Awesome icons from http://fontawesome.io/icons/
                       "title": "Premium",
                       "icon" : "fa-star-o"
                     },
+                    {
+                      "uri": "im://articleoptions/priority",
+                      "title": "Priority",
+                      "image" : "data:image/svg+xml;base64,..."
+                    },                    
                     ...
 
     
@@ -176,6 +183,12 @@ The toggle component, configured with **toggle** stacks vertically and supports 
     [ O] Value 1 
     [O ] Value 2 
     [O ] Value 3 
+    
+Toggle buttons also have support for icons prepending the title. It is configured in the 'values' section, using the field 'icon'. The value
+is any of the Font Awesome icons from http://fontawesome.io/icons/.
+
+It is also possible to have an image icon, which is specified using the 'image' field in the value section.    
+    
     
 #### Example configuration
 
@@ -191,7 +204,13 @@ The toggle component, configured with **toggle** stacks vertically and supports 
                   "values": [
                     {
                       "uri": "im://articleoptions/premium",
-                      "title": "Premium"
+                      "title": "Premium",
+                      "icon" : "fa-star-o"
                     },
+                    {
+                      "uri": "im://articleoptions/priority",
+                      "title": "Priority",
+                      "image" : "data:image/svg+xml;base64,..."
+                    },                    
                     ...
 
