@@ -186,24 +186,33 @@ class ImageDisplay extends Component {
             }];
         }
 
-        api.ui.showDialog(
-            ImageCropper,
-            {
-                parentId: this.props.parentId,
-                src: this.props.node.getUrl(),
-                width: this.props.node.width,
-                height: this.props.node.height,
-                crops: this.props.node.crops.crops || [],
-                disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                callback: (crops, disableAutomaticCrop) => {
-                    this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+        this.props.node.fetchSpecifiedUrls(['service', 'original'])
+        .then(src => {
+            api.ui.showDialog(
+                ImageCropper,
+                {
+                    parentId: this.props.parentId,
+                    src: src,
+                    width: this.props.node.width,
+                    height: this.props.node.height,
+                    crops: this.props.node.crops.crops || [],
+                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                    callback: (crops, disableAutomaticCrop) => {
+                        this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+                    }
+                },
+                {
+                    tertiary: tertiary,
+                    cssClass: 'np-crop-dialog'
                 }
-            },
-            {
-                tertiary: tertiary,
-                cssClass: 'np-crop-dialog'
-            }
-        )
+            )
+        })
+        .catch(err => {
+            api.ui.showMessageDialog([{
+                type: 'error',
+                message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
+            }])
+        })
     }
 }
 
