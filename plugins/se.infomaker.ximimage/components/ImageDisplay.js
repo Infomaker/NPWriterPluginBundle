@@ -20,6 +20,7 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
+        const imageOptions = this.props.imageOptions
         let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer')
         let imgSrc
         try {
@@ -63,7 +64,7 @@ class ImageDisplay extends Component {
 
         const actionsEl = $$('div').addClass('se-actions')
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.byline) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'user-plus'
@@ -71,7 +72,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.imageinfo) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
@@ -79,8 +80,8 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
-            const configuredCrops = api.getConfigValue(this.props.parentId, 'crops', [])
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.softcrop) {
+            const configuredCrops = imageOptions.crops || []
             let currentCrops = 0
             let cropBadgeClass = false
 
@@ -143,7 +144,7 @@ class ImageDisplay extends Component {
                         node: this.props.node,
                         url: this.props.node.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
+                        disablebylinesearch: !this.props.imageOptions.bylinesearch
                     },
                     {
                         title: this.getLabel('Image archive information'),
@@ -194,6 +195,7 @@ class ImageDisplay extends Component {
                 width: this.props.node.width,
                 height: this.props.node.height,
                 crops: this.props.node.crops.crops || [],
+                configuredCrops: this.props.imageOptions.crops,
                 disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                 callback: (crops, disableAutomaticCrop) => {
                     this.props.node.setSoftcropData(crops, disableAutomaticCrop)

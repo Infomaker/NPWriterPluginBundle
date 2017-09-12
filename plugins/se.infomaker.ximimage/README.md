@@ -4,7 +4,7 @@ Documentation of the image plugin.
 ## Image plugin configuration
 
 The image plugin configuration must have several things defined to work correctly.
-```javascript
+```json
 {
     "vendor": "infomaker.se",
     "name": "ximimage",

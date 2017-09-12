@@ -32,7 +32,7 @@ class ImageCropper extends Component {
             }
         )
 
-        let definedCrops = api.getConfigValue(this.props.parentId, 'crops', []),
+        let configuredCrops = this.props.configuredCrops || [],
             encodedSrc = encodeURIComponent(this.props.src)
 
         this.disableAutomaticCrop = this.props.disableAutomaticCrop
@@ -41,12 +41,12 @@ class ImageCropper extends Component {
             '/api/resourceproxy?url=' + encodedSrc,
             () => {
                 let selected = true
-                for(var name in definedCrops) {
+                for(const name in configuredCrops) {
                     if (this.props.crops) {
-                        this.addCrop(name, selected, definedCrops[name], this.props.crops)
+                        this.addCrop(name, selected, configuredCrops[name], this.props.crops)
                     }
                     else {
-                        this.createCrop(name, selected, definedCrops[name])
+                        this.createCrop(name, selected, configuredCrops[name])
                     }
                     selected = false
                 }
