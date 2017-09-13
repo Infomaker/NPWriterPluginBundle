@@ -15,8 +15,9 @@ class MapComponent extends Component {
         function addPoints(google, data) {
             var pointsData = data.split(",")
             var len = pointsData.length
+
             for (var i = 0; i < len; i++) {
-                var xy = pointsData[i].split(" ")
+                var xy = pointsData[i].trim().split(" ")
 
                 var pt = new google.maps.LatLng(xy[1], xy[0]); // Make to Google LatLng format
                 ptsArray.push(pt)
@@ -28,10 +29,10 @@ class MapComponent extends Component {
         var wktRings = []
         var results
 
-        wktString = wktString.replace(/ +(?= )/g,'')
+        wktString = wktString.replace(/ +(?= )/g, '')
         do {
             results = regex.exec(wktString)
-            if(results) {
+            if (results) {
                 wktRings.push(results[1])
             }
 
@@ -42,7 +43,7 @@ class MapComponent extends Component {
             addPoints(this.google, wktRings[i])
         }
 
-        var poly = new this.google.maps.Polygon({
+        var polygon = new this.google.maps.Polygon({
             paths: ptsArray,
             strokeColor: '#3A99D9',
             strokeOpacity: 0.8,
@@ -51,9 +52,14 @@ class MapComponent extends Component {
             fillOpacity: 0.35
         })
 
-        poly.setMap(this.map)
-        this.map.setZoom(9)
+        polygon.setMap(this.map)
 
+        // Fit Polygon path bounds
+        var bounds = new google.maps.LatLngBounds()
+        polygon.getPath().forEach(function (path, index) {
+            bounds.extend(path)
+        })
+        this.map.fitBounds(bounds);
     }
 
     dispose() {
