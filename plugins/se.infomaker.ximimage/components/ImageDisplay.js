@@ -20,7 +20,7 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
-        const imageOptions = this.props.imageOptions
+        const imageOptions = this._getImageOptions()
         let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer')
         let imgSrc
         try {
@@ -206,6 +206,26 @@ class ImageDisplay extends Component {
                 cssClass: 'np-crop-dialog'
             }
         )
+    }
+
+    /**
+     * Fetches image options either from supplied props or
+     * configuration values for props.parentId. Needed for
+     * teaser-plugin backwards compatibility
+     *
+     * @returns {*}
+     * @private
+     */
+    _getImageOptions() {
+        if(this.props.imageOptions) {
+            return this.props.imageOptions
+        } else {
+            // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
+            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+                optionsObject[field] = api.getConfigValue(this.props.parentId, field)
+                return optionsObject
+            }, {})
+        }
     }
 }
 
