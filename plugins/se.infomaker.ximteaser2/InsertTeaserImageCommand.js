@@ -2,34 +2,42 @@ import {documentHelpers} from 'substance'
 import {WriterCommand, idGenerator, api} from 'writer'
 
 class InsertTeaserImageCommand extends WriterCommand {
+
     execute(params, context) {
         const activeTeaserNode = context.doc.get(params.data.activeTeaserId)
-        const {dragState, tx} = params.data
+        const {imageEntity, tx} = params.data
+        const imageEntityType = this._getImageEntityType(imageEntity)
 
-        console.log(activeTeaserNode)
-
-        // HACK: so this should not be done here -> see command
-        if (this.isFileDrop(dragState.data)) {
-            // Handle file drop
-            this.handleNewImage(tx, dragState, activeTeaserNode, context)
-        } else if (dragState.nodeDrag) {
-            // Handle internal node drag
-            this.handleNodeDrop(tx, dragState, activeTeaserNode, context)
-        } else if (this.isUriDrop(dragState.data)) {
-            const uri = dragState.data.uris[0]
+        if(imageEntityType === 'file') {
+            this.handleNewImage(tx, imageEntity, activeTeaserNode, context)
+        } else if(imageEntityType === 'node') {
+            this.handleNodeDrop(tx, imageEntity, activeTeaserNode, context)
+        } else if(imageEntityType === 'uri') {
+            const uri = imageEntity.data.uris[0]
             const dropData = this.getDataFromURL(uri)
+
             if(dropData) {
                 // Handles uri drop from related content
                 this.handleUriDrop(tx, dropData, activeTeaserNode)
-            } else {
+            } else if (this._isImage(uri)){
                 // Handles external URL drops
-                if(this._isImage(uri)) {
-                    this.handleUrlDrop(tx, uri, activeTeaserNode)
-                    setTimeout(() => {
-                        api.editorSession.fileManager.sync()
-                    }, 300)
-                }
+                this.handleUrlDrop(tx, uri, activeTeaserNode)
+                setTimeout(() => {
+                    api.editorSession.fileManager.sync()
+                }, 300)
             }
+        }
+    }
+
+    _getImageEntityType(imageEntity) {
+        if (this.isFileDropOrUpload(imageEntity.data)) {
+            // Handle file drop or upload
+            return 'file'
+        } else if (imageEntity.nodeDrag) {
+            // Handle internal node drag
+            return 'node'
+        } else if (this.isUriDrop(imageEntity.data)) {
+            return 'uri'
         }
     }
 
@@ -38,7 +46,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         // Load allowed filextension from config file
         let fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension')
 
-        //If no extension specified in config use the default extension, specified in constructor
+        // If no extension specified in config use the default extension, specified in constructor
         if (!fileExtensionsFromConfig) {
             fileExtensionsFromConfig = ['jpeg', 'jpg', 'gif', 'png']
         }
@@ -59,7 +67,6 @@ class InsertTeaserImageCommand extends WriterCommand {
         } else {
             return false
         }
-
     }
 
     /**
@@ -67,6 +74,7 @@ class InsertTeaserImageCommand extends WriterCommand {
      * It retrieves the imageNode and extracts that fileNode and make a copy of it
      * The crops is removed, uri is changed to used to one from the ImageNode
      * The imageFile.id
+     *
      * @param tx
      * @param dragState
      * @param teaserNode
@@ -94,7 +102,6 @@ class InsertTeaserImageCommand extends WriterCommand {
             } catch (_) {
 
             }
-
         }
     }
 
@@ -104,7 +111,7 @@ class InsertTeaserImageCommand extends WriterCommand {
      * @param teaserNode
      */
     handleUriDrop(tx, dropData, teaserNode) {
-        this.shouldDownloadMetadataForImageUri = true // ?
+        teaserNode.shouldDownloadMetadataForImageUri = true // ?
         // Fetch the image
         const uuid = dropData.uuid
 
@@ -129,10 +136,10 @@ class InsertTeaserImageCommand extends WriterCommand {
 
     /**
      * @param tx
-     * @param uri
+     * @param url
      * @param teaserNode
      */
-    handleUrlDrop(tx, uri, teaserNode) {
+    handleUrlDrop(tx, url, teaserNode) {
         const nodeId = idGenerator()
 
         const imageFileNode = {
@@ -140,7 +147,7 @@ class InsertTeaserImageCommand extends WriterCommand {
             type: 'npfile',
             imType: 'x-im/image'
         }
-        imageFileNode['sourceUrl'] = uri
+        imageFileNode['sourceUrl'] = url
 
         // Create file node for the image
         let imageFile = tx.create(imageFileNode)
@@ -178,8 +185,8 @@ class InsertTeaserImageCommand extends WriterCommand {
         }, 300)
     }
 
-    isFileDrop(dragData) {
-        return dragData.files && dragData.files.length > 0;
+    isFileDropOrUpload(dragData) {
+        return dragData.files && dragData.files.length > 0
     }
 
     isUriDrop(dragData) {

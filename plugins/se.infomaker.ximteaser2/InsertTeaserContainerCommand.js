@@ -46,7 +46,7 @@ class InsertTeaserContainerCommand extends WriterCommand {
             const containerNode = this.getEmptyTeaserContainerNode()
             const teaserNode = this.createInitialTeaserNode(tx, api)
 
-            const firstNodeId = doc.getNodes()['body'].nodes[0];
+            const firstNodeId = doc.getNodes()['body'].nodes[0]
 
             tx.setSelection(doc.createSelection({
                 type: 'property',

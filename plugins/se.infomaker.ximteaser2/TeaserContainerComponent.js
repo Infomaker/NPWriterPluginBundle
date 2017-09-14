@@ -11,7 +11,6 @@ class TeaserContainerComponent extends Component {
         }
     }
 
-
     didMount() {
 
         // If teaser container is removed we need to make sure that child nodes also is deleted
@@ -40,9 +39,9 @@ class TeaserContainerComponent extends Component {
     }
 
     addTeaser({type}) {
-        const newTeaserNode = this.context.commandManager.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        const newTeaserNodeId = this.context.commandManager.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
         this.setState({
-            activeTeaserId: newTeaserNode.id
+            activeTeaserId: newTeaserNodeId
         })
     }
 
@@ -63,7 +62,6 @@ class TeaserContainerComponent extends Component {
         } else {
             this.rerender()
         }
-
     }
 
     selectTeaser(teaserNode) {
@@ -73,7 +71,6 @@ class TeaserContainerComponent extends Component {
     }
 
     render($$) {
-
         const el = $$('div').addClass('im-blocknode__container')
 
         el.append($$(TeaserContainerMenu, {
@@ -85,7 +82,7 @@ class TeaserContainerComponent extends Component {
             selectTeaser: this.selectTeaser.bind(this)
         }).ref('menu'))
 
-        const currentTeaserNode = this.context.doc.get(this.state.activeTeaserId)
+        const currentTeaserNode = this._getActiveTeaserNode()
         if(currentTeaserNode) {
             const teaser = $$(TeaserComponent, {
                 node: currentTeaserNode,
@@ -103,18 +100,17 @@ class TeaserContainerComponent extends Component {
      * @see Dropzones._computeDropzones
      */
     getDropzoneSpecs() {
-        const label = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
+        const currentTeaserNode = this._getActiveTeaserNode()
+        const label = currentTeaserNode.imageFile ? 'Replace Image' : 'Add Image'
 
-        return [
-            {
-                component: this,
-                message: this.getLabel(label),
-                dropParams: {
-                    action: 'replace-image',
-                    nodeId: this.props.node.id,
-                }
+        return [{
+            component: this,
+            message: this.getLabel(label),
+            dropParams: {
+                action: 'replace-image',
+                nodeId: this.props.node.id,
             }
-        ]
+        }]
     }
 
     /**
@@ -128,11 +124,15 @@ class TeaserContainerComponent extends Component {
         api.editorSession.executeCommand('insertTeaserImage', {
             data: {
                 activeTeaserId: this.state.activeTeaserId,
-                dragState,
+                imageEntity: dragState,
                 tx
             },
             context: {node: this.props.node}
         })
+    }
+
+    _getActiveTeaserNode() {
+        return this.context.doc.get(this.state.activeTeaserId)
     }
 
 }

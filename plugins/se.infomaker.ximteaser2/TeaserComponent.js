@@ -1,5 +1,6 @@
 import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
+import FileInputComponent from './FileInputComponent'
 
 class TeaserComponent extends Component {
 
@@ -24,15 +25,16 @@ class TeaserComponent extends Component {
         } else if (change.isAffected(this.props.node.imageFile)) {
             this.rerender()
             const imageNode = this.context.api.doc.get(this.props.node.imageFile)
-            if (imageNode && imageNode.sourceUUID && this.shouldDownloadMetadataForImageUri) {
+            if (imageNode && imageNode.sourceUUID && this.props.node.shouldDownloadMetadataForImageUri) {
                 this.props.node.fetchPayload(this.context, (err, node) => {
                     this.context.editorSession.transaction((tx) => {
+                        tx.set([this.props.node.id, 'uuid'], imageNode.uuid)
                         tx.set([this.props.node.id, 'uri'], node.uri)
                         tx.set([this.props.node.id, 'width'], node.width)
                         tx.set([this.props.node.id, 'height'], node.height)
                         tx.set([this.props.node.id, 'crops'], [])
                     })
-                    this.shouldDownloadMetadataForImageUri = false
+                    this.props.node.shouldDownloadMetadataForImageUri = false
                 })
             }
         }
@@ -55,6 +57,9 @@ class TeaserComponent extends Component {
                 }).ref('image')
             )
         }
+
+        const uploadImageIcon = $$(FileInputComponent, {onChange: this.triggerFileUpload.bind(this)})
+        el.append(uploadImageIcon)
 
         if(currentType.fields && currentType.fields.length) {
 
@@ -82,6 +87,22 @@ class TeaserComponent extends Component {
         }
 
         return el
+    }
+
+    triggerFileUpload(ev) {
+        const editorSession = api.editorSession
+        editorSession.transaction((tx)=>{
+            editorSession.executeCommand('insertTeaserImage', {
+                context: {node: this.props.node},
+                data: {
+                    activeTeaserId: this.props.node.id,
+                    imageEntity: {
+                        data: ev.target
+                    },
+                    tx
+                }
+            })
+        })
     }
 
     /**

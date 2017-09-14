@@ -15,7 +15,7 @@ class InsertTeaserCommand extends WriterCommand {
         })
 
         if(createdTeaserNode) {
-            return createdTeaserNode
+            return createdTeaserNode.id
         }
     }
 }

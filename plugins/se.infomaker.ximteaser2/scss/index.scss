@@ -8,8 +8,29 @@
     background-color: #fff;
     padding: 10px;
 
-    .im-field-editor:first-child {
-        margin-top: 0;
+    .fa {
+        opacity: 0.5;
+    }
+
+    .x-im-teaser-upload-icon {
+        float: right;
+        display: block;
+        cursor: pointer;
+    }
+
+    .fileinput {
+        //display: none;
+        .upload-button {
+            cursor: pointer;
+            float: right;
+            font-size: 1rem;
+            .fa {
+                color: #565656
+            }
+        }
+        input[type="file"] {
+            display: none;
+        }
     }
 
     .x-im-teaser-field {
@@ -18,7 +39,6 @@
     }
 
     .x-im-teaser-icon {
-        opacity: 0.5;
         float: left;
         padding: 4px;
         margin-right: 8px;

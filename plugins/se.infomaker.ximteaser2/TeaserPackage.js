@@ -42,25 +42,19 @@ export default {
             }
         })
 
-        // config.addIcon('ximteaser', { 'fontawesome': ' fa-newspaper-o' })
-
         // Teaser
         config.addConverter('newsml', TeaserConverter)
         config.addNode(TeaserNode)
-        config.addComponent(TeaserComponent.type, TeaserComponent)
         config.addCommand('insertTeaser', InsertTeaserCommand)
         config.addCommand('insertTeaserImage', InsertTeaserImageCommand)
 
         config.addLabel('Insert Teaser', {
-            en: 'Insert Teaser',
             sv: 'Infoga puff'
         })
-        config.addLabel('teaser-add-image', {
-            en: 'Add image',
+        config.addLabel('Add Image', {
             sv: 'Lägg till bild'
         })
-        config.addLabel('teaser-replace-image', {
-            en: 'Replace image',
+        config.addLabel('Replace Image', {
             sv: 'Ersätt bild'
         })
     }
