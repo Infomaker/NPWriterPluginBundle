@@ -8,57 +8,52 @@ class InsertTeaserImageCommand extends WriterCommand {
         const {imageEntity, tx} = params.data
         const imageEntityType = this._getImageEntityType(imageEntity)
 
-        if(imageEntityType === 'file') {
+        if (imageEntityType === 'file') {
+            // Handle file drop or upload
             this.handleNewImage(tx, imageEntity, activeTeaserNode, context)
-        } else if(imageEntityType === 'node') {
+        } else if (imageEntityType === 'node') {
+            // Handle internal node drag
             this.handleNodeDrop(tx, imageEntity, activeTeaserNode, context)
-        } else if(imageEntityType === 'uri') {
+        } else if (imageEntityType === 'uri') {
+            // Handles uri drop from related content
             const uri = imageEntity.data.uris[0]
-            const dropData = this.getDataFromURL(uri)
-
-            if(dropData) {
-                // Handles uri drop from related content
-                this.handleUriDrop(tx, dropData, activeTeaserNode)
-            } else if (this._isImage(uri)){
-                // Handles external URL drops
-                this.handleUrlDrop(tx, uri, activeTeaserNode)
+            const dropData = this._getDataFromURL(uri)
+            this.handleUriDrop(tx, dropData, activeTeaserNode)
+        } else if (imageEntityType === 'url') {
+            // Handles external URL drops
+            const url = imageEntity.data.uris[0]
+            if (this._isImage(url)) {
+                this.handleUrlDrop(tx, url, activeTeaserNode)
                 setTimeout(() => {
                     api.editorSession.fileManager.sync()
                 }, 300)
             }
         }
+
+        return imageEntityType
     }
 
     _getImageEntityType(imageEntity) {
-        if (this.isFileDropOrUpload(imageEntity.data)) {
-            // Handle file drop or upload
+        if (this._isFileDropOrUpload(imageEntity.data)) {
             return 'file'
         } else if (imageEntity.nodeDrag) {
-            // Handle internal node drag
             return 'node'
-        } else if (this.isUriDrop(imageEntity.data)) {
+        } else if (this._isUriDrop(imageEntity.data)) {
             return 'uri'
+        } else if (this._isUrlDrop(imageEntity.data)) {
+            return 'url'
         }
     }
 
     _isImage(uri) {
-
         // Load allowed filextension from config file
-        let fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension')
-
-        // If no extension specified in config use the default extension, specified in constructor
-        if (!fileExtensionsFromConfig) {
-            fileExtensionsFromConfig = ['jpeg', 'jpg', 'gif', 'png']
-        }
+        const fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension', ['jpeg', 'jpg', 'gif', 'png'])
 
         // Iterate given extension and return bool if found
-        return fileExtensionsFromConfig.some((extension) => {
-            return uri.indexOf(extension) > 0
-        })
-
+        return fileExtensionsFromConfig.some((extension) => uri.includes(extension))
     }
 
-    getDataFromURL(url) {
+    _getDataFromURL(url) {
         const queryParamKey = 'data='
         const dataPosition = url.indexOf(queryParamKey)
         if(dataPosition > -1) {
@@ -185,15 +180,16 @@ class InsertTeaserImageCommand extends WriterCommand {
         }, 300)
     }
 
-    isFileDropOrUpload(dragData) {
+    _isFileDropOrUpload(dragData) {
         return dragData.files && dragData.files.length > 0
     }
 
-    isUriDrop(dragData) {
-        if (dragData.uris && dragData.uris.length > 0) {
-            return true
-        }
-        return false
+    _isUrlDrop(dragData) {
+        return dragData.uris && dragData.uris.length > 0 && /^https?:\/\//.test(dragData.uris[0])
+    }
+
+    _isUriDrop(dragData) {
+        return dragData.uris && dragData.uris.length > 0 && dragData.uris[0].includes('x-im-entity://x-im/image')
     }
 }
 

@@ -77,11 +77,11 @@ class InsertTeaserContainerCommand extends WriterCommand {
         const containerNode = this.getEmptyTeaserContainerNode()
 
         editorSession.transaction((tx) => {
-            const body = tx.get('body');
+            const body = tx.get('body')
             const teaserNode = this.createInitialTeaserNode(tx, api)
             const node = tx.create(containerNode)
             containerNode.nodes.push(teaserNode.id)
-            body.show(node.id);
+            body.show(node.id)
         })
 
         editorSession.transaction(tx => {

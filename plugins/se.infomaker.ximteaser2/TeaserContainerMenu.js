@@ -84,7 +84,7 @@ class TeaserContainerMenu extends Component {
 
     _getTeaserNodes() {
         return this.props.node.nodes
-            .map((teaserNodeId) => this.context.api.doc.get(teaserNodeId));
+            .map((teaserNodeId) => this.context.api.doc.get(teaserNodeId))
     }
 
 }

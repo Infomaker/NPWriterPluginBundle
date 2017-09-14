@@ -13,8 +13,8 @@ class TeaserContainerTool extends Tool {
                 $$('i').addClass('fa fa-newspaper-o')
             )
                 .on('click', this.insertTeaser)
-        );
-        return el;
+        )
+        return el
 
     }
 

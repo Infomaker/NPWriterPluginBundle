@@ -9,7 +9,6 @@ import InsertTeaserContainerCommand from './InsertTeaserContainerCommand'
 import InsertTeaserCommand from './InsertTeaserCommand'
 import TeaserConverter from './TeaserConverter'
 import TeaserNode from './TeaserNode'
-import TeaserComponent from './TeaserComponent'
 import InsertTeaserImageCommand from './InsertTeaserImageCommand'
 
 import {idGenerator} from 'writer'

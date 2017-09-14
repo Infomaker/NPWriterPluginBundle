@@ -22,7 +22,7 @@ class TeaserContainerComponent extends Component {
 
     addTeaser({type}) {
         const newTeaserNodeId = this.context.commandManager.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
-        this.setState({
+        this.extendState({
             activeTeaserId: newTeaserNodeId
         })
     }
@@ -38,7 +38,7 @@ class TeaserContainerComponent extends Component {
 
         // If we remove the active teaser we set current teaser to the first one
         if(teaserNode.id === this.state.activeTeaserId) {
-            this.setState({
+            this.extendState({
                 activeTeaserId: this.props.node.nodes[0]
             })
         } else {
@@ -47,7 +47,7 @@ class TeaserContainerComponent extends Component {
     }
 
     selectTeaser(teaserNode) {
-        this.setState({
+        this.extendState({
             activeTeaserId: teaserNode.id
         })
     }
