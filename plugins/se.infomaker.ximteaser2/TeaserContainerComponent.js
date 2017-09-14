@@ -11,31 +11,13 @@ class TeaserContainerComponent extends Component {
         }
     }
 
-    didMount() {
-
-        // If teaser container is removed we need to make sure that child nodes also is deleted
-        this.context.editorSession.onRender('document', (change, info, editorSession) => {
-            if (info.action === 'delete' && change.deleted[this.props.node.id]) {
-                editorSession.transaction((tx) => {
-                    this.props.node.nodes.forEach((teaserNodeId) => {
-                        tx.delete(teaserNodeId)
-                    })
-                })
-            }
-
-            this.props.node.nodes.forEach(childNodeId => {
-                if (change.isAffected(childNodeId)) {
-                    this.rerender()
-                }
-            })
-            if (change.isAffected(this.props.node.id)) {
-                this.rerender()
-            }
-        }, this)
-    }
-
     dispose() {
-        this.context.editorSession.off(this)
+        // Clean up any remaining Teaser Nodes
+        this.context.editorSession.transaction((tx) => {
+            this.props.node.nodes.forEach((teaserNodeId) => {
+                tx.delete(teaserNodeId)
+            })
+        })
     }
 
     addTeaser({type}) {
