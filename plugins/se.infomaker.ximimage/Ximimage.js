@@ -17,6 +17,19 @@ class Ximimage extends BlockNode {
         }
     }
 
+    fetchSpecifiedUrls(fallbacks) {
+        let imageFile = this.getImageFile()
+        if (!imageFile) {
+            return Promise.reject('No image file available')
+        }
+
+        if (!imageFile.proxy) {
+            return Promise.reject('No image file available')
+        }
+
+        return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
+    }
+
     setAlignment(alignment) {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'alignment'], alignment)

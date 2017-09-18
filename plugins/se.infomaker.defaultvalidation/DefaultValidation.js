@@ -8,9 +8,6 @@ class DefaultValidation extends Validator {
      */
     constructor(...args) {
         super(...args)
-
-        // FIXME: Hard coded value... should maybe be config or label?
-        // this.headlinePlaceholder = 'Rubrik här...'
     }
 
     /**
@@ -18,6 +15,7 @@ class DefaultValidation extends Validator {
      */
     validate() {
         this.validateHeadline()
+        this.validateAuthor()
 
         // TODO: Make these configurable and include in default validation
         // this.validatePublicationchannel()
@@ -51,6 +49,15 @@ class DefaultValidation extends Validator {
         //         api.getLabel('Looks like the first headline is not correct.')
         //     )
         // }
+    }
+
+    /**
+     * Warn if no author has been chosen
+     */
+    validateAuthor() {
+        if(api.newsItem.getAuthors().length === 0) {
+            this.addWarning(api.getLabel('validation-no-author'))
+        }
     }
 
     /**

@@ -37,7 +37,14 @@ class AuthorBaseComponent extends Component {
     }
 
     _getFullName(author) {
-        return this.getItemMetaExtProperty('imext:firstName', author) + ' ' + this.getItemMetaExtProperty('imext:lastName', author)
+        const firstName = this.getItemMetaExtProperty('imext:firstName', author)
+        const lastName = this.getItemMetaExtProperty('imext:lastName', author)
+
+        if (firstName && lastName) {
+            return firstName + ' ' + lastName
+        }
+
+        return author.concept.name
     }
 
     /**

@@ -88,5 +88,9 @@ export default {
         config.addLabel('Disable automatic crop in frontend', {
             sv: 'Använd inte automatisk crop vid utvisning'
         })
+
+        config.addLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.', {
+            sv: 'Bilden verkar inte finnas tillgänglig än. Vänta ett par sekunder och försök igen.'
+        })
     }
 }
