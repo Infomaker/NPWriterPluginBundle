@@ -26,6 +26,19 @@ class TeaserNode extends BlockNode {
         }
     }
 
+    fetchSpecifiedUrls(fallbacks) {
+        let imageFile = this.getImageFile()
+        if (!imageFile) {
+            return Promise.reject('No image file available')
+        }
+
+        if (!imageFile.proxy) {
+            return Promise.reject('No image file available')
+        }
+
+        return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
+    }
+
     setSoftcropData(data, disableAutomaticCrop) {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'crops'], data)
