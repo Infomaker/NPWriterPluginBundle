@@ -21,9 +21,9 @@ class FileInputComponent extends Component {
     }
 
     triggerFileDialog() {
-        const evt = document.createEvent('MouseEvents');
-        evt.initEvent('click', true, false);
-        this.refs.fileInput.el.el.dispatchEvent(evt);
+        const evt = document.createEvent('MouseEvents')
+        evt.initEvent('click', true, false)
+        this.refs.fileInput.el.el.dispatchEvent(evt)
     }
 
 }

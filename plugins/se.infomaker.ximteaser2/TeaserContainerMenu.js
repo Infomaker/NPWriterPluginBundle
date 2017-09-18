@@ -14,7 +14,6 @@ class TeaserContainerMenu extends Component {
     }
 
     getAddButton($$) {
-
         const teaserNodes = this._getTeaserNodes().map(({dataType}) => dataType)
         const items = this.props.availableTeaserTypes
             .filter(({type}) => teaserNodes.includes(type) === false)

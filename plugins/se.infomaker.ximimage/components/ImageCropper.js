@@ -1,5 +1,4 @@
 import { Component } from 'substance'
-const {api} = writer
 
 /*
   Used in ImageDisplay
@@ -11,7 +10,7 @@ class ImageCropper extends Component {
 
     getInitialState() {
         return {
-            disableAutomaticCrop: this.props.disableAutomaticCrop === true ? true : false
+            disableAutomaticCrop: this.props.disableAutomaticCrop === true
         }
     }
 
