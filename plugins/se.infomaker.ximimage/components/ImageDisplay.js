@@ -136,6 +136,7 @@ class ImageDisplay extends Component {
     }
 
     _openMetaData() {
+        const imageOptions = this._getImageOptions()
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
                 api.ui.showDialog(
@@ -144,7 +145,7 @@ class ImageDisplay extends Component {
                         node: this.props.node,
                         url: this.props.node.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: !this.props.imageOptions.bylinesearch
+                        disablebylinesearch: !imageOptions.bylinesearch
                     },
                     {
                         title: this.getLabel('Image archive information'),
@@ -176,6 +177,7 @@ class ImageDisplay extends Component {
     }
 
     _openCropper() {
+        const imageOptions = this._getImageOptions()
         let tertiary = false;
         if (this.props.node.crops) {
             tertiary = [{
@@ -197,7 +199,7 @@ class ImageDisplay extends Component {
                         width: this.props.node.width,
                         height: this.props.node.height,
                         crops: this.props.node.crops.crops || [],
-                        configuredCrops: this.props.imageOptions.crops,
+                        configuredCrops: imageOptions.crops,
                         disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                         callback: (crops, disableAutomaticCrop) => {
                             this.props.node.setSoftcropData(crops, disableAutomaticCrop)
