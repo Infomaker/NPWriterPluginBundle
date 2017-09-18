@@ -47,13 +47,18 @@ class TeaserComponent extends Component {
 
         const ImageDisplay = api.ui.getComponent('imageDisplay')
         if (this.props.node.imageFile) {
+            // Manually disable byline for teaser image, to make sure it's not accidentally enabled through config
+            const imageOptions = Object.assign(currentType.imageoptions, {
+                byline: false,
+                bylinesearch: false
+            })
+
             el.append(
                 $$(ImageDisplay, {
-                    parentId: 'se.infomaker.ximteaser2',
                     node: this.props.node,
-                    imageOptions: currentType.imageoptions,
                     isolatedNodeState: this.props.isolatedNodeState,
-                    removeImage: this.removeImage.bind(this)
+                    removeImage: this.removeImage.bind(this),
+                    imageOptions
                 }).ref('image')
             )
         }
