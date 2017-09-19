@@ -1,5 +1,5 @@
-import { jxon, api, lodash as _, NilUUID } from 'writer'
-import { DefaultDOMElement, BlockNode } from 'substance'
+import {api, jxon, lodash as _, NilUUID} from 'writer'
+import {BlockNode, DefaultDOMElement} from 'substance'
 
 
 class Ximimage extends BlockNode {
@@ -63,7 +63,7 @@ class Ximimage extends BlockNode {
     getXimImageConverter(context) {
 
         let converterRegistry = context.converterRegistry
-        if(!converterRegistry) {
+        if (!converterRegistry) {
             converterRegistry = context.editorSession.converterRegistry
         }
 
@@ -92,7 +92,7 @@ class Ximimage extends BlockNode {
             height = dom.querySelector('contentMeta > metadata > object > data > height')
 
         let convertedAuthors = []
-        if(authors) {
+        if (authors) {
             const ximimageConverter = this.getXimImageConverter(context)
 
             // Uses the ximImageConverter to convert links to authors
@@ -215,6 +215,7 @@ class Ximimage extends BlockNode {
         })
 
     }
+
     findAttribute(object, attribute) {
         let match
 
@@ -240,7 +241,7 @@ class Ximimage extends BlockNode {
     fetchAuthorsConcept() {
         const authors = this.authors
         const authorsLoadPromises = this.authors.map((author) => {
-            if(!author.isSimpleAuthor && author.isLoaded === false) {
+            if (!author.isSimpleAuthor && author.isLoaded === false) {
                 return this.fetchAuthorConcept(author)
             } else {
                 return null
@@ -253,7 +254,7 @@ class Ximimage extends BlockNode {
             .then(() => {
                 api.editorSession.transaction((tx) => {
                     tx.set([this.id, 'authors'], authors)
-                }, { history: false })
+                }, {history: false})
             })
     }
 
@@ -267,18 +268,18 @@ class Ximimage extends BlockNode {
         this.fetchAuthorConcept(author)
             .then((updatedAuthor) => {
                 const authorObject = authors.find((author) => {
-                    if(author.uuid === updatedAuthor.uuid) {
+                    if (author.uuid === updatedAuthor.uuid) {
                         return author
                     }
                     return undefined
                 })
 
-                if(authorObject) {
+                if (authorObject) {
                     const index = authors.indexOf(authorObject)
                     authors[index] = updatedAuthor
                     api.editorSession.transaction((tx) => {
                         tx.set([this.id, 'authors'], authors)
-                    }, { history: false })
+                    }, {history: false})
 
                 }
 
@@ -300,7 +301,7 @@ class Ximimage extends BlockNode {
         // from the relation plugin
         // Create a newsml importer and use the same importer as when opening an article
         if (fileNode.sourceUUID) {
-            api.router.get('/api/newsitem/' + fileNode.uuid, { imType: 'x-im/article' })
+            api.router.get('/api/newsitem/' + fileNode.uuid, {imType: 'x-im/article'})
                 .then(response => api.router.checkForOKStatus(response))
                 .then(response => response.text())
                 .then((xmlString) => {
@@ -368,21 +369,21 @@ Ximimage.isResource = true
 
 Ximimage.define({
     type: 'ximimage',
-    uuid: { type: 'string', optional: true },
-    uri: { type: 'string', optional: true },
-    imageFile: { type: 'file' },
-    width: { type: 'number', optional: true },
-    height: { type: 'number', optional: true },
-    disableAutomaticCrop: { type: 'boolean', optional: true, default: false },
-    errorMessage: { type: 'string', optional: true },
-    crops: { type: 'object', default: [] },
-    authors: { type: 'array', default: [] },
+    uuid: {type: 'string', optional: true},
+    uri: {type: 'string', optional: true},
+    imageFile: {type: 'file'},
+    width: {type: 'number', optional: true},
+    height: {type: 'number', optional: true},
+    disableAutomaticCrop: {type: 'boolean', optional: true, default: false},
+    errorMessage: {type: 'string', optional: true},
+    crops: {type: 'object', default: []},
+    authors: {type: 'array', default: []},
 
     // Semi configurable, optional, fields
-    caption: { type: 'string', default: '' },
-    alttext: { type: 'string', optional: true },
-    credit: { type: 'string', optional: true },
-    alignment: { type: 'string', optional: true }
+    caption: {type: 'string', default: ''},
+    alttext: {type: 'string', optional: true},
+    credit: {type: 'string', optional: true},
+    alignment: {type: 'string', optional: true}
 })
 
 export default Ximimage
