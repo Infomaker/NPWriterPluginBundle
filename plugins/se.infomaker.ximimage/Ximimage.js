@@ -119,8 +119,35 @@ class Ximimage extends BlockNode {
     }
 
 
+    static _isEqual(author, other) {
+
+        if (author === null || author === undefined) {
+            return false
+        }
+
+        if (other === null || other === undefined) {
+            return false
+        }
+
+        if (author.isSimpleAuthor) {
+            return other.name === author.name
+        } else {
+            return other.uuid === author.uuid
+        }
+    }
+
+
     addAuthor(author) {
         const authors = this.authors
+
+        let result = authors.find((item) => {
+            return Ximimage._isEqual(item, author)
+        });
+        if (result !== undefined) {
+            // Do not add author is it already exist
+            return
+        }
+
         authors.push(author)
 
         // First add the authors to the node
