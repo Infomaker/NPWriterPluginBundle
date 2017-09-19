@@ -145,7 +145,7 @@ class Ximimage extends BlockNode {
         });
         if (result !== undefined) {
             // Do not add author is it already exist
-            return
+            throw new Error("Cannot add selected author to list of authors due to: Author already exists in list")
         }
 
         authors.push(author)
