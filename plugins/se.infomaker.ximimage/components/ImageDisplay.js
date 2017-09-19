@@ -208,6 +208,7 @@ class ImageDisplay extends Component {
             )
         })
         .catch(err => {
+            console.error(err)
             api.ui.showMessageDialog([{
                 type: 'error',
                 message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
