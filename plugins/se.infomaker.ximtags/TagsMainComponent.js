@@ -95,8 +95,6 @@ class TagsMainComponent extends Component {
             if (this.isValidTag(tag)) {
                 this.context.api.newsItem.addTag(this.name, tag)
                 this.reload()
-            } else {
-                console.error('Tag is invalid or not in plugin configuration', tag)
             }
         }
         catch (e) {
@@ -126,8 +124,6 @@ class TagsMainComponent extends Component {
                     title: this.getLabel('ximtags-create') + " " + tag.inputValue,
                     global: true
                 })
-            } else {
-                console.error('Tag plugin not configured to support creation of new tags')
             }
         }
         catch (e) {
