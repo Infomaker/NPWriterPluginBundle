@@ -1,5 +1,6 @@
 import {Component} from 'substance'
 import {api} from 'writer'
+import dragStateDataExtractor from './dragStateDataExtractor'
 import TeaserContainerMenu from './TeaserContainerMenu'
 import TeaserComponent from './TeaserComponent'
 
@@ -21,7 +22,7 @@ class TeaserContainerComponent extends Component {
     }
 
     addTeaser({type}) {
-        const newTeaserNodeId = this.context.commandManager.executeCommand('insertTeaser', {type: type, teaserContainerNode: this.props.node})
+        const newTeaserNodeId = this.context.commandManager.executeCommand('ximteaser.insert-teaser', {type: type, teaserContainerNode: this.props.node})
         this.extendState({
             activeTeaserId: newTeaserNodeId
         })
@@ -103,13 +104,11 @@ class TeaserContainerComponent extends Component {
      * @param dragState
      */
     handleDrop(tx, dragState) {
-        api.editorSession.executeCommand('insertTeaserImage', {
-            data: {
-                activeTeaserId: this.state.activeTeaserId,
-                imageEntity: dragState,
-                tx
-            },
-            context: {node: this.props.node}
+        const dragData = dragStateDataExtractor.extract(dragState)
+        api.editorSession.executeCommand('ximteaser.insert-image', {
+            tx,
+            context: {node: this._getActiveTeaserNode()},
+            data: dragData
         })
     }
 

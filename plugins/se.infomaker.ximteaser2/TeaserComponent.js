@@ -63,8 +63,9 @@ class TeaserComponent extends Component {
             )
         }
 
-        const uploadImageIcon = $$(FileInputComponent, {onChange: this.triggerFileUpload.bind(this)})
-        el.append(uploadImageIcon)
+        el.append(
+            this._renderUploadContainer($$)
+        )
 
         if(currentType.fields && currentType.fields.length) {
 
@@ -95,18 +96,12 @@ class TeaserComponent extends Component {
     }
 
     triggerFileUpload(ev) {
-        const editorSession = api.editorSession
-        editorSession.transaction((tx)=>{
-            editorSession.executeCommand('insertTeaserImage', {
-                context: {node: this.props.node},
-                data: {
-                    activeTeaserId: this.props.node.id,
-                    imageEntity: {
-                        data: ev.target
-                    },
-                    tx
-                }
-            })
+        api.editorSession.executeCommand('ximteaser.insert-image', {
+            data: {
+                type: 'file',
+                file: ev.target.files[0]
+            },
+            context: {node: this.props.node}
         })
     }
 
@@ -120,6 +115,49 @@ class TeaserComponent extends Component {
             tx.set([node.id, 'imageFile'], null)
             tx.set([node.id, 'subject'], '')
         })
+    }
+
+    _renderUploadContainer($$) {
+        const extensionModules = this.context.api.getPluginModulesForTarget(
+            'se.infomaker.ximteaser2'
+        )
+        const container = $$('div').addClass('x-im-teaser-upload-container')
+
+        if(extensionModules && extensionModules.length > 0) {
+            container.append(
+                $$('span')
+                    .addClass('upload-button')
+                    .append($$(FontAwesomeIcon, {icon: 'fa-upload'}))
+                    .attr('title', 'Extended thing')
+                    .on('click', () => {
+                        this.openExtensionDialog(extensionModules[0])
+                    })
+            )
+        } else {
+            container.append(
+                $$(FileInputComponent, {onChange: this.triggerFileUpload.bind(this)})
+            )
+        }
+
+        return container
+    }
+
+    openExtensionDialog(extensionComponent) {
+        api.ui.showDialog(
+            extensionComponent,
+            {
+                pluginNode: this.props.node,
+                insertImageCommand: 'ximteaser.insert-image',
+                activeTeaserId: this.props.node.id
+            },
+            {
+                title: 'Extended Upload Dialog',
+                global: true,
+                primary: this.getLabel('Save'),
+                secondary: this.getLabel('Cancel'),
+                cssClass: 'np-teaser-dialog'
+            }
+        )
     }
 
 }

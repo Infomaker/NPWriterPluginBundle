@@ -12,22 +12,19 @@
         opacity: 0.5;
     }
 
-    .x-im-teaser-upload-icon {
+    .x-im-teaser-upload-container {
         float: right;
-        display: block;
+    }
+
+    .upload-button {
         cursor: pointer;
+        font-size: 1rem;
+        .fa {
+            color: #565656
+        }
     }
 
     .fileinput {
-        //display: none;
-        .upload-button {
-            cursor: pointer;
-            float: right;
-            font-size: 1rem;
-            .fa {
-                color: #565656
-            }
-        }
         input[type="file"] {
             display: none;
         }

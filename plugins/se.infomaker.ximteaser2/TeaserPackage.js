@@ -19,7 +19,6 @@ export default {
     version: '{{version}}',
     configure: function (config, pluginConfig) {
 
-
         // Container
         config.addNode(TeaserContainerNode)
         config.addComponent(TeaserContainerNode.type, TeaserContainerComponent)
@@ -44,8 +43,8 @@ export default {
         // Teaser
         config.addConverter('newsml', TeaserConverter)
         config.addNode(TeaserNode)
-        config.addCommand('insertTeaser', InsertTeaserCommand)
-        config.addCommand('insertTeaserImage', InsertTeaserImageCommand)
+        config.addCommand('ximteaser.insert-teaser', InsertTeaserCommand)
+        config.addCommand('ximteaser.insert-image', InsertTeaserImageCommand)
 
         config.addLabel('Insert Teaser', {
             sv: 'Infoga puff'
