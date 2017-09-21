@@ -8,13 +8,11 @@ export default {
     matchElement: function (el, converter) {
 
         const {api} = converter.context
-        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser2', 'types')
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser2', 'types', [])
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
     import: function(el, node, converter) {
-        // const {api} = converter.context
-
         const nodeId = el.attr('id')
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
