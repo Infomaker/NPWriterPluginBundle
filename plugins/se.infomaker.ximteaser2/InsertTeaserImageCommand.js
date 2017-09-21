@@ -3,6 +3,14 @@ import {WriterCommand, idGenerator, api} from 'writer'
 
 class InsertTeaserImageCommand extends WriterCommand {
 
+    /**
+     * Handles insertion of image in a teaser node. If the insert happens
+     * at the same time as a transaction, that transaction needs to be supplied to
+     * the command. If not, it can be omitted.
+     *
+     * @param params
+     * @param context
+     */
     execute(params, context) {
         if(params.tx) {
             this._handleInsert(params.tx, params)

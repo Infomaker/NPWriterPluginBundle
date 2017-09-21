@@ -5,9 +5,7 @@ export default {
     type: 'ximteaser',
     tagName: 'object',
 
-    matchElement: function (el, converter) {
-
-        const {api} = converter.context
+    matchElement: function (el) {
         const teaserTypes = api.getConfigValue('se.infomaker.ximteaser2', 'types', [])
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },

@@ -69,6 +69,7 @@ class InsertTeaserContainerCommand extends WriterCommand {
     /**
      * Insert an empty teaser container with a teaser at bottom of the document
      * @param params
+     * @param api
      */
     insertTeaserAtBottom(params, api) {
         const editorSession = params.editorSession
@@ -97,7 +98,7 @@ class InsertTeaserContainerCommand extends WriterCommand {
 
     /**
      * Get an empty object for a ximteaser node
-     * @returns {{type: string, dataType: string, id: *, uuid: string, url: string, imageType: string, title: string, text: string}}
+     * @returns {{type: string, id: *, nodes: Array}}
      */
     getEmptyTeaserContainerNode() {
 

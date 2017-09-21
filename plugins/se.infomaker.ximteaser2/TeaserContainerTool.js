@@ -4,7 +4,6 @@ import {api} from 'writer'
 class TeaserContainerTool extends Tool {
 
     render($$) {
-
         const el = $$('div')
         el.attr('title', this.getLabel('Insert Teaser'))
 
@@ -19,11 +18,8 @@ class TeaserContainerTool extends Tool {
     }
 
     insertTeaser() {
-
         const commandName = this.getCommandName()
-        api.editorSession.executeCommand(commandName, {
-            test: "hello"
-        })
+        api.editorSession.executeCommand(commandName)
     }
 }
 export default TeaserContainerTool

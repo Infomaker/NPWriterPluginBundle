@@ -8,7 +8,6 @@ export default {
     },
 
     import: (el, node, converter) => {
-
         node.nodes = el.children.map((child) => {
             const childNode = converter.convertElement(child)
             return childNode.id
@@ -17,7 +16,6 @@ export default {
     },
 
     export: (node, el, converter) => {
-
         el.attr('type', 'x-im/teasercontainer')
         const elements = node.nodes.map(node => converter.convertNode(node))
         el.append(elements)

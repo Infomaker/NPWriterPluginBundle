@@ -3,12 +3,6 @@ import {api} from 'writer'
 
 class TeaserNode extends BlockNode {
 
-    /**
-     *  Pasted from
-     *  @see {Ximteaser}
-     *  Maybe find a better way to do it?
-     */
-
     getImageFile() {
         if (!this.imageFile) {
             return
