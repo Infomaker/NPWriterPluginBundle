@@ -147,8 +147,7 @@ class TeaserComponent extends Component {
             extensionComponent,
             {
                 pluginNode: this.props.node,
-                insertImageCommand: 'ximteaser.insert-image',
-                activeTeaserId: this.props.node.id
+                insertImageCommand: 'ximteaser.insert-image'
             },
             {
                 title: 'Extended Upload Dialog',
