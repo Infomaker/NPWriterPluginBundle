@@ -57,6 +57,7 @@ class InsertTeaserImageCommand extends WriterCommand {
                 let imageFileNode = tx.create(newFileNode)
                 tx.set([teaserNode.id, 'imageFile'], imageFileNode.id)
                 tx.set([teaserNode.id, 'uri'], draggedNode.uri)
+                tx.set([teaserNode.id, 'uuid'], draggedNode.uuid)
                 tx.set([teaserNode.id, 'crops'], [])
                 tx.set([teaserNode.id, 'height'], draggedNode.height)
                 tx.set([teaserNode.id, 'width'], draggedNode.width)
