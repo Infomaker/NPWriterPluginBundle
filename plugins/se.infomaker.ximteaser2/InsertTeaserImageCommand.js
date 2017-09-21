@@ -26,19 +26,21 @@ class InsertTeaserImageCommand extends WriterCommand {
         switch(data.type) {
             case 'file':
                 this._insertFileImage(tx, data.file, activeTeaserNode)
-                break;
+                break
             case 'node':
                 this._insertNodeImage(tx, data.nodeId, activeTeaserNode)
-                break;
+                break
             case 'uri':
                 this._insertUriImage(tx, data.uriData, activeTeaserNode)
-                break;
+                break
             case 'url':
                 this._insertUrlImage(tx, data.url, activeTeaserNode)
                 setTimeout(() => {
                     api.editorSession.fileManager.sync()
                 }, 300)
-                break;
+                break
+            default:
+                break
         }
     }
 
@@ -101,7 +103,6 @@ class InsertTeaserImageCommand extends WriterCommand {
         let imageFile = tx.create(imageFileNode)
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
-
     }
 
     /**
