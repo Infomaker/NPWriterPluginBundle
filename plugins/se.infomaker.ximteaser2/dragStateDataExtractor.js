@@ -15,9 +15,9 @@ export default {
             ret.uri = uri
             ret.uriData = this._getDataFromURL(uri)
         } else if (this._isUrlDrop(dragState.data)) {
-            ret.type = 'url'
             const url = dragState.data.uris[0]
             if (this._isImage(url)) {
+                ret.type = 'url'
                 ret.url = url
             }
         }
