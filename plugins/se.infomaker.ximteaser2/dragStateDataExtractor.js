@@ -6,9 +6,9 @@ export default {
         if (this._isFileDropOrUpload(dragState.data)) {
             ret.type = 'file'
             ret.file = dragState.data.files[0]
-        } else if (dragState.nodeDrag) {
+        } else if (dragState.nodeDrag && dragState.sourceSelection) {
             ret.type = 'node'
-            ret.sourceSelection = dragState.sourceSelection
+            ret.nodeId = dragState.sourceSelection.nodeId
         } else if (this._isUriDrop(dragState.data)) {
             const uri = dragState.data.uris[0]
             ret.type = 'uri'

@@ -1,4 +1,4 @@
-import {WriterCommand, idGenerator} from 'writer'
+import {WriterCommand} from 'writer'
 
 class InsertTeaserCommand extends WriterCommand {
     execute(params, context) {

@@ -20,7 +20,7 @@ class InsertTeaserImageCommand extends WriterCommand {
                 this._insertFileImage(tx, data.file, activeTeaserNode)
                 break;
             case 'node':
-                this._insertNodeImage(tx, data.sourceSelection, activeTeaserNode)
+                this._insertNodeImage(tx, data.nodeId, activeTeaserNode)
                 break;
             case 'uri':
                 this._insertUriImage(tx, data.uriData, activeTeaserNode)
@@ -41,32 +41,28 @@ class InsertTeaserImageCommand extends WriterCommand {
      * The imageFile.id
      *
      * @param tx
-     * @param sourceSelection
+     * @param draggedNodeId
      * @param teaserNode
-     * @param context
      */
-    _insertNodeImage(tx, sourceSelection, teaserNode) {
-        if (sourceSelection) {
-            try {
-                const draggedNodeId = sourceSelection.nodeId
-                const doc = api.editorSession.getDocument()
-                const draggedNode = doc.get(draggedNodeId)
-                if (draggedNode && draggedNode.type === 'ximimage') {
-                    const imageFile = draggedNode.imageFile
-                    const imageNode = doc.get(imageFile)
-                    const newFileNode = documentHelpers.copyNode(imageNode)[0]
-                    newFileNode.parentNodeId = teaserNode.id
-                    delete newFileNode.id
-                    let imageFileNode = tx.create(newFileNode)
-                    tx.set([teaserNode.id, 'imageFile'], imageFileNode.id)
-                    tx.set([teaserNode.id, 'uri'], draggedNode.uri)
-                    tx.set([teaserNode.id, 'crops'], [])
-                    tx.set([teaserNode.id, 'height'], draggedNode.height)
-                    tx.set([teaserNode.id, 'width'], draggedNode.width)
-                }
-            } catch (_) {
-
+    _insertNodeImage(tx, draggedNodeId, teaserNode) {
+        try {
+            const doc = api.editorSession.getDocument()
+            const draggedNode = doc.get(draggedNodeId)
+            if (draggedNode && draggedNode.type === 'ximimage') {
+                const imageFile = draggedNode.imageFile
+                const imageNode = doc.get(imageFile)
+                const newFileNode = documentHelpers.copyNode(imageNode)[0]
+                newFileNode.parentNodeId = teaserNode.id
+                delete newFileNode.id
+                let imageFileNode = tx.create(newFileNode)
+                tx.set([teaserNode.id, 'imageFile'], imageFileNode.id)
+                tx.set([teaserNode.id, 'uri'], draggedNode.uri)
+                tx.set([teaserNode.id, 'crops'], [])
+                tx.set([teaserNode.id, 'height'], draggedNode.height)
+                tx.set([teaserNode.id, 'width'], draggedNode.width)
             }
+        } catch (_) {
+
         }
     }
 
@@ -76,7 +72,7 @@ class InsertTeaserImageCommand extends WriterCommand {
      * @param teaserNode
      */
     _insertUriImage(tx, uriData, teaserNode) {
-        teaserNode.shouldDownloadMetadataForImageUri = true // ?
+        teaserNode.shouldDownloadMetadataForImageUri = true
         // Fetch the image
         const uuid = uriData.uuid
 
