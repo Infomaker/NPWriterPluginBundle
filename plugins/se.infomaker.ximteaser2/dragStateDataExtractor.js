@@ -1,6 +1,14 @@
 import {api} from 'writer'
 
 export default {
+
+    /**
+     * Extracts type of DragEvent, and data which is needed for
+     * the command 'ximteaser.insert-image'
+     *
+     * @param {DragEvent} dragState
+     * @returns {{type: String, file:File|nodeId:String|uri:String,uriData:Object|url:String}}
+     */
     extract(dragState) {
         const ret = {}
         if (this._isFileDropOrUpload(dragState.data)) {
@@ -28,8 +36,6 @@ export default {
     _isImage(uri) {
         // Load allowed filextension from config file
         const fileExtensionsFromConfig = api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension', ['jpeg', 'jpg', 'gif', 'png'])
-
-        // Iterate given extension and return bool if found
         return fileExtensionsFromConfig.some((extension) => uri.includes(extension))
     },
 
