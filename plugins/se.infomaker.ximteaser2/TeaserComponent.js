@@ -79,7 +79,7 @@ class TeaserComponent extends Component {
                     .ref(`${field.id}FieldEditor`)
 
                 const icon = $$(FontAwesomeIcon, { icon: field.icon || 'fa-header' })
-                    .attr('title', this.getLabel(field.placeholder))
+                    .attr('title', this.getLabel(field.label))
                     .addClass('x-im-teaser-icon')
 
                 fieldElement.append([icon, fieldInput])

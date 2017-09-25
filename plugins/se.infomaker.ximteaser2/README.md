@@ -140,27 +140,27 @@ Field Configuration Example:
 [
     {
         "id": "subject",
-        "placeholder": "Subject",
+        "label": "Subject",
         "icon": "fa-flag"
     },
     {
         "id": "title",
-        "placeholder": "Title",
+        "label": "Title",
         "icon": "fa-header"
     },
     {
         "id": "text",
-        "placeholder": "Text",
+        "label": "Text",
         "icon": "fa-paragraph"
     }
 ]
 ```
 
-| Property          | Type      | Required  | Description   |
-| --------          | :--:      | :------:  | -----------   |
-| **id**            | String    | `true`    | subject, title, or text |
-| **placeholder**   | String    | `true`    | Description of enabled fields |
-| **icon**          | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| Property  | Type      | Required  | Description   |
+| --------  | :--:      | :------:  | -----------   |
+| **id**    | String    | `true`    | subject, title, or text |
+| **label** | String    | `true`    | Description of enabled fields |
+| **icon**  | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
 
 ## Extending Teaser Image Upload
 `ExtendingComponentClass` renders in a dialog when clicking upload image button.
