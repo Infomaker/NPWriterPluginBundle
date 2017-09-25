@@ -33,7 +33,7 @@ class TeaserContainerMenu extends Component {
 
         const teaserConfig = this._getConfigForTeaserType(teaserNode.dataType)
         const typeIcon = $$(FontAwesomeIcon, {icon: teaserConfig.icon})
-        const title = $$('span').addClass('title').append(teaserConfig.label)
+        const title = $$('span').addClass('title').append(this.getLabel(teaserConfig.label))
         const hasManyTeaserNodes = this.props.node.nodes.length > 1
 
         item.on('click', () => {

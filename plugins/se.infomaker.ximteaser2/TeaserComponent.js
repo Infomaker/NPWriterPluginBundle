@@ -79,7 +79,7 @@ class TeaserComponent extends Component {
                     .ref(`${field.id}FieldEditor`)
 
                 const icon = $$(FontAwesomeIcon, { icon: field.icon || 'fa-header' })
-                    .attr('title', field.placeholder)
+                    .attr('title', this.getLabel(field.placeholder))
                     .addClass('x-im-teaser-icon')
 
                 fieldElement.append([icon, fieldInput])
@@ -124,11 +124,12 @@ class TeaserComponent extends Component {
         const container = $$('div').addClass('x-im-teaser-upload-container')
 
         if(extensionModules && extensionModules.length > 0) {
+            const title = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
             container.append(
                 $$('span')
                     .addClass('upload-button')
-                    .append($$(FontAwesomeIcon, {icon: 'fa-upload'}))
-                    .attr('title', 'Extended thing')
+                    .append($$(FontAwesomeIcon, {icon: 'fa-image'}))
+                    .attr('title', this.getLabel(title))
                     .on('click', () => {
                         this.openExtensionDialog(extensionModules[0])
                     })
@@ -143,6 +144,7 @@ class TeaserComponent extends Component {
     }
 
     openExtensionDialog(extensionComponent) {
+        const label = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
         api.ui.showDialog(
             extensionComponent,
             {
@@ -150,7 +152,7 @@ class TeaserComponent extends Component {
                 insertImageCommand: 'ximteaser.insert-image'
             },
             {
-                title: 'Extended Upload Dialog',
+                title: this.getLabel(label),
                 global: true,
                 primary: this.getLabel('Save'),
                 secondary: this.getLabel('Cancel'),
