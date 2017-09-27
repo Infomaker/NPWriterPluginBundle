@@ -92,6 +92,8 @@ class ImageCropsPreview extends Component {
 
         }
 
+        console.log(this.props.isolatedNodeState)
+
         return el
     }
 

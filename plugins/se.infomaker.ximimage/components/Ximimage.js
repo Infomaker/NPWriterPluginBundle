@@ -53,7 +53,8 @@ class XimimageComponent extends Component {
                 $$(ImageCropsPreview, {
                     node: node,
                     crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
-                    cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
+                    cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions'),
+                    isolatedNodeState: this.props.isolatedNodeState,
                 }).ref('cropsPreview')
             )
         }

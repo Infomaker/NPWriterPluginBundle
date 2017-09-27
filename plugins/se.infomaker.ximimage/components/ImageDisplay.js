@@ -20,7 +20,7 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
-        let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer')
+        let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
         let imgSrc
         try {
             this.hasLoadingErrors = false

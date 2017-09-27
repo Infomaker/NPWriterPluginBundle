@@ -1,5 +1,24 @@
 .sc-image-display {
 
+    .checkerboard {
+        background-image:
+                -moz-linear-gradient(45deg, #000 25%, transparent 25%),
+                -moz-linear-gradient(-45deg, #000 25%, transparent 25%),
+                -moz-linear-gradient(45deg, transparent 75%, #000 75%),
+                -moz-linear-gradient(-45deg, transparent 75%, #000 75%);
+        background-image:
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #eee), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #eee), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #eee)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eee));
+
+        -moz-background-size:20px 20px;
+        background-size:20px 20px;
+        -webkit-background-size:20px 21px; /* override value for shitty webkit */
+
+        background-position:0 0, 10px 0, 10px -10px, 0px 10px;
+    }
+
     .broken-image {
         color: #d9534f;
         padding-top:2rem;
@@ -7,6 +26,7 @@
     > .se-image-container {
         position: relative;
         text-align: center;
+        vertical-align: middle;
 
         .remove-image__button {
             display: none;
@@ -32,8 +52,14 @@
         }
 
         > img {
-            width: 100%;
+            width: auto;
             display: block;
+            max-height: 400px;
+            max-width: 100%;
+
+            margin-left: auto;
+            margin-right: auto;
+
         }
 
         > .se-actions {
