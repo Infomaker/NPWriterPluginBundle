@@ -8,6 +8,8 @@
     padding: 10px;
 
     .x-im-teaser-upload-container {
+        position: relative;
+        z-index: 1;
         float: right;
     }
 
