@@ -43,13 +43,11 @@ The plugin adds one or more objects to the metadata-section of the idf.
 *Note* that `object > links` is optional, i.e. if no images are present
 this element is omitted.
 
-## Plugin Configuration Example
+## Plugin Configuration
 ```javascript
 {
-    "id": "se.infomaker.ximteaser2",
+    "id": "se.infomaker.ximteaser",
     "name": "ximteaser",
-    "url": "http://localhost:5001/im-ximteaser2.js",
-    "style": "http://localhost:5001/im-ximteaser2.css",
     "mandatory": false,
     "enabled": true,
     "data": {
@@ -84,6 +82,60 @@ this element is omitted.
 }
 ```
 
+### Full Basic Configuration Example
+This is a config example for basic teaser support.
+
+```json
+{
+    "id": "se.infomaker.ximteaser",
+    "name": "ximteaser",
+    "url": "http://localhost:5001/im-ximteaser.js",
+    "style": "http://localhost:5001/im-ximteaser.css",
+    "mandatory": false,
+    "enabled": true,
+    "data": {
+        "teaserPosition": "top",
+        "disableUseOfAnnotationToolsForFields": [
+            "title"
+        ],
+        "types": [
+            {
+                "type": "x-im/teaser",
+                "label": "Teaser",
+                "icon": "fa-newspaper-o",
+                "imageoptions": {
+                    "softcrop": true,
+                    "imageinfo": true,
+                    "crops": {
+                        "16:9": [16, 9],
+                        "8:5": [8, 5],
+                        "4:3": [4, 3],
+                        "1:1": [1, 1]
+                    }
+                },
+                "fields": [
+                    {
+                        "id": "subject",
+                        "label": "Subject",
+                        "icon": "fa-flag"
+                    },
+                    {
+                        "id": "title",
+                        "label": "Rubrik",
+                        "icon": "fa-header"
+                    },
+                    {
+                        "id": "text",
+                        "label": "Text",
+                        "icon": "fa-paragraph"
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
 ### Basic Options
 
 | Property                                  | Type      | Required  | Description   |
@@ -112,7 +164,7 @@ Types Configuration Example:
 | **label**         | String    | `true`    | Descriptive label for Type, displayed in tab menu. |
 | **icon**          | String    | `true`    | Icon used in tab menu, uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
 | **imageoptions**  | Object    | `true`    | Describes image options for type. See [Image Options Configuration](#image-options-configuration) |
-| **fields**        | Array     | `true`    | Description of enabled input fields. See [Fields Options Configuration](#fields-options-configuration) |
+| **fields**        | Array     | `true`    | Description of enabled input fields. To disable a specific field, remove it from this array. See [Fields Options Configuration](#fields-options-configuration) |
 
 ### Image Options Configuration
 Image Options Configuration Example:
@@ -132,7 +184,7 @@ Image Options Configuration Example:
 | --------      | :--:      | :------:  | -----------   |
 | **imageinfo** | Boolean   | `false`   | Per default the image can open a dialog with meta data stored on the actual image. This can be disabled by setting `imageinfo` to `false`. |
 | **softcrop**  | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `softcrop` to `true` to enable. |
-| **crops**     | Array     | `false*`  |   *Mandatory if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
+| **crops**     | Array     | `false*`  | *Mandatory if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
 
 ### Fields Options Configuration
 Field Configuration Example:
@@ -168,9 +220,9 @@ Field Configuration Example:
 Register your own plugin from the PluginPackage.js to extend Teaser Component:
 ```
 config.addPluginModule(
-    'se.infomaker.ximteaser2.upload-extension',
+    'se.infomaker.ximteaser.upload-extension',
     ExtendingComponentClass,
-    'se.infomaker.ximteaser2'
+    'se.infomaker.ximteaser'
 )
 ```
 
