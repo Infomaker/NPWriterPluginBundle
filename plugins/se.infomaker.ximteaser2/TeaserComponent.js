@@ -69,22 +69,17 @@ class TeaserComponent extends Component {
 
         if(currentType.fields && currentType.fields.length) {
 
+            const FieldEditor = this.context.api.ui.getComponent('field-editor')
+
             const editorFields = currentType.fields.map((field) => {
-                const fieldElement = $$('div').addClass('im-blocknode__content full-width x-im-teaser-field')
-                const fieldInput = $$(TextPropertyEditor, {
-                    path: [this.props.node.id, field.id],
-                    doc: this.props.node.doc
+                return $$(FieldEditor, {
+                    node: this.props.node,
+                    multiLine: true,
+                    field: field.id,
+                    placeholder: field.label,
+                    icon: field.icon || 'fa-header'
                 })
-                    .addClass('x-im-teaser-input')
                     .ref(`${field.id}FieldEditor`)
-
-                const icon = $$(FontAwesomeIcon, { icon: field.icon || 'fa-header' })
-                    .attr('title', this.getLabel(field.label))
-                    .addClass('x-im-teaser-icon')
-
-                fieldElement.append([icon, fieldInput])
-
-                return fieldElement
             })
 
             el.append(editorFields)

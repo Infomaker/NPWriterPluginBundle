@@ -5,12 +5,7 @@
 }
 
 .teaser-container {
-    background-color: #fff;
     padding: 10px;
-
-    .fa {
-        opacity: 0.5;
-    }
 
     .x-im-teaser-upload-container {
         float: right;
@@ -29,21 +24,6 @@
         input[type="file"] {
             display: none;
         }
-    }
-
-    .x-im-teaser-field {
-        font-size: 90%;
-        padding: 8px 8px 0 0;
-    }
-
-    .x-im-teaser-icon {
-        float: left;
-        padding: 4px;
-        margin-right: 8px;
-    }
-
-    .x-im-teaser-input {
-        padding-left: 27px;
     }
 }
 
