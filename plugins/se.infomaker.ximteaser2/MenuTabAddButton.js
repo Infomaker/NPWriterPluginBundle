@@ -10,8 +10,7 @@ class MenuTabAddButton extends Component {
     }
 
     render($$) {
-
-        if(this.props.items.length === 0) {
+        if (this.props.items.length === 0) {
             return $$('span')
         }
 
@@ -26,19 +25,19 @@ class MenuTabAddButton extends Component {
                 })
             })
 
-
-        if(this.state.dropdownActive) {
+        if (this.state.dropdownActive) {
             const dropdown = $$('ul').addClass('add-teaser__dropdown-list shaded-box')
             const dropdownItems = this.props.items.map((item) => {
                 const teaserIcon = $$(FontAwesomeIcon, {icon: item.icon})
-                return $$('li').append([teaserIcon, item.label]).on('click', () => {
-                    this.props.add(item)
-                })
+                return $$('li')
+                    .append([teaserIcon, item.label])
+                    .on('click', () => {
+                        this.props.add(item)
+                    })
             })
             dropdown.append(dropdownItems)
 
             item.append(dropdown)
-
         }
 
         return item

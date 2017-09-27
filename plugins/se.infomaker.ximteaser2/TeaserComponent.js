@@ -68,9 +68,7 @@ class TeaserComponent extends Component {
         )
 
         if(currentType.fields && currentType.fields.length) {
-
             const FieldEditor = this.context.api.ui.getComponent('field-editor')
-
             const editorFields = currentType.fields.map((field) => {
                 return $$(FieldEditor, {
                     node: this.props.node,
@@ -155,6 +153,5 @@ class TeaserComponent extends Component {
             }
         )
     }
-
 }
 export default TeaserComponent

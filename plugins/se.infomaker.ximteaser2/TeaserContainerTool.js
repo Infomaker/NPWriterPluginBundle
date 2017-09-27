@@ -13,8 +13,8 @@ class TeaserContainerTool extends Tool {
             )
                 .on('click', this.insertTeaser)
         )
-        return el
 
+        return el
     }
 
     insertTeaser() {
@@ -22,4 +22,5 @@ class TeaserContainerTool extends Tool {
         api.editorSession.executeCommand(commandName)
     }
 }
+
 export default TeaserContainerTool

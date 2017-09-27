@@ -12,13 +12,11 @@ export default {
             const childNode = converter.convertElement(child)
             return childNode.id
         })
-
     },
 
     export: (node, el, converter) => {
         el.attr('type', 'x-im/teasercontainer')
         const elements = node.nodes.map(node => converter.convertNode(node))
         el.append(elements)
-
     }
 }

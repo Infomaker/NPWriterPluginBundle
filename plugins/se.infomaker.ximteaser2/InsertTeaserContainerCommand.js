@@ -24,7 +24,6 @@ class InsertTeaserContainerCommand extends WriterCommand {
         } else {
             this.insertTeaserAtBottom(params, api)
         }
-        // teaserPosition === 'top' ? this.insertTeaserAtTop(params) : this.insertTeaserAtBottom(params)
     }
 
     /**
@@ -71,7 +70,6 @@ class InsertTeaserContainerCommand extends WriterCommand {
     insertTeaserAtBottom(params, api) {
         const editorSession = params.editorSession
         const doc = editorSession.getDocument()
-
         const containerNode = this.getEmptyTeaserContainerNode()
 
         editorSession.transaction((tx) => {
@@ -98,13 +96,11 @@ class InsertTeaserContainerCommand extends WriterCommand {
      * @returns {{type: string, id: *, nodes: Array}}
      */
     getEmptyTeaserContainerNode() {
-
         return {
             type: 'ximteasercontainer',
             id: idGenerator(),
             nodes: []
         }
-
     }
 }
 

@@ -120,7 +120,6 @@ class TeaserContainerComponent extends Component {
     _getActiveTeaserNode() {
         return this.context.doc.get(this.state.activeTeaserId)
     }
-
 }
 
 export default TeaserContainerComponent
