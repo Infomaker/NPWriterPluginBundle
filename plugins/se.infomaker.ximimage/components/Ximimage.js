@@ -1,6 +1,7 @@
-import {Component, TextPropertyEditor, FontAwesomeIcon} from "substance";
-import {NilUUID} from "writer";
-import ImageDisplay from "./ImageDisplay";
+import {Component, FontAwesomeIcon, TextPropertyEditor} from "substance"
+import {NilUUID} from "writer"
+import ImageDisplay from "./ImageDisplay"
+import ImageCropsPreview from "./ImageCropsPreview"
 
 const {api} = writer
 
@@ -24,7 +25,7 @@ class XimimageComponent extends Component {
 
     grabFocus() {
         let caption = this.refs.caption
-        if(caption) {
+        if (caption) {
             this.context.editorSession.setSelection({
                 type: 'property',
                 path: caption.getPath(),
@@ -33,6 +34,7 @@ class XimimageComponent extends Component {
             })
         }
     }
+
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
@@ -45,6 +47,16 @@ class XimimageComponent extends Component {
                 isolatedNodeState: this.props.isolatedNodeState,
             }).ref('image')
         )
+
+        if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
+            el.append(
+                $$(ImageCropsPreview, {
+                    node: node,
+                    crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
+                    cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
+                }).ref('cropsPreview')
+            )
+        }
 
         this.renderAuthors($$, el)
 
@@ -88,16 +100,16 @@ class XimimageComponent extends Component {
         const Avatar = api.ui.getComponent('avatar')
 
         let twitterHandle
-        if(author.isLoaded && author.links && author.links.link) {
+        if (author.isLoaded && author.links && author.links.link) {
             const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
-            if(twitterLink) {
+            if (twitterLink) {
                 const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
                 twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
             }
         }
 
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
-        const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-'+refid)
+        const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-' + refid)
         return $$('li').append(
             $$('div').append([
                 avatarEl,
@@ -114,7 +126,7 @@ class XimimageComponent extends Component {
                             this.removeAuthor(author)
                         })
                 )
-            ]).ref('container-'+refid)
+            ]).ref('container-' + refid)
         ).ref('item-' + refid);
 
     }
@@ -139,7 +151,6 @@ class XimimageComponent extends Component {
 
         this.props.node.setAuthors(authors)
     }
-
 
     renderTextField($$, obj) {
         return $$(TextPropertyEditor, {
