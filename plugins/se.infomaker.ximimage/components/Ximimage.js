@@ -111,7 +111,7 @@ class XimimageComponent extends Component {
         const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
         const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-' + refid)
         return $$('li').append(
-            $$('div').append([
+            $$('div').addClass('author-element').append([
                 avatarEl,
                 $$('div').append([
                     $$('strong').append(author.name),
@@ -119,7 +119,7 @@ class XimimageComponent extends Component {
                 ]),
                 $$('span').append(
                     $$('a').append(
-                        $$(FontAwesomeIcon, {icon: 'fa-times'})
+                        $$(FontAwesomeIcon, {icon: 'fa-times-circle'})
                     )
                         .attr('title', this.getLabel('Remove'))
                         .on('click', () => {
