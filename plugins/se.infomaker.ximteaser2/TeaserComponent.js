@@ -42,7 +42,7 @@ class TeaserComponent extends Component {
 
     render($$) {
         const el = $$('div').addClass('teaser-container').ref('teaserContainer')
-        const types = api.getConfigValue('se.infomaker.ximteaser2', 'types')
+        const types = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
         const currentType = types.find(({type}) => type === this.props.node.dataType)
 
         const ImageDisplay = api.ui.getComponent('imageDisplay')
@@ -114,7 +114,7 @@ class TeaserComponent extends Component {
 
     _renderUploadContainer($$) {
         const extensionModules = this.context.api.getPluginModulesForTarget(
-            'se.infomaker.ximteaser2'
+            'se.infomaker.ximteaser'
         )
         const container = $$('div').addClass('x-im-teaser-upload-container')
 

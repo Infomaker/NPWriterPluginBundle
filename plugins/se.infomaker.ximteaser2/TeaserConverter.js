@@ -6,7 +6,7 @@ export default {
     tagName: 'object',
 
     matchElement: function (el) {
-        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser2', 'types', [])
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [{ 'type': 'x-im/teaser' }])
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 

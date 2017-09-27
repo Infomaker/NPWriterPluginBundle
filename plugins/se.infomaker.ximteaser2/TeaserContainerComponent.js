@@ -54,12 +54,17 @@ class TeaserContainerComponent extends Component {
     }
 
     render($$) {
+        const availableTeaserTypes = this.context.api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        if(availableTeaserTypes.length === 0) {
+            return $$('span').append('No types defined for se.infomaker.ximteaser')
+        }
+
         const el = $$('div').addClass('im-blocknode__container')
 
         el.append($$(TeaserContainerMenu, {
             node: this.props.node,
             activeTeaserId: this.state.activeTeaserId,
-            availableTeaserTypes: this.context.api.getConfigValue('se.infomaker.ximteaser2', 'types', []),
+            availableTeaserTypes,
             removeTeaser: this.removeTeaser.bind(this),
             addTeaser: this.addTeaser.bind(this),
             selectTeaser: this.selectTeaser.bind(this)

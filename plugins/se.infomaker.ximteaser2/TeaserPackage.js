@@ -15,7 +15,7 @@ import {idGenerator} from 'writer'
 
 export default {
     name: 'ximteaser',
-    id: 'se.infomaker.ximteaser2',
+    id: 'se.infomaker.ximteaser',
     version: '{{version}}',
     configure: function (config, pluginConfig) {
 
@@ -32,7 +32,7 @@ export default {
             config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' })
         }
 
-        config.addPluginModule('se.infomaker.ximteaser2.teasertemplate', (type) => {
+        config.addPluginModule('se.infomaker.ximteaser.teasertemplate', (type) => {
             return {
                 type: 'ximteaser',
                 dataType: type,

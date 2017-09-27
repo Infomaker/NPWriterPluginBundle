@@ -10,17 +10,12 @@ class InsertTeaserContainerCommand extends WriterCommand {
     execute(params, context) {
 
         const {api} = context
-
         const teaserPosition = api.getConfigValue(this.config.id, 'teaserPosition', 'bottom')
-
         const nodes = api.document.getDocumentNodes()
-
-        const existingTeaser = nodes.filter((node) => {
-            return node.type === 'ximteasercontainer'
-        })
+        const existingTeaser = nodes.filter((node) => node.type === 'ximteasercontainer')
 
         if (existingTeaser.length > 0) {
-            api.ui.showNotification('se.infomaker.ximteaser2', api.getLabel('A teaser already exist'), api.getLabel('There is already a teaser in this document'))
+            api.ui.showNotification('se.infomaker.ximteaser', api.getLabel('A teaser already exist'), api.getLabel('There is already a teaser in this document'))
             return false
         }
 
@@ -60,9 +55,11 @@ class InsertTeaserContainerCommand extends WriterCommand {
     }
 
     createInitialTeaserNode(tx, api) {
-        const generateTeaserTemplate = api.getPluginModule('se.infomaker.ximteaser2.teasertemplate')
+        const generateTeaserTemplate = api.getPluginModule('se.infomaker.ximteaser.teasertemplate')
         const teaserNode = generateTeaserTemplate('x-im/teaser', 'Teaser')
+
         tx.create(teaserNode)
+
         return teaserNode
     }
 
