@@ -44,6 +44,8 @@ The plugin adds one or more objects to the metadata-section of the idf.
 this element is omitted.
 
 ## Plugin Configuration
+[Basic plugin configuration example](#basic-configuration-example)
+
 ```javascript
 {
     "id": "se.infomaker.ximteaser",
@@ -82,65 +84,11 @@ this element is omitted.
 }
 ```
 
-### Full Basic Configuration Example
-This is a config example for basic teaser support.
-
-```json
-{
-    "id": "se.infomaker.ximteaser",
-    "name": "ximteaser",
-    "url": "http://localhost:5001/im-ximteaser.js",
-    "style": "http://localhost:5001/im-ximteaser.css",
-    "mandatory": false,
-    "enabled": true,
-    "data": {
-        "teaserPosition": "top",
-        "disableUseOfAnnotationToolsForFields": [
-            "title"
-        ],
-        "types": [
-            {
-                "type": "x-im/teaser",
-                "label": "Teaser",
-                "icon": "fa-newspaper-o",
-                "imageoptions": {
-                    "softcrop": true,
-                    "imageinfo": true,
-                    "crops": {
-                        "16:9": [16, 9],
-                        "8:5": [8, 5],
-                        "4:3": [4, 3],
-                        "1:1": [1, 1]
-                    }
-                },
-                "fields": [
-                    {
-                        "id": "subject",
-                        "label": "Subject",
-                        "icon": "fa-flag"
-                    },
-                    {
-                        "id": "title",
-                        "label": "Rubrik",
-                        "icon": "fa-header"
-                    },
-                    {
-                        "id": "text",
-                        "label": "Text",
-                        "icon": "fa-paragraph"
-                    }
-                ]
-            }
-        ]
-    }
-}
-```
-
 ### Basic Options
 
 | Property                                  | Type      | Required  | Description   |
 | --------                                  | :--:      | :------:  | -----------   |
-| **teaserPosition**                        | Boolean   | `false`   | Sets render position for teaser container. `"top"` or `"bottom"`. Default value: `"bottom"` |
+| **teaserPosition**                        | String    | `false`   | Sets render position for teaser container. `"top"` or `"bottom"`. Default value: `"bottom"` |
 | **disableUseOfAnnotationToolsForFields**  | Array     | `false`   | Disabled annotation for fields by id. |
 | **types**                                 | Array     | `true`    | Description of enabled types |
 
@@ -211,8 +159,62 @@ Field Configuration Example:
 | Property  | Type      | Required  | Description   |
 | --------  | :--:      | :------:  | -----------   |
 | **id**    | String    | `true`    | subject, title, or text |
-| **label** | String    | `true`    | Description of enabled fields |
+| **label** | String    | `true`    | Placeholder for field |
 | **icon**  | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+
+## Basic Configuration Example
+This is a config example for basic teaser support.
+
+```json
+{
+    "id": "se.infomaker.ximteaser",
+    "name": "ximteaser",
+    "url": "http://localhost:5001/im-ximteaser.js",
+    "style": "http://localhost:5001/im-ximteaser.css",
+    "mandatory": false,
+    "enabled": true,
+    "data": {
+        "teaserPosition": "top",
+        "disableUseOfAnnotationToolsForFields": [
+            "title"
+        ],
+        "types": [
+            {
+                "type": "x-im/teaser",
+                "label": "Teaser",
+                "icon": "fa-newspaper-o",
+                "imageoptions": {
+                    "softcrop": true,
+                    "imageinfo": true,
+                    "crops": {
+                        "16:9": [16, 9],
+                        "8:5": [8, 5],
+                        "4:3": [4, 3],
+                        "1:1": [1, 1]
+                    }
+                },
+                "fields": [
+                    {
+                        "id": "subject",
+                        "label": "Subject",
+                        "icon": "fa-flag"
+                    },
+                    {
+                        "id": "title",
+                        "label": "Rubrik",
+                        "icon": "fa-header"
+                    },
+                    {
+                        "id": "text",
+                        "label": "Text",
+                        "icon": "fa-paragraph"
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
 
 ## Extending Teaser Image Upload
 `ExtendingComponentClass` renders in a dialog when clicking upload image button.
