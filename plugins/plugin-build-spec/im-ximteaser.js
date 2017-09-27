@@ -1,4 +1,4 @@
-import Index from "../se.infomaker.ximteaser2/index";
+import Index from "../se.infomaker.ximteaser/index";
 
 (() => {
     Index()
