@@ -1,5 +1,5 @@
-import { Component, FontAwesomeIcon } from "substance";
-import { NilUUID, api } from "writer";
+import {Component, FontAwesomeIcon} from "substance";
+import {api, NilUUID} from "writer";
 import Author from '../models/Author'
 
 class XimimageAddToBylineComponent extends Component {
@@ -87,7 +87,7 @@ class XimimageAddToBylineComponent extends Component {
         return $$('div')
             .addClass('dialog-image-authors')
             .append(
-            authorList
+                authorList
             )
     }
 
@@ -95,9 +95,9 @@ class XimimageAddToBylineComponent extends Component {
         const Avatar = api.ui.getComponent('avatar')
 
         let twitterHandle
-        if(author.isLoaded && author.links && author.links.link) {
+        if (author.isLoaded && author.links && author.links.link) {
             const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
-            if(twitterLink) {
+            if (twitterLink) {
                 const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
                 twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
             }
@@ -114,7 +114,7 @@ class XimimageAddToBylineComponent extends Component {
                 ]),
                 $$('span').append(
                     $$('a').append(
-                        $$(FontAwesomeIcon, { icon: 'fa-times' })
+                        $$(FontAwesomeIcon, {icon: 'fa-times'})
                     )
                         .attr('title', this.getLabel('Remove'))
                         .on('click', function () {
@@ -128,9 +128,14 @@ class XimimageAddToBylineComponent extends Component {
     createAuthor(authorItem) {
 
         const author = new Author(NilUUID.getNilUUID(), authorItem.inputValue, this.props.node.id)
-        this.props.addAuthor(author, () => {
-            this.rerender()
-        })
+        try {
+            this.props.addAuthor(author, () => {
+                this.rerender()
+            })
+        } catch (e) {
+            this.context.api.ui.showNotification('formsearchcomponent', this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
+            throw e
+        }
     }
 
     addAuthor(authorItem) {

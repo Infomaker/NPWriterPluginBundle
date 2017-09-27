@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {jxon, api} from 'writer'
+import {api, event, jxon} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
 import TagEditPersonComponent from './TagEditPersonComponent'
@@ -8,17 +8,33 @@ import TagEditTopicComponent from './TagEditTopicComponent'
 import TagsTemplate from './template/concept'
 import Config from './config/Config'
 
+const pluginId = 'se.infomaker.ximtags';
+
 class TagsMainComponent extends Component {
+
 
     constructor(...args) {
         super(...args)
         this.name = 'ximtags'
 
+
         const tagsConfig = api.getConfigValue(
-            'se.infomaker.ximtags',
+            pluginId,
             'tags'
         )
         this.config = new Config(tagsConfig)
+
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, (data) => {
+            this._onDocumentChanged(data)
+        })
+    }
+
+    _onDocumentChanged(data) {
+        if (data.data && data.data.node) {
+            if (data.data.node.rel === 'subject') {
+                this.reload()
+            }
+        }
     }
 
     getInitialState() {
@@ -79,8 +95,6 @@ class TagsMainComponent extends Component {
             if (this.isValidTag(tag)) {
                 this.context.api.newsItem.addTag(this.name, tag)
                 this.reload()
-            } else {
-                console.error('Tag is invalid or not in plugin configuration', tag)
             }
         }
         catch (e) {
@@ -104,14 +118,12 @@ class TagsMainComponent extends Component {
                     createPerson: this.createPerson.bind(this),
                     createOrganisation: this.createOrganisation.bind(this),
                     createTopic: this.createTopic.bind(this),
-                    tagsConfig: api.getConfigValue('se.infomaker.ximtags', 'tags')
+                    tagsConfig: api.getConfigValue(pluginId, 'tags')
                 }, {
                     primary: false,
                     title: this.getLabel('ximtags-create') + " " + tag.inputValue,
                     global: true
                 })
-            } else {
-                console.error('Tag plugin not configured to support creation of new tags')
             }
         }
         catch (e) {
@@ -198,7 +210,7 @@ class TagsMainComponent extends Component {
 
     getTags() {
         const tagConfigs = api.getConfigValue(
-            'se.infomaker.ximtags',
+            pluginId,
             'tags'
         )
 
