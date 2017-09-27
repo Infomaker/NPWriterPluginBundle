@@ -49,6 +49,9 @@ export default {
         config.addLabel('Insert Teaser', {
             sv: 'Infoga puff'
         })
+        config.addLabel('Add new teaser', {
+            sv: 'Lägg till ny puff'
+        })
         config.addLabel('Add Image', {
             sv: 'Lägg till bild'
         })
