@@ -20,6 +20,7 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
+        const imageOptions = this._getImageOptions()
         let imgContainer = $$('div').addClass('se-image-container').ref('imageContainer')
         let imgSrc
         try {
@@ -63,7 +64,7 @@ class ImageDisplay extends Component {
 
         const actionsEl = $$('div').addClass('se-actions')
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.byline) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'user-plus'
@@ -71,7 +72,7 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.imageinfo) {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
@@ -79,8 +80,8 @@ class ImageDisplay extends Component {
             )
         }
 
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'softcrop')) {
-            const configuredCrops = api.getConfigValue(this.props.parentId, 'crops', [])
+        if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.softcrop) {
+            const configuredCrops = imageOptions.crops || []
             let currentCrops = 0
             let cropBadgeClass = false
 
@@ -135,6 +136,7 @@ class ImageDisplay extends Component {
     }
 
     _openMetaData() {
+        const imageOptions = this._getImageOptions()
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
                 api.ui.showDialog(
@@ -143,7 +145,7 @@ class ImageDisplay extends Component {
                         node: this.props.node,
                         url: this.props.node.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: !api.getConfigValue(this.props.parentId, 'bylinesearch')
+                        disablebylinesearch: !imageOptions.bylinesearch
                     },
                     {
                         title: this.getLabel('Image archive information'),
@@ -175,6 +177,7 @@ class ImageDisplay extends Component {
     }
 
     _openCropper() {
+        const imageOptions = this._getImageOptions()
         let tertiary = false;
         if (this.props.node.crops) {
             tertiary = [{
@@ -187,33 +190,52 @@ class ImageDisplay extends Component {
         }
 
         this.props.node.fetchSpecifiedUrls(['service', 'original'])
-        .then(src => {
-            api.ui.showDialog(
-                ImageCropper,
-                {
-                    parentId: this.props.parentId,
-                    src: src,
-                    width: this.props.node.width,
-                    height: this.props.node.height,
-                    crops: this.props.node.crops.crops || [],
-                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                    callback: (crops, disableAutomaticCrop) => {
-                        this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+            .then(src => {
+                api.ui.showDialog(
+                    ImageCropper,
+                    {
+                        src: src,
+                        width: this.props.node.width,
+                        height: this.props.node.height,
+                        crops: this.props.node.crops.crops || [],
+                        configuredCrops: imageOptions.crops,
+                        disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                        callback: (crops, disableAutomaticCrop) => {
+                            this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+                        }
+                    },
+                    {
+                        tertiary: tertiary,
+                        cssClass: 'np-crop-dialog'
                     }
-                },
-                {
-                    tertiary: tertiary,
-                    cssClass: 'np-crop-dialog'
-                }
-            )
-        })
-        .catch(err => {
-            console.error(err)
-            api.ui.showMessageDialog([{
-                type: 'error',
-                message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
-            }])
-        })
+                )
+            })
+            .catch(err => {
+                api.ui.showMessageDialog([{
+                    type: 'error',
+                    message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
+                }])
+            })
+    }
+
+    /**
+     * Fetches image options either from supplied props or
+     * configuration values for props.parentId. Needed for
+     * teaser-plugin backwards compatibility
+     *
+     * @returns {*}
+     * @private
+     */
+    _getImageOptions() {
+        if(this.props.imageOptions) {
+            return this.props.imageOptions
+        } else {
+            // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
+            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+                optionsObject[field] = api.getConfigValue(this.props.parentId, field)
+                return optionsObject
+            }, {})
+        }
     }
 }
 

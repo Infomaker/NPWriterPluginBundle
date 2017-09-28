@@ -1,19 +1,16 @@
 import { idGenerator, api } from 'writer'
 
-
 export default {
+
     type: 'ximteaser',
     tagName: 'object',
 
     matchElement: function (el) {
-        return el.is('object') && el.attr('type') === 'x-im/teaser'
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [{ 'type': 'x-im/teaser' }])
+        return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
-
-    /**
-     * Import teaser xml structure
-     */
-    import: function (el, node, converter) { // jshint ignore:line
+    import: function(el, node, converter) {
         const nodeId = el.attr('id')
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
@@ -21,7 +18,7 @@ export default {
         // Import teaser data
         const dataEl = el.find(':scope > data')
         if (dataEl) {
-            dataEl.children.forEach(function(child) {
+            dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
                     node.text = converter.annotatedText(child, [node.id, 'text'])
                 }
@@ -29,7 +26,6 @@ export default {
                 if (child.tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
                 }
-
             })
 
             const flagsEl = dataEl.find(':scope>flags')
@@ -51,7 +47,7 @@ export default {
                 id: idGenerator(),
                 type: 'npfile',
                 imType: 'x-im/image',
-                parentNodeId:nodeId
+                parentNodeId: nodeId
             }
 
             if (linkEl.attr('uuid')) {
@@ -87,18 +83,6 @@ export default {
         }
     },
 
-    importImageLinkData: function(el, node) {
-        el.children.forEach(function(child) {
-            if (child.tagName === 'width') {
-                node.width = parseInt(child.text(), 10)
-            }
-
-            if (child.tagName === 'height') {
-                node.height = parseInt(child.text(), 10)
-            }
-        })
-    },
-
     /**
      * Import the image link structure
      */
@@ -115,41 +99,25 @@ export default {
         }
     },
 
-    /**
-     * Export teaser in the following format:
-     *
-     * <object id="mb2" type="x-im/teaser" title="50-åring häktad för barnporrbrott">
-     *   <data>
-     *     <text>
-     *       En man i 50-årsåldern som är anställd på en skola i Västerås häktades i dag på sannolika skäl
-     *       misstänkt för utnyttjande av barn för sexuell posering, sexuellt ofredande och
-     *       barnpornografibrott, rapporterar P4 Västmanland. Brotten omfattar sammanlagt fe
-     *     </text>
-     *     <subject>hnjnjnjnj</subject>
-     *   </data>
-     *   <links>
-     *     <link rel="image" type="x-im/image" uri="im://image/oaVeImm6yCsoihzsKNAuFUAsOpY.jpg" uuid="631c8997-36c8-5d0d-9acd-68cc1856f87c">
-     *       <data>
-     *         <width></width>
-     *         <height></height>
-     *         <crops>...</crops>
-     *       </data>
-     *     </link>
-     *   </links>
-     * </object>
-     *
-     * @param el
-     * @param node
-     * @param converter
-     */
+    importImageLinkData: function(el, node) {
+        el.children.forEach(function(child) {
+            if (child.tagName === 'width') {
+                node.width = parseInt(child.text(), 10)
+            }
 
-    export: function (node, el, converter) {
+            if (child.tagName === 'height') {
+                node.height = parseInt(child.text(), 10)
+            }
+        })
+    },
+
+    export: function(node, el, converter) {
         const $$ = converter.$$
 
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
-            type: 'x-im/teaser'
+            type: node.dataType
         })
 
         if(node.title) {
@@ -221,6 +189,5 @@ export default {
                 $$('links').append(link)
             )
         }
-
     }
 }
