@@ -36,6 +36,8 @@
     padding: 3px 0 0 3px;
     background-color: #eee;
     border-bottom: 1px solid #ddd;
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
     height: 30px;
 
     &:after {
@@ -82,9 +84,12 @@
     }
 
     .add-teaser__button {
+        .fa {
+            color: #288dc0;
+        }
         position: relative;
         cursor: pointer;
-        color: #333;
+        color: #288dc0;
         padding-left:0;
         margin-left:5px;
     }
@@ -155,6 +160,8 @@
 .sm-selected,
 .sm-focused {
     .teaser-menu {
+        border-right: 1px solid #a8c9fe;
+        border-left: 1px solid #a8c9fe;
         .active {
             padding-right: 3px;
 
