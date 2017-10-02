@@ -22,7 +22,15 @@ class TeaserContainerComponent extends Component {
     }
 
     addTeaser({type}) {
-        const newTeaserNodeId = this.context.commandManager.executeCommand('ximteaser.insert-teaser', {type: type, teaserContainerNode: this.props.node})
+        const node = this.props.node
+        this.context.editorSession.setSelection({
+            type: 'node',
+            nodeId: node.id,
+            containerId: 'body',
+            surfaceId: 'body'
+        })
+
+        const newTeaserNodeId = this.context.commandManager.executeCommand('ximteaser.insert-teaser', {type: type, teaserContainerNode: node})
         this.extendState({
             activeTeaserId: newTeaserNodeId
         })
@@ -30,6 +38,16 @@ class TeaserContainerComponent extends Component {
 
     removeTeaser(teaserNode) {
         const node = this.props.node
+
+        // Set selection to container node to avoid odd behavior if any child FieldEditorComponent is selected
+        // during teaser removal
+        this.context.editorSession.setSelection({
+            type: 'node',
+            nodeId: node.id,
+            containerId: 'body',
+            surfaceId: 'body'
+        })
+
         this.context.editorSession.transaction(tx => {
             tx.set([node.id, 'nodes'], node.nodes.filter(childNode => {
                 return childNode !== teaserNode.id
