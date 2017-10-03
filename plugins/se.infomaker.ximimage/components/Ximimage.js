@@ -45,6 +45,9 @@ class XimimageComponent extends Component {
                 parentId: 'se.infomaker.ximimage',
                 node: node,
                 isolatedNodeState: this.props.isolatedNodeState,
+                notifyCropsChanged: () => {
+                    this.refs.cropsPreview.fetchCropUrls();
+                }
             }).ref('image')
         )
 
@@ -55,6 +58,9 @@ class XimimageComponent extends Component {
                     crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
                     cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions'),
                     isolatedNodeState: this.props.isolatedNodeState,
+                    cropSelected: (cropUrl) => {
+                        this.refs.image.displayCrop(cropUrl)
+                    }
                 }).ref('cropsPreview')
             )
         }

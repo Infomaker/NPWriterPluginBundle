@@ -2,15 +2,15 @@
 
     .checkerboard {
         background-image:
-                -moz-linear-gradient(45deg, #000 25%, transparent 25%),
-                -moz-linear-gradient(-45deg, #000 25%, transparent 25%),
-                -moz-linear-gradient(45deg, transparent 75%, #000 75%),
-                -moz-linear-gradient(-45deg, transparent 75%, #000 75%);
+                -moz-linear-gradient(45deg, #f6f6f6 25%, transparent 25%),
+                -moz-linear-gradient(-45deg, #f6f6f6 25%, transparent 25%),
+                -moz-linear-gradient(45deg, transparent 75%, #f6f6f6 75%),
+                -moz-linear-gradient(-45deg, transparent 75%, #f6f6f6 75%);
         background-image:
-                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #eee), color-stop(.25, transparent)),
-                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #eee), color-stop(.25, transparent)),
-                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #eee)),
-                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eee));
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #f6f6f6), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #f6f6f6), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #f6f6f6)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #f6f6f6));
 
         -moz-background-size:20px 20px;
         background-size:20px 20px;
@@ -27,6 +27,7 @@
         position: relative;
         text-align: center;
         vertical-align: middle;
+        border: 1px solid #f6f6f6;
 
         .remove-image__button {
             display: none;

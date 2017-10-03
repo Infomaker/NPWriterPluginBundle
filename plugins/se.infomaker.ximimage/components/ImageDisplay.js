@@ -1,4 +1,4 @@
-import {Component, Button, FontAwesomeIcon} from "substance";
+import {Button, Component, FontAwesomeIcon} from "substance";
 import {api} from "writer";
 import ImageCropper from "./ImageCropper";
 import AddToByline from "./AddToByline";
@@ -19,13 +19,17 @@ class ImageDisplay extends Component {
 
     }
 
+    displayCrop(cropUrl) {
+        this.extendState({cropUrl: cropUrl});
+    }
+
     render($$) {
         let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
         let imgSrc
         try {
             this.hasLoadingErrors = false
-            imgSrc = this.props.node.getUrl()
-        } catch(e) {
+            imgSrc = this.state.cropUrl || this.props.node.getUrl()
+        } catch (e) {
             this.hasLoadingErrors = e
         }
 
@@ -34,7 +38,7 @@ class ImageDisplay extends Component {
             this.hasLoadingErrors = 'Missing image file'
         }
 
-        let contentElement = $$(FontAwesomeIcon, { icon: 'fa-picture-o'}).attr('style', 'font-size:25rem;color:#efefef')
+        let contentElement = $$(FontAwesomeIcon, {icon: 'fa-picture-o'}).attr('style', 'font-size:25rem;color:#efefef')
 
         if (imgSrc && !this.hasLoadingErrors) {
             if (this.props.removeImage) {
@@ -52,8 +56,8 @@ class ImageDisplay extends Component {
                 src: imgSrc
             }).ref('img')
 
-        } else if(this.hasLoadingErrors) {
-            contentElement = $$(FontAwesomeIcon, { icon: 'fa-chain-broken'})
+        } else if (this.hasLoadingErrors) {
+            contentElement = $$(FontAwesomeIcon, {icon: 'fa-chain-broken'})
                 .attr('style', 'font-size:4rem;')
                 .addClass('broken-image')
                 .attr('title', this.getLabel('Image could not be found'))
@@ -84,7 +88,7 @@ class ImageDisplay extends Component {
             let currentCrops = 0
             let cropBadgeClass = false
 
-            if(this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
+            if (this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
                 currentCrops = this.props.node.crops.crops.length
             }
 
@@ -97,13 +101,13 @@ class ImageDisplay extends Component {
                 $$(Button, {
                     icon: 'crop'
                 })
-                .on('click', this._openCropper)
-                .append(
-                    $$('em').append(
-                        currentCrops
+                    .on('click', this._openCropper)
+                    .append(
+                        $$('em').append(
+                            currentCrops
+                        )
+                            .addClass(cropBadgeClass)
                     )
-                    .addClass(cropBadgeClass)
-                )
             )
         }
 
@@ -187,33 +191,34 @@ class ImageDisplay extends Component {
         }
 
         this.props.node.fetchSpecifiedUrls(['service', 'original'])
-        .then(src => {
-            api.ui.showDialog(
-                ImageCropper,
-                {
-                    parentId: this.props.parentId,
-                    src: src,
-                    width: this.props.node.width,
-                    height: this.props.node.height,
-                    crops: this.props.node.crops.crops || [],
-                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                    callback: (crops, disableAutomaticCrop) => {
-                        this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+            .then(src => {
+                api.ui.showDialog(
+                    ImageCropper,
+                    {
+                        parentId: this.props.parentId,
+                        src: src,
+                        width: this.props.node.width,
+                        height: this.props.node.height,
+                        crops: this.props.node.crops.crops || [],
+                        disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                        callback: (crops, disableAutomaticCrop) => {
+                            this.props.node.setSoftcropData(crops, disableAutomaticCrop)
+                            this.props.notifyCropsChanged()
+                        }
+                    },
+                    {
+                        tertiary: tertiary,
+                        cssClass: 'np-crop-dialog'
                     }
-                },
-                {
-                    tertiary: tertiary,
-                    cssClass: 'np-crop-dialog'
-                }
-            )
-        })
-        .catch(err => {
-            console.error(err)
-            api.ui.showMessageDialog([{
-                type: 'error',
-                message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
-            }])
-        })
+                )
+            })
+            .catch(err => {
+                console.error(err)
+                api.ui.showMessageDialog([{
+                    type: 'error',
+                    message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
+                }])
+            })
     }
 }
 

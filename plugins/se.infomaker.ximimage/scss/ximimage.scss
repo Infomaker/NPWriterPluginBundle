@@ -125,7 +125,6 @@ div.x-im-image-dynamic {
 
     &:last-child {
         padding-bottom: 12px;
-        border-bottom: 1px solid #eee;
     }
 
     &.x-im-image-alttext {
@@ -168,14 +167,6 @@ div.x-im-image-dynamic {
     }
 }
 
-.sc-isolated-node:hover {
-    .sc-ximimage {
-        div.x-im-image-dynamic:last-child {
-            padding-bottom: 13px;
-            border-bottom: none;
-        }
-    }
-}
 
 .sc-isolated-node.sm-selected {
     .sc-ximimage {

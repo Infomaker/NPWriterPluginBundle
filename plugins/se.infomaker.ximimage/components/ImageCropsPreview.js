@@ -1,29 +1,94 @@
 import {Component, FontAwesomeIcon} from "substance";
 
-function constructParams(instructions, key, crop) {
+function executeTemplate(template, context) {
+
+    let result = template;
+
+    for (let key in context) {
+        result = result.replace(`{{${key}}}`, context[key])
+    }
+
+    return result
+}
+
+function getTemplate(key, cropObject) {
+    if (cropObject[key]) {
+        return cropObject[key]
+    }
+
+    return cropObject["default"]
+}
+
+function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth, imageHeight) {
     const maxSide = 800
 
-    let result = {};
+    let template = {}
+    let context = {}
 
-    if (instructions) {
-        if (instructions[key]) {
-            result = instructions[key]
-        } else if (instructions["default"]) {
-            result = instructions["default"]
+    if (cropDefinedInNode) {
+
+        if (instructions && instructions.userDefined) {
+            template = getTemplate(key, instructions.userDefined)
         }
-    }
 
-    const ratio = crop[0] / crop[1]
+        const relCropX = parseFloat(cropDefinedInNode.x)
+        const relCropY = parseFloat(cropDefinedInNode.y)
+        const relCropWidth = parseFloat(cropDefinedInNode.width)
+        const relCropHeight = parseFloat(cropDefinedInNode.height)
 
-    if (ratio < 1) {
-        result['w'] = (maxSide * ratio)
-        result['h'] = maxSide
+        let w
+        let h
+
+        const ratio = crop[0] / crop[1]
+
+        if (ratio < 1) {
+            w = (maxSide * ratio)
+            h = maxSide
+        } else {
+            w = maxSide
+            h = (maxSide / ratio)
+        }
+
+        context = {
+            cx: Math.floor(imageWidth * relCropX),
+            cy: Math.floor(imageHeight * relCropY),
+            cw: Math.floor(imageWidth * relCropWidth),
+            ch: Math.floor(imageHeight * relCropHeight),
+            w: Math.floor(w),
+            h: Math.floor(h)
+        }
+
     } else {
-        result['w'] = maxSide
-        result['h'] = (maxSide / ratio)
+
+        if (instructions && instructions.auto) {
+            template = getTemplate(key, instructions.auto)
+        }
+
+        let w
+        let h
+
+        const ratio = crop[0] / crop[1]
+
+        if (ratio < 1) {
+            w = (maxSide * ratio)
+            h = maxSide
+        } else {
+            w = maxSide
+            h = (maxSide / ratio)
+        }
+
+        context = {
+            w: Math.floor(w),
+            h: Math.floor(h)
+        }
+
     }
 
-    return result;
+    let result = executeTemplate(template, context)
+
+    return result
+
+
 }
 
 class ImageCropsPreview extends Component {
@@ -34,18 +99,32 @@ class ImageCropsPreview extends Component {
     }
 
     didMount() {
+        this.fetchCropUrls()
+    }
+
+    fetchCropUrls() {
         const crops = this.props.crops
         const cropInstructions = this.props.cropInstructions
+        const node = this.props.node
 
         for (let key in crops) {
-            const params = constructParams(cropInstructions, key, crops[key]);
+
+            let cropDefinedInNode
+            if (node.crops && node.crops.crops) {
+                cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
+            }
+
+            const width = node.width
+            const height = node.height
+
+            const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height);
 
             this.props.node.getServiceUrl(params)
                 .then((url) => {
                     this.cropUrls.set(key, url)
                     this.updateSrc(key, url)
                 })
-                .catch((e) => {
+                .catch(() => {
                     const url = ""
                     this.cropUrls.set(key, url)
                     this.updateSrc(key, url)
@@ -66,11 +145,14 @@ class ImageCropsPreview extends Component {
         for (let key in crops) {
             if (crops.hasOwnProperty(key)) {
 
-                const cropDiv = $$('div').addClass('image-crops-item')
+                const url = this.cropUrls.get(key)
+                const cropDiv = $$('div')
+                    .addClass('image-crops-item')
+                    .on('click', () => this.props.cropSelected(url))
                 cropDiv.append(
                     [
                         $$('img')
-                            .setAttribute('src', this.cropUrls.get(key)).ref('img-' + key),
+                            .setAttribute('src', url).ref('img-' + key),
                         $$('div').addClass('image-crops-ratio-text image-crops-overlay').append(key)
                     ]
                 )
@@ -91,8 +173,6 @@ class ImageCropsPreview extends Component {
             }
 
         }
-
-        console.log(this.props.isolatedNodeState)
 
         return el
     }
