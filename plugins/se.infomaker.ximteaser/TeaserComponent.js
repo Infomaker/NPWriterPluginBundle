@@ -72,7 +72,7 @@ class TeaserComponent extends Component {
             const editorFields = currentType.fields.map((field) => {
                 return $$(FieldEditor, {
                     node: this.props.node,
-                    multiLine: true,
+                    multiLine: field.multiline === true,
                     field: field.id,
                     placeholder: field.label,
                     icon: field.icon || 'fa-header'

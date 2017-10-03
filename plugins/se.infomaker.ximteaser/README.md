@@ -132,7 +132,7 @@ Image Options Configuration Example:
 | --------      | :--:      | :------:  | -----------   |
 | **imageinfo** | Boolean   | `false`   | Per default the image can open a dialog with meta data stored on the actual image. This can be disabled by setting `imageinfo` to `false`. |
 | **softcrop**  | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `softcrop` to `true` to enable. |
-| **crops**     | Array     | `false*`  | *Mandatory if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
+| **crops**     | Array     | `false*`  | *Required if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
 
 ### Fields Options Configuration
 Field Configuration Example:
@@ -151,16 +151,18 @@ Field Configuration Example:
     {
         "id": "text",
         "label": "Text",
-        "icon": "fa-paragraph"
+        "icon": "fa-paragraph",
+        "multiline": true
     }
 ]
 ```
 
-| Property  | Type      | Required  | Description   |
-| --------  | :--:      | :------:  | -----------   |
-| **id**    | String    | `true`    | subject, title, or text |
-| **label** | String    | `true`    | Placeholder for field |
-| **icon**  | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| Property      | Type      | Required  | Description   |
+| --------      | :--:      | :------:  | -----------   |
+| **id**        | String    | `true`    | subject, title, or text |
+| **label**     | String    | `true`    | Placeholder for field |
+| **icon**      | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| **multiline** | Boolean   | `false`   | Set to `true` to enable multiline text editing. Default value is `false` |
 
 ## Basic Configuration Example
 This is a config example for basic teaser support.
@@ -207,7 +209,8 @@ This is a config example for basic teaser support.
                     {
                         "id": "text",
                         "label": "Text",
-                        "icon": "fa-paragraph"
+                        "icon": "fa-paragraph",
+                        "multiline": true
                     }
                 ]
             }
