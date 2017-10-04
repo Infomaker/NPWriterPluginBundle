@@ -106,7 +106,7 @@ class ImageCropsPreview extends Component {
         const crops = this.props.crops
         const cropInstructions = this.props.cropInstructions
         const node = this.props.node
-
+    
         for (let key in crops) {
 
             let cropDefinedInNode
@@ -119,16 +119,19 @@ class ImageCropsPreview extends Component {
 
             const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height);
 
-            this.props.node.getServiceUrl(params)
-                .then((url) => {
-                    this.cropUrls.set(key, url)
-                    this.updateSrc(key, url)
-                })
-                .catch(() => {
-                    const url = ""
-                    this.cropUrls.set(key, url)
-                    this.updateSrc(key, url)
-                })
+
+            if (this.props.node.uuid) {
+                this.props.node.getServiceUrl(params)
+                    .then((url) => {
+                        this.cropUrls.set(key, url)
+                        this.updateSrc(key, url)
+                    })
+                    .catch(() => {
+                        const url = ""
+                        this.cropUrls.set(key, url)
+                        this.updateSrc(key, url)
+                    })
+            }
         }
 
         // If crops has changed, clear the selected crop

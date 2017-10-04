@@ -19,6 +19,7 @@ class XimimageComponent extends Component {
     _onDocumentChange(change) {
         if (change.isAffected(this.props.node.id) ||
             change.isAffected(this.props.node.imageFile)) {
+            this.refs.cropsPreview.fetchCropUrls()
             this.rerender()
         }
     }
