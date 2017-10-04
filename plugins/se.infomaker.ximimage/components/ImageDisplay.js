@@ -1,7 +1,6 @@
 import {Button, Component, FontAwesomeIcon} from "substance";
 import {api} from "writer";
 import ImageCropper from "./ImageCropper";
-import AddToByline from "./AddToByline";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -73,14 +72,6 @@ class ImageDisplay extends Component {
         imgContainer.append(contentElement)
 
         const actionsEl = $$('div').addClass('se-actions')
-
-        if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'byline')) {
-            actionsEl.append(
-                $$(Button, {
-                    icon: 'user-plus'
-                }).on('click', this._openAddToByline)
-            )
-        }
 
         if (!this.hasLoadingErrors && imageFile.uuid && api.getConfigValue(this.props.parentId, 'imageinfo')) {
             actionsEl.append(
@@ -165,24 +156,6 @@ class ImageDisplay extends Component {
                     }
                 )
             })
-    }
-
-    _openAddToByline() {
-        api.ui.showDialog(
-            AddToByline,
-            {
-                node: this.props.node,
-                addAuthor: (author) => {
-                    this.props.node.addAuthor(author)
-                }
-            },
-            {
-                title: this.getLabel('Add to image byline'),
-                global: true,
-                primary: this.getLabel('Close'),
-                secondary: false
-            }
-        )
     }
 
     _openCropper() {

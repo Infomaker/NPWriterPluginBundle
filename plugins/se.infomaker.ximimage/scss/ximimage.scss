@@ -42,6 +42,12 @@ div.x-im-image-authors {
         left: 50px;
         top: 2px;
     }
+    .add-author-link {
+        margin: 7px 0;
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 

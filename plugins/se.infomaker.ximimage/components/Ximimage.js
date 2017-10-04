@@ -2,6 +2,7 @@ import {Component, FontAwesomeIcon, TextPropertyEditor} from "substance"
 import {NilUUID} from "writer"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
+import AddToByline from "./AddToByline";
 
 const {api} = writer
 
@@ -93,6 +94,13 @@ class XimimageComponent extends Component {
                 }
             })
 
+            if (this.props.isolatedNodeState === 'selected' && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
+                authorList.append($$('a')
+                    .addClass('add-author-link')
+                    .on('click', this._openAddToByline)
+                    .append(`+ ${this.getLabel('Add to image byline')}`))
+            }
+
             el.append($$('div')
                 .attr('contenteditable', false)
                 .addClass('x-im-image-authors')
@@ -100,6 +108,24 @@ class XimimageComponent extends Component {
                     authorList
                 ))
         }
+    }
+
+    _openAddToByline() {
+        api.ui.showDialog(
+            AddToByline,
+            {
+                node: this.props.node,
+                addAuthor: (author) => {
+                    this.props.node.addAuthor(author)
+                }
+            },
+            {
+                title: this.getLabel('Add to image byline'),
+                global: true,
+                primary: this.getLabel('Close'),
+                secondary: false
+            }
+        )
     }
 
 
