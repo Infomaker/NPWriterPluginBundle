@@ -23,12 +23,19 @@ class ImageDisplay extends Component {
         this.extendState({cropUrl: cropUrl});
     }
 
+    getCropUrl() {
+        if (this.props.isolatedNodeState === 'selected' && this.state.cropUrl !== undefined) {
+            return this.state.cropUrl
+        }
+        return this.props.node.getUrl()
+    }
+
     render($$) {
         let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
         let imgSrc
         try {
             this.hasLoadingErrors = false
-            imgSrc = this.state.cropUrl || this.props.node.getUrl()
+            imgSrc = this.getCropUrl() || this.props.node.getUrl()
         } catch (e) {
             this.hasLoadingErrors = e
         }
