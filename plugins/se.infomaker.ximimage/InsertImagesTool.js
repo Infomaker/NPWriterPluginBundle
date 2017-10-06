@@ -1,5 +1,6 @@
 import {Tool} from 'substance'
 import {api} from 'writer'
+import * as ImageTypes from './models/ImageTypes'
 
 class XimimageTool extends Tool {
 
@@ -19,6 +20,7 @@ class XimimageTool extends Tool {
                 .attr('type', 'file')
                 .attr('multiple', 'multiple')
                 .attr('id', 'x-im-image-fileupload')
+                .attr('accept', ImageTypes.getMIMETypes().join(','))
                 .ref('x-im-image-fileupload')
                 .on('change', this.triggerFileUpload)
         );
