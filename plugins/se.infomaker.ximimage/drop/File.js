@@ -35,7 +35,7 @@ class DropImageFile extends DragAndDropHandler {
 
     sync(tx, nodeId) {
         api.editorSession.fileManager.sync().catch((err) => {
-            this.showErrorNotification(tx, nodeId, err.message)
+            this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
         })
     }
 

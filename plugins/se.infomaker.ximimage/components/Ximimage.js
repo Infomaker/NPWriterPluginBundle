@@ -51,11 +51,17 @@ class XimimageComponent extends Component {
         let cropOverlay = $$('div').addClass('crop-overlay hide').ref('cropOverlay')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
 
-        el.append(cropOverlay)
+        // TODO: extract from full config when we can get that
+        const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+            optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
+            return optionsObject
+        }, {})
+
         metaWrapper.append(
             $$(ImageDisplay, {
                 parentId: 'se.infomaker.ximimage',
-                node: node,
+                node,
+                imageOptions,
                 isolatedNodeState: this.props.isolatedNodeState,
                 showCroper: () => {
                     this._openCropper($$)
@@ -66,7 +72,7 @@ class XimimageComponent extends Component {
         if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
             metaWrapper.append(
                 $$(ImageCropsPreview, {
-                    node: node,
+                    node,
                     crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
                     cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions'),
                     isolatedNodeState: this.props.isolatedNodeState,
@@ -88,12 +94,14 @@ class XimimageComponent extends Component {
             }
         })
 
+        el.append(cropOverlay)
         el.append(metaWrapper)
 
         return el
     }
 
     _openCropper($$) {
+        const imageOptions = this._getImageOptions()
         this.props.node.fetchSpecifiedUrls(['service', 'original'])
             .then(src => {
                 let cropper = $$(ImageCropper, {
@@ -102,6 +110,7 @@ class XimimageComponent extends Component {
                     width: this.props.node.width,
                     height: this.props.node.height,
                     crops: this.props.node.crops.crops || [],
+                    configuredCrops: imageOptions.crops,
                     disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                     abort: () => {
                         this.refs.cropOverlay.addClass('hide')
@@ -155,6 +164,26 @@ class XimimageComponent extends Component {
                 .append(
                     authorList
                 ))
+        }
+    }
+
+    /**
+     * Fetches image options either from supplied props or
+     * configuration values for props.parentId. Needed for
+     * teaser-plugin backwards compatibility
+     *
+     * @returns {*}
+     * @private
+     */
+    _getImageOptions() {
+        if(this.props.imageOptions) {
+            return this.props.imageOptions
+        } else {
+            // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
+            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+                optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
+                return optionsObject
+            }, {})
         }
     }
 
