@@ -11,8 +11,7 @@ class XimimageTool extends Tool {
         el.append(
             $$('button').addClass('se-tool').append(
                 $$('i').addClass('fa fa-image')
-            )
-                .on('click', this.triggerFileDialog)
+            ).on('click', this.triggerFileDialog)
         );
 
         el.append(
@@ -32,7 +31,6 @@ class XimimageTool extends Tool {
         var evt = document.createEvent('MouseEvents');
         evt.initEvent('click', true, false);
         this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt);
-
     }
 
     triggerFileUpload(ev) {
