@@ -186,7 +186,9 @@ class ImageDisplay extends Component {
                     disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                     callback: (crops, disableAutomaticCrop) => {
                         this.props.node.setSoftcropData(crops, disableAutomaticCrop)
-                        this.props.notifyCropsChanged()
+                        if (this.props.notifyCropsChanged) {
+                            this.props.notifyCropsChanged()
+                        }
                     }
                 },
                 {
