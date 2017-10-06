@@ -1,4 +1,5 @@
 import {Tool} from 'substance'
+import {api} from 'writer'
 
 class XimimageTool extends Tool {
 
@@ -33,9 +34,13 @@ class XimimageTool extends Tool {
     }
 
     triggerFileUpload(ev) {
-        this.context.editorSession.executeCommand('insert-images', {
-            files: ev.target.files
-        })
+        try {
+            this.context.editorSession.executeCommand('insert-images', {
+                files: ev.target.files
+            })
+        } catch (err) {
+            api.ui.showNotification('ximimage', api.getLabel('Error'), api.getLabel(err.message))
+        }
     }
 }
 
