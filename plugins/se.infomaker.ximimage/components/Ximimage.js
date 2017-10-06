@@ -42,10 +42,17 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
 
+        // TODO: extract from full config when we can get that
+        const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+            optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
+            return optionsObject
+        }, {})
+
         el.append(
             $$(ImageDisplay, {
                 parentId: 'se.infomaker.ximimage',
                 node: node,
+                imageOptions,
                 isolatedNodeState: this.props.isolatedNodeState,
                 notifyCropsChanged: () => {
                     this.refs.cropsPreview.fetchCropUrls();
