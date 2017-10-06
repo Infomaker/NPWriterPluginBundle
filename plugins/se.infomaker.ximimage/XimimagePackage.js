@@ -81,6 +81,10 @@ export default {
             sv: 'Lägg till byline'
         })
 
+        config.addLabel('Restore all', {
+            'sv': 'Återställ alla'
+        })
+
         config.addLabel('Remove', {
             sv: 'Ta bort'
         })

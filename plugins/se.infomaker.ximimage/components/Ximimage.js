@@ -3,6 +3,7 @@ import {NilUUID} from "writer"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 import AddToByline from "./AddToByline";
+import ImageCropper from './ImageCropper';
 
 const {api} = writer
 
@@ -37,24 +38,33 @@ class XimimageComponent extends Component {
         }
     }
 
+    willReceiveProps(newProps) {
+        if (newProps.disabled && this.refs.cropsPreview) {
+            this.refs.cropsPreview.selectCrop(undefined)
+        }
+    }
+
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
+        let cropOverlay = $$('div').addClass('crop-overlay hide').ref('cropOverlay')
+        let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
 
-        el.append(
+        el.append(cropOverlay)
+        metaWrapper.append(
             $$(ImageDisplay, {
                 parentId: 'se.infomaker.ximimage',
                 node: node,
                 isolatedNodeState: this.props.isolatedNodeState,
-                notifyCropsChanged: () => {
-                    this.refs.cropsPreview.fetchCropUrls();
+                showCroper: () => {
+                    this._openCropper($$)
                 }
             }).ref('image')
         )
 
         if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
-            el.append(
+            metaWrapper.append(
                 $$(ImageCropsPreview, {
                     node: node,
                     crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
@@ -67,28 +77,66 @@ class XimimageComponent extends Component {
             )
         }
 
-        this.renderAuthors($$, el)
+        this._renderAuthors($$, metaWrapper)
 
         fields.forEach(obj => {
             if (obj.type === 'option') {
-                el.append(this.renderOptionField($$, obj))
+                metaWrapper.append(this.renderOptionField($$, obj))
             }
             else {
-                el.append(this.renderTextField($$, obj))
+                metaWrapper.append(this.renderTextField($$, obj))
             }
         })
+
+        el.append(metaWrapper)
 
         return el
     }
 
-    renderAuthors($$, el) {
+    _openCropper($$) {
+        this.props.node.fetchSpecifiedUrls(['service', 'original'])
+            .then(src => {
+                let cropper = $$(ImageCropper, {
+                    parentId: 'se.infomaker.ximimage',
+                    src: src,
+                    width: this.props.node.width,
+                    height: this.props.node.height,
+                    crops: this.props.node.crops.crops || [],
+                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                    abort: () => {
+                        this.refs.cropOverlay.addClass('hide')
+                        return true;
+                    },
+                    restore: () => {
+                        this.props.node.setSoftcropData([]);
+                        return true;
+                    },
+                    save: (newCrops, disableAutomaticCrop) => {
+                        this.props.node.setSoftcropData(newCrops, disableAutomaticCrop)
+                        this.refs.cropsPreview.fetchCropUrls()
+                    }
+                })
+
+                this.refs.cropOverlay.removeClass('hide')
+                this.refs.cropOverlay.append(cropper)
+            })
+            .catch(err => {
+                console.error(err)
+                api.ui.showMessageDialog([{
+                    type: 'error',
+                    message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
+                }])
+            })
+    }
+
+    _renderAuthors($$, el) {
         if (api.getConfigValue('se.infomaker.ximimage', 'byline')) {
             const authorList = $$('ul')
                 .addClass('dialog-image-authorlist')
                 .attr('contenteditable', false);
 
             this.props.node.authors.forEach((item) => {
-                const authorItem = this.renderAuthor($$, item);
+                const authorItem = this._renderAuthor($$, item);
                 if (authorItem) {
                     authorList.append(authorItem);
                 }
@@ -129,7 +177,7 @@ class XimimageComponent extends Component {
     }
 
 
-    renderAuthor($$, author) {
+    _renderAuthor($$, author) {
 
         const Avatar = api.ui.getComponent('avatar')
 

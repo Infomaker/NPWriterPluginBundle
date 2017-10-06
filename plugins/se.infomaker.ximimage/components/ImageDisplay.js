@@ -23,23 +23,26 @@ class ImageDisplay extends Component {
     }
 
     getCropUrl() {
-        if (this.props.isolatedNodeState === 'selected' && this.state.cropUrl !== undefined) {
+        if (this.props.isolatedNodeState !== null && this.state.cropUrl !== undefined) {
             return this.state.cropUrl
         }
         return this.props.node.getUrl()
     }
 
     render($$) {
-        let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
+        let maxHeight = 396
+        let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer').attr('style', `height:${maxHeight}px`)
         let imgSrc
+
         try {
             this.hasLoadingErrors = false
-            imgSrc = this.getCropUrl() || this.props.node.getUrl()
+            imgSrc = this.getCropUrl()
         } catch (e) {
             this.hasLoadingErrors = e
         }
 
         const imageFile = this.context.doc.get(this.props.node.imageFile)
+
         if (!imageFile) {
             this.hasLoadingErrors = 'Missing image file'
         }
@@ -95,17 +98,9 @@ class ImageDisplay extends Component {
                 cropBadgeClass = 'se-warning'
             }
 
-            actionsEl.append(
-                $$(Button, {
-                    icon: 'crop'
-                })
-                    .on('click', this._openCropper)
-                    .append(
-                        $$('em').append(
-                            currentCrops
-                        )
-                            .addClass(cropBadgeClass)
-                    )
+            actionsEl.append($$(Button, {icon: 'crop'})
+                .on('click', this.props.showCroper)
+                .append($$('em').append(currentCrops).addClass(cropBadgeClass))
             )
         }
 
@@ -155,49 +150,6 @@ class ImageDisplay extends Component {
                         cssClass: 'np-image-dialog'
                     }
                 )
-            })
-    }
-
-    _openCropper() {
-        let tertiary = false;
-        if (this.props.node.crops) {
-            tertiary = [{
-                caption: this.getLabel('Remove'),
-                callback: () => {
-                    this.props.node.setSoftcropData([]);
-                    return true;
-                }
-            }];
-        }
-
-        this.props.node.fetchSpecifiedUrls(['service', 'original'])
-            .then(src => {
-                api.ui.showDialog(
-                    ImageCropper,
-                    {
-                        parentId: this.props.parentId,
-                        src: src,
-                        width: this.props.node.width,
-                        height: this.props.node.height,
-                        crops: this.props.node.crops.crops || [],
-                        disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                        callback: (crops, disableAutomaticCrop) => {
-                            this.props.node.setSoftcropData(crops, disableAutomaticCrop)
-                            this.props.notifyCropsChanged()
-                        }
-                    },
-                    {
-                        tertiary: tertiary,
-                        cssClass: 'np-crop-dialog'
-                    }
-                )
-            })
-            .catch(err => {
-                console.error(err)
-                api.ui.showMessageDialog([{
-                    type: 'error',
-                    message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')
-                }])
             })
     }
 }

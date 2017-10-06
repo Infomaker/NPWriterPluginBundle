@@ -169,7 +169,7 @@ class ImageCropsPreview extends Component {
                 const img = $$('img')
                     .setAttribute('src', url).ref('img-' + key)
 
-                if (this.state.selectedUrl && this.props.isolatedNodeState === 'selected') {
+                if (this.state.selectedUrl && this.props.isolatedNodeState !== null) {
                     if (url === this.state.selectedUrl) {
                         img.addClass('crop-selected')
                     } else {

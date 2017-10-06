@@ -55,12 +55,10 @@
         > img {
             width: auto;
             display: block;
-            max-height: 480px;
+            max-height: 100%;
             max-width: 100%;
-
             margin-left: auto;
             margin-right: auto;
-
         }
 
         > .se-actions {
@@ -140,6 +138,7 @@
     /* Show actions depending on isolated node state */
     &.sm-focused > .se-image-container,
     &.sm-selected > .se-image-container  {
+        
         .remove-image__button {
             display: inline;
         }

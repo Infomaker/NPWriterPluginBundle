@@ -2,6 +2,26 @@
     display: none;
 }
 
+/* Cropper overrides */
+#imc_work_container:after {
+    box-shadow: none!important;
+}
+.toggle-btn-fake-label {
+    color: white;
+}
+.crop-overlay {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: #303030;
+}
+.crop-overlay.hide, .meta-wrapper.hide {
+    visibility: hidden;
+}
+
 .dialog-image-authorlist {
     float:none;
     min-height: 34px;

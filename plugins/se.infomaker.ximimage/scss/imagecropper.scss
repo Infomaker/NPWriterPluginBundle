@@ -15,7 +15,40 @@ div.np-crop-dialog {
         height: 40px;
     }
 }
-
-.se-crop-options {
-    padding: 5px 10px 5px 10px;
+.se-image-cropper-meta {
+    padding: 10px;
+    .se-crop-options {
+        padding: 25px 0px 0px 0px;
+        border-top: 1px solid #484747;
+    }
+    .se-crop-actions {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        
+        button {
+            margin: 10px;
+            min-width: 120px;
+            border-radius: 2px;
+            color: white;
+            text-transform: uppercase;
+            &.btn-secondary {
+                background: none;
+                border: 1px solid #484747;
+            }
+            &.btn-primary {
+                background: #00AB50;
+                border: 1px solid #00AB50;
+            }
+            &.btn-abort {
+                &:hover {
+                    border: 1px solid #484747;
+                }
+                &:active {
+                    border: 1px solid #666666;
+                }
+            }
+        }
+    }
 }
