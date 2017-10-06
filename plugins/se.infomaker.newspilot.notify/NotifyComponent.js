@@ -1,8 +1,6 @@
 import {Component} from "substance";
 import {api} from "writer";
 
-// const FIRST_MOUNT_KEY = 'firstMount';
-
 class NotifyComponent extends Component {
 
     execute() {
@@ -30,50 +28,53 @@ class NotifyComponent extends Component {
         }
         let newsItemArticle = api.editorSession.saveHandler.getExportedDocument();
 
-        // TODO. Make a GET Request
+        let newsItemArticleId = api.newsItem.getGuid()
 
-        if (articleId > 0) {
-            this.makeRequest("PUT", '/articles/exchanges/' + articleId, newsItemArticle)
-                .then(response => {
-                    if (response.status < 200 || response.status > 299) {
-                        api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Status:' + response.status);
-                        this.extendState({errorMessage: 'Got error http code:' + response.status});
-                        return
-                    }
-                    this.extendState({errorMessage: null});
-                    this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
-                }).catch((e) => {
-                    let error = 'Could not update article ' + e;
-                    console.error(error);
-                    this.extendState({errorMessage: error});
-                    api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
-                })
-        }
-        else {
-            this.makeRequest("POST", '/articles/exchanges', newsItemArticle)
-                .then(response => {
-                    if (!response.ok) {
-                        api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_create'), 'Status:' + response.status);
-                        if (response.status === 401) {
+        this.makeRequest("GET", '/articles/exchanges/external/' + newsItemArticleId, null, "xml").then(response => {
+            if (response.status === 404) {
+                this.createNewspilotArticle(newsItemArticle)
+            } else {
+                let articleId = response.headers.get("location");
+                this.updateNewspilotArticle(articleId, newsItemArticle)
+            }
+        })
+    }
 
-                        }
-                        this.extendState({errorMessage: 'Got error http code:' + response.status});
-                        return
-                    }
-                    this.extendState({errorMessage: null});
-                    let url = response.headers.get("location");
-                    let newArticleId = url.substr(url.lastIndexOf("/") + 1);
-                    this.setArticleId(newArticleId);
-                    this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
-                    this.extendState({updateAfterPost: true});
-                    api.newsItem.save();
-                }).catch((e) => {
-                    let error = 'Could not update article ' + e;
-                    console.error(error);
-                    this.extendState({errorMessage: error});
-                    api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
-                });
-        }
+    createNewspilotArticle(newsItemArticle) {
+        this.makeRequest("POST", '/articles/exchanges', newsItemArticle, "json")
+            .then(response => {
+                if (!response.ok) {
+                    api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_create'), 'Status:' + response.status);
+                    this.extendState({errorMessage: 'Got error http code:' + response.status});
+                    return
+                }
+                this.extendState({errorMessage: null});
+                this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
+                this.extendState({updateAfterPost: true});
+            }).catch((e) => {
+                let error = 'Could not update article ' + e;
+                console.error(error);
+                this.extendState({errorMessage: error});
+                api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
+            });
+    }
+
+    updateNewspilotArticle(articleId, newsItemArticle){
+        this.makeRequest("PUT", '/articles/exchanges/' + articleId, newsItemArticle, "json")
+            .then(response => {
+                if (response.status < 200 || response.status > 299) {
+                    api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Status:' + response.status);
+                    this.extendState({errorMessage: 'Got error http code:' + response.status});
+                    return
+                }
+                this.extendState({errorMessage: null});
+                this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
+            }).catch((e) => {
+                let error = 'Could not update article ' + e;
+                console.error(error);
+                this.extendState({errorMessage: error});
+                api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
+            })
     }
 
     static formatDate(date) {
@@ -103,14 +104,14 @@ class NotifyComponent extends Component {
     }
 
     ping() {
-        this.makeRequest("GET", "/ping", null).then(() => {
+        this.makeRequest("GET", "/ping", null, "json").then(() => {
         })
     }
 
-    makeRequest(method, url, body) {
+    makeRequest(method, url, body, type) {
 
         const headers = new Headers();
-        headers.append("Accept", "application/json");
+        headers.append("Accept", "application/" + type);
         headers.append("x-api-key", this.getIntegrationServiceApiKey());
 
         let myInit;
@@ -135,12 +136,9 @@ class NotifyComponent extends Component {
         let integrationService = this.getIntegrationService();
 
         return fetch(integrationService + url, myInit)
-            .then(res => {
-                if (res.ok) {
+                .then(res => {
                     return res;
-                }
-                throw new Error('Network response was not ok.');
-            });
+                });
     }
 }
 
