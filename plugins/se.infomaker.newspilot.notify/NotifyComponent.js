@@ -30,16 +30,13 @@ class NotifyComponent extends Component {
         }
         let newsItemArticle = api.editorSession.saveHandler.getExportedDocument();
 
-        const articleId = this.getArticleId();
+        // TODO. Make a GET Request
 
         if (articleId > 0) {
             this.makeRequest("PUT", '/articles/exchanges/' + articleId, newsItemArticle)
                 .then(response => {
                     if (response.status < 200 || response.status > 299) {
                         api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Status:' + response.status);
-                        if (response.status === 401) {
-                            //TODO
-                        }
                         this.extendState({errorMessage: 'Got error http code:' + response.status});
                         return
                     }
@@ -89,34 +86,6 @@ class NotifyComponent extends Component {
 
     getIntegrationServiceApiKey() {
         return api.getConfigValue(this.pluginId, 'integrationService-apikey')
-    }
-
-
-    getArticleId() {
-        const articleId = api.newsItem.getNewspilotArticleId();
-        return articleId ? articleId : 0;
-    }
-
-    setArticleId(articleId) {
-        let articleIdNode = api.newsItem._getItemMetaExtPropertyByType('npext:articleid');
-        if (!articleIdNode) {
-            let itemMetaNode = api.newsItemArticle.querySelector('itemMeta');
-            articleIdNode = api.newsItemArticle.createElement('itemMetaExtProperty');
-            articleIdNode.setAttribute('type', 'npext:articleid');
-            itemMetaNode.appendChild(articleIdNode)
-        }
-
-        articleIdNode.setAttribute('value', articleId)
-    }
-
-    getNewspilotArticleId() {
-        let articleIdNode = this._getItemMetaExtPropertyByType('npext:articleid');
-
-        if (articleIdNode) {
-            return articleIdNode.getAttribute('value')
-        }
-
-        return null;
     }
 
 
