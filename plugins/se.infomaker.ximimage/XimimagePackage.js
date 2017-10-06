@@ -92,5 +92,10 @@ export default {
         config.addLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.', {
             sv: 'Bilden verkar inte finnas tillgänglig än. Vänta ett par sekunder och försök igen.'
         })
+
+        config.addLabel('Image type not supported', {
+            en: 'Image type not supported',
+            sv: 'Felaktig bildtyp'
+        })
     }
 }
