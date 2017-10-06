@@ -9,7 +9,14 @@ class DropImageFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        const nodeId = insertImage(tx, params.file)
+        let nodeId;
+        try {
+            nodeId = insertImage(tx, params.file)
+        } catch (err) {
+            api.ui.showNotification('ximimage', api.getLabel('Error'), api.getLabel(err.message))
+            return null
+        }
+
         const maxIterations = 500
         const doc = api.editorSession.getDocument()
 
