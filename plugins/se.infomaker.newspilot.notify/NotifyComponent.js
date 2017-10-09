@@ -35,7 +35,9 @@ class NotifyComponent extends Component {
                 this.createNewspilotArticle(newsItemArticle)
             } else {
                 let articleId = response.headers.get("location");
-                this.updateNewspilotArticle(articleId, newsItemArticle)
+                if (articleId) {
+                    this.updateNewspilotArticle(articleId, newsItemArticle)
+                }
             }
         })
     }
@@ -128,7 +130,6 @@ class NotifyComponent extends Component {
             myInit = {
                 method: method,
                 headers: headers,
-                mode: 'cors',
                 cache: 'default'
             };
         }
