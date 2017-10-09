@@ -19,7 +19,8 @@ export default function(tx, data) {
         throw new Error('Unsupported data. Must be File or String')
     }
 
-    if (!isImage(data.name, api)) {
+    let name = isFile ? data.name : data
+    if (!isImage(name, api)) {
         throw new Error('Unsupported image format')
     }
 
