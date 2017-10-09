@@ -39,7 +39,7 @@ class XimimageTool extends Tool {
                 files: ev.target.files
             })
         } catch (err) {
-            api.ui.showNotification('ximimage', api.getLabel('Error'), api.getLabel(err.message))
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
         }
     }
 }

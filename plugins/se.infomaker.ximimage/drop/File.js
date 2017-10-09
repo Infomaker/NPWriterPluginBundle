@@ -13,7 +13,7 @@ class DropImageFile extends DragAndDropHandler {
         try {
             nodeId = insertImage(tx, params.file)
         } catch (err) {
-            api.ui.showNotification('ximimage', api.getLabel('Error'), api.getLabel(err.message))
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
             return null
         }
 
@@ -42,6 +42,7 @@ class DropImageFile extends DragAndDropHandler {
 
     sync(tx, nodeId) {
         api.editorSession.fileManager.sync().catch((err) => {
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
             this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
         })
     }
