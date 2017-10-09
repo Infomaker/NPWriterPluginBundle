@@ -20,7 +20,7 @@ export default function(tx, data) {
     }
 
     if (!isImage(data.name, api)) {
-        throw new Error('Image type not supported')
+        throw new Error('Unsupported image format')
     }
 
     const imageFileNode = {

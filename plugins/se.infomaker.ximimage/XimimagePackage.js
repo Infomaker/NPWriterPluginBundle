@@ -93,9 +93,8 @@ export default {
             sv: 'Bilden verkar inte finnas tillgänglig än. Vänta ett par sekunder och försök igen.'
         })
 
-        config.addLabel('Image type not supported', {
-            en: 'Image type not supported',
-            sv: 'Felaktig bildtyp'
+        config.addLabel('Unsupported image format', {
+            sv: 'Bildformatet stöds inte'
         })
     }
 }
