@@ -149,14 +149,28 @@ class XimimageComponent extends Component {
 
 
     renderTextField($$, obj) {
-        return $$(TextPropertyEditor, {
-            tagName: 'div',
-            path: [this.props.node.id, obj.name],
-            disabled: Boolean(this.props.disabled)
+        const FieldEditor = this.context.api.ui.getComponent('field-editor')
+        return $$(FieldEditor, {
+            node: this.props.node,
+            field: obj.name,
+            multiLine: false,
+            disabled: Boolean(this.props.disabled),
+            placeholder: obj.label,
+            icon: this._getFieldIcon(obj.name) || 'fa-header'
         })
             .ref(obj.name)
             .attr('title', obj.label)
-            .addClass('x-im-image-dynamic x-im-image-' + obj.name)
+            .addClass('x-im-image-dynamic')
+    }
+
+    _getFieldIcon(name) {
+        const icons = {
+            caption: 'fa-align-left',
+            credit: 'fa-building-o',
+            alttext: 'fa-low-vision'
+        }
+
+        return icons[name]
     }
 
     renderOptionField($$, obj) {
