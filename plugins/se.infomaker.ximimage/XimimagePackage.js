@@ -74,7 +74,7 @@ export default {
         })
 
         config.addLabel('Add to image byline', {
-            sv: 'Lägg till byline till bild'
+            sv: 'Lägg till byline'
         })
 
         config.addLabel('Add to byline', {

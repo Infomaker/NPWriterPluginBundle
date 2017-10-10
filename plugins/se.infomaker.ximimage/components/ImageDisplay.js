@@ -31,6 +31,8 @@ class ImageDisplay extends Component {
 
     render($$) {
         let maxHeight = 396
+        let el = $$('div').addClass('sc-image-display')
+        let cropOverlay = $$('div').addClass('crop-overlay hidden').ref('cropOverlay')
         let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer').attr('style', `height:${maxHeight}px`)
         const imageOptions = this.props.imageOptions
         let imgSrc
@@ -56,7 +58,7 @@ class ImageDisplay extends Component {
                     .addClass('remove-image__button')
                     .attr('title', this.getLabel('remove-image-button-title'))
                     .on('click', () => {
-                        this.props.removeImage()
+                        this._onClose()
                     })
 
                 imgContainer.append(deleteButton)
@@ -100,7 +102,7 @@ class ImageDisplay extends Component {
             }
 
             actionsEl.append($$(Button, {icon: 'crop'})
-                .on('click', this.props.showCroper)
+                .on('click', () => { this._openCropper($$) })
                 .append($$('em').append(currentCrops).addClass(cropBadgeClass))
             )
         }
@@ -119,19 +121,97 @@ class ImageDisplay extends Component {
 
         imgContainer.append(actionsEl)
 
-        let el = $$('div').addClass('sc-image-display')
-
         if (!this.hasLoadingErrors && !imageFile.uuid) {
             el.addClass('sm-pending')
         }
 
-
         el.addClass('sm-' + this.props.isolatedNodeState)
+        el.append(cropOverlay)
         el.append(imgContainer)
 
         return el
     }
 
+    _onClose() {
+        this.props.node.setSoftcropData([])
+        this.props.removeImage()
+        this.remove()
+    }
+
+    /**
+     * Show image cropper in an overlay element
+     * 
+     * @param {any} $$ 
+     * @memberof ImageDisplay
+     */
+    _openCropper($$) {
+        const imageOptions = this._getImageOptions()
+        this.props.node.fetchSpecifiedUrls(['service', 'original'])
+            .then(src => {
+                let cropper = $$(ImageCropper, {
+                    parentId: this.props.parentId,
+                    src: src,
+                    width: this.props.node.width,
+                    height: this.props.node.height,
+                    crops: this.props.node.crops.crops || [],
+                    configuredCrops: imageOptions.crops,
+                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
+                    abort: () => {
+                        this.refs.cropOverlay.addClass('hidden')
+                        return true;
+                    },
+                    restore: () => {
+                        this.props.node.setSoftcropData([]);
+                        if (this.props.notifyCropsChanged) {
+                            this.props.notifyCropsChanged()
+                        }
+                        return false;
+                    },
+                    save: (newCrops, disableAutomaticCrop) => {
+                        this.props.node.setSoftcropData(newCrops, disableAutomaticCrop)
+                        if (this.props.notifyCropsChanged) {
+                            this.props.notifyCropsChanged()
+                        }
+                    }
+                })
+
+                this.refs.cropOverlay.removeClass('hidden')
+                this.refs.cropOverlay.append(cropper)
+            })
+            .catch(err => {
+                console.error(err)
+                api.ui.showMessageDialog([{
+                    type: 'error',
+                    message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
+                }])
+            })
+    }
+
+    /**
+     * Fetches image options either from supplied props or
+     * configuration values for props.parentId. Needed for
+     * teaser-plugin backwards compatibility
+     *
+     * @returns {*}
+     * @private
+     */
+    _getImageOptions() {
+        if(this.props.imageOptions) {
+            return this.props.imageOptions
+        } else {
+            // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
+            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+                optionsObject[field] = api.getConfigValue(this.props.parentId, field)
+                return optionsObject
+            }, {})
+        }
+    }
+
+    /**
+     * Show image meta data in a modal dialog
+     * 
+     * @memberof ImageDisplay
+     */
     _openMetaData() {
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
@@ -152,34 +232,6 @@ class ImageDisplay extends Component {
                     }
                 )
             })
-    }
-
-    _openCropper() {
-        this.props.node.fetchSpecifiedUrls(['service', 'original'])
-        .then(src => {
-            api.ui.showDialog(
-                ImageCropper,
-                {
-                    src: src,
-                    width: this.props.node.width,
-                    height: this.props.node.height,
-                    crops: this.props.node.crops.crops || [],
-                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                    callback: (crops, disableAutomaticCrop) => {
-                        this.props.node.setSoftcropData(crops, disableAutomaticCrop)
-                        if (this.props.notifyCropsChanged) {
-                            this.props.notifyCropsChanged()
-                        }
-                    }
-                }
-            )
-        })
-        .catch(err => {
-            api.ui.showMessageDialog([{
-                type: 'error',
-                message: this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.\n' + err.message)
-            }])
-        })
     }
 }
 

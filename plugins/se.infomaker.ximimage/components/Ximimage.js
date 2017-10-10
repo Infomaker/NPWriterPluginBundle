@@ -3,7 +3,6 @@ import {NilUUID} from "writer"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 import AddToByline from "./AddToByline";
-import ImageCropper from './ImageCropper';
 
 const {api} = writer
 
@@ -48,7 +47,6 @@ class XimimageComponent extends Component {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
-        let cropOverlay = $$('div').addClass('crop-overlay hide').ref('cropOverlay')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
 
         // TODO: extract from full config when we can get that
@@ -57,20 +55,20 @@ class XimimageComponent extends Component {
             return optionsObject
         }, {})
 
-        metaWrapper.append(
+        el.append(
             $$(ImageDisplay, {
                 parentId: 'se.infomaker.ximimage',
                 node,
                 imageOptions,
                 isolatedNodeState: this.props.isolatedNodeState,
-                showCroper: () => {
-                    this._openCropper($$)
+                notifyCropsChanged: () => {
+                    this.refs.cropsPreview.fetchCropUrls()
                 }
             }).ref('image')
         )
 
         if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
-            metaWrapper.append(
+            el.append(
                 $$(ImageCropsPreview, {
                     node,
                     crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
@@ -93,49 +91,10 @@ class XimimageComponent extends Component {
                 metaWrapper.append(this.renderTextField($$, obj))
             }
         })
-
-        el.append(cropOverlay)
+        
         el.append(metaWrapper)
 
         return el
-    }
-
-    _openCropper($$) {
-        const imageOptions = this._getImageOptions()
-        this.props.node.fetchSpecifiedUrls(['service', 'original'])
-            .then(src => {
-                let cropper = $$(ImageCropper, {
-                    parentId: 'se.infomaker.ximimage',
-                    src: src,
-                    width: this.props.node.width,
-                    height: this.props.node.height,
-                    crops: this.props.node.crops.crops || [],
-                    configuredCrops: imageOptions.crops,
-                    disableAutomaticCrop: this.props.node.disableAutomaticCrop,
-                    abort: () => {
-                        this.refs.cropOverlay.addClass('hide')
-                        return true;
-                    },
-                    restore: () => {
-                        this.props.node.setSoftcropData([]);
-                        return true;
-                    },
-                    save: (newCrops, disableAutomaticCrop) => {
-                        this.props.node.setSoftcropData(newCrops, disableAutomaticCrop)
-                        this.refs.cropsPreview.fetchCropUrls()
-                    }
-                })
-
-                this.refs.cropOverlay.removeClass('hide')
-                this.refs.cropOverlay.append(cropper)
-            })
-            .catch(err => {
-                console.error(err)
-                api.ui.showMessageDialog([{
-                    type: 'error',
-                    message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
-                }])
-            })
     }
 
     _renderAuthors($$, el) {
@@ -167,26 +126,6 @@ class XimimageComponent extends Component {
         }
     }
 
-    /**
-     * Fetches image options either from supplied props or
-     * configuration values for props.parentId. Needed for
-     * teaser-plugin backwards compatibility
-     *
-     * @returns {*}
-     * @private
-     */
-    _getImageOptions() {
-        if(this.props.imageOptions) {
-            return this.props.imageOptions
-        } else {
-            // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
-            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
-                optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
-                return optionsObject
-            }, {})
-        }
-    }
-
     _openAddToByline() {
         api.ui.showDialog(
             AddToByline,
@@ -204,7 +143,6 @@ class XimimageComponent extends Component {
             }
         )
     }
-
 
     _renderAuthor($$, author) {
 

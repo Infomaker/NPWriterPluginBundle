@@ -1,6 +1,7 @@
 import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 import FileInputComponent from './FileInputComponent'
+import ImageCropsPreview from '../se.infomaker.ximimage/components/ImageCropsPreview';
 
 class TeaserComponent extends Component {
 
@@ -55,10 +56,13 @@ class TeaserComponent extends Component {
 
             el.append(
                 $$(ImageDisplay, {
+                    imageOptions,
                     node: this.props.node,
                     isolatedNodeState: this.props.isolatedNodeState,
                     removeImage: this.removeImage.bind(this),
-                    imageOptions
+                    notifyCropsChanged: () => {
+                        this.refs.cropsPreview.fetchCropUrls()
+                    }
                 }).ref('image')
             )
         }
