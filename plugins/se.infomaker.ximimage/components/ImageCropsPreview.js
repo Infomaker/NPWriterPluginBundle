@@ -120,7 +120,7 @@ class ImageCropsPreview extends Component {
             const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height);
 
 
-            if (this.props.node.uuid) {
+            if (this.props.node.uuid && this.props.node.getServiceUrl) {
                 this.props.node.getServiceUrl(params)
                     .then((url) => {
                         this.cropUrls.set(key, url)

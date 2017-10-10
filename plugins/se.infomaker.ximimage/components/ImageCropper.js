@@ -109,9 +109,11 @@ class ImageCropper extends Component {
             .attr('id', 'ximimage__softcrop')
             .addClass('sc-image-cropper')
             .ref('cropper')
+
         const cropToggle = $$(Toggle, {
             id: 'crop-toggle',
             alignRight: true,
+            checkbox: true,
             label: this.getLabel('Disable automatic crop in frontend'),
             checked: this.state.disableAutomaticCrop,
             onToggle: (checked) => {
@@ -120,6 +122,7 @@ class ImageCropper extends Component {
                 })
             }
         })
+
         const cropOptions = $$('div').append(cropToggle).addClass('se-crop-options')
         const restoreAll = $$('button').addClass('btn btn-secondary').append(this.getLabel('Restore all')).on('click', this.props.restore)
         const abort = $$('button').addClass('btn pull-right btn-abort').append(this.getLabel('cancel')).on('click', this.onClose)

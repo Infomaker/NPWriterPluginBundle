@@ -18,8 +18,11 @@ div.np-crop-dialog {
 .se-image-cropper-meta {
     padding: 10px;
     .se-crop-options {
-        padding: 25px 0px 0px 0px;
+        padding: 15px 0px 0px 0px;
         border-top: 1px solid #484747;
+        .toggle-btn-fake-label {
+            color: #d9d9d9;
+        }
     }
     .se-crop-actions {
         position: absolute;
@@ -28,25 +31,30 @@ div.np-crop-dialog {
         bottom: 10px;
         
         button {
+            color: #d9d9d9;
             margin: 10px;
             min-width: 120px;
             border-radius: 2px;
-            color: white;
             text-transform: uppercase;
             &.btn-secondary {
                 background: none;
-                border: 1px solid #484747;
+                border: 1px solid #878787;
+                &:hover {
+                    background: #504f4f;
+                }
             }
             &.btn-primary {
-                background: #00AB50;
-                border: 1px solid #00AB50;
+                color: white;
+                background: #00ab50;
+                border: 1px solid #00ab50;
+                &:hover {
+                    background: #019747;
+                    border: 1px solid #019747;
+                }
             }
             &.btn-abort {
-                &:hover {
-                    border: 1px solid #484747;
-                }
-                &:active {
-                    border: 1px solid #666666;
+                &:hover, &:active {
+                    background: #504f4f;
                 }
             }
         }
