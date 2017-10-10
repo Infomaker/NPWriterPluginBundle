@@ -1,4 +1,37 @@
 .sc-image-display {
+    .crop-overlay {
+        min-height: 625px;
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        right: 0;
+        left: 0;
+        background: #303030;
+        box-shadow: 5px 5px 15px -5px #303030;
+        border-radius: 3px;
+    }
+    .crop-overlay.hidden {
+        visibility: hidden;
+    }
+
+    .checkerboard {
+        background-image:
+                -moz-linear-gradient(45deg, #f6f6f6 25%, transparent 25%),
+                -moz-linear-gradient(-45deg, #f6f6f6 25%, transparent 25%),
+                -moz-linear-gradient(45deg, transparent 75%, #f6f6f6 75%),
+                -moz-linear-gradient(-45deg, transparent 75%, #f6f6f6 75%);
+        background-image:
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #f6f6f6), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #f6f6f6), color-stop(.25, transparent)),
+                -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #f6f6f6)),
+                -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #f6f6f6));
+
+        -moz-background-size:20px 20px;
+        background-size:20px 20px;
+        -webkit-background-size:20px 21px; /* override value for shitty webkit */
+
+        background-position:0 0, 10px 0, 10px -10px, 0px 10px;
+    }
 
     .broken-image {
         color: #d9534f;
@@ -7,6 +40,8 @@
     > .se-image-container {
         position: relative;
         text-align: center;
+        display: flex;
+        border: 1px solid #d9d9d9;
 
         .remove-image__button {
             display: none;
@@ -32,8 +67,11 @@
         }
 
         > img {
-            width: 100%;
+            width: auto;
             display: block;
+            max-height: 100%;
+            max-width: 100%;
+            margin: auto;
         }
 
         > .se-actions {
@@ -113,6 +151,7 @@
     /* Show actions depending on isolated node state */
     &.sm-focused > .se-image-container,
     &.sm-selected > .se-image-container  {
+        
         .remove-image__button {
             display: inline;
         }
