@@ -110,7 +110,7 @@ class XimimageComponent extends Component {
                 }
             })
 
-            if (this.props.isolatedNodeState === 'selected' && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
+            if (['selected', 'focused'].includes(this.props.isolatedNodeState) && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
                 authorList.append($$('a')
                     .addClass('add-author-link')
                     .on('click', this._openAddToByline)
