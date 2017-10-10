@@ -2,6 +2,10 @@
     .im-blocknode__container {
         padding: 0;
     }
+    .sc-isolated-node-blocker {
+        // Disable drag for TeaserContainer
+        display: none;
+    }
 }
 
 .teaser-container {
@@ -39,7 +43,11 @@
     border-right: 1px solid #eee;
     border-left: 1px solid #eee;
     height: 30px;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
+    &:hover {
+        background: #e5e5e5;
+    }
     &:after {
         content: '';
         display: block;
