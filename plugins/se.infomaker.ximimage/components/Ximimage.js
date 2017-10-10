@@ -20,7 +20,9 @@ class XimimageComponent extends Component {
     _onDocumentChange(change) {
         if (change.isAffected(this.props.node.id) ||
             change.isAffected(this.props.node.imageFile)) {
-            this.refs.cropsPreview.fetchCropUrls()
+            if (this.refs.cropsPreview) {
+                this.refs.cropsPreview.fetchCropUrls()
+            }
             this.rerender()
         }
     }
@@ -48,6 +50,8 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
+        let crops = api.getConfigValue('se.infomaker.ximimage', 'crops')
+        let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
 
         // TODO: extract from full config when we can get that
         const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
@@ -67,12 +71,12 @@ class XimimageComponent extends Component {
             }).ref('image')
         )
 
-        if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
+        if (crops && cropInstructions) {
             el.append(
                 $$(ImageCropsPreview, {
                     node,
-                    crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
-                    cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions'),
+                    crops,
+                    cropInstructions,
                     isolatedNodeState: this.props.isolatedNodeState,
                     cropSelected: (cropUrl) => {
                         this.refs.image.displayCrop(cropUrl)
