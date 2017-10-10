@@ -74,11 +74,15 @@ export default {
         })
 
         config.addLabel('Add to image byline', {
-            sv: 'Lägg till byline till bild'
+            sv: 'Lägg till byline'
         })
 
         config.addLabel('Add to byline', {
             sv: 'Lägg till byline'
+        })
+
+        config.addLabel('Restore all', {
+            'sv': 'Återställ alla'
         })
 
         config.addLabel('Remove', {
