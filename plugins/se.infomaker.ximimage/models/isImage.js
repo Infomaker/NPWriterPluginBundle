@@ -1,5 +1,5 @@
 import {containsExtension} from './ImageTypes'
 
-export default (uri, api) => {
+export default (uri) => {
     return containsExtension(uri)
 }

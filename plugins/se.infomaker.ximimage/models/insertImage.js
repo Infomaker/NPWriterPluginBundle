@@ -20,7 +20,7 @@ export default function(tx, data) {
     }
 
     let name = isFile ? data.name : data
-    if (!isImage(name, api)) {
+    if (!isImage(name)) {
         throw new Error('Unsupported image format')
     }
 
