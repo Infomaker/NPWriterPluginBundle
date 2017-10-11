@@ -59,11 +59,10 @@ class TeaserComponent extends Component {
                     imageOptions,
                     node: this.props.node,
                     isolatedNodeState: this.props.isolatedNodeState,
-                    removeImage: this.removeImage.bind(this),
-                    notifyCropsChanged: () => {
-                        this.refs.cropsPreview.fetchCropUrls()
-                    }
-                }).ref('image')
+                    removeImage: this.removeImage.bind(this)
+                })
+                    .ref('image')
+                    .on('click', this.props.selectContainer)
             )
         }
 
