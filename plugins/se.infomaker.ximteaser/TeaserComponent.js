@@ -62,7 +62,11 @@ class TeaserComponent extends Component {
                     removeImage: this.removeImage.bind(this)
                 })
                     .ref('image')
-                    .on('click', this.props.selectContainer)
+                    .on('click', () => {
+                        if(!this.props.isolatedNodeState) {
+                            this.props.selectContainer()
+                        }
+                    })
             )
         }
 
