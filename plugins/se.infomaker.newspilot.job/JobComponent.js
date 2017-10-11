@@ -67,7 +67,7 @@ class JobComponent extends Component {
 
     initGateway() {
         // Sanity check
-        if (this.state.articleId === 0) {
+        if (!this.getExternalSystemId() && this.state.articleId === 0) {
             return
         }
 
@@ -125,7 +125,7 @@ class JobComponent extends Component {
             el.append($$('h2').append(this.getLabel('Images')))
             el.append(imageList)
 
-        } else if (this.state.error && this.state.error.status === 404) {
+        } else if (!this.isConnectedArticle() || (this.state.error && this.state.error.status === 404)) {
             el.append($$('h2').append(this.getLabel('Article not linked with Newspilot')))
         }
 
