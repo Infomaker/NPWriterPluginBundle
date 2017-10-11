@@ -48,6 +48,11 @@ export default class Auth {
         return headers
     }
 
+    static getAuthHeaderValue() {
+        const authItem = Auth.getCredentials()
+        return `Basic ${btoa(authItem.user + ":" + authItem.password)}`
+    }
+
 
     static logout() {
         window.sessionStorage.removeItem(CREDENTIALS_KEY)
