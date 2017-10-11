@@ -12,7 +12,7 @@ class DropImageUri extends DragAndDropHandler {
     match(params) {
         const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
 
-        return params.type === 'uri' && isImage(params.uri, api)
+        return params.type === 'uri' && isImage(params.uri)
     }
 
     drop(tx, params) {

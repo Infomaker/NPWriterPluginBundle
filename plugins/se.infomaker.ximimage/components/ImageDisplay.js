@@ -15,7 +15,6 @@ class ImageDisplay extends Component {
     _onDragStart(e) {
         e.preventDefault()
         e.stopPropagation()
-
     }
 
     displayCrop(cropUrl) {
@@ -57,9 +56,7 @@ class ImageDisplay extends Component {
                 const deleteButton = $$(Button, {icon: 'remove'})
                     .addClass('remove-image__button')
                     .attr('title', this.getLabel('remove-image-button-title'))
-                    .on('click', () => {
-                        this._onClose()
-                    })
+                    .on('click', this.props.removeImage)
 
                 imgContainer.append(deleteButton)
             }
@@ -130,12 +127,6 @@ class ImageDisplay extends Component {
         el.append(imgContainer)
 
         return el
-    }
-
-    _onClose() {
-        this.props.node.setSoftcropData([])
-        this.props.removeImage()
-        this.remove()
     }
 
     /**

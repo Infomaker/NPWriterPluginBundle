@@ -6,9 +6,6 @@
 #imc_work_container:after {
     box-shadow: none!important;
 }
-.toggle-btn-fake-label {
-    color: white;
-}
 
 .dialog-image-authorlist {
     float:none;
@@ -24,8 +21,12 @@
 .dialog-image-authorlist li {
     display: inline-block;
     border-radius: 0.25rem;
-    padding: 3px 12px 4px 8px;
-    line-height:25px;
+    padding: 6px 12px 0 0;
+    line-height: 25px;
+
+    &:hover {
+        background: none;
+    }
 }
 
 .dialog-image-authorlist .author-element {
@@ -35,9 +36,7 @@
 }
 
 div.x-im-image-authors {
-
-    padding: 8px 8px 0 6px;
-    font-size: 90%;
+    padding: 10px 0 0;
 
     float:none;
 
@@ -46,13 +45,13 @@ div.x-im-image-authors {
         opacity: 0.5;
         float: left;
         content: "\f007";
-        width: 24px;
+        width: 31px;
         left: 50px;
         top: 2px;
     }
     .add-author-link {
         font-size: 14px;
-        margin: 7px 0;
+        margin: 9px 0 7px;
         &:hover {
             cursor: pointer;
         }
@@ -126,37 +125,22 @@ span.x-im-image-author-token {
 
 
 div.x-im-image-dynamic {
-    padding: 8px 8px 0 30px;
-    font-size: 90%;
-
-    &::before {
-        font-family: FontAwesome;
-        opacity: 0.5;
-        float: left;
-        width: 25px;
-        content: "\f036";
-        margin-left: -25px;
-    }
 
     &:last-child {
         padding-bottom: 12px;
     }
 
-    &.x-im-image-alttext {
-        &::before {
-            content: "\f2a8";
-        }
-    }
-
-    &.x-im-image-credit {
-        &::before {
-            content: "\f0f7";
-        }
-    }
-
     &.x-im-image-alignment {
+        margin-top: 10px;
+        padding-left: 28px;
+
         &::before {
+            font-family: FontAwesome;
             content: "\f0ec";
+            opacity: 0.5;
+            float: left;
+            width: 34px;
+            margin-left: -27px;
         }
 
         em {

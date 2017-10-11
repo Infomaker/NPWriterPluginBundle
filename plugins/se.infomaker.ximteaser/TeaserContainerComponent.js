@@ -31,12 +31,7 @@ class TeaserContainerComponent extends Component {
 
     addTeaser({type}) {
         const node = this.props.node
-        this.context.editorSession.setSelection({
-            type: 'node',
-            nodeId: node.id,
-            containerId: 'body',
-            surfaceId: 'body'
-        })
+        this.selectContainer()
 
         const newTeaserNodeId = this.context.commandManager.executeCommand('ximteaser.insert-teaser', {type: type, teaserContainerNode: node})
         this.extendState({
@@ -49,12 +44,7 @@ class TeaserContainerComponent extends Component {
 
         // Set selection to container node to avoid odd behavior if any child FieldEditorComponent is selected
         // during teaser removal
-        this.context.editorSession.setSelection({
-            type: 'node',
-            nodeId: node.id,
-            containerId: 'body',
-            surfaceId: 'body'
-        })
+        this.selectContainer()
 
         this.context.editorSession.transaction(tx => {
             tx.set([node.id, 'nodes'], node.nodes.filter(childNode => {
@@ -71,6 +61,12 @@ class TeaserContainerComponent extends Component {
         } else {
             this.rerender()
         }
+    }
+
+    selectContainer() {
+        const comp = this.getParent()
+        comp.extendState({mode: 'selected', unblocked: true})
+        comp.selectNode()
     }
 
     selectTeaser(teaserNode) {
@@ -91,6 +87,7 @@ class TeaserContainerComponent extends Component {
             node: this.props.node,
             activeTeaserId: this.state.activeTeaserId,
             availableTeaserTypes,
+            selectContainer: this.selectContainer.bind(this),
             removeTeaser: this.removeTeaser.bind(this),
             addTeaser: this.addTeaser.bind(this),
             selectTeaser: this.selectTeaser.bind(this)
@@ -100,7 +97,8 @@ class TeaserContainerComponent extends Component {
         if(currentTeaserNode) {
             const teaser = $$(TeaserComponent, {
                 node: currentTeaserNode,
-                isolatedNodeState: this.props.isolatedNodeState
+                isolatedNodeState: this.props.isolatedNodeState,
+                selectContainer: this.selectContainer.bind(this)
             }).ref('currentTeaser')
             el.append(teaser)
         }

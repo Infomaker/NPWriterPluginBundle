@@ -9,7 +9,14 @@ class DropImageFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        const nodeId = insertImage(tx, params.file)
+        let nodeId;
+        try {
+            nodeId = insertImage(tx, params.file)
+        } catch (err) {
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
+            return null
+        }
+
         const maxIterations = 500
         const doc = api.editorSession.getDocument()
 
@@ -35,6 +42,7 @@ class DropImageFile extends DragAndDropHandler {
 
     sync(tx, nodeId) {
         api.editorSession.fileManager.sync().catch((err) => {
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
             this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
         })
     }

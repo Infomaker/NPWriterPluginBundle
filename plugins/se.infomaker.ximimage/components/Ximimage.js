@@ -20,7 +20,9 @@ class XimimageComponent extends Component {
     _onDocumentChange(change) {
         if (change.isAffected(this.props.node.id) ||
             change.isAffected(this.props.node.imageFile)) {
-            this.refs.cropsPreview.fetchCropUrls()
+            if (this.refs.cropsPreview) {
+                this.refs.cropsPreview.fetchCropUrls()
+            }
             this.rerender()
         }
     }
@@ -48,6 +50,8 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
+        let crops = api.getConfigValue('se.infomaker.ximimage', 'crops')
+        let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
 
         // TODO: extract from full config when we can get that
         const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
@@ -67,12 +71,12 @@ class XimimageComponent extends Component {
             }).ref('image')
         )
 
-        if (api.getConfigValue('se.infomaker.ximimage', 'softcrop')) {
+        if (crops && cropInstructions) {
             el.append(
                 $$(ImageCropsPreview, {
                     node,
-                    crops: api.getConfigValue('se.infomaker.ximimage', 'crops'),
-                    cropInstructions: api.getConfigValue('se.infomaker.ximimage', 'cropInstructions'),
+                    crops,
+                    cropInstructions,
                     isolatedNodeState: this.props.isolatedNodeState,
                     cropSelected: (cropUrl) => {
                         this.refs.image.displayCrop(cropUrl)
@@ -110,7 +114,7 @@ class XimimageComponent extends Component {
                 }
             })
 
-            if (this.props.isolatedNodeState === 'selected' && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
+            if (['selected', 'focused'].includes(this.props.isolatedNodeState) && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
                 authorList.append($$('a')
                     .addClass('add-author-link')
                     .on('click', this._openAddToByline)
@@ -202,14 +206,28 @@ class XimimageComponent extends Component {
     }
 
     renderTextField($$, obj) {
-        return $$(TextPropertyEditor, {
-            tagName: 'div',
-            path: [this.props.node.id, obj.name],
-            disabled: Boolean(this.props.disabled)
+        const FieldEditor = this.context.api.ui.getComponent('field-editor')
+        return $$(FieldEditor, {
+            node: this.props.node,
+            field: obj.name,
+            multiLine: false,
+            disabled: Boolean(this.props.disabled),
+            placeholder: obj.label,
+            icon: this._getFieldIcon(obj.name) || 'fa-header'
         })
             .ref(obj.name)
             .attr('title', obj.label)
-            .addClass('x-im-image-dynamic x-im-image-' + obj.name)
+            .addClass('x-im-image-dynamic')
+    }
+
+    _getFieldIcon(name) {
+        const icons = {
+            caption: 'fa-align-left',
+            credit: 'fa-building-o',
+            alttext: 'fa-low-vision'
+        }
+
+        return icons[name]
     }
 
     renderOptionField($$, obj) {

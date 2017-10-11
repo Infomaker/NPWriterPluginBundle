@@ -96,5 +96,20 @@ export default {
         config.addLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.', {
             sv: 'Bilden verkar inte finnas tillgänglig än. Vänta ett par sekunder och försök igen.'
         })
+
+        config.addLabel('image-error-title', {
+            en: 'Error during image upload',
+            sv: 'Fel vid bilduppladdning'
+        })
+
+        config.addLabel('unsupported-image-error-message', {
+            en: 'The image could not be uploaded as it is an unsupported format.',
+            sv: 'Bilden kunde inte laddas upp då den är av ett format som inte stöds.'
+        })
+
+        config.addLabel('image-upload-error-message', {
+            en: 'The image could not be uploaded. Please make sure it is a supported format.',
+            sv: 'Bilden kunde inte laddas upp. Var god och kontrollera att att bildformatet stöds.'
+        })
     }
 }
