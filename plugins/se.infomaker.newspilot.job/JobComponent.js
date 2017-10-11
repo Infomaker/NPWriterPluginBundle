@@ -26,7 +26,7 @@ class JobComponent extends Component {
     }
 
     getInitialState() {
-        const articleId = api.newsItem.getNewspilotArticleId()
+        const articleId = api.newsItem.getIdForArticle()
 
         return {
             articleId: articleId ? articleId : 0,
@@ -55,8 +55,9 @@ class JobComponent extends Component {
         }
 
         const newspilotHostName = this.getNewspilotHostName()
+        const externalSystemId = this.getExternalSystemId()
 
-        NPFetcher.getArticle(newspilotHostName, this.state.articleId)
+        NPFetcher.getArticle(newspilotHostName, this.state.articleId, externalSystemId)
             .then((article) => {
                 let {user, password} = Auth.getCredentials()
                 this.gateway = new NPGateway(
@@ -85,6 +86,10 @@ class JobComponent extends Component {
 
     getNewspilotHostName() {
         return api.getConfigValue('se.infomaker.newspilot.job', 'newspilotHostName')
+    }
+
+    getExternalSystemId() {
+        return api.getConfigValue('se.infomaker.newspilot.job', 'externalSystemId`')
     }
 
     render($$) {

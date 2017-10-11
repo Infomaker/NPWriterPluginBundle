@@ -1,15 +1,15 @@
 import Auth from "./Auth";
 
-function getNewspilotRestUrl(newspilotServer, articleId) {
-    return `${newspilotServer}/newspilot/rest/articles/${articleId}`
+function getNewspilotRestUrl(newspilotServer, articleId, externalSystemId) {
+    return `${newspilotServer}/newspilot/rest/articles/externalId/${articleId}?externalSystemId=${externalSystemId}`
 }
 
 export default class NPFetcher {
 
-    static getArticle(newspilotHostName, articleId) {
+    static getArticle(newspilotHostName, articleId, externalSystemId) {
         return new Promise((resolve, reject) => {
             const newspilotServer = NPFetcher.getNewspilotServer(newspilotHostName)
-            const url = getNewspilotRestUrl(newspilotServer, articleId)
+            const url = getNewspilotRestUrl(newspilotServer, articleId, externalSystemId)
 
             const headers = Auth.getAuthHeader(Auth.getCredentials());
             headers.append('Accept', 'application/json')
