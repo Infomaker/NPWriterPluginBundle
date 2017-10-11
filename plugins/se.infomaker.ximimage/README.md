@@ -86,6 +86,7 @@ as `{{variableName}}`. These variables currently exists:
 |cyrel|The start of crop in y direction, defined as a relative number from 0-1|
 |cwrel|The width of the crop , defined as a relative number from 0-1|
 |chrel|The height of the crop , defined as a relative number from 0-1|
+|uuid|The uuid of the image metadata file|
 
 Example:
 ```json

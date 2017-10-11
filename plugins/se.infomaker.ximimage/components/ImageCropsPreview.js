@@ -19,7 +19,7 @@ function getTemplate(key, cropObject) {
     return cropObject["default"]
 }
 
-function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth, imageHeight) {
+function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth, imageHeight, uuid) {
     const maxSide = 800
 
     let template = {}
@@ -59,7 +59,8 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
             cw: Math.floor(imageWidth * relCropWidth),
             ch: Math.floor(imageHeight * relCropHeight),
             w: Math.floor(w),
-            h: Math.floor(h)
+            h: Math.floor(h),
+            uuid: uuid
         }
 
     } else {
@@ -121,7 +122,7 @@ class ImageCropsPreview extends Component {
             const width = node.width
             const height = node.height
 
-            const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height);
+            const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
 
 
             if (this.props.node.uuid && this.props.node.getServiceUrl) {
