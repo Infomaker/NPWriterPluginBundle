@@ -14,7 +14,7 @@ class JobComponent extends Component {
 
         // Only necessary to login to Newspilot if Newspilot
         // article is coupled with Writer article
-        if (!this.state.articleId.startsWith('__temp')) {
+        if (this.isConnectedArticle()) {
             if (Auth.isLoggedIn()) {
                 this.initGateway()
             }
@@ -25,8 +25,25 @@ class JobComponent extends Component {
         });
     }
 
+    isConnectedArticle() {
+        if (this.getExternalSystemId()) {
+            return !this.state.articleId.startsWith('__temp')
+        } else {
+            return this.state.articleId > 0
+        }
+    }
+
+    getArticleIdFromNewsitem() {
+        if (this.getExternalSystemId()) {
+            return api.newsItem.getIdForArticle()
+        } else {
+            return api.newsItem.getNewspilotArticleId()
+        }
+
+    }
+
     getInitialState() {
-        const articleId = api.newsItem.getIdForArticle()
+        const articleId = this.getArticleIdFromNewsitem()
 
         return {
             articleId: articleId ? articleId : 0,
@@ -95,7 +112,7 @@ class JobComponent extends Component {
     render($$) {
         const el = $$('div').addClass('npjob')
 
-        if (this.state.articleId && !this.state.articleId.startsWith('__temp') && !this.state.error) {
+        if (this.isConnectedArticle() && !this.state.error) {
             if (!Auth.isLoggedIn()) {
                 el.append($$(LoginComponent, {server: this.getNewspilotLoginUrl()}))
                 return el;

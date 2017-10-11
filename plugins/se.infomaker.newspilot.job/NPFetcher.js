@@ -4,12 +4,22 @@ function getNewspilotRestUrl(newspilotServer, articleId, externalSystemId) {
     return `${newspilotServer}/newspilot/rest/articles/externalId/${articleId}?externalSystemId=${externalSystemId}`
 }
 
+function getOldNewspilotRestUrl(newspilotServer, articleId) {
+    return `${newspilotServer}/newspilot/rest/articles/${articleId}`
+}
+
 export default class NPFetcher {
 
     static getArticle(newspilotHostName, articleId, externalSystemId) {
         return new Promise((resolve, reject) => {
             const newspilotServer = NPFetcher.getNewspilotServer(newspilotHostName)
-            const url = getNewspilotRestUrl(newspilotServer, articleId, externalSystemId)
+
+            let url
+            if (externalSystemId) {
+                url = getNewspilotRestUrl(newspilotServer, articleId, externalSystemId)
+            } else {
+                url = getOldNewspilotRestUrl(newspilotServer, articleId)
+            }
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("HEAD", url, true); // Make async HEAD request (must be a relative path to avoid cross-domain restrictions)
