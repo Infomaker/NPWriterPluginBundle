@@ -14,7 +14,7 @@ class JobComponent extends Component {
 
         // Only necessary to login to Newspilot if Newspilot
         // article is coupled with Writer article
-        if (this.state.articleId > 0) {
+        if (!this.state.articleId.startsWith('__temp')) {
             if (Auth.isLoggedIn()) {
                 this.initGateway()
             }
@@ -89,13 +89,13 @@ class JobComponent extends Component {
     }
 
     getExternalSystemId() {
-        return api.getConfigValue('se.infomaker.newspilot.job', 'externalSystemId`')
+        return api.getConfigValue('se.infomaker.newspilot.job', 'externalSystemId')
     }
 
     render($$) {
         const el = $$('div').addClass('npjob')
 
-        if (this.state.articleId > 0) {
+        if (this.state.articleId && !this.state.articleId.startsWith('__temp') && !this.state.error) {
             if (!Auth.isLoggedIn()) {
                 el.append($$(LoginComponent, {server: this.getNewspilotLoginUrl()}))
                 return el;
@@ -108,7 +108,7 @@ class JobComponent extends Component {
             el.append($$('h2').append(this.getLabel('Images')))
             el.append(imageList)
 
-        } else {
+        } else if (this.state.error && this.state.error.status === 404) {
             el.append($$('h2').append(this.getLabel('Article not linked with Newspilot')))
         }
 
