@@ -17,7 +17,8 @@ The image plugin configuration must have several things defined to work correctl
         "publishedmaxwidth": 2560,
         "crops": { ... },
         "urlMatchers": [ ... ],
-        "fields": [ ... ]
+        "fields": [ ... ],
+        "cropInstructions": { ... }
     }
 }
 ```
@@ -53,6 +54,49 @@ width and height ratio.
     "4:3": [4, 3],
     "square": [1, 1]
 }
+```
+
+#### Crop instructions
+
+Crop instructions define the query part for an image service.
+There are two entries that need to be defined, `auto` and `userDefined`.
+
+The `auto` entry specifies parameters that is used when automatic cropping
+is done on images.
+
+The `userDefined` entry specifies parameters for when the user has defined
+how the crops should look.
+
+For each entry `auto` and `userDefined`, it is possible to specify different
+parameters for each ratio defined in the `crops` section. This is done
+by specifying the crop key as key. The 'default' ratio is being used if no
+crop parameters are specified for a given ratio.
+
+In order to construct a URL, template variables may be used. Then are defined
+as `{{variableName}}`. These variables currently exists:
+
+||Variable name||Description||
+|w|The image width|
+|h|The image height|
+|cx|The start of crop in x direction, defined in pixels|
+|cy|The start of crop in y direction, defined in pixels|
+|cw|The width of the crop, defined in pixels|
+|ch|The height of the crop, defined in pixels|
+|cxrel|The start of crop in x direction, defined as a relative number from 0-1|
+|cyrel|The start of crop in y direction, defined as a relative number from 0-1|
+|cwrel|The width of the crop , defined as a relative number from 0-1|
+|chrel|The height of the crop , defined as a relative number from 0-1|
+
+Example:
+```json
+"cropInstructions": {
+          "auto": {
+            "default": "fit=crop&crop=faces,edges&w={{w}}&h={{h}}"
+          },
+          "userDefined": {
+            "default": "rect={{cx}},{{cy}},{{cw}},{{ch}}&fit=crop&w={{w}}&h={{h}}"
+          }
+        }
 ```
 
 #### Url matchers

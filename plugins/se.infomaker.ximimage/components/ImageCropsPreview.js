@@ -50,6 +50,10 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
         }
 
         context = {
+            cxrel: relCropX,
+            cyrel: relCropY,
+            cwrel: relCropWidth,
+            chrel: relCropHeight,
             cx: Math.floor(imageWidth * relCropX),
             cy: Math.floor(imageHeight * relCropY),
             cw: Math.floor(imageWidth * relCropWidth),
