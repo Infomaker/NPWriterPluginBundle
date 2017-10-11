@@ -1,4 +1,6 @@
 import {Tool} from 'substance'
+import {api} from 'writer'
+import * as ImageTypes from './models/ImageTypes'
 
 class XimimageTool extends Tool {
 
@@ -9,8 +11,7 @@ class XimimageTool extends Tool {
         el.append(
             $$('button').addClass('se-tool').append(
                 $$('i').addClass('fa fa-image')
-            )
-                .on('click', this.triggerFileDialog)
+            ).on('click', this.triggerFileDialog)
         );
 
         el.append(
@@ -18,6 +19,7 @@ class XimimageTool extends Tool {
                 .attr('type', 'file')
                 .attr('multiple', 'multiple')
                 .attr('id', 'x-im-image-fileupload')
+                .attr('accept', ImageTypes.getMIMETypes().join(','))
                 .ref('x-im-image-fileupload')
                 .on('change', this.triggerFileUpload)
         );
@@ -29,13 +31,16 @@ class XimimageTool extends Tool {
         var evt = document.createEvent('MouseEvents');
         evt.initEvent('click', true, false);
         this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt);
-
     }
 
     triggerFileUpload(ev) {
-        this.context.editorSession.executeCommand('insert-images', {
-            files: ev.target.files
-        })
+        try {
+            this.context.editorSession.executeCommand('insert-images', {
+                files: ev.target.files
+            })
+        } catch (err) {
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
+        }
     }
 }
 

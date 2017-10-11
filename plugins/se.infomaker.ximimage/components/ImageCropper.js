@@ -104,32 +104,48 @@ class ImageCropper extends Component {
 
     render($$) {
         const Toggle = this.getComponent('toggle')
+        const cropActions = $$('div').addClass('se-crop-actions');
+        const softCropper = $$('div')
+            .attr('id', 'ximimage__softcrop')
+            .addClass('sc-image-cropper')
+            .ref('cropper')
+
+        const cropToggle = $$(Toggle, {
+            id: 'crop-toggle',
+            alignRight: true,
+            checkbox: true,
+            label: this.getLabel('Disable automatic crop in frontend'),
+            checked: this.state.disableAutomaticCrop,
+            onToggle: (checked) => {
+                this.extendState({
+                    disableAutomaticCrop: checked
+                })
+            }
+        })
+
+        const cropOptions = $$('div').append(cropToggle).addClass('se-crop-options')
+        const restoreAll = $$('button').addClass('btn btn-secondary').append(this.getLabel('Restore all')).on('click', this.props.restore)
+        const abort = $$('button').addClass('btn pull-right btn-abort').append(this.getLabel('cancel')).on('click', this.onClose)
+        const confirm = $$('button').addClass('btn pull-right btn-primary').append(this.getLabel('Save')).on('click', this.onSave)
+        cropActions.append([
+            restoreAll,
+            confirm,
+            abort,
+        ])
 
         return $$('div').append([
-            $$('div')
-                .attr('id', 'ximimage__softcrop')
-                .addClass('sc-image-cropper')
-                .ref('cropper'),
-            $$('div').append(
-                $$(Toggle, {
-                    id: 'crop-toggle',
-                    label: this.getLabel('Disable automatic crop in frontend'),
-                    checked: this.state.disableAutomaticCrop,
-                    onToggle: (checked) => {
-                        this.extendState({
-                            disableAutomaticCrop: checked
-                        })
-                    }
-                })
-            ).addClass('se-crop-options')
-        ])
+            softCropper,
+            cropOptions,
+            cropActions
+        ]).addClass('se-image-cropper-meta')
     }
 
-    onClose(status) {
-        if (status === "cancel") {
-            return
-        }
+    onClose() {
+        this.props.abort()
+        this.remove()
+    }
 
+    onSave() {
         let data = this.cropEditor.getSoftcropData(),
             crops = []
 
@@ -147,7 +163,7 @@ class ImageCropper extends Component {
             })
         })
 
-        this.props.callback({ crops: crops }, this.state.disableAutomaticCrop);
+        this.props.save({ crops: crops }, this.state.disableAutomaticCrop);
     }
 }
 

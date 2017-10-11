@@ -1,6 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
 
-
 class MenuTabAddButton extends Component {
 
     getInitialState() {
@@ -19,7 +18,8 @@ class MenuTabAddButton extends Component {
         const item = $$('li')
             .addClass('add-teaser__button')
             .append([plusIcon, addText])
-            .on('click', () => {
+            .on('click', (e) => {
+                e.stopPropagation()
                 this.setState({
                     dropdownActive: !this.state.dropdownActive
                 })
