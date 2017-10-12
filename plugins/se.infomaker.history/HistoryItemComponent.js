@@ -61,8 +61,9 @@ class HistoryItemComponent extends Component {
             this.props.removeArticle(article)
         })
 
+        const versionsContainer = $$('span').addClass('versions').append(`${article.versions.length} ${this.getLabel('versions')}`)
 
-        inner.append([removeArticleBtn, articleTitle, timeContainer])
+        inner.append([removeArticleBtn, articleTitle, timeContainer, versionsContainer])
 
         outer.append(inner);
         return outer;

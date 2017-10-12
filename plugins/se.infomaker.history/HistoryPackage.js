@@ -90,6 +90,10 @@ export default({
             sv: 'Radera denna versionshistorik'
         })
 
+        config.addLabel('versions', {
+            sv: 'versioner'
+        })
+
         config.addPopover(
             'historymaincomponent',
             {
