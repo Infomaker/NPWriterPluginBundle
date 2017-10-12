@@ -46,7 +46,9 @@
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
     &:hover {
-        background: #e5e5e5;
+        background: #e8e8ea;
+        border-right: 1px solid #e8e8ea;
+        border-left: 1px solid #e8e8ea;
     }
     &:after {
         content: '';

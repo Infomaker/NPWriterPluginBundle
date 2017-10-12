@@ -97,7 +97,8 @@ class TeaserContainerComponent extends Component {
         if(currentTeaserNode) {
             const teaser = $$(TeaserComponent, {
                 node: currentTeaserNode,
-                isolatedNodeState: this.props.isolatedNodeState
+                isolatedNodeState: this.props.isolatedNodeState,
+                selectContainer: this.selectContainer.bind(this)
             }).ref('currentTeaser')
             el.append(teaser)
         }
