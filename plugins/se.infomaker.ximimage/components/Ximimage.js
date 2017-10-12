@@ -50,6 +50,7 @@ class XimimageComponent extends Component {
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
+        let cropsEnabled = api.getConfigValue('se.infomaker.ximimage', 'softcrop')
         let crops = api.getConfigValue('se.infomaker.ximimage', 'crops')
         let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
 
@@ -71,7 +72,7 @@ class XimimageComponent extends Component {
             }).ref('image')
         )
 
-        if (crops && cropInstructions) {
+        if (cropsEnabled && crops && cropInstructions) {
             el.append(
                 $$(ImageCropsPreview, {
                     node,
