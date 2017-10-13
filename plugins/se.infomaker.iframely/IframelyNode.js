@@ -19,6 +19,11 @@ class IframelyNode extends BlockNode {
             this.fetching = false
             callback(err)
             this.delete()
+
+            // Restore the link if settings allow it
+            if (api.getConfigValue('se.infomaker.iframely', 'restoreAfterFailure', true)) {
+                this.restoreLink()
+            }
         })
     }
 
@@ -39,6 +44,16 @@ class IframelyNode extends BlockNode {
     setUrl(url) {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'url'], url)
+        })
+    }
+
+    restoreLink() {
+        api.editorSession.transaction((tx) => {
+            tx.insertBlockNode({
+                type: 'paragraph',
+                dataType: 'body',
+                content: this.url
+            })
         })
     }
 

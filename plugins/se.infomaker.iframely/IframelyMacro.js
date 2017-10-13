@@ -20,7 +20,6 @@ const IframelyMacro = {
         if (!urlShouldBeMatched(url)) { return false }
 
         const nodeId = selection.getNodeId()
-        console.log("pasting")
         if (!nodeId) { return false }
 
         const doc = es.getDocument()
