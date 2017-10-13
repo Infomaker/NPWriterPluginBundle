@@ -30,10 +30,10 @@ The Iframely plugin requires an API key to fetch embeds. Sign up to [Iframely](h
 Set to true to reinsert the pasted link in case Iframely can not fetch the embed.
 
 #### `urlWhitelist` - URL whitelist (Not implemented)
-*Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs.
+*Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
 
 #### `urlBlacklist` - URL blacklist (Not implemented)
-*Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs.
+*Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
 
 ### 1.2 Iframely settings
 Some settings can only be changed on the Iframely [settings page](https://iframely.com/settings/api)
