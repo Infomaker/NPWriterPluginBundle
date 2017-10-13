@@ -1,6 +1,6 @@
-import {api} from 'writer'
-import insertIframelyEmbed from './insertIframelyEmbed';
+import { api } from 'writer'
 import urlShouldBeMatched from './urlShouldBeMatched';
+import insertIframelyEmbed from './insertIframelyEmbed';
 
 const IframelyMacro = {
     execute: function (params, context) {

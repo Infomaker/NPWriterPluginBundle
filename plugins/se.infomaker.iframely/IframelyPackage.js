@@ -1,9 +1,9 @@
-import loadIframelyScript from './loadIframelyScript';
 import { api } from 'writer'
 import IframelyNode from './IframelyNode'
 import IframelyMacro from './IframelyMacro'
 import IframelyComponent from './IframelyComponent'
 import IframelyConverter from './IframelyConverter'
+import loadIframelyScript from './loadIframelyScript';
 import IframelyDropHandler from './IframelyDropHandler'
 import './scss/iframely.scss'
 

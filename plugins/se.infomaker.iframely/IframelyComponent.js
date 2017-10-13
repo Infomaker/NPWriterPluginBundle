@@ -1,6 +1,5 @@
-
-import {Component} from 'substance'
-import {api} from 'writer'
+import { api } from 'writer'
+import { Component } from 'substance'
 import Package from './IframelyPackage'
 
 

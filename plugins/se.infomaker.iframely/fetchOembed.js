@@ -1,4 +1,4 @@
-import {api} from 'writer'
+import { api } from 'writer'
 
 const fetchOembed = url => {
     return new Promise((resolve, reject) => {

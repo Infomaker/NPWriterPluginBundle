@@ -1,5 +1,5 @@
-import {api} from 'writer'
-import {BlockNode} from 'substance'
+import { api } from 'writer'
+import { BlockNode } from 'substance'
 import fetchOembed from './fetchOembed'
 
 class IframelyNode extends BlockNode {
@@ -47,6 +47,9 @@ class IframelyNode extends BlockNode {
         })
     }
 
+    /**
+     * Restore the pasted link
+     */
     restoreLink() {
         api.editorSession.transaction((tx) => {
             tx.insertBlockNode({
