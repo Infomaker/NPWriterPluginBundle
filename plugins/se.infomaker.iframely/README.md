@@ -26,13 +26,13 @@ Documentation of the Iframely plugin.
 #### `apiKey`- Iframely API key
 The Iframely plugin requires an API key to fetch embeds. Sign up to [Iframely](https://iframely.com/plans) to get a key. After signing up, your API key can be found on the [profile page](https://iframely.com/profile) under **Embeds API Access**
 
-#### `restoreAfterFailure` - Restore link after failure
+#### `restoreAfterFailure` - Restore link after failure (Not implemented)
 Set to true to reinsert the pasted link in case Iframely can not fetch the embed.
 
-#### `urlWhitelist` - URL whitelist (Not implemented)
+#### `urlWhitelist` - URL whitelist
 *Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
 
-#### `urlBlacklist` - URL blacklist (Not implemented)
+#### `urlBlacklist` - URL blacklist
 *Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
 
 ### 1.2 Iframely settings
