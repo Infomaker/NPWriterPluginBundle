@@ -10,6 +10,17 @@ class Ximimage extends BlockNode {
         }
     }
 
+
+    getServiceUrl(params) {
+        let imageFile = this.getImageFile()
+
+        if (!imageFile && !imageFile.proxy) {
+            return Promise.reject('No image file available')
+        }
+
+        return imageFile.proxy.fetchSpecifiedUrls('service', params)
+    }
+
     getUrl() {
         let imageFile = this.getImageFile()
         if (imageFile) {
@@ -17,7 +28,7 @@ class Ximimage extends BlockNode {
         }
     }
 
-    fetchSpecifiedUrls(fallbacks) {
+    fetchSpecifiedUrls(fallbacks, params) {
         let imageFile = this.getImageFile()
         if (!imageFile) {
             return Promise.reject('No image file available')
@@ -27,7 +38,7 @@ class Ximimage extends BlockNode {
             return Promise.reject('No image file available')
         }
 
-        return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
+        return imageFile.proxy.fetchSpecifiedUrls(fallbacks, params)
     }
 
     setAlignment(alignment) {

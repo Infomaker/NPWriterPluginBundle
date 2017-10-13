@@ -1,6 +1,7 @@
 import {BlockNode, DefaultDOMElement} from 'substance'
 import {api} from 'writer'
-class Ximteaser extends BlockNode {
+
+class TeaserNode extends BlockNode {
 
     getImageFile() {
         if (!this.imageFile) {
@@ -31,7 +32,7 @@ class Ximteaser extends BlockNode {
 
         return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
     }
-    
+
     setSoftcropData(data, disableAutomaticCrop) {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'crops'], data)
@@ -91,19 +92,17 @@ class Ximteaser extends BlockNode {
                     cb(e)
                 })
         }
-
-
     }
 }
 
-Ximteaser.isResource = true
-Ximteaser.define({
+TeaserNode.isResource = false
+TeaserNode.define({
+
     type: 'ximteaser',
     dataType: {type: 'string', optional: false},
     imageFile: {type: 'file', optional: true},
     uuid: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
-
     title: {type: 'text', optional: false, default: ''},
     subject: {type: 'string', optional: false, default: ''},
     text: {type: 'string', optional: false, default: ''},
@@ -111,7 +110,7 @@ Ximteaser.define({
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
     crops: {type: 'object', default: []},
-    disableAutomaticCrop: { type: 'boolean', optional: true, default: false }
+    disableAutomaticCrop: {type: 'boolean', optional: true, default: false}
 })
 
-export default Ximteaser
+export default TeaserNode

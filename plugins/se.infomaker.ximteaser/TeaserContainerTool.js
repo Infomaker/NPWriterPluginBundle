@@ -1,10 +1,9 @@
 import {Tool} from 'substance'
 import {api} from 'writer'
 
-class XimteaserTool extends Tool {
+class TeaserContainerTool extends Tool {
 
     render($$) {
-
         const el = $$('div')
         el.attr('title', this.getLabel('Insert Teaser'))
 
@@ -13,17 +12,15 @@ class XimteaserTool extends Tool {
                 $$('i').addClass('fa fa-newspaper-o')
             )
                 .on('click', this.insertTeaser)
-        );
-        return el;
+        )
 
+        return el
     }
 
     insertTeaser() {
-
         const commandName = this.getCommandName()
-        api.editorSession.executeCommand(commandName, {
-            test: "hello"
-        })
+        api.editorSession.executeCommand(commandName)
     }
 }
-export default XimteaserTool
+
+export default TeaserContainerTool
