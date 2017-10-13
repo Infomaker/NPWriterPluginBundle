@@ -1,7 +1,7 @@
 # Iframely Plugin
 Documentation of the Iframely plugin.
 
-## 1 Iframely plugin configuration
+## 1 - Iframely plugin configuration
 **Important note:** The Iframely plugin catches all URLs by default so it must be loaded after all other plugins that will handle URLs unless you set up a whitelist and/or a blacklist.
 
 ```json
@@ -21,7 +21,7 @@ Documentation of the Iframely plugin.
 }
 ```
 
-### 1.1 Options
+### 1.1 - Options
 
 #### `apiKey`- Iframely API key
 The Iframely plugin requires an API key to fetch embeds. Sign up to [Iframely](https://iframely.com/plans) to get a key. After signing up, your API key can be found on the [profile page](https://iframely.com/profile) under **Embeds API Access**
@@ -35,11 +35,11 @@ Set to true to reinsert the pasted link in case Iframely can not fetch the embed
 #### `urlBlacklist` - URL blacklist
 *Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
 
-### 1.2 Iframely settings
+### 1.2 - Iframely settings
 Some settings can only be changed on the Iframely [settings page](https://iframely.com/settings/api)
 
 
-## 2 Newsml format
+## 2 - Newsml format
 ```xml
 <object id="..." type="x-im/iframely" url="https://www.infomaker.se/">
     <data>
@@ -49,7 +49,7 @@ Some settings can only be changed on the Iframely [settings page](https://iframe
     </data>
 </object>
 ```
-### 2.1 Options
+### 2.1 - Options
 #### URL
 ```xml
 <object id="..." type="x-im/iframely" url="https://www.infomaker.se/">
