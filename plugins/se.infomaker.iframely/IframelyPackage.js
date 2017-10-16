@@ -3,13 +3,13 @@ import IframelyNode from './IframelyNode'
 import IframelyMacro from './IframelyMacro'
 import IframelyComponent from './IframelyComponent'
 import IframelyConverter from './IframelyConverter'
-import loadIframelyScript from './loadIframelyScript';
+import loadIframelyScript from './loadIframelyScript'
 import IframelyDropHandler from './IframelyDropHandler'
 import './scss/iframely.scss'
 
 const IframelyPackage = {
-    name: IframelyNode.type,
-    id: `se.infomaker.${IframelyNode.type}`,
+    name: 'iframely',
+    id: 'se.infomaker.iframely',
     version: '{{version}}',
     configure: function (config) {
 
