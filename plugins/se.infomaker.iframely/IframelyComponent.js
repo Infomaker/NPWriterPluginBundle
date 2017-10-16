@@ -29,7 +29,7 @@ class IframelyComponent extends Component {
         if (!this.props.node.embedCode) {
             el.append(this._renderLoader($$))
         } else {
-            el.append(this._renderEmbed($$))
+            el.append([this._renderHeader($$), this._renderEmbed($$)])
         }
 
         return el
@@ -41,6 +41,11 @@ class IframelyComponent extends Component {
         return loaderContainer
     }
 
+    _renderHeader($$) {
+        const header = $$('div').addClass('header')
+        header.append($$('strong').append(`${this.props.node.provider} - ${this.props.node.title}`))
+        return header
+    }
     _renderEmbed($$) {
         const embedContent = $$('div').addClass('embed-content').ref('embedContent')
         embedContent.innerHTML = this.props.node.embedCode

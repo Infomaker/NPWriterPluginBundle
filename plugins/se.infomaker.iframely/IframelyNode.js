@@ -13,6 +13,8 @@ class IframelyNode extends BlockNode {
             this.fetching = false
             callback(null, {
                 url: res.url,
+                title: res.title,
+                provider: res.provider_name,
                 embedCode: res.html
             })
         }).catch(err => {
@@ -54,6 +56,8 @@ IframelyNode.define({
     embedCode: { type: 'string', optional: true },
     url: {type: 'string', optional: true },
     dataType: { type: 'string' },
+    title: { type: 'string', optional: true },
+    provider: { type: 'string', optional: true },
     errorMessage: { type: 'string', optional: true }
 })
 
