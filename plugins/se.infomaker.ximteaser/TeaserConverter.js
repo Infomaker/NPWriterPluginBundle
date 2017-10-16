@@ -15,12 +15,16 @@ export default {
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        const {fields} = teaserTypes.find(({type}) => type === node.dataType)
+        const textHasMultiline = fields.some(({id, multiline}) => id === 'text' && multiline === true)
+
         // Import teaser data
         const dataEl = el.find(':scope > data')
         if (dataEl) {
             dataEl.children.forEach(function (child) {
                 if (child.tagName === 'text') {
-                    node.text = converter.annotatedText(child, [node.id, 'text'])
+                    node.text = converter.annotatedText(child, [node.id, 'text'], {preserveWhitespace: textHasMultiline})
                 }
 
                 if (child.tagName === 'subject') {

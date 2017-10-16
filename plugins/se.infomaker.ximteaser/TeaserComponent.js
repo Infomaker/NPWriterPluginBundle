@@ -83,10 +83,10 @@ class TeaserComponent extends Component {
                 .map((field) => {
                     return $$(FieldEditor, {
                         node: this.props.node,
-                        multiLine: field.multiline === true,
                         field: field.id,
                         placeholder: field.label,
-                        icon: field.icon || 'fa-header'
+                        icon: field.icon || 'fa-header',
+                        multiLine: Boolean(field.multiline) && field.id === 'text'
                     })
                         .ref(`${field.id}FieldEditor`)
                 })
