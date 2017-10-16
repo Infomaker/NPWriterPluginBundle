@@ -28,26 +28,6 @@ class IframelyNode extends BlockNode {
     }
 
     /**
-     * Set the embedCode property of the node
-     * @param {string} embedCode
-     */
-    setEmbedCode(embedCode) {
-        api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'embedCode'], embedCode)
-        })
-    }
-
-    /**
-     * Set the url property of the node
-     * @param {string} url
-     */
-    setUrl(url) {
-        api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'url'], url)
-        })
-    }
-
-    /**
      * Restore the pasted link
      */
     restoreLink() {

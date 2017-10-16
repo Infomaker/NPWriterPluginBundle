@@ -19,14 +19,6 @@ class IframelyComponent extends Component {
         return newProps.node.embedCode !== this.props.node.embedCode
     }
 
-    setUrl(url) {
-        this.props.node.setUrl(url);
-    }
-
-    setEmbedCode(embedCode) {
-        this.props.node.setEmbedCode(embedCode);
-    }
-
     remove() {
         this.props.node.remove()
     }
