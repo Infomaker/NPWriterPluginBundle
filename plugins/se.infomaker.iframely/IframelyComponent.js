@@ -27,8 +27,8 @@ class IframelyComponent extends Component {
         this.props.node.setEmbedCode(embedCode);
     }
 
-    delete() {
-        this.props.node.delete()
+    remove() {
+        this.props.node.remove()
     }
 
     render($$) {

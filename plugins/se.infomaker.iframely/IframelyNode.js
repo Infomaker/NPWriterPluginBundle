@@ -18,7 +18,7 @@ class IframelyNode extends BlockNode {
         }).catch(err => {
             this.fetching = false
             callback(err)
-            this.delete()
+            this.remove()
 
             // Restore the link if settings allow it
             if (api.getConfigValue('se.infomaker.iframely', 'restoreAfterFailure', true)) {
@@ -61,9 +61,9 @@ class IframelyNode extends BlockNode {
     }
 
     /**
-     * Delete the node
+     * Remove the node
      */
-    delete() {
+    remove() {
         api.document.deleteNode('iframely', this)
     }
 }
