@@ -1,4 +1,4 @@
-import {WriterCommand, idGenerator} from 'writer'
+import {WriterCommand} from 'writer'
 import ImageGalleryConverter from './ImageGalleryConverter';
 
 class InsertImageGalleryCommand extends WriterCommand {
