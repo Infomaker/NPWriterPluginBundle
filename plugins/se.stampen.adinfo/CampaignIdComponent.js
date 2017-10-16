@@ -40,7 +40,7 @@ class CampaignIdComponent extends Component {
                 .addClass('tag-icon tag-icon--delete')
                 .attr('title', this.getLabel('Remove from article')))
                 .on('click', () => {
-                    this.setCampaignId('')
+                    this.props.setCampaignId('')
                 }),
             $$(Icon, {icon: 'fa-hashtag'})
                 .addClass('tag-icon')
