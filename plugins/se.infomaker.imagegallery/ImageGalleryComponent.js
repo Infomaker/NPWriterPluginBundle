@@ -11,15 +11,15 @@ class ImageGalleryComponent extends Component {
 
     onDocumentChange(change) {
         if (change.isAffected(this.props.node.id)) {
-            if (this.refs.generericCaptionInput) {
+            if (!this.refs.generericCaptionInput) {
                 this.rerender()
             } else if (this.refs.generericCaptionInput && !change.isAffected(this.refs.generericCaptionInput.props.id)) {
-                this.render()
+                this.rerender()
             }
         } else if (this.props.node.imageFiles) {
             this.props.node.imageFiles.forEach(imageFile => {
                 if (change.isAffected(imageFile.id)) {
-                    this.render()
+                    this.rerender()
                 }
             })
         }
@@ -49,11 +49,21 @@ class ImageGalleryComponent extends Component {
             if (this.props.node.imageFiles && this.props.node.imageFiles.length) {
                 let thumbnailsWrapper = $$('div').addClass('thumbnails-wrapper')
 
-                this.props.node.imageFiles.forEach(imageFile => {
+                this.props.node.imageFiles.forEach((imageFile, index) => {
                     let imageWrapper = $$('div').addClass('image-wrapper')
                     let imageNode = this.props.node.document.get(imageFile)
                     let imageEl = $$('img', { src: imageNode.getUrl()})
+                    let removeIcon = $$('i').addClass('remove-image fa fa-trash')
+                        .on('click', () => {
+                            api.editorSession.transaction((tx) => {
+                                let copy = this.props.node.imageFiles.concat()
+                                copy.splice(index, 1)
+                                tx.set([this.props.node.id, 'imageFiles'], copy)
+                            })
+                        })
+
                     imageWrapper.append(imageEl)
+                    imageWrapper.append(removeIcon)
                     thumbnailsWrapper.append(imageWrapper)
                 })
                 imageGalleryToolbox.append(thumbnailsWrapper)
@@ -72,9 +82,10 @@ class ImageGalleryComponent extends Component {
     }
 
     renderHeader($$) {
+        const imageCount = this.props.node.imageFiles ? this.props.node.imageFiles.length : 0
         const header = $$('div').addClass('image-gallery-header')
         const icon = $$(FontAwesomeIcon, {icon: IMAGE_GALLERY_ICON})
-        const label = this.getLabel('Image gallery')
+        const label = `${this.getLabel('Image gallery')} (${imageCount})`
 
         header.append(icon).append(label)
 
