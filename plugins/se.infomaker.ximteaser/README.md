@@ -29,7 +29,9 @@ The plugin adds one or more objects to the metadata-section of the idf.
     </object>
     <object id="NjMsMTExLDIzMSwxNzE" type="x-im/facebook-teaser" title="Lorem ipsum">
         <data>
-            <text>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</text>
+            <text>Mauris at libero condimentum
+                sapien malesuada
+                efficitur non id nibh.</text>
         </data>
     </object>
     <object id="PkEs6SJgLeQ0FS1qMjk" type="x-im/twitter-teaser" title="Lorem ipsum">
@@ -162,7 +164,7 @@ Field Configuration Example:
 | **id**        | String    | `true`    | subject, title, or text |
 | **label**     | String    | `true`    | Placeholder for field |
 | **icon**      | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
-| **multiline** | Boolean   | `false`   | Set to `true` to enable multiline text editing. Default value is `false` |
+| **multiline** | Boolean   | `false`   | **Only available for field with id `text`** Set to `true` to enable multiline text editing. Default value is `false` |
 
 ## Basic Configuration Example
 This is a config example for basic teaser support.
@@ -209,8 +211,7 @@ This is a config example for basic teaser support.
                     {
                         "id": "text",
                         "label": "Text",
-                        "icon": "fa-paragraph",
-                        "multiline": true
+                        "icon": "fa-paragraph"
                     }
                 ]
             }
