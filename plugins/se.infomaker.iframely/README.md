@@ -32,8 +32,26 @@ Set to true to reinsert the pasted link in case Iframely can not fetch the embed
 #### `urlWhitelist` - URL whitelist
 *Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
 
+##### Example
+```js
+// Only match URLs that contain 'foo'
+"urlWhitelist": [/foo/]
+
+// Only match URLs that end in '/foo' or '/bar'
+"urlWhitelist": [/\/foo$/, /\/bar$/]
+```
+
 #### `urlBlacklist` - URL blacklist
 *Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
+
+##### Example
+```js
+// Don't match URLs that contain 'foo'
+"urlBlacklist": [/foo/]
+
+// Don't match URLs that end in '/foo' or '/bar'
+"urlBlacklist": [/\/foo$/, /\/bar$/]
+```
 
 ### 1.2 - Iframely settings
 Some settings can only be changed on the Iframely [settings page](https://iframely.com/settings/api)
