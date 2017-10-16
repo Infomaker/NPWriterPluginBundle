@@ -1,6 +1,6 @@
 import { api } from 'writer'
-import urlShouldBeMatched from './urlShouldBeMatched';
-import insertIframelyEmbed from './insertIframelyEmbed';
+import urlShouldBeMatched from './urlShouldBeMatched'
+import insertIframelyEmbed from './insertIframelyEmbed'
 
 const IframelyMacro = {
     execute: function (params, context) {
@@ -24,7 +24,7 @@ const IframelyMacro = {
 
         const doc = es.getDocument()
 
-        let nodeToDelete;
+        let nodeToDelete
         if (action === 'break') {
             nodeToDelete = api.document.getPreviousNode(nodeId)
         } else {
@@ -36,7 +36,7 @@ const IframelyMacro = {
             insertIframelyEmbed(tx, url[0])
         })
 
-        return true;
+        return true
     }
 }
 

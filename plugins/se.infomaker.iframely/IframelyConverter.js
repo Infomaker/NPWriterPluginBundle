@@ -32,6 +32,6 @@ const IframelyConverter = {
         dataElem.append(embedCodeElem)
         el.append(dataElem)
     }
-};
+}
 
 export default IframelyConverter
