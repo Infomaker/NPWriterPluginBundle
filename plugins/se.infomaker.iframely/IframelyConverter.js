@@ -15,8 +15,14 @@ const IframelyConverter = {
 
         node.dataType = el.attr('type')
         node.url = el.attr('url')
-        node.title = titleElem.text()
-        node.embedCode = embedCodeElem.text()
+
+        if (titleElem) {
+            node.title = titleElem.text()
+        }
+
+        if (embedCodeElem) {
+            node.embedCode = embedCodeElem.text()
+        }
     },
 
     // Convert node to newsml

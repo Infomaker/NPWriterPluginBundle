@@ -43,7 +43,8 @@ class IframelyComponent extends Component {
 
     _renderHeader($$) {
         const header = $$('div').addClass('header')
-        header.append($$('strong').append(`Iframely embed - ${this.props.node.title}`))
+        const headerText = (this.props.node.title) ? `Iframely embed - ${this.props.node.title}` : `Iframely embed`
+        header.append($$('strong').append(headerText))
         return header
     }
     _renderEmbed($$) {
