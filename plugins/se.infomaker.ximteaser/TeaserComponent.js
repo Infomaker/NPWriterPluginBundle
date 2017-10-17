@@ -1,7 +1,6 @@
-import {Component, TextPropertyEditor, FontAwesomeIcon} from 'substance'
+import {Component, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 import FileInputComponent from './FileInputComponent'
-import ImageCropsPreview from '../se.infomaker.ximimage/components/ImageCropsPreview';
 
 class TeaserComponent extends Component {
 
@@ -14,7 +13,7 @@ class TeaserComponent extends Component {
     }
 
     /**
-     * If teaser has imageFile, force rerender to avoid dead image.
+     * If teaser has imageFile, force rerender to avoid dead image on first render.
      * Also download metadata if needed
      *
      * @param change
@@ -45,9 +44,10 @@ class TeaserComponent extends Component {
         const el = $$('div').addClass('teaser-container').ref('teaserContainer')
         const types = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
         const currentType = types.find(({type}) => type === this.props.node.dataType)
+        const hasImage = this.props.node.imageFile
 
         const ImageDisplay = api.ui.getComponent('imageDisplay')
-        if (this.props.node.imageFile) {
+        if (hasImage) {
             // Manually disable byline for teaser image, to make sure it's not accidentally enabled through config
             const imageOptions = Object.assign(currentType.imageoptions, {
                 byline: false,
@@ -76,16 +76,20 @@ class TeaserComponent extends Component {
 
         if(currentType.fields && currentType.fields.length) {
             const FieldEditor = this.context.api.ui.getComponent('field-editor')
-            const editorFields = currentType.fields.map((field) => {
-                return $$(FieldEditor, {
-                    node: this.props.node,
-                    multiLine: field.multiline === true,
-                    field: field.id,
-                    placeholder: field.label,
-                    icon: field.icon || 'fa-header'
+
+            // Only renders subject if teaser has image
+            const editorFields = currentType.fields
+                .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
+                .map((field) => {
+                    return $$(FieldEditor, {
+                        node: this.props.node,
+                        multiLine: field.multiline === true,
+                        field: field.id,
+                        placeholder: field.label,
+                        icon: field.icon || 'fa-header'
+                    })
+                        .ref(`${field.id}FieldEditor`)
                 })
-                    .ref(`${field.id}FieldEditor`)
-            })
 
             el.append(editorFields)
         } else {
@@ -106,10 +110,13 @@ class TeaserComponent extends Component {
     }
 
     /**
+     * Set selection to container component, avoids selection errors
+     * when Subject field is no longer rendered
      * Remove reference to fileNode from teaser node
      * Set subject property on teaser to null
      */
     removeImage() {
+        this.props.selectContainer()
         api.editorSession.transaction((tx) => {
             const node = this.props.node
             tx.set([node.id, 'imageFile'], null)
