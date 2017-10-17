@@ -10,7 +10,10 @@ class TeaserContainerMenu extends Component {
 
         sortedTeaserElements.push(this.getAddButton($$))
 
-        return $$('ul').addClass('teaser-menu').append(sortedTeaserElements)
+        return $$('ul')
+            .addClass('teaser-menu')
+            .append(sortedTeaserElements)
+            .on('click', this.props.selectContainer)
     }
 
     getAddButton($$) {
@@ -27,7 +30,7 @@ class TeaserContainerMenu extends Component {
     getMenuItem($$, teaserNode) {
         const item = $$('li')
 
-        if(this.props.activeTeaserId === teaserNode.id) {
+        if (this.props.activeTeaserId === teaserNode.id) {
             item.addClass('active')
         }
 
@@ -43,7 +46,7 @@ class TeaserContainerMenu extends Component {
         item.append([typeIcon, title])
 
         // Only render remove button when there are many teasers
-        if(hasManyTeaserNodes) {
+        if (hasManyTeaserNodes) {
             const removeTeaserIcon = $$(FontAwesomeIcon, {icon: 'fa-times'})
             removeTeaserIcon.on('click', (e) => {
                 e.stopPropagation()
