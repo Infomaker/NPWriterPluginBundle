@@ -90,8 +90,19 @@ export default({
             sv: 'Radera denna versionshistorik'
         })
 
-        config.addLabel('versions', {
+        config.addLabel('history-popover-versions', {
+            en: 'versions',
             sv: 'versioner'
+        })
+
+        config.addLabel('history-popover-Show versions', {
+            en: 'Show versions',
+            sv: 'Visa versioner'
+        })
+
+        config.addLabel('history-popover-Replace current article', {
+            en: 'Replace current article',
+            sv: 'Ersätt nuvarande artikeltext'
         })
 
         config.addPopover(

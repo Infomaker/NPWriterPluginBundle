@@ -1,5 +1,6 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {moment} from 'writer'
+import {api, moment} from 'writer'
+import ShowVersionsComponent from './ShowVersionsComponent'
 
 class HistoryItemComponent extends Component {
 
@@ -21,7 +22,7 @@ class HistoryItemComponent extends Component {
         if (headline && headline.textContent && headline.textContent.length > 2) {
             articleTitle = headline.textContent
         } else if (dom.querySelector('idf')) {
-            if(dom.querySelector('idf').textContent) {
+            if (dom.querySelector('idf').textContent) {
                 articleTitle = dom.querySelector('idf').textContent.substr(0, 60)
             }
         }
@@ -36,16 +37,32 @@ class HistoryItemComponent extends Component {
 
         const outer = $$('div')
             .addClass('history-version-item light')
-            .addClass(article.id === this.context.api.newsItem.getIdForArticle() ? 'active' : '')
+            .addClass(article.id === api.newsItem.getIdForArticle() ? 'active' : '')
             .append(
                 $$('i').addClass(icon).attr('title', title)
-            ).on('click', () => {
-                this.props.applyVersion(version, article)
-            });
+            )
+            .on('click', () => {
 
-        const inner = $$('div'),
+                // TODO Add this to the ShowVersionsComponent
+                // this.props.applyVersion(version, article)
+
+                api.ui.showDialog(
+                    ShowVersionsComponent,
+                    {
+                        article: article
+                    },
+                    {
+                        title: "",
+                        global: true,
+                        primary: this.getLabel('history-popover-Replace current article'),
+                        secondary: this.getLabel('cancel'),
+                        cssClass: 'np-teaser-dialog'
+                    })
+            })
+
+        const inner = $$('div').addClass('inner'),
             timeContainer = $$('span').addClass('time'),
-            displayFormat = this.context.api.getConfigValue('se.infomaker.history', 'timeFormat')
+            displayFormat = api.getConfigValue('se.infomaker.history', 'timeFormat')
 
 
         let time = moment(version.time).from()
@@ -61,7 +78,8 @@ class HistoryItemComponent extends Component {
             this.props.removeArticle(article)
         })
 
-        const versionsContainer = $$('span').addClass('versions').append(`${article.versions.length} ${this.getLabel('versions')}`)
+        const versionsContainer = $$('span').addClass('versions').append(`${article.versions.length} ${this.getLabel('history-popover-versions')}`)
+
 
         inner.append([removeArticleBtn, articleTitle, timeContainer, versionsContainer])
 
@@ -70,4 +88,5 @@ class HistoryItemComponent extends Component {
     }
 
 }
+
 export default HistoryItemComponent
