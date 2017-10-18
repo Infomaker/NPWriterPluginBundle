@@ -1,7 +1,7 @@
-import {BlockNode, DefaultDOMElement} from 'substance'
+import {Container, DefaultDOMElement} from 'substance'
 import {api} from 'writer'
 
-class TeaserNode extends BlockNode {
+class TeaserNode extends Container {
 
     getImageFile() {
         if (!this.imageFile) {
