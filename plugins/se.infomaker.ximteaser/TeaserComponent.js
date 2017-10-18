@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {ContainerEditor, StrongCommand, EmphasisCommand, SwitchTextCommand, Component, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 import FileInputComponent from './FileInputComponent'
 
@@ -10,6 +10,15 @@ class TeaserComponent extends Component {
 
     dispose() {
         this.context.editorSession.off(this)
+    }
+
+    willReceiveProps(newProps) {
+        // When active Teaser changes, remove containerEditor if it exists.
+        // ContainerEditor sets its containerId in the constructor, so it needs
+        // to reinitialize completely when TeaserNode changes
+        if(this.props.node.id !== newProps.node.id && this.refs.containerEditor) {
+            this.refs.containerEditor.remove()
+        }
     }
 
     /**
@@ -75,20 +84,12 @@ class TeaserComponent extends Component {
         )
 
         if(currentType.fields && currentType.fields.length) {
-            const FieldEditor = this.context.api.ui.getComponent('field-editor')
 
             // Only renders subject if teaser has image
             const editorFields = currentType.fields
                 .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
                 .map((field) => {
-                    return $$(FieldEditor, {
-                        node: this.props.node,
-                        field: field.id,
-                        placeholder: field.label,
-                        icon: field.icon || 'fa-header',
-                        multiLine: Boolean(field.multiline) && field.id === 'text'
-                    })
-                        .ref(`${field.id}FieldEditor`)
+                    return this._renderFieldEditor($$, field)
                 })
 
             el.append(editorFields)
@@ -97,6 +98,31 @@ class TeaserComponent extends Component {
         }
 
         return el
+    }
+
+    _renderFieldEditor($$, field) {
+        if(Boolean(field.multiline) && field.id === 'text') {
+            return this._renderContainerEditor($$, field)
+        } else {
+            const FieldEditor = this.context.api.ui.getComponent('field-editor')
+            return $$(FieldEditor, {
+                node: this.props.node,
+                field: field.id,
+                placeholder: field.label,
+                icon: field.icon || 'fa-header',
+                multiLine: false
+            })
+                .ref(`${field.id}FieldEditor`)
+        }
+    }
+
+    _renderContainerEditor($$) {
+        return $$(ContainerEditor, {
+            name: 'contentpartEditor' + this.props.node.id,
+            containerId: this.props.node.id,
+            textTypes: [],
+            commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
+        }).ref(`containerEditor`).addClass('contentpart-editor im-container-editor')
     }
 
     triggerFileUpload(ev) {
