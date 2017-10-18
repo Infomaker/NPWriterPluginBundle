@@ -1,3 +1,4 @@
+import { DefaultDOMElement } from 'substance'
 import { idGenerator, api } from 'writer'
 
 export default {
@@ -10,21 +11,57 @@ export default {
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
+    getConfigForType: function(dataType) {
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        return teaserTypes.find(({type}) => type === dataType)
+    },
+
+    isMultilineEnabled: function(dataType) {
+        const {fields} = this.getConfigForType(dataType)
+        return fields.some(({id, multiline}) => id === 'text' && multiline === true)
+    },
+
     import: function(el, node, converter) {
         const nodeId = el.attr('id')
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
-        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
-        const {fields} = teaserTypes.find(({type}) => type === node.dataType)
-        const textHasMultiline = fields.some(({id, multiline}) => id === 'text' && multiline === true)
+        const multilineEnabled = this.isMultilineEnabled(node.dataType)
 
         // Import teaser data
         const dataEl = el.find(':scope > data')
         if (dataEl) {
             dataEl.children.forEach(function (child) {
+
                 if (child.tagName === 'text') {
-                    node.text = converter.annotatedText(child, [node.id, 'text'], {preserveWhitespace: textHasMultiline})
+                    if(multilineEnabled) {
+                        if(child.getAttribute('format') === 'idf') {
+                            child.children.forEach((child) => {
+                                const childNode = converter.convertElement(child)
+                                node.nodes.push(childNode.id)
+                            })
+                        } else {
+                            const {createElement} = DefaultDOMElement
+
+                            const id = converter.nextId('paragraph')
+
+                            // <element id="paragraph-804568bd037ce1042520dbdd2796fcc1" type="body">test</element>
+                            const childTextNode = createElement('element').attr('id', id).attr('type', 'body').append(child.text())
+                            console.log(childTextNode)
+                            const childNode = converter.convertElement(childTextNode)
+
+                            node.nodes.push(childNode.id)
+                        }
+                    } else {
+                        if(child.getAttribute('format') === 'idf') {
+                            const childText = child
+                            childText.setInnerHTML(child.getTextContent())
+
+                            node.text = converter.annotatedText(childText, [node.id, 'text'])
+                        } else {
+                            node.text = converter.annotatedText(child, [node.id, 'text'])
+                        }
+                    }
                 }
 
                 if (child.tagName === 'subject') {
@@ -116,6 +153,7 @@ export default {
     },
 
     export: function(node, el, converter) {
+        const multilineEnabled = this.isMultilineEnabled(node.dataType)
         const $$ = converter.$$
 
         el.removeAttr('data-id')
@@ -130,10 +168,21 @@ export default {
 
         // Data element
         const data = $$('data')
-        if (node.text) {
-            data.append($$('text').append(
-                converter.annotatedText([node.id, 'text'])
-            ))
+
+        if (node.text || node.nodes.length > 0) {
+            const text = $$('text')
+            if(multilineEnabled) {
+                text.attr('format', 'idf')
+                text.append(
+                    converter.convertContainer(node)
+                )
+            } else {
+                data.append(
+                    text.append(converter.annotatedText([node.id, 'text']))
+                )
+            }
+
+            data.append(text)
         }
 
         if (node.subject) {
