@@ -4,19 +4,19 @@ import KeywordsComponent from './KeywordsComponent'
 import CampaignIdComponent from './CampaignIdComponent'
 
 
-class AdinfoComponent extends Component {
+class AdmetaComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'adinfo'
+        this.name = 'admeta'
     }
 
     getInitialState() {
-        const adinfoMetaObjects = api.newsItem.getContentMetaObjectsByType('x-im/adinfo')
+        const admetaMetaObjects = api.newsItem.getContentMetaObjectsByType('x-im/admeta')
 
-        if (adinfoMetaObjects) {
-            let adinfoMetaObject = adinfoMetaObjects[0]
-            const keywordsArray = adinfoMetaObject.data.keywords.keyword
+        if (admetaMetaObjects) {
+            let admetaMetaObject = admetaMetaObjects[0]
+            const keywordsArray = admetaMetaObject.data.keywords.keyword
             let keywords
             if (keywordsArray) {
                 keywords = Array.isArray(keywordsArray) ? keywordsArray : [keywordsArray]
@@ -25,9 +25,9 @@ class AdinfoComponent extends Component {
             }
 
             return {
-                id: adinfoMetaObject['@id'],
+                id: admetaMetaObject['@id'],
                 keywords: keywords,
-                campaignId: adinfoMetaObject.data.campaignId
+                campaignId: admetaMetaObject.data.campaignId
             }
         } else {
             return {
@@ -144,4 +144,4 @@ class AdinfoComponent extends Component {
     }
 }
 
-export default AdinfoComponent
+export default AdmetaComponent

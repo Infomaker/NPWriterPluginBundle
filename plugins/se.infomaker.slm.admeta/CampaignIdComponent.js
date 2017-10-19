@@ -6,13 +6,13 @@ class CampaignIdComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'adinfo'
+        this.name = 'admeta'
     }
 
     render($$) {
         const el = $$('div').addClass('campaignId')
 
-        const campaignIdTitle = $$('h2').append(this.getLabel('adinfo-campaign-id'))
+        const campaignIdTitle = $$('h2').append(this.getLabel('admeta-campaign-id'))
         let campaignIdDisplay = (this.props.campaignId) ? this._renderCapaignIdDisplay($$) : ''
         const campaignIdInput = this._renderCampaignIdInput($$)
 
@@ -52,7 +52,7 @@ class CampaignIdComponent extends Component {
             $$('div').addClass('form-group').append(
                 $$('input').addClass('form-control form__search')
                 .ref('keywordInput')
-                .attr('placeholder', api.getLabel('adinfo-set-campaign-id'))
+                .attr('placeholder', api.getLabel('admeta-set-campaign-id'))
                 .on('keydown', this.handleCampaignIdInput)
             )
         )

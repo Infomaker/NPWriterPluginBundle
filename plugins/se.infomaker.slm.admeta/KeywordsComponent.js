@@ -7,13 +7,13 @@ class KeywordsComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.name = 'adinfo'
+        this.name = 'admeta'
     }
 
     render($$) {
         const el = $$('div').addClass(this.name)
 
-        const keywordsTitle = $$('h2').append(this.getLabel('adinfo-keywords'))
+        const keywordsTitle = $$('h2').append(this.getLabel('admeta-keywords'))
 
         const keywordList = $$('ul').addClass('tag-list')
 
@@ -36,7 +36,7 @@ class KeywordsComponent extends Component {
             $$('div').addClass('form-group').append(
                 $$('input').addClass('form-control form__search')
                 .ref('keywordInput')
-                .attr('placeholder', api.getLabel('adinfo-add-keywords'))
+                .attr('placeholder', api.getLabel('admeta-add-keywords'))
                 .on('keydown', this.handleKeywordInput)
             )
         )
