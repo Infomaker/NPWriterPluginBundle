@@ -17,7 +17,7 @@ class AdinfoComponent extends Component {
         if (adinfoMetaObjects) {
             let adinfoMetaObject = adinfoMetaObjects[0]
             const keywordsArray = adinfoMetaObject.data.keywords.keyword
-            let keywords;
+            let keywords
             if (keywordsArray) {
                 keywords = Array.isArray(keywordsArray) ? keywordsArray : [keywordsArray]
             } else {

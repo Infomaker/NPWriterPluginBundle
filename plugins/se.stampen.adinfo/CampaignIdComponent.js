@@ -34,7 +34,7 @@ class CampaignIdComponent extends Component {
             .append(displayName)
             .attr('title', displayName)
 
-        campaignIdDisplay.append([
+        return campaignIdDisplay.append([
             campaignIdLabel,
             $$('span').append($$(Icon, {icon: 'fa-times'})
                 .addClass('tag-icon tag-icon--delete')
@@ -45,8 +45,6 @@ class CampaignIdComponent extends Component {
             $$(Icon, {icon: 'fa-hashtag'})
                 .addClass('tag-icon')
         ])
-
-        return campaignIdDisplay;
     }
 
     _renderCampaignIdInput($$) {

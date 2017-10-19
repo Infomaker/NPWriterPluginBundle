@@ -27,9 +27,7 @@ class KeywordItemComponent extends Component {
 
         const itemIconElement = $$(Icon, {icon: 'fa-key'}).addClass('tag-icon')
 
-        tagItem.append([keywordNameElement, removeItemElement, itemIconElement])
-
-        return tagItem;
+        return tagItem.append([keywordNameElement, removeItemElement, itemIconElement])
     }
 
     /**
