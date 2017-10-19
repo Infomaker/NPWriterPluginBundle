@@ -11,59 +11,18 @@ export default {
         return teaserTypes.some(({type}) => type === el.attr('type'))
     },
 
-    getConfigForType: function(dataType) {
-        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
-        return teaserTypes.find(({type}) => type === dataType)
-    },
-
-    isMultilineEnabled: function(dataType) {
-        const {fields} = this.getConfigForType(dataType)
-        return fields.some(({id, multiline}) => id === 'text' && multiline === true)
-    },
-
     import: function(el, node, converter) {
         const nodeId = el.attr('id')
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
-        const multilineEnabled = this.isMultilineEnabled(node.dataType)
-
-        // Import teaser data
         const dataEl = el.find(':scope > data')
         if (dataEl) {
-            dataEl.children.forEach(function (child) {
-
+            dataEl.children.forEach((child) => {
                 if (child.tagName === 'text') {
-                    if(multilineEnabled) {
-                        if(child.getAttribute('format') === 'idf') {
-                            child.children.forEach((child) => {
-                                const childNode = converter.convertElement(child)
-                                node.nodes.push(childNode.id)
-                            })
-                        } else {
-                            const {createElement} = DefaultDOMElement
-
-                            const id = converter.nextId('paragraph')
-
-                            // <element id="paragraph-804568bd037ce1042520dbdd2796fcc1" type="body">test</element>
-                            const childTextNode = createElement('element').attr('id', id).attr('type', 'body').append(child.text())
-                            console.log(childTextNode)
-                            const childNode = converter.convertElement(childTextNode)
-
-                            node.nodes.push(childNode.id)
-                        }
-                    } else {
-                        if(child.getAttribute('format') === 'idf') {
-                            const childText = child
-                            childText.setInnerHTML(child.getTextContent())
-
-                            node.text = converter.annotatedText(childText, [node.id, 'text'])
-                        } else {
-                            node.text = converter.annotatedText(child, [node.id, 'text'])
-                        }
-                    }
+                    // Imports simple text or multiline text nodes
+                    this.importText(child, node, converter)
                 }
-
                 if (child.tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
                 }
@@ -109,8 +68,7 @@ export default {
             if (linkDataEl) {
                 // New format, image data is found correctly in link data element
                 this.importImageLinkData(linkDataEl, node)
-            }
-            else {
+            } else {
                 // Old, depcrecated format, image data is found in teaser data
                 this.importImageLinkData(dataEl, node)
             }
@@ -121,6 +79,81 @@ export default {
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
             node.uuid = linkEl.attr('uuid')
+        }
+    },
+
+    getConfigForType: function(dataType) {
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        return teaserTypes.find(({type}) => type === dataType)
+    },
+
+    isMultilineEnabled: function(dataType) {
+        const {fields} = this.getConfigForType(dataType)
+        return fields.some(({id, multiline}) => id === 'text' && multiline === true)
+    },
+
+    /**
+     * Import contents of <text>-element. If multiline is configured, sets TeaserNode.nodes
+     * else sets simple value to TeaserNode.text.
+     *
+     * @param {ui/DOMElement} textEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importText: function(textEl, node, converter) {
+        if(this.isMultilineEnabled(node.dataType)) {
+            this.importMultilineText(textEl, node, converter)
+        } else {
+            this.importSimpleText(textEl, node, converter)
+        }
+    },
+
+    /**
+     * Fills TeaserNode.nodes with stored <element>-elements contained in <text>-element.
+     * If <text> only contains simple text, creates a new <element>-element and pushes
+     * it to TeaserNode.nodes to enable multiline editing.
+     *
+     * @param {ui/DOMElement} textEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importMultilineText: function(textEl, node, converter) {
+        if(textEl.getAttribute('format') === 'idf') {
+            // Multiline enabled, text stored as multiline
+            textEl.children.forEach((child) => {
+                const childNode = converter.convertElement(child)
+
+                node.nodes.push(childNode.id)
+            })
+        } else {
+            // Multiline enabled, text stored as simple text, new paragraph node needs to be injected
+            const {createElement} = DefaultDOMElement
+            const childTextNode = createElement('element').attr('type', 'body').append(textEl.text())
+            const childNode = converter.convertElement(childTextNode)
+
+            node.nodes.push(childNode.id)
+        }
+    },
+
+    /**
+     * Sets string-value to TeaserNode.text-property.
+     * If <text> is stored as multiline, it flattens the content
+     * and fetches the simple text content from all children.
+     *
+     * @param textEl
+     * @param node
+     * @param converter
+     */
+    importSimpleText: function(textEl, node, converter) {
+        if(textEl.getAttribute('format') === 'idf') {
+            // Text stored as paragraph elements, return annotated text string
+            const textContent = textEl.children.map((child) => child.getInnerHTML()).join(' ')
+            textEl.setInnerHTML(textContent)
+
+            node.text = converter.annotatedText(textEl, [node.id, 'text'])
+        } else {
+            // Normal behavior, stored and return as simple text
+            node.text = converter.annotatedText(textEl, [node.id, 'text'])
         }
     },
 
@@ -153,7 +186,6 @@ export default {
     },
 
     export: function(node, el, converter) {
-        const multilineEnabled = this.isMultilineEnabled(node.dataType)
         const $$ = converter.$$
 
         el.removeAttr('data-id')
@@ -170,18 +202,7 @@ export default {
         const data = $$('data')
 
         if (node.text || node.nodes.length > 0) {
-            const text = $$('text')
-            if(multilineEnabled) {
-                text.attr('format', 'idf')
-                text.append(
-                    converter.convertContainer(node)
-                )
-            } else {
-                data.append(
-                    text.append(converter.annotatedText([node.id, 'text']))
-                )
-            }
-
+            const text = this.exportText($$, node, converter)
             data.append(text)
         }
 
@@ -242,5 +263,30 @@ export default {
                 $$('links').append(link)
             )
         }
+    },
+
+    /**
+     * Text is either stored as simple text in the TeaserNode.text-property
+     * or as text-nodes in the TeaserNode.nodes-property, depending on configured
+     * multiline value.
+     *
+     * @param $$
+     * @param {TeaserNode} node
+     * @param {NewsMLExporter} converter
+     * @returns {VirtualElement}
+     */
+    exportText: function($$, node, converter) {
+        const text = $$('text')
+
+        if(this.isMultilineEnabled(node.dataType)) {
+            text.attr('format', 'idf')
+            text.append(
+                converter.convertContainer(node)
+            )
+        } else {
+            text.append(converter.annotatedText([node.id, 'text']))
+        }
+
+        return text
     }
 }
