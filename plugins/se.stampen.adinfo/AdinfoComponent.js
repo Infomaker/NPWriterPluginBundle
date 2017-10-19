@@ -130,11 +130,17 @@ class AdinfoComponent extends Component {
             data.campaignId = this.state.campaignId
         }
 
-        api.newsItem.setContentMetaObject(this.name, {
-            '@id': this.state.id,
-            '@type': `x-im/${this.name}`,
-            data
-        })
+        const hasData = Object.keys(data).length > 0
+
+        if (hasData) {
+            api.newsItem.setContentMetaObject(this.name, {
+                '@id': this.state.id,
+                '@type': `x-im/${this.name}`,
+                data
+            })
+        } else {
+            api.newsItem.removeContentMetaObject(this.name, this.state.id)
+        }
     }
 }
 
