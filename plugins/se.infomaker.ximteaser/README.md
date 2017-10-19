@@ -29,9 +29,11 @@ The plugin adds one or more objects to the metadata-section of the idf.
     </object>
     <object id="NjMsMTExLDIzMSwxNzE" type="x-im/facebook-teaser" title="Lorem ipsum">
         <data>
-            <text>Mauris at libero condimentum
-                sapien malesuada
-                efficitur non id nibh.</text>
+            <text format="idf">
+                <element id="paragraph-88beb76cb6af9ca39303bebc20497c56" type="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</element>
+                <element id="paragraph-360f09442467b39801c6f60971b9c02c" type="body">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</element>
+                <element id="paragraph-337d42c0a735a1faab645382bbf39fff" type="body">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</element>
+            </text>
         </data>
     </object>
     <object id="PkEs6SJgLeQ0FS1qMjk" type="x-im/twitter-teaser" title="Lorem ipsum">
@@ -164,7 +166,25 @@ Field Configuration Example:
 | **id**        | String    | `true`    | subject, title, or text |
 | **label**     | String    | `true`    | Placeholder for field |
 | **icon**      | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
-| **multiline** | Boolean   | `false`   | **Only available for field with id `text`** Set to `true` to enable multiline text editing. Default value is `false` |
+| **multiline*** | Boolean   | `false`   | **Only available for field with id `text`** Set to `true` to enable multiline text editing. Default value is `false` |
+***Warning** Enabling multiline editing will change the output of `data > text`-element.
+
+### Outout Difference Between Multiline and Simple Text
+When `multiline` is enabled, the xml-output of the `text`-field changes when the article is saved.
+
+**Multiline Enabled**
+```xml
+<text format="idf">
+    <element id="paragraph-88beb76cb6af9ca39303bebc20497c56" type="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</element>
+    <element id="paragraph-360f09442467b39801c6f60971b9c02c" type="body">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</element>
+    <element id="paragraph-337d42c0a735a1faab645382bbf39fff" type="body">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</element>
+</text>
+```
+
+**Multiline Disabled**
+```xml
+<text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</text>
+```
 
 ## Basic Configuration Example
 This is a config example for basic teaser support.
