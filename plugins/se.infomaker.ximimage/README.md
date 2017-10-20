@@ -10,6 +10,7 @@ The image plugin configuration must have several things defined to work correctl
     "name": "ximimage",
     "enabled": true,
     "data": {
+        "imageFileExtension": [".jpg", ".jpeg", ".png", ".gif"],
         "softcrop": true, // Default false
         "bylinesearch": false, // Default true
         "byline": false, // Default true
@@ -24,6 +25,10 @@ The image plugin configuration must have several things defined to work correctl
 ```
 
 ### Basic options
+
+#### Image file extensions
+*Optional* Defines the file extensions that should trigger this plugin when a URL is dropped.
+Set `imageFileExtension` to an array of valid extensions, [".jpg", ".jpeg", ".png", ".gif"] is the default value if unset.
 
 #### Soft crop
 *Optional* The soft crop dialog is hidden by default. Set `softcrop`
