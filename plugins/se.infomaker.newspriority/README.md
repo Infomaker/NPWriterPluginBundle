@@ -90,5 +90,5 @@ The `description`, `end` and `duration` maps to the keys in the `lifetime` array
 }
 ```
 
-It is possible to disable lifetime, which is done by setting the `disableLifetime` key to `true` in the config above.
+It is possible to disable lifetime, which is done by setting the `preventLifetime` key to `true` in the config above.
 
