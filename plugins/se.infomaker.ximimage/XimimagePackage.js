@@ -93,6 +93,10 @@ export default {
             sv: 'Använd inte automatisk crop vid utvisning'
         })
 
+        config.addLabel('Crop', {
+            sv: 'Beskär'
+        })
+
         config.addLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.', {
             sv: 'Bilden verkar inte finnas tillgänglig än. Vänta ett par sekunder och försök igen.'
         })

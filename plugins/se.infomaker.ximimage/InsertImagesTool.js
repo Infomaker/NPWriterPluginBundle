@@ -1,6 +1,7 @@
 import {Tool} from 'substance'
 import {api} from 'writer'
 import * as ImageTypes from './models/ImageTypes'
+import insertImage from "./models/insertImage"
 
 class XimimageTool extends Tool {
 
@@ -34,12 +35,44 @@ class XimimageTool extends Tool {
     }
 
     triggerFileUpload(ev) {
+        let nodeId
+
         try {
-            this.context.editorSession.executeCommand('insert-images', {
-                files: ev.target.files
+            api.editorSession.transaction(tx => {
+                nodeId = insertImage(tx, ev.target.files[0])
             })
         } catch (err) {
-            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
+            return this.onUploadFailure(nodeId)
+        }
+
+        api.editorSession.fileManager.sync().catch(err => {
+            return this.onUploadFailure(nodeId)
+        })
+    }
+
+    onUploadFailure(nodeId) {
+        // If the image upload fails it is probably because it is an unsupported format,
+        // but because we are not sure, we use the generic image upload error message
+        api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+        this.removeNode(nodeId)
+    }
+
+    removeNode(nodeId) {
+        try {
+            const doc = api.editorSession.getDocument()
+            const node = doc.get(nodeId)
+
+            api.document.deleteNode('ximimage', node)
+
+            const imageFile = node.imageFile
+            if (imageFile) {
+                api.editorSession.transaction((tx) => {
+                    tx.delete(imageFile)
+                })
+            }
+        }
+        catch(err) {
+            console.error(err)
         }
     }
 }
