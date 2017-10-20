@@ -13,7 +13,7 @@ class ShowVersionsComponent extends Component {
     render($$) {
         return $$('div').append(
             [
-                $$(TimeLineComponent, {versions: this.state.versions}),
+                $$(TimeLineComponent, {markers: this.state.history.versions}),
                 $$('span').append(this.props.article.id),
                 $$('span').append(":" + this.state.history.versions.length)
             ]
