@@ -2,24 +2,38 @@
 
 import io from 'socket.io-client'
 import {Component} from 'substance'
-import { api, moment} from 'writer'
+import { api, moment, event } from 'writer'
 import LoginComponent from './LoginComponent'
 import NoConnection from './NoConnection'
 import UserList from './UserList'
+
+const pluginId = 'se.infomaker.uatracker'
 
 class UATrackerComponent extends Component {
 
     constructor(...args) {
         super(...args)
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, (e) => {
+            this._onDocumentChanged()
+        })
 
+        api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
+            this._onDocumentSaved()
+        })
+    }
 
+    dispose() {
+        api.events.off(pluginId, event.DOCUMENT_CHANGED)
+        api.events.off(pluginId, event.DOCUMENT_SAVED)
+        this.socket.close()
     }
 
     getInitialState() {
         return {
             username: null,
             email: null,
-            users: []
+            users: [],
+            lockedBy: null
         }
     }
 
@@ -29,6 +43,33 @@ class UATrackerComponent extends Component {
 
         this.showLogin()
 
+    }
+
+    _onDocumentChanged() {
+        if (!this.state.lockedBy) {
+            this.extendState({
+                lockedBy: this.socket.id
+            })
+
+            // Only send lock information if article has a uuid
+            if (this.articleInformation.uuid) {
+                console.log('Locking article: Article has changed and the article has a UUID')
+                this.socket.emit('article/locked', this.articleInformation)
+            }
+        }
+    }
+
+    _onDocumentSaved() {
+        console.log('DOCUMENT SAVED', this.articleInformation)
+        this.extendState({
+            lockedBy: null
+        })
+
+        // Only unlock article if user has socketId
+        if (this.articleInformation.socketId) {
+            console.log('Unlocking article: Article has been saved and I have a socket ID')
+            this.socket.emit('article/unlocked', this.articleInformation)
+        }
     }
 
     showLogin() {
@@ -47,6 +88,14 @@ class UATrackerComponent extends Component {
         }
     }
 
+    lockArticle() {
+        console.log('-LOCKING ARTICLE-')
+    }
+
+    unlockArticle() {
+        console.log('-UNLOCKING ARTICLE-')
+    }
+
 
     socketConnectError() {
         this.props.popover.setIcon('fa-chain-broken')
@@ -57,10 +106,22 @@ class UATrackerComponent extends Component {
             socketError: true
         })
     }
-    setupLiveArticles() {
 
+    get articleInformation() {
         const uuid = api.newsItem.getGuid()
         const customerKey = api.getConfigValue('se.infomaker.uatracker', 'customerKey')
+        return {
+            uuid: uuid,
+            timestamp: moment().format('x'),
+            socketId: this.socket.id,
+            customerKey: customerKey,
+            name: this.state.name,
+            email: this.state.email
+        }
+    }
+
+    setupLiveArticles() {
+
         const host = api.getConfigValue('se.infomaker.uatracker', 'host')
 
         this.socket = io(host)
@@ -80,28 +141,37 @@ class UATrackerComponent extends Component {
             /*
              Trigger an event telling the server that we have opened this article
              */
-            const information = {
-                uuid: uuid,
-                timestamp: moment().format('x'),
-                socketId: this.socket.id,
-                customerKey: customerKey,
-                name: this.state.name,
-                email: this.state.email
-            }
-
-            this.socket.emit('article/opened', information)
-
+            this.socket.emit('article/opened', this.articleInformation)
 
             this.socket.on('article/user-change', (users) => {
+                console.log('Received article/user-change', users)
+
                 this.extendState({
                     users: users,
                     socketId: this.socket.id
                 })
                 this.updateIcon(users)
             })
+
+            this.socket.on('article/lock-status-change', (lockStatus) => {
+                console.log('Received article/lock-status-change', lockStatus)
+                this.extendState({
+                    lockedBy: lockStatus.lockedBy
+                })
+                this.setLockStatus(lockStatus.lockedBy)
+            })
         })
+    }
 
-
+    setLockStatus(lockedBy) {
+        if (lockedBy) {
+            this.props.popover.setIcon('fa-lock')
+            const lockedByUser = this.state.users.find(user => user.socketId === lockedBy)
+            this.props.popover.setStatusText('Locked by ' + lockedByUser.name)
+        } else {
+            this.props.popover.setIcon('fa-unlock')
+            this.props.popover.setStatusText('Not locked')
+        }
     }
 
     updateIcon(users) {
@@ -112,10 +182,6 @@ class UATrackerComponent extends Component {
             this.props.popover.setIcon('fa-user')
             this.props.popover.setStatusText(this.state.name)
         }
-    }
-
-    dispose() {
-        this.socket.close()
     }
 
     login({email, name}) {
@@ -149,7 +215,6 @@ class UATrackerComponent extends Component {
     }
 
     render($$) {
-
         const el = $$('div').addClass('uatracker')
 
         if(this.state.socketError) {
