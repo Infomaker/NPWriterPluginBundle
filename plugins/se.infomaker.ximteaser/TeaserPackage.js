@@ -36,7 +36,8 @@ export default {
             return {
                 type: 'ximteaser',
                 dataType: type,
-                id: idGenerator()
+                id: idGenerator(),
+                nodes: []
             }
         })
 

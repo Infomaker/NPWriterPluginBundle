@@ -15,7 +15,7 @@ class InsertTeaserCommand extends WriterCommand {
                 type: 'paragraph',
                 content: ''
             })
-            teaserTemplate.nodes = [emptyParamNode.id]
+            teaserTemplate.nodes.push(emptyParamNode.id)
 
             createdTeaserNode = tx.create(teaserTemplate)
             tx.set([teaserContainerNode.id, 'nodes'], [...teaserContainerNode.nodes, teaserTemplate.id])
