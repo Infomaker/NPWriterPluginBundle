@@ -1,7 +1,8 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {api, idGenerator} from 'writer'
-import { INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON } from './ImageGalleryNode';
-import dragStateDataExtractor from '../se.infomaker.ximteaser/dragStateDataExtractor'
+import { INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON } from '../ImageGalleryNode';
+import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
+import ImageGalleryImageComponent from './ImageGalleryImageComponent'
 
 class ImageGalleryComponent extends Component {
 
@@ -11,11 +12,7 @@ class ImageGalleryComponent extends Component {
 
     onDocumentChange(change) {
         if (change.isAffected(this.props.node.id)) {
-            if (!this.refs.generericCaptionInput) {
-                this.rerender()
-            } else if (this.refs.generericCaptionInput && !change.isAffected(this.refs.generericCaptionInput.props.id)) {
-                this.rerender()
-            }
+            this.rerender()
         } else if (this.props.node.imageFiles) {
             this.props.node.imageFiles.forEach(imageFile => {
                 if (change.isAffected(imageFile.id)) {
@@ -28,18 +25,18 @@ class ImageGalleryComponent extends Component {
     render($$) {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
         const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('Dropzone label'))
-        const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText)
+        const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
         const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
         const generericCaptionInput = $$(FieldEditor, {
             id: idGenerator(),
             node: this.props.node,
             disabled: false,
-            multiLine: false,
+            multiLine: true,
             field: 'genericCaption',
             placeholder: this.getLabel('Generic caption'),
             icon: 'fa-align-left'
         }).ref('generericCaptionInput')
-        const genericCaptionWrapper = $$('div').append(generericCaptionInput)
+        const genericCaptionWrapper = $$('div').addClass('image-gallery-genericcaption').append(generericCaptionInput)
 
         imageGalleryToolbox.append(this.renderHeader($$))
 
@@ -47,26 +44,25 @@ class ImageGalleryComponent extends Component {
             imageGalleryToolbox.addClass('show')
 
             if (this.props.node.imageFiles && this.props.node.imageFiles.length) {
-                let thumbnailsWrapper = $$('div').addClass('thumbnails-wrapper')
+                let toolboxContent = $$('div').addClass('toolboox-content')
 
                 this.props.node.imageFiles.forEach((imageFile, index) => {
-                    let imageWrapper = $$('div').addClass('image-wrapper')
-                    let imageNode = this.props.node.document.get(imageFile)
-                    let imageEl = $$('img', { src: imageNode.getUrl()})
-                    let removeIcon = $$('i').addClass('remove-image fa fa-trash')
-                        .on('click', () => {
+                    toolboxContent.append($$(ImageGalleryImageComponent, {
+                        index,
+                        imageFile,
+                        isolatedNodeState: this.props.isolatedNodeState,
+                        node: this.props.node,
+                        removeImage: () => {
                             api.editorSession.transaction((tx) => {
                                 let copy = this.props.node.imageFiles.concat()
                                 copy.splice(index, 1)
                                 tx.set([this.props.node.id, 'imageFiles'], copy)
                             })
-                        })
-
-                    imageWrapper.append(imageEl)
-                    imageWrapper.append(removeIcon)
-                    thumbnailsWrapper.append(imageWrapper)
+                        }
+                    }))
                 })
-                imageGalleryToolbox.append(thumbnailsWrapper)
+
+                imageGalleryToolbox.append(toolboxContent)
             }
         }
 

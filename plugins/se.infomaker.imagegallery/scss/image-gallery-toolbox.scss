@@ -1,0 +1,81 @@
+.im-image-gallery {
+    .image-gallery-toolbox {
+        display: none;
+        width: 0px;
+        height: 0px;
+        transition: all 1s;
+        overflow: hidden;
+
+        &.show {
+            position: absolute;
+            left: 0;
+            z-index: 105;
+            display: block;
+            width: auto;
+            height: 450px;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            outline:1px solid #ddd;
+            box-shadow: 5px 5px 35px -5px #303030;
+            background: white;
+        }
+
+        .image-gallery-header {
+            border-bottom: 1px solid #ddd;
+        }
+        .toolboox-content {
+            overflow-y: scroll;
+            height: 100%;
+            padding-bottom: 10px;
+
+            .item-wrapper {
+                width: 100%;
+                display: flex;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-top: none;
+                position: relative;
+                margin: auto;
+
+                .number-display {
+                    margin: auto;
+                    padding-right: 10px;
+                    color: #b1b1b1;
+                }
+                .image-wrapper {
+                    background: rgb(236, 236, 236);
+                    border: 1px solid #ddd;
+                    height: 60px;
+                    width: 60px;
+                    display: flex;
+                    img {
+                        max-height: 100%;
+                        max-width: 100%;
+                        margin: auto;
+                    }
+                }
+                .image-meta {
+                    flex-grow: 1;
+                    min-width: 300px;
+                    margin: auto;
+                    padding: 0 10px 10px 10px;
+                    .im-field-editor {
+                        margin-top: 5px;
+                    }
+                }
+                .remove-image {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    margin: 5px 5px 0 0;
+                    padding: 3px 5px;
+                    color: #ddd;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }            
+        }
+    }
+}

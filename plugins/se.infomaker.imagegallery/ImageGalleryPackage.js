@@ -1,7 +1,9 @@
 import './scss/image-gallery.scss'
+import './scss/image-gallery-toolbox.scss'
 
-import ImageGalleryComponent from './ImageGalleryComponent'
 import ImageGalleryNode, {INSERT_IMAGE_GALLERY_COMMAND, INSERT_IMAGE_COMMAND} from './ImageGalleryNode'
+import ImageGalleryImageNode from './ImageGalleryImageNode'
+import ImageGalleryComponent from './components/ImageGalleryComponent'
 import InsertImageGalleryTool from './InsertImageGalleryTool'
 import InsertImageGalleryCommand from './InsertImageGalleryCommand'
 import ImageGalleryConverter from './ImageGalleryConverter';
@@ -14,6 +16,7 @@ const ImageGalleryPackage = {
     configure(config) {
         
         config.addNode(ImageGalleryNode)
+        config.addNode(ImageGalleryImageNode)
         config.addComponent(ImageGalleryNode.type, ImageGalleryComponent)
 
         config.addContentMenuTopTool(INSERT_IMAGE_GALLERY_COMMAND, InsertImageGalleryTool)
@@ -30,10 +33,10 @@ const ImageGalleryPackage = {
             'sv': 'Infoga bildspel'
         })
         config.addLabel('Dropzone label', {
-            'sv': 'Lägg till bild'
+            'sv': 'Dra och släpp bild(er) här'
         })
         config.addLabel('Generic caption', {
-            'sv': 'Generic caption'
+            'sv': 'Gemensam bildtext'
         })
     }
 }

@@ -1,17 +1,14 @@
-import {BlockNode} from 'substance'
+import {Container} from 'substance'
 
-class ImageGalleryNode extends BlockNode {
+class ImageGalleryNode extends Container {
 
 }
 
 ImageGalleryNode.define({
     type: 'imagegallery',
     dataType: { type: 'string' },
-    imageFiles: {type: 'array', optional: true},
+    imageFiles: {type: 'array', optional: true, default: []},
     genericCaption: {type: 'string', optional: true, default: ''},
-    caption: {type: 'string', default: ''},
-    alttext: {type: 'string', optional: true},
-    credit: {type: 'string', optional: true},
 })
 
 export default ImageGalleryNode

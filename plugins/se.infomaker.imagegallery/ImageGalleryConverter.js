@@ -34,16 +34,35 @@ const ImageGalleryConverter = {
 
         if (linksEl) {
             linksEl.children.forEach(child => {
+                const imgData = child.find(':scope > data')
+                let imageId = idGenerator()
                 let imageFile = {
-                    id: idGenerator(),
+                    id: imageId,
                     type: 'npfile',
                     imType: 'x-im/image',
                     parentNodeId: node.id,
                     uuid: child.attr('uuid'),
                     uri: child.attr('uri'),
                 }
+                let imageGalleryImage = {
+                    id: `${imageId}-galleryImage`,
+                    type: 'imagegalleryimage',
+                    parentNodeId: node.id,
+                }
+
+                if (imgData) {
+                    imgData.children.forEach(child => {
+                        if (child.tagName === 'byline' || child.tagName === 'caption') {
+                            imageGalleryImage[child.tagName] = converter.annotatedText(child, child.tagName)
+                        }
+                    })
+                }
+
                 converter.createNode(imageFile)
+                converter.createNode(imageGalleryImage)
+
                 node.imageFiles.push(imageFile.id)
+                node.nodes.push(imageGalleryImage.id)
             })
         }
     },
@@ -75,12 +94,25 @@ const ImageGalleryConverter = {
 
         imageFiles.forEach((imageFile) => {
             let fileNode = node.document.get(imageFile)
+            let galleryImage = node.document.get(`${imageFile}-galleryImage`)
+            let linkData = $$('data')
             let link = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',
                 uri: fileNode.uri,
                 uuid: fileNode.uuid
             })
+            if (galleryImage.byline) {
+                linkData.append($$('byline').append(
+                    converter.annotatedText([galleryImage.id, 'byline'])
+                ))
+            }
+            if (galleryImage.caption) {
+                linkData.append($$('caption').append(
+                    converter.annotatedText([galleryImage.id, 'caption'])
+                ))
+            }
+            link.append(linkData)
             links.append(link)
         })
 
