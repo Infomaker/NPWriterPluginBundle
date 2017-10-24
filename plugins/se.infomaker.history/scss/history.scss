@@ -200,10 +200,14 @@
     color: white;
 }
 
+.showVersions {
+    padding: 5rem 2rem;
+}
+
 .circle {
     width: 20px;
     height: 20px;
-    background: #e97162;
+    background: #fff;
     border-radius: 15px;
     position: absolute;
     top: -7px;
@@ -213,7 +217,7 @@
         content: '';
         width: 10px;
         height: 10px;
-        background: white;
+        background: #000000;
         position: absolute;
         border-radius: 100%;
         top: 2px;
@@ -223,16 +227,26 @@
     .popupSpan {
         width: auto;
         height: auto;
-        padding: 10px;
+        padding-left: 2rem;
         white-space: nowrap;
         display: inline-block;
-        color: white;
+        color: #000000;
         position: absolute;
         top: 20px;
         left: -75px;
         display: none;
         transition: all 0.1s ease-out;
+        text-align: center;
     }
+
+    .moment-date {
+        font-size: 12pt;
+    }
+
+    .moment-time {
+        font-size: 10pt;
+    }
+
     // &:nth-child(odd) .popupSpan {
     //   top: 20px;
     // }
@@ -243,7 +257,7 @@
         display: block;
     }
     &.active .popupSpan {
-        top: -40px;
+        top: -50px;
     }
 }
 

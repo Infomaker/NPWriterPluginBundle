@@ -11,7 +11,17 @@ class TimeLineComponent extends Component {
     getInitialState() {
         return {
             markers: this.props.markers,
+            activeIndex: this.props.markers.length - 1
+        }
+    }
 
+    didMount() {
+        this.updateSelectedCircle()
+    }
+
+    updateSelectedCircle() {
+        if (this.props.markers.length > 1) {
+            this.refs[(`circle` + this.state.activeIndex)].addClass('active')
         }
     }
 
@@ -48,34 +58,40 @@ class TimeLineComponent extends Component {
     makeCircles($$, timeline, date) {
         const dates = this.state.markers.map((marker) => marker.time)
         //Set day, month and year variables for the math
-        const first = dates[0];
-        const last = dates[dates.length - 1];
+        const first = moment(dates[0]).valueOf();
+        const last = moment(dates[dates.length - 1]).valueOf();
 
-        const lastInt = moment(last).valueOf() - moment(first).valueOf()
+        const lastInt = last - first
 
 
         //Integer representation of the last day. The first day is represnted as 0
         // var lastInt = ((lastMonth - firstMonth) * 30) + (lastDay - firstDay);
 
         //Draw first date circle
-        timeline.append(
-            $$('div')
-                .addClass('circle')
-                .setAttribute('id', 'circle0')
-                .setAttribute('style', "left: ' + 0 + '%;")
-                .append(
-                    $$('div')
-                        .addClass("popupSpan")
-                        .append(
-                            dateSpan(dates[0])
-                        )
-                )
-        )
+        // timeline.append(
+        //     $$('div')
+        //         .ref('circle0')
+        //         .addClass('circle')
+        //         .setAttribute('style', "left: 0%;")
+        //         .append(
+        //             $$('div')
+        //                 .addClass("popupSpan")
+        //                 .append(
+        //                     dateSpan(dates[0], $$)
+        //                 )
+        //         )
+        //         .on('click', () => {
+        //             if (i !== this.state.activeIndex) {
+        //                 this.extendState({activeIndex: i})
+        //                 this.updateSelectedCircle()
+        //             }
+        //         })
+        // )
 
         //Loop through middle dates
-        for (let i = 1; i < dates.length - 1; i++) {
+        for (let i = 0; i < dates.length; i++) {
             //Integer representation of the date
-            const thisInt = moment(dates[0]).valueOf();
+            const thisInt = moment(dates[i]).valueOf() - first;
 
             //Integer relative to the first and last dates
             const relativeInt = thisInt / lastInt;
@@ -83,70 +99,52 @@ class TimeLineComponent extends Component {
             //Draw the date circle
             timeline.append(
                 $$('div')
+                    .ref('circle' + i)
                     .addClass("circle")
-                    .setAttribute('circle' + i)
                     .setAttribute('style', 'left: ' + relativeInt * 100 + '%;')
                     .append(
                         $$('div')
                             .addClass("popupSpan")
-                            .append(dateSpan(dates[i]))
+                            .append(
+                                dateSpan(dates[i], $$)
+                            )
                     )
+                    .on('click', () => {
+                        if (i !== this.state.activeIndex) {
+                            this.extendState({activeIndex: i})
+                            this.updateSelectedCircle()
+                        }
+                    })
             )
         }
         //Draw the last date circle
-//             $("#line").append('<div class="circle" id="circle' + i + '" style="left: ' + 99 + '%;"><div class="popupSpan">' + dateSpan(
-        //     dates[dates.length - 1]) + '</div></div>');
-
+        // timeline.append($$('div')
+        //     .ref('circle' + (dates.length - 1))
+        //     .addClass('circle')
+        //     .setAttribute('id', 'circle' + (dates.length - 1))
+        //     .setAttribute('style', 'left: 99%;')
+        //     .append(
+        //         $$('div')
+        //             .addClass("popupSpan")
+        //             .append(
+        //                 dateSpan(dates[dates.length - 1], $$)
+        //             )
+        //     )
+        // )
     }
 
-//                    $(".circle:first").addClass("active");
 }
-
-//                makeCircles();
-
-// $(".circle").mouseenter(function () {
-//     $(this).addClass("hover");
-// });
-//
-// $(".circle").mouseleave(function () {
-//     $(this).removeClass("hover");
-// });
-//
-// $(".circle").click(function () {
-//     var spanNum = $(this).attr("id");
-//     selectDate(spanNum);
-// });
-
-// function selectDate(selector) {
-//     $selector = "#" + selector;
-//     $spanSelector = $selector.replace("circle", "span");
-//     var current = $selector.replace("circle", "");
-//
-//     $(".active").removeClass("active");
-//     $($selector).addClass("active");
-//
-//     if ($($spanSelector).hasClass("right")) {
-//         $(".center").removeClass("center").addClass("left")
-//         $($spanSelector).addClass("center");
-//         $($spanSelector).removeClass("right")
-//     } else if ($($spanSelector).hasClass("left")) {
-//         $(".center").removeClass("center").addClass("right");
-//         $($spanSelector).addClass("center");
-//         $($spanSelector).removeClass("left");
-//     }
-//     ;
-// };
-// }
-// */
-// // --
-//
-// }
-// }
 
 function
 
-dateSpan(date) {
-    return moment(date).format('YYYY-MM-dd')
+dateSpan(date, $$) {
+    return $$('div')
+        .append($$('div')
+            .addClass('moment-date')
+            .append(moment(date).format('YYYY-MM-DD')))
+        .append($$('div')
+            .addClass('moment-time')
+            .append(moment(date).format('HH:mm:ss')))
 }
 
 export default TimeLineComponent

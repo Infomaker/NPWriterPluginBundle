@@ -11,13 +11,14 @@ class ShowVersionsComponent extends Component {
     }
 
     render($$) {
-        return $$('div').append(
-            [
+        return $$('div')
+            .addClass('showVersions')
+            .append([
                 $$(TimeLineComponent, {markers: this.state.history.versions}),
+                $$(ArticleDisplayComponent), {history: this.state.history.versions},
                 $$('span').append(this.props.article.id),
-                $$('span').append(":" + this.state.history.versions.length)
-            ]
-        )
+                $$('span').append(":" + this.state.history.versions.length)]
+            )
     }
 
     onClose(status) {

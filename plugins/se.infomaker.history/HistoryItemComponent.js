@@ -6,7 +6,7 @@ class HistoryItemComponent extends Component {
 
     render($$) {
         const article = this.props.article;
-        const version = article.versions[0]
+        const version = article.versions[article.versions.length - 1]
 
         let icon, title
 
