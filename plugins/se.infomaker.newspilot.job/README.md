@@ -34,11 +34,14 @@ Preview and thumb are rendered using Writer server as proxy to access NP Image S
     "mandatory": false,
     "data": {
         "imageProxyServer": "https://image.proxy.host",
-        "newspilotHostName": "newspilot.host"
+        "newspilotHostName": "newspilot.host",
+        "externalSystemId" : 12
     }
 }
 ```
 `imageProxyServer` corresponds to NP Image Server in image above.
+
+`externalSystemId` should be the ID of the external system which the writer is connected to.
 
 Note that plugin require **https** when communicating with Newspilot API.
 
