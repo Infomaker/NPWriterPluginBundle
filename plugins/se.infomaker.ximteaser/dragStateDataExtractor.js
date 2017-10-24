@@ -14,15 +14,14 @@ export default {
     },
 
     extractMultiple(dragState) {
-        const multiple = true
-        return this._extractData(dragState, multiple)
+        return this._extractData(dragState, true)
     },
 
     /**
      * 
      * 
      * @param {any} dragState 
-     * @param {any} multiple 
+     * @param {Boolean} multiple
      */
     _extractData(dragState, multiple) {
         const result = {}

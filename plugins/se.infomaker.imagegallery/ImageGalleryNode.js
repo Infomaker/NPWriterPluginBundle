@@ -7,8 +7,7 @@ class ImageGalleryNode extends Container {
 ImageGalleryNode.define({
     type: 'imagegallery',
     dataType: { type: 'string' },
-    imageFiles: {type: 'array', optional: true, default: []},
-    genericCaption: {type: 'string', optional: true, default: ''},
+    genericCaption: {type: 'string', optional: true, default: ''}
 })
 
 export default ImageGalleryNode

@@ -6,6 +6,12 @@ import ImageGalleryImageComponent from './ImageGalleryImageComponent'
 
 class ImageGalleryComponent extends Component {
 
+
+    shouldRerender(newProps, newState) {
+        return newProps.disabled !== this.props.disabled
+            || (newProps.nodes && newProps.nodes.length !== this.props.nodes.length)
+    }
+
     didMount() {
         this.context.editorSession.onRender('document', this.onDocumentChange, this)
     }
@@ -13,8 +19,11 @@ class ImageGalleryComponent extends Component {
     onDocumentChange(change) {
         if (change.isAffected(this.props.node.id)) {
             this.rerender()
-        } else if (this.props.node.imageFiles) {
-            this.props.node.imageFiles.forEach(imageFile => {
+            if(!this.props.isolatedNodeState) {
+                this.selectContainer()
+            }
+        } else if (this.props.node.nodes) {
+            this.props.node.nodes.forEach(imageFile => {
                 if (change.isAffected(imageFile.id)) {
                     this.rerender()
                 }
@@ -36,6 +45,7 @@ class ImageGalleryComponent extends Component {
             placeholder: this.getLabel('Generic caption'),
             icon: 'fa-align-left'
         }).ref('generericCaptionInput')
+
         const genericCaptionWrapper = $$('div').addClass('image-gallery-genericcaption').append(generericCaptionInput)
 
         imageGalleryToolbox.append(this.renderHeader($$))
@@ -43,22 +53,18 @@ class ImageGalleryComponent extends Component {
         if (this.props.isolatedNodeState) {
             imageGalleryToolbox.addClass('show')
 
-            if (this.props.node.imageFiles && this.props.node.imageFiles.length) {
+            if (this.props.node.nodes && this.props.node.nodes.length) {
                 let toolboxContent = $$('div').addClass('toolboox-content')
 
-                this.props.node.imageFiles.forEach((imageFile, index) => {
+                this.props.node.nodes.forEach((galleryImageNodeId, index) => {
+                    const galleryImageNode = this.context.doc.get(galleryImageNodeId)
                     toolboxContent.append($$(ImageGalleryImageComponent, {
                         index,
-                        imageFile,
-                        isolatedNodeState: this.props.isolatedNodeState,
-                        node: this.props.node,
-                        removeImage: () => {
-                            api.editorSession.transaction((tx) => {
-                                let copy = this.props.node.imageFiles.concat()
-                                copy.splice(index, 1)
-                                tx.set([this.props.node.id, 'imageFiles'], copy)
-                            })
-                        }
+                        node: galleryImageNode,
+                        remove: () => {
+                            this.removeImage(galleryImageNodeId)
+                        },
+                        isolatedNodeState: this.props.isolatedNodeState
                     }))
                 })
 
@@ -66,19 +72,17 @@ class ImageGalleryComponent extends Component {
             }
         }
 
-        const el = $$('div')
+        return $$('div')
             .addClass('im-blocknode__container im-image-gallery')
             .append(this.renderHeader($$))
             .append(dropzone)
             .append(genericCaptionWrapper)
             .append(imageGalleryToolbox)
             .ref('imageGalleryComponent')
-
-        return el
     }
 
     renderHeader($$) {
-        const imageCount = this.props.node.imageFiles ? this.props.node.imageFiles.length : 0
+        const imageCount = this.props.node.nodes ? this.props.node.nodes.length : 0
         const header = $$('div').addClass('image-gallery-header')
         const icon = $$(FontAwesomeIcon, {icon: IMAGE_GALLERY_ICON})
         const label = `${this.getLabel('Image gallery')} (${imageCount})`
@@ -86,6 +90,20 @@ class ImageGalleryComponent extends Component {
         header.append(icon).append(label)
 
         return header
+    }
+
+    removeImage(galleryImageNodeId) {
+        const node = this.props.node
+        this.context.editorSession.transaction(tx => {
+            tx.set([node.id, 'nodes'], node.nodes.filter(childNode => childNode !== galleryImageNodeId))
+            tx.delete(galleryImageNodeId)
+        })
+    }
+
+    selectContainer() {
+        const comp = this.getParent()
+        comp.extendState({mode: 'selected', unblocked: true})
+        comp.selectNode()
     }
 
     getDropzoneSpecs() {

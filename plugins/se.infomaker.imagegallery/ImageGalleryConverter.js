@@ -7,22 +7,23 @@ const ImageGalleryConverter = {
     dataType: 'x-im/imagegallery',
 
     matchElement(el) {
-        return (el.is(`${this.tagName}`) && el.attr("type") === this.dataType)
+        return (el.is(`${this.tagName}`) && el.attr('type') === this.dataType)
     },
 
     /**
      * Newsml to Substance node
-     * 
-     * @param {any} el 
-     * @param {any} node 
+     *
+     * @param {any} el
+     * @param {any} node
+     * @param converter
      */
     import(el, node, converter) {
         const galleryDataEl = el.find(':scope > data')
         const linksEl = el.find(':scope > links')
+        const nodeId = el.attr('id')
 
-        node.imageFiles = Array.isArray(node.imageFiles) ? node.imageFiles : []
         node.dataType = el.attr('type')
-        node.id = el.attr('id')
+        node.id = nodeId
 
         if (galleryDataEl) {
             galleryDataEl.children.forEach(child => {
@@ -35,19 +36,19 @@ const ImageGalleryConverter = {
         if (linksEl) {
             linksEl.children.forEach(child => {
                 const imgData = child.find(':scope > data')
-                let imageId = idGenerator()
-                let imageFile = {
+                const imageId = idGenerator()
+                const imageFile = {
                     id: imageId,
                     type: 'npfile',
                     imType: 'x-im/image',
-                    parentNodeId: node.id,
+                    parentNodeId: nodeId,
                     uuid: child.attr('uuid'),
-                    uri: child.attr('uri'),
+                    uri: child.attr('uri')
                 }
-                let imageGalleryImage = {
-                    id: `${imageId}-galleryImage`,
+                const imageGalleryImage = {
                     type: 'imagegalleryimage',
-                    parentNodeId: node.id,
+                    parentNodeId: nodeId,
+                    imageFile: imageFile.id
                 }
 
                 if (imgData) {
@@ -61,7 +62,6 @@ const ImageGalleryConverter = {
                 converter.createNode(imageFile)
                 converter.createNode(imageGalleryImage)
 
-                node.imageFiles.push(imageFile.id)
                 node.nodes.push(imageGalleryImage.id)
             })
         }
@@ -75,7 +75,7 @@ const ImageGalleryConverter = {
      * @param {any} converter 
      */
     export(node, el, converter) {
-        const imageFiles = node.imageFiles || []
+        const galleryImageNodes = node.nodes || []
         const {$$} = converter
         const data = $$('data')
         const links = $$('links')
@@ -92,24 +92,24 @@ const ImageGalleryConverter = {
             el.append(data)
         }
 
-        imageFiles.forEach((imageFile) => {
-            let fileNode = node.document.get(imageFile)
-            let galleryImage = node.document.get(`${imageFile}-galleryImage`)
-            let linkData = $$('data')
-            let link = $$('link').attr({
+        galleryImageNodes.forEach((galleryImageNodeId) => {
+            const galleryImageNode = node.document.get(galleryImageNodeId)
+            const galleryImage = node.document.get(galleryImageNode.imageFile)
+            const linkData = $$('data')
+            const link = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',
-                uri: fileNode.uri,
-                uuid: fileNode.uuid
+                uri: galleryImage.uri,
+                uuid: galleryImage.uuid
             })
-            if (galleryImage.byline) {
+            if (galleryImageNode.byline) {
                 linkData.append($$('byline').append(
-                    converter.annotatedText([galleryImage.id, 'byline'])
+                    converter.annotatedText([galleryImageNode.id, 'byline'])
                 ))
             }
-            if (galleryImage.caption) {
+            if (galleryImageNode.caption) {
                 linkData.append($$('caption').append(
-                    converter.annotatedText([galleryImage.id, 'caption'])
+                    converter.annotatedText([galleryImageNode.id, 'caption'])
                 ))
             }
             link.append(linkData)
