@@ -57,7 +57,6 @@ IframelyNode.define({
     url: {type: 'string', optional: true },
     dataType: { type: 'string' },
     title: { type: 'string', optional: true },
-    provider: { type: 'string', optional: true },
     errorMessage: { type: 'string', optional: true }
 })
 

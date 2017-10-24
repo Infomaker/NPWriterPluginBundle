@@ -61,24 +61,33 @@ Some settings can only be changed on the Iframely [settings page](https://iframe
 ```xml
 <object id="..." type="x-im/iframely" url="https://www.infomaker.se/">
     <data>
+        <title>Title of the embed</title>
         <embedCode>
             <![CDATA[<iframe src="..."></iframe>]]>
         </embedCode>
     </data>
 </object>
 ```
-### 2.1 - Options
+### 2.1 - Object
+
 #### URL
 ```xml
 <object id="..." type="x-im/iframely" url="https://www.infomaker.se/">
 ```
 The original URL of the request is stored as an URL attribute in case the data has to be fetched by Iframely again.
 
+### 2.2 - Object > data
+
+#### Title
+```xml
+<title>Title of the embed</title>
+```
+The title of the embed provided in the oembed response.
+
 #### Embedded HTML
 ```xml
-<data>
-  <embedCode>
-  <![CDATA[<iframe src="..."></iframe>]]>
-  </embedCode>...
+<embedCode>
+    <![CDATA[<iframe src="..."></iframe>]]>
+</embedCode>
 ```
-The data returned by the Iframely API is stored as `<embedCode>`.
+The embed data returned by the Iframely API is stored as `<embedCode>`.

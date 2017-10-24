@@ -126,7 +126,7 @@ class ImageCropper extends Component {
         const cropOptions = $$('div').append(cropToggle).addClass('se-crop-options')
         const restoreAll = $$('button').addClass('btn btn-secondary').append(this.getLabel('Restore all')).on('click', this.props.restore)
         const abort = $$('button').addClass('btn pull-right btn-abort').append(this.getLabel('cancel')).on('click', this.onClose)
-        const confirm = $$('button').addClass('btn pull-right btn-primary').append(this.getLabel('Save')).on('click', this.onSave)
+        const confirm = $$('button').addClass('btn pull-right btn-primary').append(this.getLabel('Crop')).on('click', this.onSave)
         cropActions.append([
             restoreAll,
             confirm,

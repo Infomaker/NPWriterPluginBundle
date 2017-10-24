@@ -89,16 +89,23 @@ class NewsPriorityComponent extends Component {
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
-        const lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
-        el.append(lifetimeTitle);
-        if (this.lifetimes.length > 1) {
-            el.append(this._renderLifeTime($$));
-        }
+        if (!this.preventLifeTime()) {
+            const lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
+            el.append(lifetimeTitle);
+            if (this.lifetimes.length > 1) {
+                el.append(this._renderLifeTime($$));
+            }
 
-        el.append(this._renderDatetimeInput($$).ref('datePickerComponent'));
+            el.append(this._renderDatetimeInput($$).ref('datePickerComponent'));
+        }
 
         return el;
 
+    }
+
+
+    preventLifeTime() {
+        return api.getConfigValue(pluginId, 'preventLifetime', false) === true
     }
 
     toogleTooltip(ref, show) {

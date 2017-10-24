@@ -29,10 +29,9 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
-        let maxHeight = 396
         let el = $$('div').addClass('sc-image-display')
         let cropOverlay = $$('div').addClass('crop-overlay hidden').ref('cropOverlay')
-        let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer').attr('style', `height:${maxHeight}px`)
+        let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
         const imageOptions = this.props.imageOptions
         let imgSrc
 
