@@ -7,6 +7,7 @@ import LoginComponent from './LoginComponent'
 import NoConnection from './NoConnection'
 import UserList from './UserList'
 import Lock from './Lock'
+import Dialog from './Dialog'
 
 const pluginId = 'se.infomaker.uatracker'
 
@@ -43,6 +44,7 @@ class UATrackerComponent extends Component {
             this.reserveArticle()
         } else {
             // Article is already locked, either by us or by someone else. Do nothing.
+            this.showArticleLockedDialog()
             console.log('\t[UATracker] Not locking: Document is already locked')
         }
     }
@@ -54,21 +56,6 @@ class UATrackerComponent extends Component {
         this.releaseArticle()
     }
 
-    showLogin() {
-        if (api.history.isAvailable()) {
-            const user = api.history.storage.getItem('user')
-            if (user) {
-                this.login(JSON.parse(user))
-            } else {
-                api.ui.showDialog(LoginComponent, {login: this.userLogin.bind(this)}, {
-                    title: this.getLabel("uatracker-dialog-title"),
-                    primary: this.getLabel('Continue'),
-                    secondary: false,
-                    disableEscKey: true
-                })
-            }
-        }
-    }
 
     reserveArticle() {
         this.extendState({
@@ -97,13 +84,12 @@ class UATrackerComponent extends Component {
     }
 
     lockArticle() {
-        console.log('-LOCKING ARTICLE-')
+        api.events.userActionLock()
     }
 
     unlockArticle() {
-        console.log('-UNLOCKING ARTICLE-')
+        api.events.userActionUnlock()
     }
-
 
     socketConnectError() {
         // this.props.popover.setIcon('fa-chain-broken')
@@ -140,7 +126,6 @@ class UATrackerComponent extends Component {
         })
 
         this.socket.on('connect', () => {
-            this.updateIcon([])
             this.extendState({
                 socketError: false
             })
@@ -157,7 +142,7 @@ class UATrackerComponent extends Component {
                     users: users,
                     socketId: this.socket.id
                 })
-                this.updateIcon(users)
+
             })
 
             this.socket.on('article/lock-status-change', (lockStatus) => {
@@ -172,22 +157,45 @@ class UATrackerComponent extends Component {
 
     setLockStatus(lockedBy) {
         if (lockedBy) {
-            // this.props.popover.setIcon('fa-lock')
-            const lockedByUser = this.state.users.find(user => user.socketId === lockedBy)
-            // this.props.popover.setStatusText('Locked by ' + lockedByUser.name)
+
+            if(lockedBy === this.socket.id) {
+                // Active user has locked the article
+            } else {
+                this.lockArticle()
+            }
+
         } else {
-            // this.props.popover.setIcon('fa-unlock')
-            // this.props.popover.setStatusText('Not locked')
+            this.unlockArticle()
         }
     }
 
-    updateIcon(users) {
-        if (users.length > 1) {
-            // this.props.popover.setIcon('fa-group')
-            // this.props.popover.setStatusText(users.length + this.getLabel('connected-users-qty-connected'))
-        } else {
-            // this.props.popover.setIcon('fa-user')
-            // this.props.popover.setStatusText(this.state.name)
+    showArticleLockedDialog() {
+        const dialogProps = {
+            message: 'För att göra ändringar i artikeln måste du låsa upp den först.',
+        }
+        const dialogOptions = {
+            heading: 'Artikeln är låst och inga ändringar du gör kommer att sparas',
+            primary: 'Jag förstår',
+            secondary: false,
+            center: false
+        }
+
+        api.ui.showDialog(Dialog, dialogProps, dialogOptions)
+    }
+
+    showLogin() {
+        if (api.history.isAvailable()) {
+            const user = api.history.storage.getItem('user')
+            if (user) {
+                this.login(JSON.parse(user))
+            } else {
+                api.ui.showDialog(LoginComponent, {login: this.userLogin.bind(this)}, {
+                    title: this.getLabel("uatracker-dialog-title"),
+                    primary: this.getLabel('Continue'),
+                    secondary: false,
+                    disableEscKey: true
+                })
+            }
         }
     }
 
