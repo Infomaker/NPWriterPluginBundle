@@ -1,6 +1,8 @@
 import {Component} from 'substance'
 import { api, moment} from 'writer'
 
+import User from './User'
+
 class UserList extends Component {
 
     // shouldRerender() {
@@ -9,13 +11,12 @@ class UserList extends Component {
     // }
 
     render($$) {
-        const userList = $$('ul').addClass('user-list')
+        const userList = $$('ul').addClass('user-list').ref('user-list')
 
-        const Avatar = api.ui.getComponent('avatar')
         const activeUser = this.props.users.find(user => user.socketId === this.props.socketId)
         const otherUsers = this.props.users.filter(user => user.socketId !== this.props.socketId)
 
-        const userElems = otherUsers.map(user => this._renderUserElem($$, Avatar, user))
+        const userElems = otherUsers.map(user => $$(User, { user: user, lockedBy: this.props.lockedBy }).ref('user-item-' + user.socketId))
         userList.append(userElems)
 
         // If there are other users, add a separator
@@ -25,31 +26,31 @@ class UserList extends Component {
 
         // Add active user to end of list
         if (activeUser) {
-            userList.append(this._renderUserElem($$, Avatar, activeUser))
+            userList.append($$(User, { user: activeUser, lockedBy: this.props.lockedBy }).ref('user-item-active'))
         }
 
         return userList
     }
 
-    _renderUserElem($$, Avatar, user) {
-        const item = $$('li').addClass('user-list-item').ref('user-item-' + user.socketId)
+    // _renderUserElem($$, Avatar, user) {
+    //     const item = $$('li').addClass('user-list-item').ref('user-item-' + user.socketId)
 
-        const userHasLock = user.socketId === this.props.lockedBy
+    //     const userHasLock = user.socketId === this.props.lockedBy
 
-        if (userHasLock) { item.addClass('active') }
+    //     if (userHasLock) { item.addClass('active') }
 
-        const avatarEl = $$(Avatar, {
-            avatarSource: 'gravatar',
-            avatarId: user.email,
-            avatarAlt: this.extractUserInitials(user)
-        }).ref('avatar-' + user.socketId)
+    //     const avatarEl = $$(Avatar, {
+    //         avatarSource: 'gravatar',
+    //         avatarId: user.email,
+    //         avatarAlt: this.extractUserInitials(user)
+    //     }).ref('avatar-' + user.socketId)
 
-        const statusIndicator = $$('div').addClass('status-indicator')
+    //     const statusIndicator = $$('div').addClass('status-indicator')
 
-        item.append([avatarEl, statusIndicator])
+    //     item.append([avatarEl, statusIndicator])
 
-        return item
-    }
+    //     return item
+    // }
 
     extractUserInitials(user, limit) {
         limit = limit || 2
