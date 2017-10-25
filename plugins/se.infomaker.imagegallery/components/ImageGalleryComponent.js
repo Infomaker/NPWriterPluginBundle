@@ -6,10 +6,8 @@ import ImageGalleryImageComponent from './ImageGalleryImageComponent'
 
 class ImageGalleryComponent extends Component {
 
-
-    shouldRerender(newProps, newState) {
-        return newProps.disabled !== this.props.disabled
-            || (newProps.nodes && newProps.nodes.length !== this.props.nodes.length)
+    shouldRerender(newProps) {
+        return newProps.isolatedNodeState !== 'focused'
     }
 
     didMount() {

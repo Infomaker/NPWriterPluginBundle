@@ -1,4 +1,4 @@
-import {idGenerator} from 'writer'
+import {idGenerator, NilUUID} from 'writer'
 import ImageGalleryNode from './ImageGalleryNode';
 
 const ImageGalleryConverter = {
@@ -59,12 +59,51 @@ const ImageGalleryConverter = {
                     })
                 }
 
+                // Import author links
+                imageGalleryImage.authors = []
+                let authorLinks
+                authorLinks = child.find('links')
+
+                if (authorLinks) {
+                    imageGalleryImage.authors = this.convertAuthors(node, authorLinks)
+                }
+
                 converter.createNode(imageFile)
                 converter.createNode(imageGalleryImage)
 
                 node.nodes.push(imageGalleryImage.id)
             })
         }
+    },
+
+    convertAuthors: function(node, authorLinks) {
+        let seen = new Map()
+
+        return authorLinks.children
+            .filter((authorLinkEl) => authorLinkEl.getAttribute('rel') === 'author')
+            .map(function(authorLinkEl) {
+                const emailElement = authorLinkEl.find('email')
+                const uuid = authorLinkEl.getAttribute('uuid')
+                return {
+                    nodeId: node.id,
+                    uuid,
+                    name: authorLinkEl.getAttribute('title'),
+                    email: emailElement ? emailElement.textContent : null,
+                    isSimpleAuthor: NilUUID.isNilUUID(uuid) ? true : false,
+                    isLoaded: false
+                }
+            })
+            .filter((author) => {
+                if(author.isSimpleAuthor) {
+                    return true
+                }
+                if (seen.get(author.uuid) !== undefined) {
+                    return false
+                } else {
+                    seen.set(author.uuid, author)
+                    return true
+                }
+            })
     },
 
     /**
@@ -95,7 +134,7 @@ const ImageGalleryConverter = {
         galleryImageNodes.forEach((galleryImageNodeId) => {
             const galleryImageNode = node.document.get(galleryImageNodeId)
             const galleryImage = node.document.get(galleryImageNode.imageFile)
-            const linkData = $$('data')
+            const imageData = $$('data')
             const link = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',
@@ -103,16 +142,42 @@ const ImageGalleryConverter = {
                 uuid: galleryImage.uuid
             })
             if (galleryImageNode.byline) {
-                linkData.append($$('byline').append(
+                imageData.append($$('byline').append(
                     converter.annotatedText([galleryImageNode.id, 'byline'])
                 ))
             }
             if (galleryImageNode.caption) {
-                linkData.append($$('caption').append(
+                imageData.append($$('caption').append(
                     converter.annotatedText([galleryImageNode.id, 'caption'])
                 ))
             }
-            link.append(linkData)
+
+            link.append(imageData)
+
+            if (galleryImageNode.authors.length) {
+                const imageLinks = $$('links')
+                const authorLinks = galleryImageNode.authors.map((author) => {
+                    const authorLink = $$('link').attr({
+                        rel: 'author',
+                        uuid: author.uuid,
+                        title: author.name,
+                        type: 'x-im/author'
+                    })
+
+                    if(author.email) {
+                        const data = $$('data')
+                        const email = $$('email').append(author.email)
+                        data.append(email)
+                        authorLink.append(data)
+                    }
+                    return authorLink
+                })
+
+                link.append(
+                    imageLinks.append(authorLinks)
+                )
+            }
+
             links.append(link)
         })
 

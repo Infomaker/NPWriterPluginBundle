@@ -4,6 +4,7 @@ import {fetchImageMeta} from 'writer'
 class ImageGalleryImageComponent extends Component {
 
     didMount() {
+        this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
@@ -25,9 +26,16 @@ class ImageGalleryImageComponent extends Component {
                 .then((node) => {
                     this.context.editorSession.transaction((tx) => {
                         tx.set([this.props.node.id, 'caption'], node.caption)
+                        if (node.authors.length > 0) {
+                            console.log('set some authors')
+                            tx.set([this.props.node.id, 'authors'], node.authors)
+                        }
                     })
                     this.rerender()
                 })
+        } else if (change.isAffected([this.props.node.id, 'authors'])) {
+            console.log('yo authors changes', change)
+            this.rerender()
         }
     }
 
@@ -53,15 +61,14 @@ class ImageGalleryImageComponent extends Component {
 
     renderImageMeta($$) {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
+        const BylineComponent = this.context.api.ui.getComponent('byline')
         const node = this.props.node
         const imageMeta = $$('div').addClass('image-meta')
 
-        const bylineInput = $$(FieldEditor, {
-            node,
-            field: 'byline',
-            placeholder: 'Byline',
-            icon: 'fa-user'
-        }).ref('bylineInput')
+        const bylineInput = $$(BylineComponent, {
+            node: this.props.node,
+            isolatedNodeState: this.props.isolatedNodeState
+        })
 
         const captionInput = $$(FieldEditor, {
             node,
