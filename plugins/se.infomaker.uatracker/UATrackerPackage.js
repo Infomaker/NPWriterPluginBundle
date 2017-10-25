@@ -8,14 +8,7 @@ export default {
     version: '{{version}}',
     configure: function(config) {
 
-        config.addPopover(
-            'uatracker',
-            {
-                icon: 'fa-user',
-                align: 'left'
-            },
-            UATrackerComponent
-        )
+        config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
 
         // Login Component
 

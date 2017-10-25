@@ -6,6 +6,7 @@ import { api, moment, event } from 'writer'
 import LoginComponent from './LoginComponent'
 import NoConnection from './NoConnection'
 import UserList from './UserList'
+import Lock from './Lock'
 
 const pluginId = 'se.infomaker.uatracker'
 
@@ -13,13 +14,8 @@ class UATrackerComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        api.events.on(pluginId, event.DOCUMENT_CHANGED, (e) => {
-            this._onDocumentChanged()
-        })
-
-        api.events.on(pluginId, event.DOCUMENT_SAVED, () => {
-            this._onDocumentSaved()
-        })
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
+        api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
     }
 
     dispose() {
@@ -37,39 +33,25 @@ class UATrackerComponent extends Component {
         }
     }
 
-
     didMount() {
-        // If no username specified make sure to show dialog
-
         this.showLogin()
-
     }
 
     _onDocumentChanged() {
         if (!this.state.lockedBy) {
-            this.extendState({
-                lockedBy: this.socket.id
-            })
-
-            // Only send lock information if article has a uuid
-            if (this.articleInformation.uuid) {
-                console.log('Locking article: Article has changed and the article has a UUID')
-                this.socket.emit('article/locked', this.articleInformation)
-            }
+            // Article is not locked by anyone, so we reserve it for ourselves.
+            this.reserveArticle()
+        } else {
+            // Article is already locked, either by us or by someone else. Do nothing.
+            console.log('\t[UATracker] Not locking: Document is already locked')
         }
     }
 
     _onDocumentSaved() {
-        console.log('DOCUMENT SAVED', this.articleInformation)
-        this.extendState({
-            lockedBy: null
-        })
-
-        // Only unlock article if user has socketId
-        if (this.articleInformation.socketId) {
-            console.log('Unlocking article: Article has been saved and I have a socket ID')
-            this.socket.emit('article/unlocked', this.articleInformation)
-        }
+        // On save, wheter we have locked the article or not, release the article lock
+        // to let all other users know it has been updated.
+        // Save should be disabled elsewhere if the article is not locked by us.
+        this.releaseArticle()
     }
 
     showLogin() {
@@ -88,6 +70,32 @@ class UATrackerComponent extends Component {
         }
     }
 
+    reserveArticle() {
+        this.extendState({
+            lockedBy: this.socket.id
+        })
+
+        // Only send lock information if article has a uuid.
+        if (this.articleInformation.uuid) {
+            // Trigger an event telling the server that we have locked this article
+            this.socket.emit('article/locked', this.articleInformation)
+            console.log('\t[UATracker] Reserving article: Article has changed and the article has a UUID')
+        }
+    }
+
+    releaseArticle() {
+        this.extendState({
+            lockedBy: null
+        })
+
+        // Only unlock article if user has socketId
+        if (this.articleInformation.socketId) {
+            // Trigger an event telling the server that we have unlocked this article
+            this.socket.emit('article/unlocked', this.articleInformation)
+            console.log('\t[UATracker] Releasing article: Article has been saved and I have a socket ID')
+        }
+    }
+
     lockArticle() {
         console.log('-LOCKING ARTICLE-')
     }
@@ -98,8 +106,8 @@ class UATrackerComponent extends Component {
 
 
     socketConnectError() {
-        this.props.popover.setIcon('fa-chain-broken')
-        this.props.popover.setStatusText(this.getLabel('uatracker-no-connetion'))
+        // this.props.popover.setIcon('fa-chain-broken')
+        // this.props.popover.setStatusText(this.getLabel('uatracker-no-connetion'))
         this.extendState({
             users: [],
             socketId: null,
@@ -121,7 +129,6 @@ class UATrackerComponent extends Component {
     }
 
     setupLiveArticles() {
-
         const host = api.getConfigValue('se.infomaker.uatracker', 'host')
 
         this.socket = io(host)
@@ -144,7 +151,7 @@ class UATrackerComponent extends Component {
             this.socket.emit('article/opened', this.articleInformation)
 
             this.socket.on('article/user-change', (users) => {
-                console.log('Received article/user-change', users)
+                console.log('\t[UATracker] Received: article/user-change', users)
 
                 this.extendState({
                     users: users,
@@ -154,7 +161,7 @@ class UATrackerComponent extends Component {
             })
 
             this.socket.on('article/lock-status-change', (lockStatus) => {
-                console.log('Received article/lock-status-change', lockStatus)
+                console.log('\t[UATracker] Received: article/lock-status-change', lockStatus)
                 this.extendState({
                     lockedBy: lockStatus.lockedBy
                 })
@@ -165,27 +172,26 @@ class UATrackerComponent extends Component {
 
     setLockStatus(lockedBy) {
         if (lockedBy) {
-            this.props.popover.setIcon('fa-lock')
+            // this.props.popover.setIcon('fa-lock')
             const lockedByUser = this.state.users.find(user => user.socketId === lockedBy)
-            this.props.popover.setStatusText('Locked by ' + lockedByUser.name)
+            // this.props.popover.setStatusText('Locked by ' + lockedByUser.name)
         } else {
-            this.props.popover.setIcon('fa-unlock')
-            this.props.popover.setStatusText('Not locked')
+            // this.props.popover.setIcon('fa-unlock')
+            // this.props.popover.setStatusText('Not locked')
         }
     }
 
     updateIcon(users) {
         if (users.length > 1) {
-            this.props.popover.setIcon('fa-group')
-            this.props.popover.setStatusText(users.length + this.getLabel('connected-users-qty-connected'))
+            // this.props.popover.setIcon('fa-group')
+            // this.props.popover.setStatusText(users.length + this.getLabel('connected-users-qty-connected'))
         } else {
-            this.props.popover.setIcon('fa-user')
-            this.props.popover.setStatusText(this.state.name)
+            // this.props.popover.setIcon('fa-user')
+            // this.props.popover.setStatusText(this.state.name)
         }
     }
 
     login({email, name}) {
-
         this.extendState({
             email: email,
             name: name
@@ -198,7 +204,6 @@ class UATrackerComponent extends Component {
             api.history.storage.setItem('user', JSON.stringify(user))
         }
         this.login(user)
-
     }
 
     logout() {
@@ -215,23 +220,40 @@ class UATrackerComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('uatracker')
+        const el = $$('div')
+        const container = $$('div').addClass('sc-np-bar-container uatracker')
+        el.append(container)
 
-        if(this.state.socketError) {
-            const noConnectionEl = $$(NoConnection)
-            el.append(noConnectionEl)
-        } else {
-            const userListEl = $$(UserList, {users: this.state.users, socketId: this.state.socketId})
-            el.append(userListEl)
+        if (this.state.socketError) {
+            // Show connection error icon
+        } else if (this.state.users.length) {
+            // Show user list if there are users
+            const userListElem = $$(UserList, {
+                users: this.state.users,
+                socketId: this.state.socketId,
+                lockedBy: this.state.lockedBy
+            }).ref('userList')
+
+            const lockElem = $$(Lock, {
+                socketId: this.state.socketId,
+                lockedBy: this.state.lockedBy,
+                reserveArticle: this.reserveArticle.bind(this)
+            })
+            container.append([userListElem, lockElem])
         }
 
+        // if(this.state.socketError) {
+        //     const noConnectionEl = $$(NoConnection)
+        //     el.append(noConnectionEl)
+        // } else {
+        //     const userListEl = $$(UserList, {users: this.state.users, socketId: this.state.socketId})
+        //     el.append(userListEl)
+        // }
 
-
-        if (this.state.email) {
-            const logoutButton = $$('button').addClass('btn sc-np-btn btn-secondary').append(this.getLabel('Logout')).on('click', this.logout)
-            el.append(logoutButton)
-        }
-
+        // if (this.state.email) {
+        //     const logoutButton = $$('button').addClass('btn sc-np-btn btn-secondary').append(this.getLabel('Logout')).on('click', this.logout)
+        //     el.append(logoutButton)
+        // }
 
         return el
     }

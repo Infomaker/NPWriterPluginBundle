@@ -1,3 +1,15 @@
+$avatar-width: 27px;
+$avatar-height: 27px;
+
+$inactive-color: #878787;
+$active-color: #00ab50;
+
+@keyframes bounce {
+    0%   { bottom: -20px; }
+    90%   { bottom: 3px; }
+    100% { bottom: 0px; }
+  }
+
 .uatracker-login {
     p {
         margin:15px 0;
@@ -24,50 +36,112 @@
     }
 }
 .uatracker {
-    margin:15px;
-    max-width: 400px;
-    .active-user {
-        float: right;
-        font-size:0.8rem;
-        color: #565656;
-    }
-    &:after {
-        content: '';
-        display: block;
-        clear: both;
-    }
-    p {
-        color: #777;
-        white-space:normal;
-        margin-bottom: 0.7rem
-    }
-    .btn {
-        float:right;
-        margin-top:15px;
-    }
-    ul.user-list {
 
-        list-style: none;
-        padding:0;
-        margin:0 -15px;
+    .lock-container {
+        display: inline-block;
+        margin: 9px 8px;
+        height: 34px;
+        line-height: 74px;
 
-        li {
-            font-size:1.1rem;
-            border-bottom:1px solid #ddd;
-            padding: 0 15px;
-            
-            .author__name {
-                cursor: auto;
-            }
-            &.current {
-                font-weight:bold;
-            }
-            .username {
+        button.lock-button {
+            color: #b1b1b1;
+            background-color: #f2f4f5;
+            border-color: #d9dddf;
+            vertical-align: top;
 
-            }
-            .timestamp {
-                float:right
+            &.locked {
+                color: #4d4d4d;
             }
         }
     }
+
+    ul.user-list {
+       display: inline-block;
+       list-style: none;
+       padding: 0;
+       margin: 9px 0;
+
+        &:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        li.user-list-item {
+            float: left;
+            margin: 0 3px;
+
+            &.separator {
+                width: 1px;
+                height: 34px;
+                background-color: #d9dddf;
+            }
+
+            .avatar__container {
+                display: block;
+                height: $avatar-height;
+                overflow: hidden;
+                position: relative;
+
+                img.avatar {
+                    height: $avatar-height;
+                    width: $avatar-width;
+                    display: block;
+                    position: relative;
+                    border-radius: 0;
+                    overflow: hidden;
+                    animation: bounce 0.2s ease-in-out;
+
+                    &:before {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        background-color: $inactive-color;
+                    }
+
+                    &:after {
+                        content: attr(alt);
+                        text-transform: lowercase;
+                        width: $avatar-width;
+                        height: $avatar-height;
+                        color: #fff;
+                        display: block;
+                        position: absolute;
+                        top: -12px;
+                        text-align: center;
+                        font-size: 14px;
+                    }
+                }
+            }
+
+           .status-indicator {
+               height: 6px;
+               margin-top: 1px;
+               padding: 0 2px;
+               font-size: 6px;
+               line-height: 5px;
+               background-color: $inactive-color;
+           }
+
+            &.active {
+                .status-indicator {
+                    display: block;
+                    height: 6px;
+                    background-color: $active-color;
+                    color: rgba(255, 255, 255, 0.75);
+
+                    &:after {
+                        content: '•••'
+                    }
+                }
+
+                img.avatar:before {
+                    background-color: $active-color;
+                }
+            }
+       }
+   }
 }
