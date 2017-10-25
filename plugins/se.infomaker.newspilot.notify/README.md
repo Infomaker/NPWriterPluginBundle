@@ -7,7 +7,7 @@ NIS handles the communication with Editor Service and Newspilot.
 When the POST request returns the Writer article will be enriched with a Newspilot article id.
 A PUT updates the Newspilot article through NIS.
 
-## Settings needed in Writer environment
+## Plugin configuration
 Install this plugin in the writer environment by adding the settings below to your Newspilot Writer `/server/config/writer.json` file.
 ```
 {
@@ -23,3 +23,6 @@ Install this plugin in the writer environment by adding the settings below to yo
 }
 ```
 `integrationService` corresponds to Newspilot Integration Service.
+
+## Output
+None.

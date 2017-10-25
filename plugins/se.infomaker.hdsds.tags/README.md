@@ -1,3 +1,5 @@
+**DEPRECATED!** Use `se.infomaker.ximtags`.
+
 # Tag plugin
 This plugin handles searching and selecting "tags".
 
