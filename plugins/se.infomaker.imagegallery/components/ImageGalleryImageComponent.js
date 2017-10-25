@@ -20,6 +20,7 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _onDocumentChange(change) {
+        // TODO: Rerenders too often, maybe when authors change try to optimize this
         if (change.isAffected(this.props.node.imageFile)) {
             const imageNode = this.context.api.doc.get(this.props.node.imageFile)
             fetchImageMeta(imageNode.uuid)
@@ -27,14 +28,12 @@ class ImageGalleryImageComponent extends Component {
                     this.context.editorSession.transaction((tx) => {
                         tx.set([this.props.node.id, 'caption'], node.caption)
                         if (node.authors.length > 0) {
-                            console.log('set some authors')
                             tx.set([this.props.node.id, 'authors'], node.authors)
                         }
                     })
                     this.rerender()
                 })
         } else if (change.isAffected([this.props.node.id, 'authors'])) {
-            console.log('yo authors changes', change)
             this.rerender()
         }
     }
