@@ -23,7 +23,7 @@ in Newspilot.
 
 Preview and thumb are rendered using Writer server as proxy to access NP Image Server.
 
-## Configuration
+## Plugin configuration
 ```
 {
     "id": "se.infomaker.newspilot.job",
@@ -44,5 +44,9 @@ Preview and thumb are rendered using Writer server as proxy to access NP Image S
 `externalSystemId` should be the ID of the external system which the writer is connected to.
 
 Note that plugin require **https** when communicating with Newspilot API.
+
+## Output
+An image that has been dragged and dropped onto the article will generate the same output as `se.infomaker.ximimage` 
+plugin.
 
 

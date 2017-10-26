@@ -1,24 +1,7 @@
 # Inline text plugin
 TODO: migrate to InlineText plugin...
 
-## NewsItem format
-The plugin adds an object to the idf.
-
-```xml
-<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="Lorem ipsum">
-    <data>
-        <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
-        <text format="html"><![CDATA[<p>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</p>]]></text>
-    </data>
-    <links>
-        <link uri="im://content-part/fact" rel="content-part"/>
-    </links>
-</object>
-```
-*Note* that `object > links` is optional, i.e. if no inline-text uri:s are configured (see Plugin configuration below) 
-this element is omitted.
-
-## Configuration
+## Plugin configuration
 ```json 
 {
     "id": "se.infomaker.factbox",
@@ -54,6 +37,23 @@ this element is omitted.
 
 The `placeholderText` serves the placeholder text to be displayed in the input fields when field missing value.
  
-At least one contentpartType should be specified
+At least one contentpartType should be specified.
  
-At leaser one contentpartType should be marked as default
+At leaser one contentpartType should be marked as default.
+
+## Output
+The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).
+
+```xml
+<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="Lorem ipsum">
+    <data>
+        <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
+        <text format="html"><![CDATA[<p>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</p>]]></text>
+    </data>
+    <links>
+        <link uri="im://content-part/fact" rel="content-part"/>
+    </links>
+</object>
+```
+*Note* that `object > links` is optional, i.e. if no inline-text uri:s are configured (see Plugin configuration above) 
+this element is omitted.
