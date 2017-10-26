@@ -49,7 +49,6 @@ class HistoryItemComponent extends Component {
                 api.ui.showDialog(
                     ShowVersionsComponent,
                     {
-                        width: "900px",
                         article: article,
                         applyVersion: this.props.applyVersion
                     },
