@@ -38,17 +38,8 @@ class TimeLineComponent extends Component {
 
     makeCircles($$, timeline) {
         const dates = this.state.markers.map((marker) => marker.time)
-        //Set day, month and year variables for the math
-        const first = moment(dates[0]).valueOf();
-        const last = moment(dates[dates.length - 1]).valueOf();
-
-        const lastInt = last - first
 
         for (let i = 0; i < dates.length; i++) {
-            //Integer representation of the date
-            const thisInt = moment(dates[i]).valueOf() - first;
-
-            //Integer relative to the first and last dates
             const relativeInt = i / (dates.length - 1);
 
             const circle = $$('div')
