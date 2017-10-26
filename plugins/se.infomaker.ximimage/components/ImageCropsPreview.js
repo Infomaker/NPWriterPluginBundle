@@ -138,25 +138,12 @@ class ImageCropsPreview extends Component {
                     })
             }
         }
-
-        // If crops has changed, clear the selected crop
-        this.selectCrop(undefined)
     }
 
     updateSrc(key, url) {
         if (this.refs['img-' + key]) {
             this.refs['img-' + key].setAttribute('src', url)
         }
-    }
-
-    selectCrop(url) {
-        if (url === undefined || this.state.selectedUrl === url) {
-            this.extendState({selectedUrl: undefined})
-        } else {
-            this.extendState({selectedUrl: url})
-        }
-
-        this.props.cropSelected(this.state.selectedUrl)
     }
 
     render($$) {
@@ -169,18 +156,9 @@ class ImageCropsPreview extends Component {
                 const url = this.cropUrls.get(key)
                 const cropDiv = $$('div')
                     .addClass('image-crops-item')
-                    .on('click', () => this.selectCrop(url))
 
                 const img = $$('img')
                     .setAttribute('src', url).ref('img-' + key)
-
-                if (this.state.selectedUrl && this.props.isolatedNodeState !== null) {
-                    if (url === this.state.selectedUrl) {
-                        img.addClass('crop-selected')
-                    } else {
-                        img.addClass('crop-unselected')
-                    }
-                }
 
                 cropDiv.append(
                     [
