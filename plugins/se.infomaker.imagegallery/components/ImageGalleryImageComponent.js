@@ -20,7 +20,6 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _onDocumentChange(change) {
-        // TODO: Rerenders too often, maybe when authors change try to optimize this
         if (change.isAffected(this.props.node.imageFile)) {
             const imageNode = this.context.api.doc.get(this.props.node.imageFile)
             fetchImageMeta(imageNode.uuid)

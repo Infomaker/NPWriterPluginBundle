@@ -20,6 +20,36 @@ class ImageGalleryImageNode extends BlockNode {
         }
     }
 
+    getImageFile() {
+        if (!this.imageFile) {
+            return
+        }
+
+        // FIXME: This should not be done if already done
+        // Right now this is done multiple times.
+        return this.document.get(this.imageFile)
+    }
+
+    getUrl() {
+        let imageFile = this.getImageFile()
+        if (imageFile) {
+            return imageFile.getUrl()
+        }
+    }
+
+    fetchSpecifiedUrls(fallbacks) {
+        let imageFile = this.getImageFile()
+        if (!imageFile) {
+            return Promise.reject('No image file available')
+        }
+
+        if (!imageFile.proxy) {
+            return Promise.reject('No image file available')
+        }
+
+        return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
+    }
+
     addAuthor(author) {
         const authors = this.authors
         let result = authors.find((item) => ImageGalleryImageNode._isEqual(item, author))

@@ -1,6 +1,6 @@
-import {Component, FontAwesomeIcon} from 'substance'
+import {Component, FontAwesomeIcon, Button} from 'substance'
 import {api, idGenerator} from 'writer'
-import { INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON } from '../ImageGalleryNode';
+import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
 
@@ -15,25 +15,32 @@ class ImageGalleryComponent extends Component {
     }
 
     onDocumentChange(change) {
-        if (change.isAffected(this.props.node.id)) {
+        if (change.isAffected([this.props.node.id, 'nodes'])) {
             this.rerender()
-            if(!this.props.isolatedNodeState) {
-                this.selectContainer()
+            if (!this.props.isolatedNodeState) {
+                this._selectContainer()
             }
-        } else if (this.props.node.nodes) {
-            this.props.node.nodes.forEach(imageFile => {
-                if (change.isAffected(imageFile.id)) {
-                    this.rerender()
-                }
-            })
         }
     }
 
     render($$) {
+        const el = $$('div')
+            .addClass('im-blocknode__container im-image-gallery')
+            .append(this._renderHeader($$))
+
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('Dropzone label'))
-        const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
-        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
+
+        if(this.props.node.length > 0) {
+            const galleryPreview = this._renderGalleryPreview($$)
+
+            el.append(galleryPreview)
+        } else {
+            const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('Dropzone label'))
+            const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
+
+            el.append(dropzone)
+        }
+
         const generericCaptionInput = $$(FieldEditor, {
             id: idGenerator(),
             node: this.props.node,
@@ -46,7 +53,21 @@ class ImageGalleryComponent extends Component {
 
         const genericCaptionWrapper = $$('div').addClass('image-gallery-genericcaption').append(generericCaptionInput)
 
-        imageGalleryToolbox.append(this.renderHeader($$))
+        const imageGalleryToolbox = this._renderToolbox($$)
+
+        return el.append(genericCaptionWrapper)
+            .append(imageGalleryToolbox)
+            .ref('imageGalleryComponent')
+    }
+
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderToolbox($$) {
+        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
+        imageGalleryToolbox.append(this._renderHeader($$))
 
         if (this.props.isolatedNodeState) {
             imageGalleryToolbox.addClass('show')
@@ -60,7 +81,7 @@ class ImageGalleryComponent extends Component {
                         index,
                         node: galleryImageNode,
                         remove: () => {
-                            this.removeImage(galleryImageNodeId)
+                            this._removeImage(galleryImageNodeId)
                         },
                         isolatedNodeState: this.props.isolatedNodeState
                     }))
@@ -70,16 +91,15 @@ class ImageGalleryComponent extends Component {
             }
         }
 
-        return $$('div')
-            .addClass('im-blocknode__container im-image-gallery')
-            .append(this.renderHeader($$))
-            .append(dropzone)
-            .append(genericCaptionWrapper)
-            .append(imageGalleryToolbox)
-            .ref('imageGalleryComponent')
+        return imageGalleryToolbox
     }
 
-    renderHeader($$) {
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderHeader($$) {
         const imageCount = this.props.node.nodes ? this.props.node.nodes.length : 0
         const header = $$('div').addClass('image-gallery-header')
         const icon = $$(FontAwesomeIcon, {icon: IMAGE_GALLERY_ICON})
@@ -90,7 +110,43 @@ class ImageGalleryComponent extends Component {
         return header
     }
 
-    removeImage(galleryImageNodeId) {
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderGalleryPreview($$) {
+        const InlineImageComponent = api.ui.getComponent('InlineImageComponent')
+        const galleryPreview = $$('div').addClass('image-gallery-gallery')
+        const galleryImages = this.props.node.nodes.map((galleryImageNodeId) => {
+            const galleryImageNode = this.context.doc.get(galleryImageNodeId)
+            const imageContainer = $$('div').addClass('image-container')
+
+            const deleteButton = $$(Button, {icon: 'remove'})
+                .addClass('remove-image-button')
+                .attr('title', this.getLabel('remove-image-button-title'))
+                .on('click', () => {
+                    this._removeImage(galleryImageNodeId)
+                })
+            imageContainer.append(deleteButton)
+
+            return imageContainer
+                .append(
+                    $$(InlineImageComponent, {
+                        nodeId: galleryImageNode.imageFile
+                    })
+                )
+        })
+        galleryPreview.append(galleryImages)
+
+        return galleryPreview
+    }
+
+    /**
+     * @param galleryImageNodeId
+     * @private
+     */
+    _removeImage(galleryImageNodeId) {
         const node = this.props.node
         this.context.editorSession.transaction(tx => {
             tx.set([node.id, 'nodes'], node.nodes.filter(childNode => childNode !== galleryImageNodeId))
@@ -98,7 +154,10 @@ class ImageGalleryComponent extends Component {
         })
     }
 
-    selectContainer() {
+    /**
+     * @private
+     */
+    _selectContainer() {
         const comp = this.getParent()
         comp.extendState({mode: 'selected', unblocked: true})
         comp.selectNode()
