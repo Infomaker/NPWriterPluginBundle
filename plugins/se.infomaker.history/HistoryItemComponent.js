@@ -49,10 +49,12 @@ class HistoryItemComponent extends Component {
                 api.ui.showDialog(
                     ShowVersionsComponent,
                     {
-                        article: article
+                        width: "900px",
+                        article: article,
+                        applyVersion: this.props.applyVersion
                     },
                     {
-                        title: "",
+                        title: this.getLabel('se.infomaker.history-header'),
                         global: true,
                         primary: this.getLabel('history-popover-Replace current article'),
                         secondary: this.getLabel('cancel'),

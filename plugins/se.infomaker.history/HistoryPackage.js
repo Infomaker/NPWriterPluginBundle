@@ -105,6 +105,26 @@ export default({
             sv: 'Ersätt nuvarande artikeltext'
         })
 
+        config.addLabel('se.infomaker.history-header', {
+            en: 'Saved local backup copies of article',
+            sv: 'Sparade lokala kopior av artikeln'
+        })
+
+        config.addLabel('se.infomaker.history-description', {
+            en: 'The timeline below displays local backup copies of the selected article. Select the version to restore and click "Replace current article".',
+            sv: 'Tidslinjen nedan visar lokala kopior av vald artikel. Välj den version som skall återställas och klicka på "Ersätt nuvarande artikeltext".'
+        })
+
+        config.addLabel('se.infomaker.history-preview.header', {
+            en: 'Preview',
+            sv: 'Förhandsvisning'
+        })
+
+        config.addLabel('se.intomaker.history-charactercount.label', {
+            en: 'Character count',
+            sv: 'Antal tecken'
+        })
+
         config.addPopover(
             'historymaincomponent',
             {
