@@ -1,5 +1,5 @@
 import {idGenerator, NilUUID} from 'writer'
-import ImageGalleryNode from './ImageGalleryNode';
+import ImageGalleryNode from './ImageGalleryNode'
 
 const ImageGalleryConverter = {
     type: ImageGalleryNode.type,

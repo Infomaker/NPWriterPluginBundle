@@ -6,9 +6,8 @@ import ImageGalleryImageNode from './ImageGalleryImageNode'
 import ImageGalleryComponent from './components/ImageGalleryComponent'
 import InsertImageGalleryTool from './InsertImageGalleryTool'
 import InsertImageGalleryCommand from './InsertImageGalleryCommand'
-import ImageGalleryConverter from './ImageGalleryConverter';
-import InsertImageCommand from './InsertImageCommand';
-
+import ImageGalleryConverter from './ImageGalleryConverter'
+import InsertImageCommand from './InsertImageCommand'
 
 const ImageGalleryPackage = {
     name: ImageGalleryNode.type,

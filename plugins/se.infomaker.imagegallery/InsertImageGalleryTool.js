@@ -1,6 +1,6 @@
 import {Tool} from 'substance'
 import {api} from 'writer'
-import { IMAGE_GALLERY_ICON } from './ImageGalleryNode';
+import { IMAGE_GALLERY_ICON } from './ImageGalleryNode'
 
 class InsertImageGalleryTool extends Tool {
     render($$) {
