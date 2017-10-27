@@ -35,13 +35,62 @@ $active-color: #00ab50;
         }
     }
 }
+
 .uatracker {
+     display: flex;
+
+    .sc-np-popover .popover-content{
+        max-width: 360px;
+
+        .content {
+            padding: 1em;
+
+            h2 {
+                font-size: 1.1em;
+                font-weight: bold;
+                color: #4d4d4d;
+            }
+
+            .message {
+                font-size: 0.85em;
+                line-height: 1.3em;
+                color: #b1b1b1;
+            }
+        }
+
+        .footer {
+            border-top: 1px solid rgba(217,217,217,1);
+            background-color: #fcfcfc;
+            padding: 0 1em;
+            color: #787878;
+        }
+    }
+
+    .no-connection-container {
+        color: #888888;
+        button.no-connection {
+            padding: 0.2em;
+            &:hover, &:focus {
+                color: #000;
+            }
+            // Match .sc-np-bar-icon
+            i {
+                width: 22px;
+                height: 22px;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .description {
+                vertical-align: top;
+                margin-left: 0.5em;
+            }
+        }
+    }
 
     .lock-container {
-        display: inline-block;
         margin: 9px 8px;
         height: 34px;
-        line-height: 74px;
 
         button.lock-button {
             color: #b1b1b1;
@@ -53,34 +102,93 @@ $active-color: #00ab50;
                 color: #4d4d4d;
             }
         }
+
+        .unlock-alert {
+            max-width: 300px;
+
+            .content {
+                padding: 1em;
+
+                .heading {
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: #4d4d4d;
+                }
+                .message {
+                    font-size: 0.85em;
+                    line-height: 1.3em;
+                    color: #b1b1b1;
+                }
+            }
+            .footer {
+                text-align: right;
+                background-color: rgba(229, 48, 15, 0.1);
+
+                button {
+                    text-transform: uppercase;
+                    font-weight: bold;
+
+                    &.unlock {
+                        color: #e5300f;
+                    }
+                }
+            }
+        }
     }
 
     ul.user-list {
-       display: inline-block;
+       display: flex;
        list-style: none;
        padding: 0;
        margin: 9px 0;
-
-        &:after {
-            content: '';
-            display: table;
-            clear: both;
-        }
+       cursor: pointer;
 
         li.user-list-item {
-            float: left;
             margin: 0 3px;
 
             &.separator {
+                cursor: default;
                 width: 1px;
                 height: 34px;
                 background-color: #d9dddf;
             }
 
+            &:hover {
+                .avatar__container img.avatar {
+                    transform: translateY(1px);
+                }
+            }
+
+            .popover-content.user-details {
+                cursor: default;
+
+                .content {
+                    .email {
+                        margin-top: 0.5em;
+                        font-weight: bold;
+                    }
+                }
+
+                .footer {
+                    color: #787878;
+
+                    i {
+                        width: 1.4em;
+                        font-size: 1.2em;
+                        vertical-align: middle;
+                    }
+
+                    .login-time {
+                        display: inline-block;
+                        font-size: 0.85em;
+                        vertical-align: baseline;
+                    }
+                }
+            }
+
             .avatar__container {
                 display: block;
                 height: $avatar-height;
-                overflow: hidden;
                 position: relative;
 
                 img.avatar {
@@ -92,6 +200,7 @@ $active-color: #00ab50;
                     overflow: hidden;
                     animation: bounce 0.2s ease-in-out;
 
+                    // Show colored background instead of broken image
                     &:before {
                         content: '';
                         width: 100%;
@@ -102,6 +211,7 @@ $active-color: #00ab50;
                         background-color: $inactive-color;
                     }
 
+                    // Show user initials if image does not exist
                     &:after {
                         content: attr(alt);
                         text-transform: lowercase;
@@ -128,8 +238,6 @@ $active-color: #00ab50;
 
             &.active {
                 .status-indicator {
-                    display: block;
-                    height: 6px;
                     background-color: $active-color;
                     color: rgba(255, 255, 255, 0.75);
 
@@ -142,6 +250,11 @@ $active-color: #00ab50;
                     background-color: $active-color;
                 }
             }
-       }
-   }
+        }
+    }
+}
+
+
+.modal-inner-content.uatracker-dialog {
+    margin: 10px 50px 20px 50px;
 }

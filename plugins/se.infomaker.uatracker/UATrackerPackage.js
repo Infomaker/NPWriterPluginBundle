@@ -1,6 +1,4 @@
-import './style.scss'
-
-import UATrackerComponent from './UATrackerComponent'
+import UATrackerComponent from './components/UATracker'
 
 export default {
     name: 'uatracker',
@@ -10,8 +8,51 @@ export default {
 
         config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
 
-        // Login Component
+        // Misc
+        config.addLabel('confirm-understand', {
+            en: 'I understand',
+            sv: 'Jag förstår'
+        })
 
+        config.addLabel('unlock', {
+            en: 'Unlock',
+            sv: 'Lås upp'
+        })
+
+        // Unlock dialog
+        config.addLabel('uatracker-unlock-article-title', {
+            en: 'Temporarily Locked',
+            sv: 'Tillfälligt låst'
+        })
+
+        config.addLabel('uatracker-unlock-article-message', {
+            en: 'Unlocking and taking over an article will overwrite the active users unsaved changes. If you are unsure, check with the active user before unlocking.',
+            sv: 'Att låsa upp och ta över en artikel kommer skriva över den aktiva användarens ändringar som inte är sparade. Om du är osäker, kontrollera med den aktiva användaren innan.'
+        })
+
+        // Article locked dialog
+        config.addLabel('uatracker-article-locked-title', {
+            en: 'CHANGE ME',
+            sv: 'Artikeln är låst och inga ändringar du gör kommer att sparas'
+        })
+
+        config.addLabel('uatracker-article-locked-message', {
+            en: 'CHANGE ME',
+            sv: 'För att göra ändringar i artikeln måste du låsa upp den först.'
+        })
+
+        // Article takover dialog
+        config.addLabel('uatracker-article-taken-over-title', {
+            en: 'CHANGE ME',
+            sv: 'Någon annan har låst och tagit över artikeln'
+        })
+
+        config.addLabel('uatracker-article-taken-over-message', {
+            en: 'CHANGE ME',
+            sv: 'För att spara de ändringar du har gjort i artikeln måste du låsa upp den igen.'
+        })
+
+        // Login Component
         config.addLabel('We would like you to enter email and name', {
             en: 'We would like you to enter email and name. This information is shared with other people that opens the same articles as you',
             sv: 'Vi skulle vilja be dig att fylla i din epostadress och namn. Informationen kommer delas med de som har artiklar öppna samtidigt med dig.'
