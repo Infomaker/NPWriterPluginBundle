@@ -195,11 +195,9 @@
     }
 }
 
-
-// Override save button style
-
 .sc-np-bar-container {
 
+    // Override save button style
     .sc-np-btn-group {
         button:first-child {
             border-radius: 3px 0 0 3px;
@@ -216,6 +214,10 @@
                 background-color: #878787;
             }
         }
+    }
 
+    // Override publish status
+    .sc-np-bar-item {
+        color: #888
     }
 }
