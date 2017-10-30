@@ -1,3 +1,5 @@
+import './admeta.scss'
+
 import AdmetaComponent from './AdmetaComponent'
 
 export default {
