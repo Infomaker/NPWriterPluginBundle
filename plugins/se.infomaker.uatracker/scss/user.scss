@@ -1,0 +1,137 @@
+@import 'colors';
+
+$avatar-width: 27px;
+$avatar-height: 27px;
+
+@keyframes bounce {
+    0%   { bottom: -15px; }
+    90%  { bottom: 3px; }
+    100% { bottom: 0px; }
+}
+
+.uatracker {
+    ul.user-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 9px 0;
+        cursor: pointer;
+
+        li.user-list-item {
+            margin: 0 3px;
+
+            &.separator {
+                cursor: default;
+                width: 1px;
+                height: 34px;
+                background-color: $light-background;
+            }
+
+            &.additional-users {
+                line-height: 34px;
+                font-weight: bold;
+                color: $normal-text;
+                font-size: 0.7em;
+                cursor: default;
+            }
+
+            &:hover {
+                .avatar__container img.avatar {
+                    transform: translateY(1px);
+                }
+            }
+
+            .popover-content.user-details {
+                cursor: default;
+
+                .content {
+                    .email {
+                        margin-top: 0.5em;
+                        font-weight: bold;
+                    }
+                }
+
+                .footer {
+                    color: $normal-text;
+
+                    i {
+                        width: 1.4em;
+                        font-size: 1.2em;
+                        vertical-align: middle;
+                    }
+
+                    .login-time {
+                        display: inline-block;
+                        font-size: 0.85em;
+                        vertical-align: baseline;
+                    }
+                }
+            }
+
+            .avatar__container {
+                display: block;
+                height: $avatar-height;
+                position: relative;
+
+                img.avatar {
+                    height: $avatar-height;
+                    width: $avatar-width;
+                    display: block;
+                    position: relative;
+                    border-radius: 0;
+                    overflow: hidden;
+                    animation: bounce 0.3s ease-in-out;
+
+                    // Show colored background instead of broken image
+                    &:before {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        background-color: $inactive;
+                    }
+
+                    // Show user initials if image does not exist
+                    &:after {
+                        content: attr(alt);
+                        text-transform: lowercase;
+                        width: $avatar-width;
+                        height: $avatar-height;
+                        color: #fff;
+                        display: block;
+                        position: absolute;
+                        top: -12px;
+                        text-align: center;
+                        font-size: 14px;
+                    }
+                }
+            }
+
+            .status-indicator {
+                height: 6px;
+                margin-top: 1px;
+                padding: 0 2px;
+                font-size: 6px;
+                line-height: 5px;
+                background-color: $inactive;
+            }
+
+            &.active {
+                .status-indicator {
+                    background-color: $active;
+                    color: rgba(255, 255, 255, 0.75);
+
+                    &:after {
+                        content: '•••'
+                    }
+                }
+
+                img.avatar:before {
+                    background-color: $active;
+                }
+            }
+        }
+    }
+}

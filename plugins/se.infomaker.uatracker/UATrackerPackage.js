@@ -44,12 +44,23 @@ export default {
         // Article takover dialog
         config.addLabel('uatracker-article-taken-over-title', {
             en: 'CHANGE ME',
-            sv: 'Någon annan har låst och tagit över artikeln'
+            sv: 'Någon har låst och tagit över artikeln'
         })
 
         config.addLabel('uatracker-article-taken-over-message', {
             en: 'CHANGE ME',
-            sv: 'För att spara de ändringar du har gjort i artikeln måste du låsa upp den igen.'
+            sv: '{{name}} ({{email}}) har låst och tagit över artikeln.'
+        })
+
+        // Article outdated dialog
+        config.addLabel('uatracker-article-outdated-title', {
+            en: 'CHANGE ME',
+            sv: 'Det finns en nyare version av artikeln'
+        })
+
+        config.addLabel('uatracker-article-outdated-message', {
+            en: 'CHANGE ME',
+            sv: 'Artikeln har blivit sparad av en annan användare. Ladda om sidan för att se de nya ändringarna.'
         })
 
         // Login Component

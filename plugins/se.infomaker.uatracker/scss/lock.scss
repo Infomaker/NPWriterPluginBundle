@@ -1,0 +1,55 @@
+@import 'colors';
+
+.uatracker {
+    .lock-container {
+        margin: 9px 8px;
+        height: 34px;
+
+        button.lock-button {
+            color: #b1b1b1;
+            background-color: #f2f4f5;
+            border-color: $light-background;
+            vertical-align: top;
+
+            &.locked {
+                color: $dark-text;
+            }
+        }
+
+        .unlock-alert {
+            max-width: 300px;
+
+            .content {
+                padding: 1em;
+
+                .heading {
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: #4d4d4d;
+                }
+                .message {
+                    font-size: 0.85em;
+                    line-height: 1.3em;
+                    color: #b1b1b1;
+                }
+            }
+            .footer {
+                text-align: right;
+                background-color: transparentize($color: $alert, $amount: 0.9);
+
+                button {
+                    text-transform: uppercase;
+                    font-weight: bold;
+
+                    &.unlock {
+                        color: $alert;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+

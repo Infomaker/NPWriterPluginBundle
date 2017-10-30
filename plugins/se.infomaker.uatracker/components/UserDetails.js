@@ -1,6 +1,28 @@
 import { Component, FontAwesomeIcon } from 'substance'
 import { moment} from 'writer'
 
+/**
+ * Renders details about a single user to be displayed in the popover
+ *
+ * @class UserDetails
+ * @extends {Component}
+ * @property {Object} props
+ * @property {User} props.user - User object to display
+ * @property {function} [props.logout] - Callback to run when logout button pressed
+ * @example
+    $$(UserDetails, {
+        user: {
+            isActiveUser: false,
+            name: 'Example User',
+            email: 'example.user@infomaker.se,
+            timestamp: '1509361376933',
+            socketId: '50w2YflUWbV2-sM6AABW',
+            uuid: 'd92cb6aa-d444-4f99-ae22-61ba2691b09f',
+            customerKey: 'im-writer'
+        },
+        logout: () => console.log('Logging out')
+    })
+ */
 class UserDetails extends Component {
 
     render($$) {

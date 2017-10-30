@@ -8,9 +8,35 @@ import UserListBarItem from './UserListBarItem'
 import LockButtonBarItem from './LockButtonBarItem'
 import NoConnectionBarItem from './NoConnectionBarItem'
 
-import '../scss/UATracker.scss'
+import '../scss/uatracker.scss'
+import '../scss/login.scss'
+import '../scss/user.scss'
+import '../scss/lock.scss'
 
 const pluginId = 'se.infomaker.uatracker'
+
+/**
+ * An object sent back by the UA tracker socket server whenever a new user joins the article.
+ * @typedef {Object} User
+ * @property {boolean} isActiveUser - If the user is the one currently viewing the article
+ * @property {string} name - The users full name
+ * @property {string} email - The users email address
+ * @property {string} timestamp - When the user first connected to the tracker
+ * @property {string} uuid - The current article UUID
+ * @property {string} socketId - The users socket ID
+ * @property {string} customerKey - customerKey from config
+ */
+
+/**
+ * Renders a list of users curretly viewing the article, their lock status, and the articles
+ * lock status.
+ * Intended to be used in the top bar.
+ *
+ * @class UATracker
+ * @extends {Component}
+ * @example
+    config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
+ */
 
 class UATracker extends Component {
 
@@ -117,6 +143,7 @@ class UATracker extends Component {
         this.socket.on('connect_error', () => this.onSocketConnectError())
         this.socket.on('article/user-change', (users) => this.onUserChange(users))
         this.socket.on('article/lock-status-change', (lockStatus) => this.onLockStatusChange(lockStatus))
+        this.socket.on('article/version-change', (versionData) => this.onVersionChange(versionData))
     }
 
     onConnect() {
@@ -136,7 +163,8 @@ class UATracker extends Component {
         const lockedByActiveUser = this.state.lockedBy === this.state.socketId
 
         if (lockedByActiveUser && lockedBy !== this.state.socketId) {
-            this.showLockTakenOverDialog()
+            const user = this.state.users.find(u => u.socketId === lockedBy)
+            this.showLockTakenOverDialog(user)
         }
 
         this.extendState({
@@ -144,6 +172,12 @@ class UATracker extends Component {
         })
 
         this.setLockStatus(lockedBy)
+    }
+
+    onVersionChange({ savedBy }) {
+        if (savedBy !== this.socket.id) {
+            this.showArticleOutdatedDialog()
+        }
     }
 
     setIsActiveUser(user) {
@@ -175,12 +209,28 @@ class UATracker extends Component {
         api.ui.showDialog(Dialog, dialogProps, dialogOptions)
     }
 
-    showLockTakenOverDialog() {
+    showLockTakenOverDialog(user) {
         const dialogProps = {
-            message: this.getLabel('uatracker-article-taken-over-message'),
+            message: this.getLabel('uatracker-article-taken-over-message')
+                .replace('{{name}}', user.name)
+                .replace('{{email}}', user.email),
         }
         const dialogOptions = {
             heading: this.getLabel('uatracker-article-taken-over-title'),
+            primary: this.getLabel('confirm-understand'),
+            secondary: false,
+            center: false
+        }
+
+        api.ui.showDialog(Dialog, dialogProps, dialogOptions)
+    }
+
+    showArticleOutdatedDialog() {
+        const dialogProps = {
+            message: this.getLabel('uatracker-article-outdated-message'),
+        }
+        const dialogOptions = {
+            heading: this.getLabel('uatracker-article-outdated-title'),
             primary: this.getLabel('confirm-understand'),
             secondary: false,
             center: false
@@ -241,13 +291,14 @@ class UATracker extends Component {
 
         if (this.state.socketError) {
             container.append($$(NoConnectionBarItem).ref('no-connection'))
-        } else if (this.state.users.length) {
+        } else if (this.state.users.length && this.state.email) {
             // Show user list if there are users
             const userListElem = $$(UserListBarItem, {
                 users: this.state.users,
                 socketId: this.state.socketId,
                 lockedBy: this.state.lockedBy,
-                logout : this.logout.bind(this)
+                limit: 5,
+                logout: this.logout.bind(this)
             }).ref('user-list')
 
             const lockElem = $$(LockButtonBarItem, {

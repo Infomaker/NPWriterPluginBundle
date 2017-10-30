@@ -4,11 +4,34 @@ import {api} from 'writer'
 import Popover from './Popover'
 import UserDetails from './UserDetails';
 
-
+/**
+ * Renders a single user item to be used in the user list
+ *
+ * @class UserItem
+ * @extends {Component}
+ * @property {Object} props
+ * @property {User} props.user - User object to display
+ * @property {string} props.lockedBy - Socket ID of user who currently has the article locked
+ * @property {function} [props.logout] - Callback to run when logout button pressed
+ * @example
+    $$(UserItem, {
+        user: {
+            isActiveUser: false,
+            name: 'Example User',
+            email: 'example.user@infomaker.se,
+            timestamp: '1509361376933',
+            socketId: '50w2YflUWbV2-sM6AABW',
+            uuid: 'd92cb6aa-d444-4f99-ae22-61ba2691b09f',
+            customerKey: 'im-writer'
+        },
+        lockedBy: '50w2YflUWbV2-sM6AABW',
+        logout: () => console.log('Logging out')
+    })
+ */
 class UserItem extends Component {
 
     shouldRerender(newProps, newState) {
-        return this.state.hasLock !== newState.hasLock;
+        return this.state.hasLock !== newState.hasLock
     }
 
     didUpdate() {
@@ -18,6 +41,12 @@ class UserItem extends Component {
             }
         } else if (this.state.hasLock) {
             this.extendState({ hasLock: false })
+        }
+    }
+
+    getInitialState() {
+        return {
+            hasLock: this.props.lockedBy === this.props.user.socketId
         }
     }
 
