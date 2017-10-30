@@ -3,20 +3,48 @@ import {api, idGenerator} from 'writer'
 import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
+import ImageGalleryPreviewComponent from './ImageGalleryPreviewComponent'
 
+/**
+ * @class ImageGalleryComponent
+ * Image Gallery Component renders slider-preview, and image toolbox.
+ * Contains nodes of ImageGalleryImageComponents.
+ *
+
+ * @property {Object} props
+ * @property {Node} props.node
+ * @property {Number} props.initialPosition Initial position for the gallery slider, useful for keeping position between renders
+ * @property {string} props.isolatedNodeState
+ * @property {Function} props.removeImage
+ * @property {Function} props.onTransitionEnd Fires when the slider has finished an animation transition
+ */
 class ImageGalleryComponent extends Component {
 
+    /**
+     * Only rerender when not focused.
+     * This avoids multiple author and image rerenders
+     * from child components.
+     *
+     * @param newProps
+     * @returns {boolean}
+     */
     shouldRerender(newProps) {
         return newProps.isolatedNodeState !== 'focused'
     }
 
     didMount() {
-        this.context.editorSession.onRender('document', this.onDocumentChange, this)
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
-    onDocumentChange(change) {
+    /**
+     * @param change
+     * @private
+     */
+    _onDocumentChange(change) {
         if (change.isAffected([this.props.node.id, 'nodes'])) {
             this.rerender()
+
+            // Dropping an image on an unselected ImageGallery will select it
             if (!this.props.isolatedNodeState) {
                 this._selectContainer()
             }
@@ -31,7 +59,15 @@ class ImageGalleryComponent extends Component {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
 
         if(this.props.node.length > 0) {
-            const galleryPreview = this._renderGalleryPreview($$)
+            const galleryPreview = $$(ImageGalleryPreviewComponent, {
+                node: this.props.node,
+                isolatedNodeState: this.props.isolatedNodeState,
+                removeImage: this._removeImage.bind(this),
+                initialPosition: this._storedGalleryPosition,
+                onTransitionEnd: (pos) => {
+                    this._storedGalleryPosition = pos
+                }
+            })
 
             el.append(galleryPreview)
         } else {
@@ -44,8 +80,6 @@ class ImageGalleryComponent extends Component {
         const generericCaptionInput = $$(FieldEditor, {
             id: idGenerator(),
             node: this.props.node,
-            disabled: false,
-            multiLine: true,
             field: 'genericCaption',
             placeholder: this.getLabel('Generic caption'),
             icon: 'fa-align-left'
@@ -58,6 +92,22 @@ class ImageGalleryComponent extends Component {
         return el.append(genericCaptionWrapper)
             .append(imageGalleryToolbox)
             .ref('imageGalleryComponent')
+    }
+
+    /**
+     * @returns {Number}
+     * @private
+     */
+    get _storedGalleryPosition() {
+        return this._galleryPosition
+    }
+
+    /**
+     * @param {Number} pos
+     * @private
+     */
+    set _storedGalleryPosition(pos) {
+        this._galleryPosition = pos
     }
 
     /**
@@ -80,10 +130,10 @@ class ImageGalleryComponent extends Component {
                     toolboxContent.append($$(ImageGalleryImageComponent, {
                         index,
                         node: galleryImageNode,
+                        isolatedNodeState: this.props.isolatedNodeState,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
-                        },
-                        isolatedNodeState: this.props.isolatedNodeState
+                        }
                     }))
                 })
 
@@ -108,38 +158,6 @@ class ImageGalleryComponent extends Component {
         header.append(icon).append(label)
 
         return header
-    }
-
-    /**
-     * @param $$
-     * @returns {VirtualElement}
-     * @private
-     */
-    _renderGalleryPreview($$) {
-        const InlineImageComponent = api.ui.getComponent('InlineImageComponent')
-        const galleryPreview = $$('div').addClass('image-gallery-gallery')
-        const galleryImages = this.props.node.nodes.map((galleryImageNodeId) => {
-            const galleryImageNode = this.context.doc.get(galleryImageNodeId)
-            const imageContainer = $$('div').addClass('image-container')
-
-            const deleteButton = $$(Button, {icon: 'remove'})
-                .addClass('remove-image-button')
-                .attr('title', this.getLabel('remove-image-button-title'))
-                .on('click', () => {
-                    this._removeImage(galleryImageNodeId)
-                })
-            imageContainer.append(deleteButton)
-
-            return imageContainer
-                .append(
-                    $$(InlineImageComponent, {
-                        nodeId: galleryImageNode.imageFile
-                    })
-                )
-        })
-        galleryPreview.append(galleryImages)
-
-        return galleryPreview
     }
 
     /**

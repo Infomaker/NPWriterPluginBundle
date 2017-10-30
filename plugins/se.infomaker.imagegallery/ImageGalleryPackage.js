@@ -24,6 +24,10 @@ const ImageGalleryPackage = {
 
         config.addConverter('newsml', ImageGalleryConverter)
 
+        config.addIcon('angle-left', { 'fontawesome': 'fa-angle-left' })
+        config.addIcon('angle-right', { 'fontawesome': 'fa-angle-right' })
+        config.addIcon('remove', { 'fontawesome': 'fa-times' })
+
         /* Labels */
         config.addLabel('Image gallery', {
             'sv': 'Bildspel'

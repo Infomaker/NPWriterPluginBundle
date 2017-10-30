@@ -21,36 +21,70 @@
             color: #ddd;
         }
     }
+    .image-gallery-container {
+        overflow: hidden;
+        position: relative;
+        height: 100px;
 
-    .image-gallery-gallery {
-        &:after {
-            content: '';
-            display: block;
-            clear: both;
+        .gallery-control {
+            position: absolute;
+            z-index: 1;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            height: 100%;
+
+            &.left-control {
+                left: 0;
+                i {
+                    float:left;
+                    margin: 0 10px 0;
+                }
+            }
+            &.right-control {
+                right:0;
+                i {
+                    float:right;
+                    margin: 0 10px 0;
+                }
+            }
         }
-        img {
-            vertical-align: middle;
-            width: 100%;
-        }
-        .image-container {
+
+        .image-gallery-gallery {
             position: relative;
-            float: left;
-            max-width: 160px;
-            max-height: 160px;
-            margin-right: 2px;
+            left: 0;
+            transition: all 1s;
 
-            &:hover {
+            img {
+                max-height: 100px;
+            }
+            .image-container {
+                position: relative;
+                float: left;
+                margin-right: 2px;
+
+                &:hover {
+                    .remove-image-button {
+                        display: inline;
+                    }
+                }
+
                 .remove-image-button {
-                    display: inline;
+                    display: none;
+                    color: #fff;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    i {
+                        text-shadow: 1px 1px #555;
+                    }
                 }
             }
 
-            .remove-image-button {
-                display: none;
-                color: #fff;
-                position: absolute;
-                right: 0;
-                top: 0;
+            // Clearfix
+            &:after {
+                content: '';
+                display: block;
+                clear: both;
             }
         }
     }
@@ -64,5 +98,5 @@
                 color: #288dc0;
             }
         }
-    }   
+    }
 }
