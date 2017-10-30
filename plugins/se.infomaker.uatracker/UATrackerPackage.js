@@ -8,17 +8,6 @@ export default {
 
         config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
 
-        // Misc
-        config.addLabel('confirm-understand', {
-            en: 'I understand',
-            sv: 'Jag förstår'
-        })
-
-        config.addLabel('unlock', {
-            en: 'Unlock',
-            sv: 'Lås upp'
-        })
-
         // Unlock dialog
         config.addLabel('uatracker-unlock-article-title', {
             en: 'Temporarily Locked',
@@ -32,34 +21,34 @@ export default {
 
         // Article locked dialog
         config.addLabel('uatracker-article-locked-title', {
-            en: 'CHANGE ME',
-            sv: 'Artikeln är låst och inga ändringar du gör kommer att sparas'
+            en: 'The article is locked',
+            sv: 'Artikeln är låst'
         })
 
         config.addLabel('uatracker-article-locked-message', {
-            en: 'CHANGE ME',
+            en: 'You must unlock the article before editing it.',
             sv: 'För att göra ändringar i artikeln måste du låsa upp den först.'
         })
 
         // Article takover dialog
         config.addLabel('uatracker-article-taken-over-title', {
-            en: 'CHANGE ME',
-            sv: 'Någon har låst och tagit över artikeln'
+            en: 'Someone has locked the article',
+            sv: 'Någon har låst artikeln'
         })
 
         config.addLabel('uatracker-article-taken-over-message', {
-            en: 'CHANGE ME',
+            en: '{{name}} ({{email}}) has locked and taken control of the article',
             sv: '{{name}} ({{email}}) har låst och tagit över artikeln.'
         })
 
         // Article outdated dialog
         config.addLabel('uatracker-article-outdated-title', {
-            en: 'CHANGE ME',
+            en: 'There is a newer version of the article available',
             sv: 'Det finns en nyare version av artikeln'
         })
 
         config.addLabel('uatracker-article-outdated-message', {
-            en: 'CHANGE ME',
+            en: 'The article has been saved by an other user. Refresh the page to fetch the latest changes.',
             sv: 'Artikeln har blivit sparad av en annan användare. Ladda om sidan för att se de nya ändringarna.'
         })
 
@@ -77,16 +66,7 @@ export default {
             sv: 'Ange ditt namn'
         })
 
-        // UATracker component
-        config.addLabel('connected-users-headline', {
-            en: 'Users with this article open',
-            sv: 'Användare som har denna artikel öppen'
-        })
-        config.addLabel('connected-users-description', {
-            en: 'Following users has this article open, which means that you might not be able to save you article',
-            sv: 'Följande användare har denna artikel öppen för redigering. Detta kan innebära att de ändringar du gör inte kan sparas.'
-        })
-
+        // No connection component
         config.addLabel('no-connection-headline', {
             en: 'No connection to user identification service',
             sv: 'Ingen anslutning till identifieringstjänsten'
@@ -97,32 +77,37 @@ export default {
             sv: 'Det gick inte ansluta till identifieringstjänsten. Detta innebär att andra användare kan ha denna artikeln öppen samtidigt.'
         })
 
-        config.addLabel('connected-users-qty-connected', {
-            en: ' users connected',
-            sv: ' anslutna användare'
-        })
-
         config.addLabel('uatracker-no-connetion', {
             en: 'No connection',
             sv: 'Ingen anslutning'
+        })
+
+        // Misc
+        config.addLabel('confirm-understand', {
+            en: 'I understand',
+            sv: 'Jag förstår'
+        })
+
+        config.addLabel('unlock', {
+            en: 'Unlock',
+            sv: 'Lås upp'
         })
 
         config.addLabel('(You)', {
             en: '(You)',
             sv: '(Du)'
         })
+
         config.addLabel('Continue', {
             en: 'Continue',
             sv: 'Fortsätt'
         })
+
         config.addLabel('Logout', {
             en: 'Logout',
             sv: 'Logga ut'
         })
-        config.addLabel('User logged in', {
-            en: 'User logged in ',
-            sv: 'Användaren loggade in '
-        })
+
         config.addLabel('uatracker-dialog-title', {
             en: 'Identification',
             sv: 'Identifiering'
