@@ -1,7 +1,7 @@
 import { Component } from 'substance'
 import { api } from 'writer'
 import KeywordItemComponent from './KeywordItemComponent'
-
+import InputSelectionComponent from './InputSelectionComponent'
 
 class KeywordsComponent extends Component {
 
@@ -11,7 +11,7 @@ class KeywordsComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass(this.name)
+        const el = $$('div').addClass('keywords')
 
         const keywordsTitle = $$('h2').append(this.getLabel('admeta-keywords'))
 
@@ -27,7 +27,12 @@ class KeywordsComponent extends Component {
 
         const keywordInput = this._renderKeywordInput($$)
 
-        el.append([keywordsTitle, keywordList, keywordInput])
+        const keywordSelection = $$(InputSelectionComponent, {
+            inputValue: this.state.inputValue,
+            onSelect: this.addKeywords.bind(this)
+        })
+
+        el.append([keywordsTitle, keywordList, keywordInput, keywordSelection])
         return el
     }
 
@@ -37,17 +42,28 @@ class KeywordsComponent extends Component {
                 $$('input').addClass('form-control form__search')
                 .ref('keywordInput')
                 .attr('placeholder', api.getLabel('admeta-add-keywords'))
-                .on('keydown', this.handleKeywordInput)
+                .on('keydown', this.handleKeywordInput.bind(this))
+                .on('input', this.updateInputSelection.bind(this))
             )
         )
     }
 
     handleKeywordInput(e) {
         if (e.keyCode === 13) {
-            const keywords = e.srcElement.value.split(',')
-            this.props.addKeywords(keywords)
-            e.srcElement.value = ''
+            this.addKeywords()
         }
+    }
+
+    addKeywords() {
+        const keywordInputElem = this.refs.keywordInput
+        this.props.addKeywords(keywordInputElem.val().split(','))
+        this.extendState({ inputValue: '' })
+        keywordInputElem.val('')
+    }
+
+    updateInputSelection() {
+        const keywordInputElem = this.refs.keywordInput
+        this.extendState({ inputValue: keywordInputElem.val() })
     }
 }
 

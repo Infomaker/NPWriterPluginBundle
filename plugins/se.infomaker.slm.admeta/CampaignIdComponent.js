@@ -1,6 +1,6 @@
 import { Component, FontAwesomeIcon as Icon } from 'substance'
 import { api } from 'writer'
-
+import InputSelectionComponent from './InputSelectionComponent'
 
 class CampaignIdComponent extends Component {
 
@@ -10,13 +10,17 @@ class CampaignIdComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('campaignId')
+        const el = $$('div').addClass('campaign-id')
 
         const campaignIdTitle = $$('h2').append(this.getLabel('admeta-campaign-id'))
         let campaignIdDisplay = (this.props.campaignId) ? this._renderCapaignIdDisplay($$) : ''
         const campaignIdInput = this._renderCampaignIdInput($$)
+        const campaignIdSelection = $$(InputSelectionComponent, {
+            inputValue: this.state.inputValue,
+            onSelect: this.setCampaignId.bind(this)
+        })
 
-        el.append([campaignIdTitle, campaignIdDisplay, campaignIdInput])
+        el.append([campaignIdTitle, campaignIdDisplay, campaignIdInput, campaignIdSelection])
         return el
     }
 
@@ -51,19 +55,30 @@ class CampaignIdComponent extends Component {
         return $$('div').addClass('search__container').append(
             $$('div').addClass('form-group').append(
                 $$('input').addClass('form-control form__search')
-                .ref('keywordInput')
+                .ref('campaignIdInput')
                 .attr('placeholder', api.getLabel('admeta-set-campaign-id'))
-                .on('keydown', this.handleCampaignIdInput)
+                .on('keydown', this.handleCampaignIdInput.bind(this))
+                .on('input', this.updateInputSelection.bind(this))
             )
         )
     }
 
     handleCampaignIdInput(e) {
         if (e.keyCode === 13) {
-            const campaignId = e.srcElement.value
-            this.props.setCampaignId(campaignId)
-            e.srcElement.value = ''
+            this.setCampaignId()
         }
+    }
+
+    setCampaignId() {
+        const campaignIdElem = this.refs.campaignIdInput
+        this.props.setCampaignId(campaignIdElem.val())
+        this.extendState({ inputValue: '' })
+        campaignIdElem.val('')
+    }
+
+    updateInputSelection() {
+        const campaignIdElem = this.refs.campaignIdInput
+        this.extendState({ inputValue: campaignIdElem.val() })
     }
 }
 
