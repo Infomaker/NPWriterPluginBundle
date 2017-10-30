@@ -1,6 +1,19 @@
 import {Component} from 'substance'
 import {fetchImageMeta} from 'writer'
 
+/**
+ * @class ImageGalleryImageComponent
+ * Image Component used by Image Gallery, renders image, caption, and byline
+ * for image. When added it fetches metadata from image and populates
+ * the ImageGalleryImageNode related to the component.
+ *
+
+ * @property {Object} props
+ * @property {Number} props.index
+ * @property {Node} props.node
+ * @property {String} props.isolatedNodeState
+ * @property {Function} props.remove
+ */
 class ImageGalleryImageComponent extends Component {
 
     didMount() {
