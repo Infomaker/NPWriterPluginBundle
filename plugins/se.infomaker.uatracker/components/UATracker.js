@@ -280,7 +280,8 @@ class UATracker extends Component {
         this.extendState({
             email: null,
             name: null,
-            socketId: null
+            socketId: null,
+            users: []
         })
     }
 

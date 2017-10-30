@@ -31,7 +31,7 @@ class UserDetails extends Component {
         let name = user.name
         let logoutButton = null
 
-        if (user.isActiveUser) {
+        if (user.isActiveUser && typeof this.props.logout === 'function') {
             name += ' ' + this.getLabel('(You)')
             logoutButton = $$('button', { class: 'btn btn-secondary logout'},
                 this.getLabel('Logout')
