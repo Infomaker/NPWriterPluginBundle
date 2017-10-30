@@ -13,4 +13,4 @@ ImageGalleryNode.define({
 export default ImageGalleryNode
 export const INSERT_IMAGE_GALLERY_COMMAND = `${ImageGalleryNode.type}-insert-gallery`
 export const INSERT_IMAGE_COMMAND = `${ImageGalleryNode.type}-insert-image`
-export const IMAGE_GALLERY_ICON = 'fa fa-map-o'
+export const IMAGE_GALLERY_ICON = 'fa fa-caret-square-o-right'
