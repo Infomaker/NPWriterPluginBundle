@@ -16,7 +16,7 @@ class InputSelectionComponent extends Component {
         }
 
         const el = $$('div').attr('style', style).addClass('input-selection').append([
-            $$('span').append('Lägg till: '),
+            $$('span').append(this.getLabel('admeta-add-item')),
             $$('span').append(this.props.inputValue)
         ]).on('click', this.props.onSelect)
 
