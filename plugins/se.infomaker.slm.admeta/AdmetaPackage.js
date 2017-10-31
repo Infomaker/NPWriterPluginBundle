@@ -24,5 +24,9 @@ export default {
             en: 'Set campaign ID',
             sv: 'Sätt kampanj-id'
         })
+        config.addLabel('admeta-add-item', {
+            en: 'Add: ',
+            sv: 'Lägg till: '
+        })
     }
 }
