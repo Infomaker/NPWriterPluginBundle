@@ -1,17 +1,20 @@
 .im-image-gallery {
     .image-gallery-toolbox {
         display: none;
-        width: 0px;
-        height: 0px;
         transition: all 1s;
         overflow: hidden;
+
+        &.drag-started .item-wrapper {
+            & > div, i, em, strong {
+                pointer-events: none;
+            }
+        }
 
         &.show {
             position: absolute;
             left: 0;
             z-index: 105;
             display: block;
-            width: auto;
             height: 450px;
             width: 100%;
             padding: 10px;
@@ -37,6 +40,44 @@
                 border-top: none;
                 position: relative;
                 margin: auto;
+
+                &:last-child {
+                    margin-bottom: 40px;
+                }
+
+                &.drag-over {
+                    &.add-above:before {
+                        font-family: FontAwesome;
+                        content: '\F062';
+                        font-size: 25px;
+                        color: #ccc;
+                        display: block;
+                        position: absolute;
+                        top: -20px;
+                        text-shadow: 2px 2px #000;
+                        z-index:1;
+                    }
+                    &.add-below:after {
+                        font-family: FontAwesome;
+                        content: '\f063';
+                        font-size: 25px;
+                        color: #ccc;
+                        display: block;
+                        position: absolute;
+                        top: 80px;
+                        text-shadow: 2px 2px #000;
+                        z-index:1;
+                    }
+                }
+
+                &.dragging {
+                    opacity: 0.3;
+                    pointer-events: none;
+                }
+
+                &.drop-succeeded {
+                    background: green;
+                }
 
                 .number-display {
                     margin: auto;

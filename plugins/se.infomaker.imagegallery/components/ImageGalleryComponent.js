@@ -116,8 +116,9 @@ class ImageGalleryComponent extends Component {
      * @private
      */
     _renderToolbox($$) {
-        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
+        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox').ref('toolBox')
         imageGalleryToolbox.append(this._renderHeader($$))
+            .on('drop', this._onDrop)
 
         if (this.props.isolatedNodeState) {
             imageGalleryToolbox.addClass('show')
@@ -133,6 +134,18 @@ class ImageGalleryComponent extends Component {
                         isolatedNodeState: this.props.isolatedNodeState,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
+                        },
+                        dragStart: (evt) => {
+                            this.refs.toolBox.addClass('drag-started')
+                            // this.onDragStart(evt, this.props.node.id)
+                        },
+                        dragEnd: (ev) => {
+                            console.log(ev)
+                            this.refs.toolBox.removeClass('drag-started')
+                        },
+                        onDropped: (one, two) => {
+                            console.log(one, two)
+                            this.refs.toolBox.removeClass('drag-started')
                         }
                     }))
                 })
@@ -198,6 +211,28 @@ class ImageGalleryComponent extends Component {
             tx,
             context: {node: this.props.node},
             data: dragData
+        })
+    }
+
+    _onDrop(ev) {
+        ev.preventDefault()
+        ev.stopPropagation()
+
+        const nodes = this.props.node.nodes
+        const fromId = ev.dataTransfer.getData('text/plain')
+        const toId = ev.target.id.split('_').pop()
+
+        const addAfter = ev.target.classList.contains('add-below')
+
+        const targetIndex = nodes.findIndex((nodeId) => nodeId === toId)
+        const toIndex = addAfter ? targetIndex + 1 : targetIndex
+        const fromIndex = nodes.findIndex((nodeId) => nodeId === fromId)
+
+        nodes[fromIndex] = null
+        nodes.splice(toIndex, 0, fromId)
+
+        this.context.editorSession.transaction(tx => {
+            tx.set([this.props.node.id, 'nodes'], nodes.filter(n => n))
         })
     }
 }

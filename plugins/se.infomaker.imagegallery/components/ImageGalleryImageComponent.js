@@ -52,7 +52,11 @@ class ImageGalleryImageComponent extends Component {
 
     render($$) {
         const numberDisplay = $$('div').addClass('number-display')
-        const itemWrapper = $$('div', {class: 'item-wrapper'})
+        const itemWrapper = $$('div').addClass('item-wrapper')
+            .attr('id', `index_${this.props.node.id}`)
+            .ref('itemWrapper')
+            .attr('data-drop-effect', 'move')
+
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()})
@@ -62,6 +66,47 @@ class ImageGalleryImageComponent extends Component {
 
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)
+
+        itemWrapper.attr('draggable', true)
+            .on('dragstart', (ev) => {
+                ev.stopPropagation()
+
+                ev.dataTransfer.setData('text/plain', this.props.node.id);
+                this.props.dragStart()
+
+                setTimeout(() => this.refs.itemWrapper.addClass('dragging'))
+            })
+            .on('dragover', (ev) => {
+                ev.preventDefault()
+                ev.stopPropagation()
+
+                ev.dataTransfer.dropEffect = ev.target.getAttribute('data-drop-effect')
+
+                const aboveOrBelow = ev.offsetY / ev.target.offsetHeight
+                const itemWrap = this.refs.itemWrapper
+                if (itemWrap.hasClass('add-below') && aboveOrBelow < 0.5) {
+                    itemWrap.removeClass('add-below').addClass('add-above')
+                } else if (itemWrap.hasClass('add-above') && aboveOrBelow > 0.5) {
+                    itemWrap.addClass('add-below').removeClass('add-above')
+                } else if (!itemWrap.hasClass('add-above') && !itemWrap.hasClass('add-below')) {
+                    itemWrap.addClass(aboveOrBelow <= 0.5 ? 'add-above' : 'add-below')
+                }
+            })
+            .on('dragenter', () => {
+                this.refs.itemWrapper.addClass('drag-over')
+            })
+            .on('dragleave', () => {
+                this.refs.itemWrapper.removeClass('drag-over')
+                    .removeClass('add-above')
+                    .removeClass('add-below')
+            })
+            .on('dragend', (ev) => {
+                ev.preventDefault()
+                ev.stopPropagation()
+
+                this.props.dragEnd(ev)
+                this.refs.itemWrapper.removeClass('dragging')
+            })
 
         return itemWrapper
             .append(numberDisplay)
