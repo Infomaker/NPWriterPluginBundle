@@ -9,6 +9,7 @@ import LockButtonBarItem from './LockButtonBarItem'
 import NoConnectionBarItem from './NoConnectionBarItem'
 
 import '../scss/uatracker.scss'
+import '../scss/no-connection.scss'
 import '../scss/login.scss'
 import '../scss/user.scss'
 import '../scss/lock.scss'
