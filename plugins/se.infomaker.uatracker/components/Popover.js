@@ -7,7 +7,7 @@ import { api, event } from 'writer'
  * @extends {Component}
  *
  * @property {Object} props
- * @property {Boolean} props.sticky - Wheter the popover should close when user clicks outside
+ * @property {Boolean} props.sticky - Whether the popover should close when user clicks outside
  * @property {Component} props.content - The content to render inside the popover
  */
 
@@ -31,9 +31,6 @@ class Popover extends Component {
     dispose() {
         document.removeEventListener('click', this._onOutsideClick)
         super.dispose()
-        //TODO: Fix so we can remove this listeners, somehow it breaks when Event.BROWSER_RESIZE is triggered
-        // this.context.api.events.on(this.props.popover.id, Event.BROWSER_RESIZE)
-        // this.context.api.events.on(this.props.popover.id, 'popover:close')
     }
 
     getInitialState() {

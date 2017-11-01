@@ -48,7 +48,7 @@ export default {
         })
 
         config.addLabel('uatracker-article-outdated-message', {
-            en: 'The article has been saved by an other user. Refresh the page to fetch the latest changes.',
+            en: 'The article has been saved by another user. Refresh the page to fetch the latest changes.',
             sv: 'Artikeln har blivit sparad av en annan användare. Ladda om sidan för att se de nya ändringarna.'
         })
 
@@ -73,7 +73,7 @@ export default {
         })
 
         config.addLabel('no-connection-description', {
-            en: 'Unable to connect to user identification service. This means that it might be others users working on this article.',
+            en: 'Unable to connect to user identification service. This means that there might be other users working on this article.',
             sv: 'Det gick inte ansluta till identifieringstjänsten. Detta innebär att andra användare kan ha denna artikeln öppen samtidigt.'
         })
 

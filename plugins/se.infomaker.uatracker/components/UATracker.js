@@ -29,14 +29,14 @@ const pluginId = 'se.infomaker.uatracker'
  */
 
 /**
- * Renders a list of users curretly viewing the article, their lock status, and the articles
+ * Renders a list of users currently viewing the article, their lock status, and the article's
  * lock status.
  * Intended to be used in the top bar.
  *
  * @class UATracker
  * @extends {Component}
  * @example
-    config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
+ *     config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
  */
 
 class UATracker extends Component {
@@ -156,7 +156,7 @@ class UATracker extends Component {
         users = users.map(this.setIsActiveUser.bind(this))
         this.extendState({
             users: users,
-            socketId: this.socket.id // Varför uppdaterar jag socket id här?
+            socketId: this.socket.id // TODO: Maybe move this to onConnect
         })
     }
 
