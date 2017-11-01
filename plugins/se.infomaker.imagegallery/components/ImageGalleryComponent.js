@@ -71,7 +71,7 @@ class ImageGalleryComponent extends Component {
 
             el.append(galleryPreview)
         } else {
-            const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('Dropzone label'))
+            const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('im-imagegallery.dropzone-label'))
             const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
 
             el.append(dropzone)
@@ -81,7 +81,7 @@ class ImageGalleryComponent extends Component {
             id: idGenerator(),
             node: this.props.node,
             field: 'genericCaption',
-            placeholder: this.getLabel('Generic caption'),
+            placeholder: this.getLabel('im-imagegallery.generic-caption'),
             icon: 'fa-align-left'
         }).ref('generericCaptionInput')
 
@@ -135,16 +135,12 @@ class ImageGalleryComponent extends Component {
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
                         },
-                        dragStart: (evt) => {
+                        dragStart: () => {
+                            // Add class which prevents interaction with toolbox input fields when dragging image components
                             this.refs.toolBox.addClass('drag-started')
-                            // this.onDragStart(evt, this.props.node.id)
                         },
-                        dragEnd: (ev) => {
-                            console.log(ev)
-                            this.refs.toolBox.removeClass('drag-started')
-                        },
-                        onDropped: (one, two) => {
-                            console.log(one, two)
+                        dragEnd: () => {
+                            // Remove class which prevents interaction with toolbox input fields when dragging image components
                             this.refs.toolBox.removeClass('drag-started')
                         }
                     }))
@@ -166,7 +162,7 @@ class ImageGalleryComponent extends Component {
         const imageCount = this.props.node.nodes ? this.props.node.nodes.length : 0
         const header = $$('div').addClass('image-gallery-header')
         const icon = $$(FontAwesomeIcon, {icon: IMAGE_GALLERY_ICON})
-        const label = `${this.getLabel('Image gallery')} (${imageCount})`
+        const label = `${this.getLabel('im-imagegallery.image-gallery-name')} (${imageCount})`
 
         header.append(icon).append(label)
 
@@ -197,7 +193,7 @@ class ImageGalleryComponent extends Component {
     getDropzoneSpecs() {
         return [{
             component: this,
-            message: this.getLabel('Dropzone label'),
+            message: this.getLabel('im-imagegallery.dropzone-label'),
             dropParams: {
                 action: 'imagegallery-add-image',
                 nodeId: this.props.node.id,
@@ -214,6 +210,13 @@ class ImageGalleryComponent extends Component {
         })
     }
 
+    /**
+     * Handles dropped node event propagated from
+     * an ImageGalleryImageComponent
+     *
+     * @param ev
+     * @private
+     */
     _onDrop(ev) {
         ev.preventDefault()
         ev.stopPropagation()
@@ -221,8 +224,11 @@ class ImageGalleryComponent extends Component {
         const nodes = this.props.node.nodes
         const fromId = ev.dataTransfer.getData('text/plain')
         const toId = ev.target.id.split('_').pop()
-
         const addAfter = ev.target.classList.contains('add-below')
+
+        if(!fromId) {
+            return
+        }
 
         const targetIndex = nodes.findIndex((nodeId) => nodeId === toId)
         const toIndex = addAfter ? targetIndex + 1 : targetIndex

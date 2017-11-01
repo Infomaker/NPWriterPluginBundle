@@ -13,6 +13,8 @@ import {fetchImageMeta} from 'writer'
  * @property {Node} props.node
  * @property {String} props.isolatedNodeState
  * @property {Function} props.remove
+ * @property {Function} props.dragStart
+ * @property {Function} props.dragEnd
  */
 class ImageGalleryImageComponent extends Component {
 
@@ -143,7 +145,7 @@ class ImageGalleryImageComponent extends Component {
         const captionInput = $$(FieldEditor, {
             node,
             field: 'caption',
-            placeholder: 'Bildtext',
+            placeholder: this.getLabel('im-imagegallery.caption-placeholder'),
             icon: 'fa-align-left'
         }).ref('captionInput')
 

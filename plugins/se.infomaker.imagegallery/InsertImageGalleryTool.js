@@ -6,7 +6,7 @@ class InsertImageGalleryTool extends Tool {
     render($$) {
         const icon = $$('i').addClass(IMAGE_GALLERY_ICON)
         const button = $$('button').addClass('se-tool')
-        const el = $$('div').attr('title', this.getLabel('Insert Image gallery'))
+        const el = $$('div').attr('title', this.getLabel('im-imagegallery.insert-image-gallery'))
             .on('click', this.insertGallery)
 
         button.append(icon)

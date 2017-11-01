@@ -29,17 +29,25 @@ const ImageGalleryPackage = {
         config.addIcon('remove', { 'fontawesome': 'fa-times' })
 
         /* Labels */
-        config.addLabel('Image gallery', {
+        config.addLabel('im-imagegallery.image-gallery-name', {
+            'en': 'Image gallery',
             'sv': 'Bildspel'
         })
-        config.addLabel('Insert Image gallery', {
+        config.addLabel('im-imagegallery.insert-image-gallery', {
+            'en': 'Insert Image gallery',
             'sv': 'Infoga bildspel'
         })
-        config.addLabel('Dropzone label', {
+        config.addLabel('im-imagegallery.dropzone-label', {
+            'en': 'Drop image(s) here',
             'sv': 'Dra och släpp bild(er) här'
         })
-        config.addLabel('Generic caption', {
+        config.addLabel('im-imagegallery.generic-caption', {
+            'en': 'Generic caption',
             'sv': 'Gemensam bildtext'
+        })
+        config.addLabel('im-imagegallery.caption-placeholder', {
+            'en': 'Caption',
+            'sv': 'Bildtext'
         })
     }
 }
