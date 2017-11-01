@@ -28,7 +28,7 @@ class ImageGalleryImageComponent extends Component {
     }
 
     /**
-     * If teaser has imageFile, force rerender to avoid dead image on first render.
+     * Force rerender to avoid dead image on first render.
      * Also download metadata if needed
      *
      * @param change
@@ -70,7 +70,7 @@ class ImageGalleryImageComponent extends Component {
         numberDisplay.append(this.props.index + 1)
 
         // When clicking on dragAnchor, set draggable on itemWrapper
-        // effectively dragging the wrapper with its child
+        // effectively dragging the wrapper using one of its child elements
         const dragAnchor = $$('div')
             .html(this._getSvg())
             .addClass('drag-me')
@@ -80,49 +80,81 @@ class ImageGalleryImageComponent extends Component {
         itemWrapper
             .attr('id', `index_${this.props.node.id}`)
             .attr('draggable', false)
-            .on('dragstart', (ev) => {
-                ev.stopPropagation()
-                ev.dataTransfer.setData('text/plain', this.props.node.id);
-
-                this.props.dragStart()
-                setTimeout(() => this.refs.itemWrapper.addClass('dragging'))
-            })
-            .on('dragover', (ev) => {
-                ev.preventDefault()
-                ev.stopPropagation()
-
-                ev.dataTransfer.dropEffect = ev.target.getAttribute('data-drop-effect')
-
-                const aboveOrBelow = ev.offsetY / ev.target.offsetHeight
-                const itemWrap = this.refs.itemWrapper
-                if (itemWrap.hasClass('add-below') && aboveOrBelow < 0.5) {
-                    itemWrap.removeClass('add-below').addClass('add-above')
-                } else if (itemWrap.hasClass('add-above') && aboveOrBelow > 0.5) {
-                    itemWrap.addClass('add-below').removeClass('add-above')
-                } else if (!itemWrap.hasClass('add-above') && !itemWrap.hasClass('add-below')) {
-                    itemWrap.addClass(aboveOrBelow <= 0.5 ? 'add-above' : 'add-below')
-                }
-            })
-            .on('dragenter', () => this.refs.itemWrapper.addClass('drag-over'))
-            .on('dragleave', () => {
-                this.refs.itemWrapper.removeClass('drag-over')
-                    .removeClass('add-above')
-                    .removeClass('add-below')
-            })
-            .on('dragend', (ev) => {
-                ev.preventDefault()
-                ev.stopPropagation()
-
-                this.props.dragEnd(ev)
-                this.refs.itemWrapper.removeClass('dragging')
-            })
+            .on('dragenter', this._dragEnter)
+            .on('dragleave', this._dragLeave)
+            .on('dragover', this._dragOver)
+            .on('dragstart', this._dragStart)
+            .on('dragend', this._dragEnd)
 
         return itemWrapper
-                .append(dragAnchor)
-                .append(numberDisplay)
-                .append(imageWrapper)
-                .append(this._renderImageMeta($$))
-                .append(removeIcon)
+            .append(dragAnchor)
+            .append(numberDisplay)
+            .append(imageWrapper)
+            .append(this._renderImageMeta($$))
+            .append(removeIcon)
+    }
+
+    /**
+     * @private
+     */
+    _dragEnter() {
+        this.refs.itemWrapper.addClass('drag-over')
+    }
+
+    /**
+     * @private
+     */
+    _dragLeave() {
+        this.refs.itemWrapper.removeClass('drag-over')
+            .removeClass('add-above')
+            .removeClass('add-below')
+    }
+
+    /**
+     * @param ev
+     * @private
+     */
+    _dragOver(ev) {
+        ev.preventDefault()
+        ev.stopPropagation()
+
+        ev.dataTransfer.dropEffect = ev.target.getAttribute('data-drop-effect')
+
+        const aboveOrBelow = ev.offsetY / ev.target.offsetHeight
+        const itemWrap = this.refs.itemWrapper
+        if (itemWrap.hasClass('add-below') && aboveOrBelow < 0.5) {
+            itemWrap.removeClass('add-below').addClass('add-above')
+        } else if (itemWrap.hasClass('add-above') && aboveOrBelow > 0.5) {
+            itemWrap.addClass('add-below').removeClass('add-above')
+        } else if (!itemWrap.hasClass('add-above') && !itemWrap.hasClass('add-below')) {
+            itemWrap.addClass(aboveOrBelow <= 0.5 ? 'add-above' : 'add-below')
+        }
+    }
+
+    /**
+     * @param ev
+     * @private
+     */
+    _dragStart(ev) {
+        ev.stopPropagation()
+        ev.dataTransfer.setData('text/plain', this.props.node.id)
+
+        this.props.dragStart()
+
+        // Preserve style of dragged element, but style of element still in DOM
+        setTimeout(() => this.refs.itemWrapper.addClass('dragging'))
+    }
+
+    /**
+     * @param ev
+     * @private
+     */
+    _dragEnd(ev) {
+        ev.preventDefault()
+        ev.stopPropagation()
+
+        this.props.dragEnd(ev)
+        this.refs.itemWrapper.removeClass('dragging')
     }
 
     /**
@@ -154,6 +186,12 @@ class ImageGalleryImageComponent extends Component {
         return imageMeta
     }
 
+    /**
+     * TODO: Probably use an icon when available...
+     *
+     * @returns {string}
+     * @private
+     */
     _getSvg() {
         return '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"> <g> <rect x="7.9" y="1" class="st0" width="2.8" height="22"/> <rect x="13.4" y="1" class="st0" width="2.8" height="22"/> </g> </svg>'
     }

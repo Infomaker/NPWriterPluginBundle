@@ -62,6 +62,7 @@ class ImageGalleryPreviewComponent extends Component {
      * Gets current value for the gallery's current left position.
      *
      * @returns {Number}
+     * @private
      */
     get leftPosition() {
         return parseInt(this.refs.galleryPreview.css('left'), 10)
@@ -71,6 +72,7 @@ class ImageGalleryPreviewComponent extends Component {
      * Gets the furthest right point of the gallery, formatted as left position
      *
      * @returns {number}
+     * @private
      */
     get maxLeftPosition() {
         const galleryWidth = this.refs.galleryContainer.el.getWidth()
@@ -79,6 +81,10 @@ class ImageGalleryPreviewComponent extends Component {
         return -(Math.floor(this.summedNodeWith - galleryWidth)) - rightButtonWidth
     }
 
+    /**
+     * @returns {Number}
+     * @private
+     */
     get summedNodeWith() {
         const margin = 2
         return this.refs.galleryPreview.getChildNodes().reduce((res, child) => {
@@ -87,10 +93,18 @@ class ImageGalleryPreviewComponent extends Component {
         }, 0)
     }
 
+    /**
+     * @returns {Boolean}
+     * @private
+     */
     get lock() {
         return this._lock
     }
 
+    /**
+     * @param {Boolean} lock
+     * @private
+     */
     set lock(lock) {
         this._lock = lock
     }
