@@ -7,7 +7,6 @@ export default({
     name: 'history',
     version: '{{version}}',
     configure: function(config) {
-        // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
         config.addLabel('Unsaved articles found', {
             sv: 'Osparade artiklar har hittats'
@@ -134,7 +133,5 @@ export default({
             },
             HistoryMainComponent
         )
-
-
     }
 })

@@ -42,10 +42,6 @@ class HistoryItemComponent extends Component {
                 $$('i').addClass(icon).attr('title', title)
             )
             .on('click', () => {
-
-                // TODO Add this to the ShowVersionsComponent
-                // this.props.applyVersion(version, article)
-
                 api.ui.showDialog(
                     ShowVersionsComponent,
                     {
