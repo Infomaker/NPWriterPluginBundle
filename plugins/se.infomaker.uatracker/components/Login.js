@@ -1,7 +1,7 @@
 import {Component} from 'substance'
 import {api} from 'writer'
 
-class LoginComponent extends Component {
+class Login extends Component {
 
     didMount() {
         this.refs.email.getNativeElement().focus()
@@ -79,4 +79,4 @@ class LoginComponent extends Component {
         }
     }
 }
-export default LoginComponent
+export default Login
