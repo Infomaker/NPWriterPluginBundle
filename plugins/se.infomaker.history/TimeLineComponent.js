@@ -1,11 +1,6 @@
 import {Component} from 'substance'
 import {moment} from 'writer'
 
-
-function formatDate(date) {
-    return date
-}
-
 class TimeLineComponent extends Component {
 
     getInitialState() {
@@ -13,9 +8,6 @@ class TimeLineComponent extends Component {
             markers: this.props.markers,
             activeIndex: this.props.markers.length - 1
         }
-    }
-
-    didMount() {
     }
 
     render($$) {
@@ -28,20 +20,26 @@ class TimeLineComponent extends Component {
             const timeline = $$('div').ref('timeline').setAttribute('id', 'timeline')
 
             el.append(timeline)
-            this.makeCircles($$, timeline)
-        }
 
+            //Draw the date circle
+            timeline.append(
+                this._renderCircles($$)
+            )
+        }
 
         return el
     }
 
-
-    makeCircles($$, timeline) {
+    /**
+     * @param $$
+     * @return {VirtualElement}
+     * @private
+     */
+    _renderCircles($$) {
         const dates = this.state.markers.map((marker) => marker.time)
 
-        for (let i = 0; i < dates.length; i++) {
+        return dates.map((date, i) => {
             const relativeInt = i / (dates.length - 1);
-
             const circle = $$('div')
                 .ref('circle' + i)
                 .addClass("circle")
@@ -50,7 +48,7 @@ class TimeLineComponent extends Component {
                     $$('div')
                         .addClass("popupSpan")
                         .append(
-                            dateSpan(dates[i], $$)
+                            this._renderDateSpan(dates[i], $$)
                         )
                 )
                 .on('click', () => {
@@ -62,29 +60,28 @@ class TimeLineComponent extends Component {
                     }
                 })
 
-
             if (this.props.markers.length > 1 && i === this.state.activeIndex) {
                 circle.addClass('active')
             }
 
-
-            //Draw the date circle
-            timeline.append(
-                circle
-            )
-        }
+            return circle
+        })
     }
 
-}
-
-function dateSpan(date, $$) {
-    return $$('div')
-        .append($$('div')
-            .addClass('moment-date')
-            .append(moment(date).format('YYYY-MM-DD')))
-        .append($$('div')
-            .addClass('moment-time')
-            .append(moment(date).format('HH:mm:ss')))
+    /**
+     * @param date
+     * @param $$
+     * @private
+     */
+    _renderDateSpan(date, $$) {
+        return $$('div')
+            .append($$('div')
+                .addClass('moment-date')
+                .append(moment(date).format('YYYY-MM-DD')))
+            .append($$('div')
+                .addClass('moment-time')
+                .append(moment(date).format('HH:mm:ss')))
+    }
 }
 
 export default TimeLineComponent
