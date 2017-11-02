@@ -7,7 +7,6 @@ export default({
     name: 'history',
     version: '{{version}}',
     configure: function(config) {
-        // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
         config.addLabel('Unsaved articles found', {
             sv: 'Osparade artiklar har hittats'
@@ -90,6 +89,41 @@ export default({
             sv: 'Radera denna versionshistorik'
         })
 
+        config.addLabel('history-popover-versions', {
+            en: 'versions',
+            sv: 'versioner'
+        })
+
+        config.addLabel('history-popover-Show versions', {
+            en: 'Show versions',
+            sv: 'Visa versioner'
+        })
+
+        config.addLabel('history-popover-Replace current article', {
+            en: 'Replace current article',
+            sv: 'Ersätt nuvarande artikeltext'
+        })
+
+        config.addLabel('se.infomaker.history-header', {
+            en: 'Saved local backup copies of article',
+            sv: 'Sparade lokala kopior av artikeln'
+        })
+
+        config.addLabel('se.infomaker.history-description', {
+            en: 'The timeline below displays local backup copies of the selected article. Select the version to restore and click "Replace current article".',
+            sv: 'Tidslinjen nedan visar lokala kopior av vald artikel. Välj den version som skall återställas och klicka på "Ersätt nuvarande artikeltext".'
+        })
+
+        config.addLabel('se.infomaker.history-preview.header', {
+            en: 'Preview',
+            sv: 'Förhandsvisning'
+        })
+
+        config.addLabel('se.intomaker.history-charactercount.label', {
+            en: 'Character count',
+            sv: 'Antal tecken'
+        })
+
         config.addPopover(
             'historymaincomponent',
             {
@@ -99,7 +133,5 @@ export default({
             },
             HistoryMainComponent
         )
-
-
     }
 })

@@ -8,7 +8,6 @@ class RemoveAll extends Component {
         }
     }
 
-
     render($$) {
 
         let label = this.getLabel('history-remove-all-button')
@@ -37,4 +36,5 @@ class RemoveAll extends Component {
         })
     }
 }
+
 export default RemoveAll
