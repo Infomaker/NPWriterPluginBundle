@@ -51,6 +51,13 @@ class ImageGalleryComponent extends Component {
         }
     }
 
+    didUpdate(oldProps) {
+        // Focus on the container once the container has been selected
+        if (oldProps.isolatedNodeState === null && this.props.isolatedNodeState === 'selected') {
+            setTimeout(()=> this._focusContainer(), 0)
+        }
+    }
+
     render($$) {
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
@@ -188,6 +195,25 @@ class ImageGalleryComponent extends Component {
         const comp = this.getParent()
         comp.extendState({mode: 'selected', unblocked: true})
         comp.selectNode()
+    }
+
+    /**
+     * Ugly fix to set focus on the container
+     * @private
+     */
+    _focusContainer() {
+        const captionElem = this.refs.generericCaptionInput
+        const field = captionElem.props.field // genericCaption
+        const nodeId = captionElem.props.node.id // imagegallery-76f5c96830b2a5af748f330903b098d5
+        const surfaceId = `body/${nodeId}/${nodeId}.${field}`
+
+        this.context.editorSession.setSelection({
+            type: 'property',
+            path: [nodeId, field],
+            startOffset: 0,
+            containerId: null,
+            surfaceId: surfaceId
+        })
     }
 
     getDropzoneSpecs() {
