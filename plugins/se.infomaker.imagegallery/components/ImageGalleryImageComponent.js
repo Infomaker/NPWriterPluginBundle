@@ -186,6 +186,13 @@ class ImageGalleryImageComponent extends Component {
         return imageMeta
     }
 
+    showDropSucceeded() {
+        const wrapper = this.refs.itemWrapper.el
+        wrapper.el.scrollIntoViewIfNeeded()
+        wrapper.addClass('drop-succeeded')
+        setTimeout(() => wrapper.removeClass('drop-succeeded'), 2000)
+    }
+
     /**
      * TODO: Probably use an icon when available...
      *

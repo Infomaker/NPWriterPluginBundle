@@ -143,7 +143,7 @@ class ImageGalleryComponent extends Component {
                             // Remove class which prevents interaction with toolbox input fields when dragging image components
                             this.refs.toolBox.removeClass('drag-started')
                         }
-                    }))
+                    }).ref(galleryImageNodeId))
                 })
 
                 imageGalleryToolbox.append(toolboxContent)
@@ -233,13 +233,14 @@ class ImageGalleryComponent extends Component {
         const targetIndex = nodes.findIndex((nodeId) => nodeId === toId)
         const toIndex = addAfter ? targetIndex + 1 : targetIndex
         const fromIndex = nodes.findIndex((nodeId) => nodeId === fromId)
-
         nodes[fromIndex] = null
         nodes.splice(toIndex, 0, fromId)
 
         this.context.editorSession.transaction(tx => {
             tx.set([this.props.node.id, 'nodes'], nodes.filter(n => n))
         })
+
+        this.refs[fromId].showDropSucceeded()
     }
 }
 
