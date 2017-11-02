@@ -24,10 +24,6 @@ class TextanalyzerComponent extends Component {
         })
     }
 
-    didMount() {
-        // this.props.popover.setIcon('fa-line-chart')
-    }
-
     render($$) {
         let el = $$('div').addClass('textanalyzer plugin')
         let innerEl = $$('div').addClass('info__container clearfix')
