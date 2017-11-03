@@ -48,8 +48,8 @@ export default {
         })
 
         config.addLabel('uatracker-article-outdated-message', {
-            en: 'The article has been saved by another user. Refresh the page to fetch the latest changes.',
-            sv: 'Artikeln har blivit sparad av en annan användare. Ladda om sidan för att se de nya ändringarna.'
+            en: '{{name}} ({{email}}) has saved the article. Refresh the page to fetch the latest changes.',
+            sv: '{{name}} ({{email}}) har sparat artikeln. Ladda om sidan för att se de nya ändringarna.'
         })
 
         // Login Component

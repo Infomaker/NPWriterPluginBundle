@@ -177,7 +177,8 @@ class UATracker extends Component {
 
     onVersionChange({ savedBy }) {
         if (savedBy !== this.socket.id) {
-            this.showArticleOutdatedDialog()
+            const user = this.state.users.find(u => u.socketId === savedBy)
+            this.showArticleOutdatedDialog(user)
         }
     }
 
@@ -214,7 +215,7 @@ class UATracker extends Component {
         const dialogProps = {
             message: this.getLabel('uatracker-article-taken-over-message')
                 .replace('{{name}}', user.name)
-                .replace('{{email}}', user.email),
+                .replace('{{email}}', user.email)
         }
         const dialogOptions = {
             heading: this.getLabel('uatracker-article-taken-over-title'),
@@ -226,9 +227,11 @@ class UATracker extends Component {
         api.ui.showDialog(Dialog, dialogProps, dialogOptions)
     }
 
-    showArticleOutdatedDialog() {
+    showArticleOutdatedDialog(user) {
         const dialogProps = {
-            message: this.getLabel('uatracker-article-outdated-message'),
+            message: this.getLabel('uatracker-article-outdated-message')
+                .replace('{{name}}', user.name)
+                .replace('{{email}}', user.email)
         }
         const dialogOptions = {
             heading: this.getLabel('uatracker-article-outdated-title'),
