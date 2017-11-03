@@ -30,6 +30,8 @@ class ImageCropper extends Component {
                 debug: false
             }
         )
+        // Make sure esc works in the crop editor
+        this.cropEditor.onCancel(this.onClose.bind(this))
 
         let configuredCrops = this.props.configuredCrops || [],
             encodedSrc = encodeURIComponent(this.props.src)
