@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-
+import {lodash as _} from 'writer'
 /*
   Used in ImageDisplay
 */
@@ -148,14 +148,10 @@ class ImageCropper extends Component {
     }
 
     onSave() {
-        let data = this.cropEditor.getSoftcropData(),
-            crops = []
-
+        const data = this.cropEditor.getSoftcropData()
+        const crops = []
         data.crops.forEach( (crop) => {
-            if (!crop.usable) {
-                return
-            }
-
+            if (!crop.usable) { return }
             crops.push({
                 name: crop.id,
                 x: crop.x / data.width,
@@ -165,7 +161,14 @@ class ImageCropper extends Component {
             })
         })
 
-        this.props.save({ crops: crops }, this.state.disableAutomaticCrop);
+        const disableAutomaticCropUpdated = this.state.disableAutomaticCrop !== this.disableAutomaticCrop
+        const cropsUpdated = !_.isEqual(this.props.crops, crops)
+
+        if (cropsUpdated || disableAutomaticCropUpdated) {
+            this.props.save({ crops: crops }, this.state.disableAutomaticCrop);
+        } else {
+            this.onClose()
+        }
     }
 }
 
