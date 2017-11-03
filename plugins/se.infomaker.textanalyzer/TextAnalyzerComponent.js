@@ -6,6 +6,7 @@ class TextanalyzerComponent extends Component {
 
     dispose() {
         api.events.off('textanalyzer', event.DOCUMENT_CHANGED);
+        api.events.off('textanalyzer', event.DOCUMENT_SAVED);
     }
 
     constructor(...args) {
@@ -14,11 +15,17 @@ class TextanalyzerComponent extends Component {
         api.events.on('textanalyzer', event.DOCUMENT_CHANGED, () => {
             this.calculateText()
         })
+
+        api.events.on('textanalyzer', event.DOCUMENT_SAVED, () => {
+            this.extendState({
+                updatedDate: this._getSafeDate(new Date())
+            })
+        })
     }
 
     calculateText() {
         let count = this.getCount()
-        this.setState({
+        this.extendState({
             textLength: count.textLength,
             words: count.words
         })
@@ -34,26 +41,26 @@ class TextanalyzerComponent extends Component {
         // Source
         const source = this._getSource()
         if (source) {
-            const sourceLabel = this.getLabel('Source') + ':'
+            const sourceLabel = this.getLabel('Source')
             this._createAndAppendRowElement($$, innerEl, sourceLabel, sourceLabel, source)
         }
 
         // Created
-        const createdLabel = this.getLabel('Created') + ':'
-        this._createAndAppendRowElement($$, innerEl, createdLabel, createdLabel, this._getCreatedDate())
+        const createdLabel = this.getLabel('Created')
+        this._createAndAppendRowElement($$, innerEl, createdLabel, createdLabel, this.state.createdDate.toString())
 
         // Updated
-        const updatedLabel = this.getLabel('Updated') + ':'
-        this._createAndAppendRowElement($$, innerEl, updatedLabel, updatedLabel, this._getUpdatedDate())
+        const updatedLabel = this.getLabel('Updated')
+        this._createAndAppendRowElement($$, innerEl, updatedLabel, updatedLabel, this.state.updatedDate.toString())
 
         innerEl.append($$('hr'))
 
         // Nr of words
-        const wordsLabel = this.getLabel('Words') + ':'
+        const wordsLabel = this.getLabel('Words')
         this._createAndAppendRowElement($$, innerEl, 'Words', wordsLabel, this.state.words.toString())
 
         // Nr of characters
-        const charLabel = this.getLabel('Characters') + ':'
+        const charLabel = this.getLabel('Characters')
         this._createAndAppendRowElement($$, innerEl, 'Character count', charLabel, this.state.textLength.toString())
 
         el.append(innerEl)
@@ -62,7 +69,7 @@ class TextanalyzerComponent extends Component {
 
     _createAndAppendRowElement($$, parent, title, label, value) {
         let infoBoxEl = $$('div').addClass('info-box').attr('title', title)
-        let labelEl = $$('div').addClass('label').append(label)
+        let labelEl = $$('div').addClass('label').append(label + ':')
         let infoEl = $$('div').addClass('info')
         let valueEl = $$('strong').append(value)
 
@@ -118,7 +125,9 @@ class TextanalyzerComponent extends Component {
         const count = this.getCount()
         return {
             textLength: count.textLength,
-            words: count.words
+            words: count.words,
+            createdDate: this._getCreatedDate(),
+            updatedDate: this._getUpdatedDate()
         }
     }
 
