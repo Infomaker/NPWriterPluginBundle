@@ -56,7 +56,7 @@ class MapComponent extends Component {
 
         // Fit Polygon path bounds
         var bounds = new google.maps.LatLngBounds()
-        polygon.getPath().forEach(function (path, index) {
+        polygon.getPath().forEach(function (path) {
             bounds.extend(path)
         })
         this.map.fitBounds(bounds);

@@ -78,7 +78,7 @@ class ArticleOptionsComponent extends Component {
             }
         }
         catch(err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
