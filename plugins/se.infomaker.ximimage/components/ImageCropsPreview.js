@@ -5,7 +5,9 @@ function executeTemplate(template, context) {
     let result = template;
 
     for (let key in context) {
-        result = result.replace(`{{${key}}}`, context[key])
+        if (context.hasOwnProperty(key)) {
+            result = result.replace(`{{${key}}}`, context[key])
+        }
     }
 
     return result
@@ -111,22 +113,22 @@ class ImageCropsPreview extends Component {
         const crops = this.props.crops
         const cropInstructions = this.props.cropInstructions
         const node = this.props.node
-    
+
         for (let key in crops) {
+            if (crops.hasOwnProperty(key)) {
+                let cropDefinedInNode
+                if (node.crops && node.crops.crops) {
+                    cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
+                }
 
-            let cropDefinedInNode
-            if (node.crops && node.crops.crops) {
-                cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
-            }
+                const width = node.width
+                const height = node.height
 
-            const width = node.width
-            const height = node.height
-
-            const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
+                const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
 
 
-            if (this.props.node.uuid && this.props.node.getServiceUrl) {
-                this.props.node.getServiceUrl(params)
+                if (this.props.node.uuid && this.props.node.getServiceUrl) {
+                    this.props.node.getServiceUrl(params)
                     .then((url) => {
                         this.cropUrls.set(key, url)
                         this.updateSrc(key, url)
@@ -136,6 +138,7 @@ class ImageCropsPreview extends Component {
                         this.cropUrls.set(key, url)
                         this.updateSrc(key, url)
                     })
+                }
             }
         }
     }
