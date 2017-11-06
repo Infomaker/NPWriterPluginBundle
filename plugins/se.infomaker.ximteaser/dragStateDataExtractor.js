@@ -10,27 +10,45 @@ export default {
      * @returns {{type: String, file:File|nodeId:String|uri:String,uriData:Object|url:String}}
      */
     extract(dragState) {
-        const ret = {}
+        return this._extractData(dragState)
+    },
+
+    extractMultiple(dragState) {
+        return this._extractData(dragState, true)
+    },
+
+    /**
+     * 
+     * 
+     * @param {any} dragState 
+     * @param {Boolean} multiple
+     */
+    _extractData(dragState, multiple) {
+        const result = {}
         if (this._isFileDropOrUpload(dragState.data)) {
-            ret.type = 'file'
-            ret.file = dragState.data.files[0]
+            result.type = 'file'
+            if (multiple) {
+                result.files = dragState.data.files
+            } else {
+                result.file = dragState.data.files[0]
+            }
         } else if (dragState.nodeDrag && dragState.sourceSelection) {
-            ret.type = 'node'
-            ret.nodeId = dragState.sourceSelection.nodeId
+            result.type = 'node'
+            result.nodeId = dragState.sourceSelection.nodeId
         } else if (this._isUriDrop(dragState.data)) {
             const uri = dragState.data.uris[0]
-            ret.type = 'uri'
-            ret.uri = uri
-            ret.uriData = this._getDataFromURL(uri)
+            result.type = 'uri'
+            result.uri = uri
+            result.uriData = this._getDataFromURL(uri)
         } else if (this._isUrlDrop(dragState.data)) {
             const url = dragState.data.uris[0]
             if (this._isImage(url)) {
-                ret.type = 'url'
-                ret.url = url
+                result.type = 'url'
+                result.url = url
             }
         }
 
-        return ret
+        return result
     },
 
     _isImage(uri) {
