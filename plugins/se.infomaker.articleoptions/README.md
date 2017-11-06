@@ -1,8 +1,10 @@
+**DEPRECATED**: Use `se.infomaker.options` instead...
+
 # Article Options plugin
 This plugin is to enrich article with options that can be selected by the value of true or false. For example if an article is premium. 
 
 ## Plugin configuration
-```
+```json
 {
   "id": "se.infomaker.articleoptions",
   "name": "articleoptions",

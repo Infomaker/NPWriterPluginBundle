@@ -31,7 +31,17 @@ class PublishFlowComponent extends Component {
                 this.saveInProgress = true
                 this.defaultAction()
             }
-        });
+        })
+
+        api.events.on(pluginId, event.USERACTION_LOCK, () => {
+            this.locked = true
+            this.props.popover.disable()
+        })
+
+        api.events.on(pluginId, event.USERACTION_UNLOCK, () => {
+            this.locked = false
+            this.props.popover.enable()
+        })
     }
 
     dispose() {
@@ -427,11 +437,12 @@ class PublishFlowComponent extends Component {
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
-
-        this._initSaveTimeout()
-        api.newsItem.save()
-        this.props.popover.disable()
-        this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+        if (!this.locked) {
+            this._initSaveTimeout()
+            api.newsItem.save()
+            this.props.popover.disable()
+            this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+        }
     }
 
     _failTimeout() {

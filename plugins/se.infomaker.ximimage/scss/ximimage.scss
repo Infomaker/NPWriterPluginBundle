@@ -188,18 +188,8 @@ div.x-im-image-dynamic {
     margin-right: 8px;
     position: relative;
 
-    .crop-selected {
-        filter: brightness(110%);
-    }
-
-    .crop-unselected {
-        opacity: 0.5;
-        filter: brightness(40%);
-    }
-
     img {
         max-width: 160px;
-        min-width: 80px;
         height: 90px;
     }
 

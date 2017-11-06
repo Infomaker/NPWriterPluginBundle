@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-
+import {lodash as _} from 'writer'
 /*
   Used in ImageDisplay
 */
@@ -30,6 +30,8 @@ class ImageCropper extends Component {
                 debug: false
             }
         )
+        // Make sure esc works in the crop editor
+        this.cropEditor.onCancel(this.onClose.bind(this))
 
         let configuredCrops = this.props.configuredCrops || [],
             encodedSrc = encodeURIComponent(this.props.src)
@@ -126,7 +128,7 @@ class ImageCropper extends Component {
         const cropOptions = $$('div').append(cropToggle).addClass('se-crop-options')
         const restoreAll = $$('button').addClass('btn btn-secondary').append(this.getLabel('Restore all')).on('click', this.props.restore)
         const abort = $$('button').addClass('btn pull-right btn-abort').append(this.getLabel('cancel')).on('click', this.onClose)
-        const confirm = $$('button').addClass('btn pull-right btn-primary').append(this.getLabel('Save')).on('click', this.onSave)
+        const confirm = $$('button').addClass('btn pull-right btn-primary').append(this.getLabel('Crop')).on('click', this.onSave)
         cropActions.append([
             restoreAll,
             confirm,
@@ -146,14 +148,10 @@ class ImageCropper extends Component {
     }
 
     onSave() {
-        let data = this.cropEditor.getSoftcropData(),
-            crops = []
-
+        const data = this.cropEditor.getSoftcropData()
+        const crops = []
         data.crops.forEach( (crop) => {
-            if (!crop.usable) {
-                return
-            }
-
+            if (!crop.usable) { return }
             crops.push({
                 name: crop.id,
                 x: crop.x / data.width,
@@ -163,7 +161,14 @@ class ImageCropper extends Component {
             })
         })
 
-        this.props.save({ crops: crops }, this.state.disableAutomaticCrop);
+        const disableAutomaticCropUpdated = this.state.disableAutomaticCrop !== this.disableAutomaticCrop
+        const cropsUpdated = !_.isEqual(this.props.crops, crops)
+
+        if (cropsUpdated || disableAutomaticCropUpdated) {
+            this.props.save({ crops: crops }, this.state.disableAutomaticCrop);
+        } else {
+            this.onClose()
+        }
     }
 }
 

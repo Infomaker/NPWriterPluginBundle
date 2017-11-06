@@ -60,9 +60,13 @@ The properties `actionLabel` and `icon` support both a string and an array with 
 
 ### Actions
 
-### Full example
-```
-{
+### Output
+The plugin updates the article depending on selections made in the plugin. The status selected updates the
+`qcode` attribute of `newsItem > itemMeta > pubStatus` element. Changes to publications start and end dates
+update corresponding dates in `newsItem > itemMeta`, e.g.
 
-}
+```xml
+<itemMetaExtProperty value="2017-10-12T00:00:00+02:00" type="imext:pubstart"/>
+<itemMetaExtProperty value="2017-10-11T00:00:00+02:00" type="imext:pubstop"/>
 ```
+
