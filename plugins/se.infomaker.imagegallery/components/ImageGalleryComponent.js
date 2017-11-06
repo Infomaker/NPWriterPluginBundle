@@ -244,6 +244,7 @@ class ImageGalleryComponent extends Component {
 
         // Tell the substance drag manager that the drag and drop is done
         this.context.dragManager.emit('drag:finished')
+        this.context.dragManager.dragState = null
     }
 }
 
