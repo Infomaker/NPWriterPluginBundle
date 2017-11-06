@@ -27,26 +27,38 @@ class ContentPartComponent extends Component {
     }
 
     render($$) {
+        const currentPartConfig = this.state.contentpartTypes.filter(contentPartType => contentPartType.uri === this.props.node.contentpartUri).pop()
+        const displayTitle = (currentPartConfig.displayTitle !== undefined) ? currentPartConfig.displayTitle : true
+        const displaySubject = (currentPartConfig.displaySubject !== undefined) ? currentPartConfig.displaySubject : true
+        const displayText = (currentPartConfig.displayText !== undefined) ? currentPartConfig.displayText : true
+
         const el = $$('div')
         el.addClass('contentpart-node im-blocknode__container')
+        
         el.append(this.renderHeader($$))
 
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        el.append($$(FieldEditor, {
-            node: this.props.node,
-            multiLine: true,
-            field: 'title',
-            placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title'))
-        }).ref('titleFieldEditor'))
+        
+        if (displayTitle) {
+            el.append($$(FieldEditor, {
+                node: this.props.node,
+                multiLine: true,
+                field: 'title',
+                placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title'))
+            }).ref('titleFieldEditor'))
+        }
 
-        el.append($$(FieldEditor, {
-            node: this.props.node,
-            field: 'vignette',
-            placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette'))
-        }).ref('vignetteFieldEditor'))
+        if (displaySubject) {
+            el.append($$(FieldEditor, {
+                node: this.props.node,
+                field: 'vignette',
+                placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette'))
+            }).ref('vignetteFieldEditor'))
+        }
 
-        el.append(this.renderContainerEditor($$))
-
+        if (displayText) {
+            el.append(this.renderContainerEditor($$))
+        }
 
         return el
     }
@@ -55,7 +67,6 @@ class ContentPartComponent extends Component {
      * Renders the component's header.
      */
     renderHeader($$) {
-
         const dropdownheader = $$(DropDownHeadline, {
             icon: 'fa-sort',
             items: this.state.contentpartTypes,

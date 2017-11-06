@@ -15,11 +15,14 @@ TODO: migrate to InlineText plugin...
         "contentpartTypes": [
             {
                 "uri": "im://content-part/fact",
-                "name": "Faktaruta"
+                "name": "Faktaruta",
+                "displayTitle": false,
+                "displaySubject": false,
             },
             {
                 "uri": "im://content-part/factbox",
                 "name": "Faktabox",
+                "displayText": false,
                 "default": true
             },
             {
