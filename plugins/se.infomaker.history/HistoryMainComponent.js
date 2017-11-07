@@ -29,8 +29,6 @@ class HistoryMainComponent extends Component {
         api.events.off('history', 'history:saved');
     }
 
-
-
     updateHistoryState() {
         this.extendState({
             historyArticles: this.context.api.history.getHistory()
@@ -42,7 +40,6 @@ class HistoryMainComponent extends Component {
             historyArticles: this.context.api.history.getHistory()
         }
     }
-
 
     render($$) {
 
@@ -62,7 +59,6 @@ class HistoryMainComponent extends Component {
             scrollbarType: 'native'
         }).ref('historyScroll')
 
-
         let versions = this.state.historyArticles.map(function (article) {
             return this.renderHistoryItem($$, article);
         }.bind(this));
@@ -73,7 +69,6 @@ class HistoryMainComponent extends Component {
         }
 
         el.append(scroll)
-
 
         return el;
     }
@@ -96,15 +91,14 @@ class HistoryMainComponent extends Component {
     }
 
     applyVersion(version, article) {
+
         // this function can fire onclick handler for any DOM-Element
-
-
         if (article.id.indexOf('__temp__') === -1) {
             api.newsItem.setTemporaryId(article.id)
             api.browser.ignoreNextHashChange = true
             api.browser.setHash(article.id)
             api.newsItem.setSource(version.src, null, article.etag)
-            //
+
             api.events.documentChanged(
                 'se.infomaker.history',
                 {
@@ -119,7 +113,7 @@ class HistoryMainComponent extends Component {
             api.browser.ignoreNextHashChange = true
             api.browser.setHash('')
             api.newsItem.setSource(version.src, null, article.etag)
-            //
+
             api.events.documentChanged(
                 'se.infomaker.history',
                 {
@@ -128,8 +122,6 @@ class HistoryMainComponent extends Component {
                 }
             )
         }
-
-
     }
 }
 
