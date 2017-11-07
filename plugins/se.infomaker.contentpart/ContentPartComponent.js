@@ -28,9 +28,9 @@ class ContentPartComponent extends Component {
 
     render($$) {
         const currentPartConfig = this.state.contentpartTypes.filter(contentPartType => contentPartType.uri === this.props.node.contentpartUri).pop()
-        const displayTitle = (currentPartConfig.displayTitle !== undefined) ? currentPartConfig.displayTitle : true
-        const displaySubject = (currentPartConfig.displaySubject !== undefined) ? currentPartConfig.displaySubject : true
-        const displayText = (currentPartConfig.displayText !== undefined) ? currentPartConfig.displayText : true
+        const displayTitle = (currentPartConfig && currentPartConfig.displayTitle !== undefined) ? currentPartConfig.displayTitle : true
+        const displaySubject = (currentPartConfig && currentPartConfig.displaySubject !== undefined) ? currentPartConfig.displaySubject : true
+        const displayText = (currentPartConfig && currentPartConfig.displayText !== undefined) ? currentPartConfig.displayText : true
 
         const el = $$('div')
         el.addClass('contentpart-node im-blocknode__container')
