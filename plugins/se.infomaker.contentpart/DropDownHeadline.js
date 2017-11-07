@@ -86,6 +86,9 @@ class DropDownHeadline extends Component {
             const listItem = $$('li')
                 .on('click', () => {
                     this.props.change(text)
+                    this.extendState({
+                        showInlineTextMenu: false
+                    })
                 })
                 .append(text.name)
             if(this.getSelectedContentPartName() === text.name) {
