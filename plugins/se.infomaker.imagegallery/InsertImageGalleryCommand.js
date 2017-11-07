@@ -3,10 +3,10 @@ import ImageGalleryConverter from './ImageGalleryConverter'
 
 class InsertImageGalleryCommand extends WriterCommand {
 
-    execute(params, context) {
+    execute(params, context) { // eslint-disable-line
         const {editorSession} = params
         const {type, dataType} = ImageGalleryConverter
-        
+
         const imageGalleryNode = {
             type: type,
             dataType: dataType,
