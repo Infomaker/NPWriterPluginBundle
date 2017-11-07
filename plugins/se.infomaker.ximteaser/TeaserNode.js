@@ -1,7 +1,7 @@
-import {BlockNode, DefaultDOMElement} from 'substance'
+import {Container, DefaultDOMElement} from 'substance'
 import {api} from 'writer'
 
-class TeaserNode extends BlockNode {
+class TeaserNode extends Container {
 
     getImageFile() {
         if (!this.imageFile) {
@@ -103,9 +103,12 @@ TeaserNode.define({
     imageFile: {type: 'file', optional: true},
     uuid: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
+
     title: {type: 'text', optional: false, default: ''},
     subject: {type: 'string', optional: false, default: ''},
     text: {type: 'string', optional: false, default: ''},
+
+    customFields: {type:'object', optional: false, default: {}},
 
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
