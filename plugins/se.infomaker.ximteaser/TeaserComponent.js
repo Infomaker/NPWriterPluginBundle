@@ -54,45 +54,16 @@ class TeaserComponent extends Component {
         const types = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
         const currentType = types.find(({type}) => type === this.props.node.dataType)
         const hasImage = this.props.node.imageFile
+        const hasFields = currentType.fields && currentType.fields.length
 
-        const ImageDisplay = api.ui.getComponent('imageDisplay')
         if (hasImage) {
-            // Manually disable byline for teaser image, to make sure it's not accidentally enabled through config
-            const imageOptions = Object.assign(currentType.imageoptions, {
-                byline: false,
-                bylinesearch: false
-            })
-
-            el.append(
-                $$(ImageDisplay, {
-                    imageOptions,
-                    node: this.props.node,
-                    isolatedNodeState: this.props.isolatedNodeState,
-                    removeImage: this.removeImage.bind(this)
-                })
-                    .ref('image')
-                    .on('click', () => {
-                        if(!this.props.isolatedNodeState) {
-                            this.props.selectContainer()
-                        }
-                    })
-            )
+            el.append(this._renderImageDisplay($$, currentType))
         }
 
-        el.append(
-            this._renderUploadContainer($$)
-        )
+        el.append(this._renderUploadContainer($$))
 
-        if(currentType.fields && currentType.fields.length) {
-
-            // Only renders subject if teaser has image
-            const editorFields = currentType.fields
-                .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
-                .map((field) => {
-                    return this._renderFieldEditor($$, field)
-                })
-
-            el.append(editorFields)
+        if(hasFields) {
+            el.append(this._renderEditorFields($$, currentType, hasImage))
         } else {
             el.append($$('span').append('No fields configured for teaser'))
         }
@@ -100,19 +71,60 @@ class TeaserComponent extends Component {
         return el
     }
 
+
+    _renderEditorFields($$, currentType, hasImage) {
+        return currentType.fields
+            .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
+            .map((field) => this._createCustomFieldIfUndefined(field))
+            .map((field) => this._renderFieldByType($$, field))
+    }
+
+    /**
+     * Delegates rendering to the appropriate method for each field type
+     * @param  {function} $$ - Substance createElement
+     * @param  {Field} field
+     * @return {VirtualElement}
+     */
+    _renderFieldByType($$, field) {
+        switch (field.type) {
+            case 'datetime':
+            case 'date':
+            case 'time':
+                return this._renderDatetimeFieldEditor($$, field)
+            case 'text':
+                return this._renderFieldEditor($$, field)
+            default:
+                return this._renderFieldEditor($$, field)
+        }
+    }
+
+    _renderDatetimeFieldEditor($$, field) {
+        const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
+        const editorProps = {
+            node: this.props.node,
+            field: ['customFields', field.id],
+            label: field.label,
+            type: field.type
+        }
+        if (field.icon) { editorProps.icon = field.icon }
+
+        return $$(DatetimeFieldEditor, editorProps).ref(`${field.id}FieldEditor`)
+    }
+
     _renderFieldEditor($$, field) {
         if(Boolean(field.multiline) && field.id === 'text') {
             return this._renderContainerEditor($$, field)
         } else {
             const FieldEditor = this.context.api.ui.getComponent('field-editor')
-            return $$(FieldEditor, {
+            const editorProps = {
                 node: this.props.node,
-                field: field.id,
+                multiLine: false,
+                field: (this._isCustomField(field) ? ['customFields', field.id] : field.id),
                 placeholder: field.label,
-                icon: field.icon || 'fa-header',
-                multiLine: false
-            })
-                .ref(`${field.id}FieldEditor`)
+            }
+            if (field.icon) { editorProps.icon = field.icon }
+
+            return $$(FieldEditor, editorProps).ref(`${field.id}FieldEditor`)
         }
     }
 
@@ -123,6 +135,46 @@ class TeaserComponent extends Component {
             textTypes: [],
             commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
         }).ref(`containerEditor`).addClass('contentpart-editor im-container-editor')
+    }
+
+    _renderImageDisplay($$, currentType) {
+        const ImageDisplay = api.ui.getComponent('imageDisplay')
+        // Manually disable byline for teaser image, to make sure it's not accidentally enabled through config
+        const imageOptions = Object.assign(currentType.imageoptions, {
+            byline: false,
+            bylinesearch: false
+        })
+
+        return $$(ImageDisplay, {
+            imageOptions,
+            node: this.props.node,
+            isolatedNodeState: this.props.isolatedNodeState,
+            removeImage: this.removeImage.bind(this)
+        })
+            .ref('image')
+            .on('click', () => {
+                if(!this.props.isolatedNodeState) {
+                    this.props.selectContainer()
+                }
+            })
+    }
+
+    /**
+     * Since the extra fields are dynamic and are not created when the node is instanciated they
+     * have to be created here
+     * @param  {Field} field
+     * @return {Field}
+     */
+    _createCustomFieldIfUndefined(field) {
+        if (this._isCustomField(field) && typeof this.props.node.customFields[field.id] === 'undefined') {
+            api.doc.set([this.props.node.id, 'customFields', field.id], '')
+        }
+        return field
+    }
+
+    _isCustomField(field) {
+        const excludedElems = ['title', 'subject', 'text']
+        return !excludedElems.includes(field.id)
     }
 
     triggerFileUpload(ev) {

@@ -1,4 +1,4 @@
-import { DefaultDOMElement } from 'substance'
+import { DefaultDOMElement, uuid } from 'substance'
 import { idGenerator, api } from 'writer'
 
 export default {
@@ -19,14 +19,25 @@ export default {
         const dataEl = el.find(':scope > data')
         if (dataEl) {
             dataEl.children.forEach((child) => {
-                if (child.tagName === 'text') {
-                    // Imports simple text or multiline text nodes
-                    this.importText(child, node, converter)
-                }
-                if (child.tagName === 'subject') {
+                // child.tagName will return the tag name in lowercase.
+                // child.el.tagName, however, will return the tag name with the original capitalization.
+                const tagName = child.el.tagName
+
+                if (tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
+                } else if (tagName !== 'flags' && tagName !== 'text') {
+                    this.importCustomFields(child, node, converter)
                 }
             })
+
+            const textEl = dataEl.find(':scope>text')
+            if(textEl) {
+                // Imports simple text or multiline text nodes
+                this.importText(textEl, node, converter)
+            } else {
+                const emptyTextEl = DefaultDOMElement.createElement('text').append('')
+                this.importText(emptyTextEl, node, converter)
+            }
 
             const flagsEl = dataEl.find(':scope>flags')
             if (flagsEl) {
@@ -122,16 +133,15 @@ export default {
             // Multiline enabled, text stored as multiline
             textEl.children.forEach((child) => {
                 const childNode = converter.convertElement(child)
-
                 node.nodes.push(childNode.id)
             })
         } else {
             // Multiline enabled, text stored as simple text, new paragraph node needs to be injected
             const {createElement} = DefaultDOMElement
-            const childTextNode = createElement('element').attr('type', 'body').append(textEl.text())
-            const childNode = converter.convertElement(childTextNode)
-
-            node.nodes.push(childNode.id)
+            const paragraphTextNode = createElement('element').attr('type', 'body').append(textEl.text())
+            const paragraphNode = converter.convertElement(paragraphTextNode)
+            paragraphNode.id = uuid('paragraph')
+            node.nodes.push(paragraphNode.id)
         }
     },
 
@@ -155,6 +165,21 @@ export default {
             // Normal behavior, stored and return as simple text
             node.text = converter.annotatedText(textEl, [node.id, 'text'])
         }
+    },
+
+    /**
+     * Import contents of <customFields>-element.
+     * Custom fields go in TeaserNode.customFields.<field name>
+     *
+     * @param {ui/DOMElement} customFieldsEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importCustomFields: function(customFieldEl, node, converter) {
+        // child.tagName will return the tag name in lowercase.
+        // child.el.tagName, however, will return the tag name with the original capitalization.
+        const tagName = customFieldEl.el.tagName
+        node.customFields[tagName] = converter.annotatedText(customFieldEl, [node.id, 'customFields', tagName])
     },
 
     /**
@@ -210,6 +235,18 @@ export default {
             data.append($$('subject').append(
                 converter.annotatedText([node.id, 'subject'])
             ))
+        }
+
+        if (node.customFields) {
+            const customFields = Object.keys(node.customFields)
+                .filter(key => node.customFields[key])
+                .map(key => {
+                    return $$(key).append(
+                        converter.annotatedText([node.id, 'customFields', key])
+                    )
+                })
+
+            data.append(customFields)
         }
 
         if (node.disableAutomaticCrop) {
