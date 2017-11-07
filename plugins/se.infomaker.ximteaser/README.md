@@ -157,17 +157,29 @@ Field Configuration Example:
         "label": "Text",
         "icon": "fa-paragraph",
         "multiline": true
+    },
+    {
+        "id": "tag",
+        "label": "Tag",
+        "icon": "fa-tag"
+    },
+    {
+        "id": "teaserEndDate",
+        "label": "End date",
+        "icon": "fa-calendar",
+        "type": "datetime"
     }
 ]
 ```
 
 | Property      | Type      | Required  | Description   |
 | --------      | :--:      | :------:  | -----------   |
-| **id**        | String    | `true`    | subject, title, or text |
+| **id**        | String    | `true`    | subject, title, or text (any other string will result in a custom field) |
 | **label**     | String    | `true`    | Placeholder for field |
 | **icon**      | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
 | **multiline*** | Boolean   | `false`   | **Only available for field with id `text`** Set to `true` to enable multiline text editing. Default value is `false` |
-***Warning** Enabling multiline editing will change the output of `data > text`-element.
+| **type***     | String    | `false`    |  **Only available on custom fields** Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"`|
+**\*Warning** Enabling multiline editing will change the output of `data > text`-element.
 
 ### Outout Difference Between Multiline and Simple Text
 When `multiline` is enabled, the xml-output of the `text`-field changes when the article is saved.
@@ -184,6 +196,27 @@ When `multiline` is enabled, the xml-output of the `text`-field changes when the
 **Multiline Disabled**
 ```xml
 <text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</text>
+```
+
+### Custom Fields
+When setting the `id` of a field to anything other than `"subject"`, `"title"`, or `"text"`, a custom field will be created which enables adding arbitrary data to the teaser. When using a custom field, the `type` attribute will decide what kind of data the field will support.
+
+| Type     | Output format        | Output example            | Input element                         |
+|----------|----------------------|---------------------------|---------------------------------------|
+| text     | -                    | Lorem ipsum               | Field editor                          |
+| datetime | YYYY-MM-DDTHH:mm:ssZ | 2017-01-30T12:00:00+01:00 | Datetime field editor set to datetime |
+| date     | YYYY-MM-DD           | 2017-01-30                | Datetime field editor set to date     |
+| time     | HH:mm:ss             | 12:00:00                  | Datetime field editor set to time     |
+
+Custom fields will be saved under the `data` element.
+
+```xml
+<object id="NjMsMTExLDIzMSwxNzE" type="x-im/custom-teaser" title="Lorem ipsum">
+    <data>
+        <text>Lorem ipsum dolor sit amet<text>
+        <customFieldOne>2017-01-30T12:00:00+01:00</customFieldOne>
+    </data>
+</object>
 ```
 
 ## Basic Configuration Example
