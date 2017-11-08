@@ -162,6 +162,7 @@ class SearchComponent extends Component {
                     this.extendState({
                         sort: selectedValue
                     })
+                    this._doSearch()
                 }
             }).ref('sortOptions').addClass('sort-options'),
 
@@ -179,6 +180,7 @@ class SearchComponent extends Component {
                     this.extendState({
                         limit: selectedValue
                     })
+                    this._doSearch()
                 }
             }).ref('displayOption').addClass('display-options'),
         ]
@@ -188,6 +190,10 @@ class SearchComponent extends Component {
      * @private
      */
     _doSearch() {
+
+        if(this.state.query === '') {
+            return
+        }
 
         const requestData = {
             headers: {
