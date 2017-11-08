@@ -1,0 +1,110 @@
+
+.im-archivesearch {
+  margin-top: 20px;
+
+  .search-container {
+
+    form {
+      display: flex;
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .select-group-gmlist {
+      h2 {
+        padding:0;
+      }
+    }
+
+    .form-group {
+      flex-grow: 1;
+      margin: 0;
+    }
+
+    .search-icon {
+      width: 24px;
+      line-height: 32px;
+      color: #999;
+    }
+
+    input[type=text] {
+      border: none;
+    }
+  }
+
+  .search-options {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+
+    .select-group-gmlist {
+      margin-left: 15px;
+
+      select.form-control {
+        height: calc(2rem + 2px);
+      }
+
+      h2 {
+        padding: 0;
+        font-size: 12px;
+      }
+    }
+
+    .count-info {
+      display: flex;
+      flex-grow: 2;
+      align-items: center;
+
+      span {
+        margin-top: 18px;
+      }
+    }
+  }
+
+  .image-list-container {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+
+    img {
+      height: 85px;
+      margin-right: 8px;
+    }
+  }
+
+  .pagination {
+    border-top: 1px solid #ccc;
+    display: flex;
+    padding-top: 15px;
+    justify-content: center;
+
+    button {
+      &[disabled] {
+        color: #cacaca;
+        cursor: default;
+      }
+    }
+    i {
+      display: flex;
+      align-items: center;
+    }
+
+    .numbered-pages {
+      display: flex;
+      flex-grow: 2;
+      justify-content: center;
+
+      span {
+        display: inline-block;
+        cursor: pointer;
+        padding: 5px;
+        &.active-page {
+          background: #0098C7;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+}

@@ -1,0 +1,234 @@
+import {Component, FontAwesomeIcon} from 'substance'
+
+class SearchComponent extends Component {
+
+
+    getInitialState() {
+        return {
+            selectedEndpointUrl: this._configuredEndpoints[0].url,
+            query: '',
+            sort: 'cool',
+            limit: 25,
+            start: 0,
+            totalHits: 0
+        }
+    }
+
+    didMount() {
+        this.context.api.events.on('archive-search', 'search:trigger', (event) => {
+            this.extendState({
+                start: event.data.pageIndex * this.state.limit
+            })
+
+            this._doSearch()
+        })
+    }
+
+    dispose(){
+        this.context.api.events.off('archive-search', 'search:trigger')
+    }
+
+    render($$) {
+        return $$('div').append(
+            $$('div').addClass('search-container').append(
+                $$('form').append(
+                    this._renderEndpointPicker($$),
+                    this._renderQueryInput($$),
+                    $$('button').attr('type', 'submit').append($$(FontAwesomeIcon, {icon: 'fa-search'}).addClass('search-icon'))
+                ).attr('autocomplete', 'off')
+                    .on('submit', (e) => {
+                        e.stopPropagation()
+                        this._doSearch()
+                    })
+            ),
+            $$('div').addClass('search-options').append(
+                [this._renderSearchCountInfo($$), ...this._renderSearchOptions($$)]
+            )
+        )
+    }
+
+    /**
+     * @returns {Array}
+     * @private
+     */
+    get _configuredEndpoints() {
+        return this.context.api.getConfigValue('se.infomaker.archivesearch', 'archiveHosts', [])
+    }
+
+    /**
+     * @returns {{host: *, query: *, limit: *, start: *, sort: *}}
+     * @private
+     */
+    get _searchQuery() {
+        const {selectedEndpointUrl: host, query, limit, start, sort} = this.state
+
+        return {
+            host,
+            query,
+            limit,
+            start,
+            // sort,
+            resultMappings: {
+                "Filename": "Filename",
+                "thumbnail": "thumbnail",
+                "original": "primary"
+            }
+        }
+    }
+
+    /**
+     * @param $$
+     * @private
+     */
+    _renderQueryInput($$) {
+        return $$('div').addClass('form-group flexible-label').append(
+            $$('input')
+                .addClass('form-control archive-search-input')
+                .attr({
+                    required: 'required',
+                    type: 'text',
+                    id: 'archivesearch-input',
+                    placeholder: this.getLabel('Search...')
+                })
+                .ref('searchInput')
+                .on('keyup', () => {
+                    this.extendState({
+                        query: this.refs.searchInput.val()
+                    })
+                }),
+            $$('label')
+                .attr('for', 'archivesearch-input')
+                .append(
+                    this.getLabel('Search...')
+                )
+        )
+    }
+
+    /**
+     * @param $$
+     * @returns {[VirtualElement]}
+     * @private
+     */
+    _renderSearchCountInfo($$) {
+        return $$('div').addClass('count-info')
+            .append(
+                $$('span').text(
+                    `${this.getLabel('Showing')} ${(this.state.start + this.state.limit)} ${this.getLabel('of')} ${this.state.totalHits}`
+                )
+            )
+    }
+
+    /**
+     * @param $$
+     * @private
+     */
+    _renderEndpointPicker($$) {
+        const configuredEndpoints = this._configuredEndpoints
+        const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
+
+        return $$(DropdownComponent, {
+            options: configuredEndpoints.map((end) => {
+                return {label: end.name, value: end.url}
+            }),
+            disabled: configuredEndpoints.length <= 1,
+            onChangeList: () => {
+                console.log('hEHEHE')
+            },
+            isSelected: () => {
+                console.log('wyi')
+            }
+        })
+    }
+
+    /**
+     * @param $$
+     * @returns {[VirtualElement]}
+     * @private
+     */
+    _renderSearchOptions($$) {
+        const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
+
+        return [
+            $$(DropdownComponent, {
+                header: this.getLabel('Sort'),
+                options: [
+                    {label: 'Relevans', value: 'relevans'},
+                    {label: 'Något annat', value: 'cool'}
+                ],
+                isSelected: (options, item) => {
+                    return item.value === this.state.sort
+                },
+                onChangeList: (selectedValue) => {
+                    this.extendState({
+                        sort: selectedValue
+                    })
+                }
+            }).ref('sortOptions').addClass('sort-options'),
+
+            $$(DropdownComponent, {
+                header: this.getLabel('Show'),
+                options: [
+                    {label: '25', value: 25},
+                    {label: '50', value: 50}
+                ],
+                isSelected: (options, item) => {
+                    return item.value === this.state.limit
+
+                },
+                onChangeList: (selectedValue) => {
+                    this.extendState({
+                        limit: selectedValue
+                    })
+                }
+            }).ref('displayOption').addClass('display-options'),
+        ]
+    }
+
+    /**
+     * @private
+     */
+    _doSearch() {
+
+        const requestData = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this._searchQuery)
+        }
+
+        return this.context.api.router.post('/api/external-search', requestData)
+            .then(response => this.context.api.router.checkForOKStatus(response))
+            .then(response => response.json())
+            .then((json) => {
+
+                console.log(json)
+
+                json.items = json.items.slice(0, 25).map((item) => {
+                    // Convert { "key": ["value"] } to { "key": "value" }
+                    Object.keys(item).forEach((key) => {
+                        item[key] = Array.isArray(item[key]) ? item[key][0] : item[key]
+                    })
+                    return item
+                })
+
+                return json
+            })
+            .then(json => {
+                this.extendState({
+                    totalHits: json.totalHits
+                })
+                this.props.onResult({
+                    items: json.items,
+                    totalHits: json.totalHits,
+                    limit: this.state.limit,
+                    start: this.state.start
+                })
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+}
+
+export default SearchComponent
