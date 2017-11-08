@@ -204,7 +204,10 @@ class SearchComponent extends Component {
 
                 console.log(json)
 
-                json.items = json.items.slice(0, 25).map((item) => {
+                json.items = json.items.map((item) => {
+
+                    item.thumbnail = `https://dummyimage.com/600x400/${(Math.random() * (65536)).toString(16)}/fff`
+
                     // Convert { "key": ["value"] } to { "key": "value" }
                     Object.keys(item).forEach((key) => {
                         item[key] = Array.isArray(item[key]) ? item[key][0] : item[key]
