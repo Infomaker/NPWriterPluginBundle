@@ -15,7 +15,7 @@ class SearchComponent extends Component {
     }
 
     didMount() {
-        this.context.api.events.on('archive-search', 'search:trigger', (event) => {
+        this.context.api.events.on('archive-search', 'archive:pageChange', (event) => {
             this.extendState({
                 start: event.data.pageIndex * this.state.limit
             })
@@ -24,7 +24,7 @@ class SearchComponent extends Component {
         })
     }
 
-    dispose(){
+    dispose() {
         this.context.api.events.off('archive-search', 'search:trigger')
     }
 
@@ -34,7 +34,11 @@ class SearchComponent extends Component {
                 $$('form').append(
                     this._renderEndpointPicker($$),
                     this._renderQueryInput($$),
-                    $$('button').attr('type', 'submit').append($$(FontAwesomeIcon, {icon: 'fa-search'}).addClass('search-icon'))
+                    $$('button').attr('type', 'submit')
+                        .append(
+                            $$(FontAwesomeIcon, {icon: 'fa-search'})
+                                .addClass('search-icon')
+                        )
                 ).attr('autocomplete', 'off')
                     .on('submit', (e) => {
                         e.stopPropagation()
@@ -62,16 +66,18 @@ class SearchComponent extends Component {
     get _searchQuery() {
         const {selectedEndpointUrl: host, query, limit, start, sort} = this.state
 
+        console.log(limit)
+
         return {
             host,
             query,
             limit,
             start,
-            // sort,
+            // sort, FIXME: get some sorting sorted
             resultMappings: {
-                "Filename": "Filename",
-                "thumbnail": "thumbnail",
-                "original": "primary"
+                Filename: 'Filename',
+                thumbnail: 'thumbnail',
+                original: 'primary'
             }
         }
     }
