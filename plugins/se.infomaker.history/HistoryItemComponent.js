@@ -1,6 +1,7 @@
 import {Component, FontAwesomeIcon} from 'substance'
 import {api, moment} from 'writer'
 import ShowVersionsComponent from './ShowVersionsComponent'
+import ArticleEtagConflictComponent from "./ArticleEtagConflictComponent";
 
 class HistoryItemComponent extends Component {
 
@@ -42,19 +43,66 @@ class HistoryItemComponent extends Component {
                 $$('i').addClass(icon).attr('title', title)
             )
             .on('click', () => {
-                api.ui.showDialog(
-                    ShowVersionsComponent,
-                    {
-                        article: article,
-                        applyVersion: this.props.applyVersion
-                    },
-                    {
-                        title: this.getLabel('se.infomaker.history-header'),
-                        global: true,
-                        primary: this.getLabel('history-popover-Replace current article'),
-                        secondary: this.getLabel('cancel'),
-                        cssClass: 'np-teaser-dialog'
-                    })
+
+                if (!article.id || article.id.startsWith('__temp__')) {
+                    api.ui.showDialog(
+                        ShowVersionsComponent,
+                        {
+                            article: article,
+                            applyVersion: this.props.applyVersion
+                        },
+                        {
+                            title: this.getLabel('se.infomaker.history-header'),
+                            global: true,
+                            primary: this.getLabel('history-popover-Replace current article'),
+                            secondary: this.getLabel('cancel'),
+                            cssClass: 'np-teaser-dialog'
+                        })
+                } else {
+
+                    api.router.getRemoteETag(article.id, 'x-im/article')
+                        .then((etag) => {
+
+                            let showConflictDialog = false
+
+                            if (article.etag !== etag) {
+                                if (article.id === api.newsItem.getIdForArticle() && api.router.getEtag(article.id) === etag) {
+                                    // The article in question is what is loaded in the browser, and the Etag matches the one from server
+                                    // Updated the etag for the article in history
+                                    article.etag = etag
+                                } else {
+                                    showConflictDialog = true
+                                }
+                            }
+
+                            if (showConflictDialog) {
+                                api.ui.showDialog(
+                                    ArticleEtagConflictComponent,
+                                    {
+                                        article: article
+                                    },
+                                    {
+                                        title: this.getLabel('se.infomaker.history-conflict.title'),
+                                        primary: this.getLabel('se.infomaker.history-button.reopen')
+                                    }
+                                )
+                            } else {
+                                api.ui.showDialog(
+                                    ShowVersionsComponent,
+                                    {
+                                        article: article,
+                                        applyVersion: this.props.applyVersion
+                                    },
+                                    {
+                                        title: this.getLabel('se.infomaker.history-header'),
+                                        global: true,
+                                        primary: this.getLabel('history-popover-Replace current article'),
+                                        secondary: this.getLabel('cancel'),
+                                        cssClass: 'np-teaser-dialog'
+                                    })
+                            }
+                        })
+                }
             })
 
         const inner = $$('div').addClass('inner'),

@@ -11,6 +11,7 @@ class HistoryMainComponent extends Component {
         super(...args)
 
         api.events.on('history', event.DOCUMENT_SAVED, () => {
+            api.history.snapshot();
             api.history.cleanVersionsOlderThanMaxDays(DEFAULT_MAX_DAYS);
             this.updateHistoryState()
         })
