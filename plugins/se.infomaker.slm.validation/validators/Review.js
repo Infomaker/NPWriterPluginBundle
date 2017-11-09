@@ -32,13 +32,18 @@ class Review extends Validator {
     }
 
     /**
-     * Ensure that the review grade is 0-5
+     * Ensure that the review grade is empty or 0-5
      * @param {Object} review
      */
     validateReviewGrade(review) {
-        const reviewGrade = parseInt(review.getAttribute('title'), 10)
-        if (isNaN(reviewGrade) || reviewGrade < 0 || reviewGrade > 5) {
-            this.addError(api.getLabel('validator-review-grade-incorrect'))
+        const reviewGradeText = review.getAttribute('title')
+        const reviewGrade = parseInt(reviewGradeText, 10)
+        const reviewGradeEmpty = reviewGradeText === ''
+
+        if (!reviewGradeEmpty) {
+            if (isNaN(reviewGrade) || reviewGrade < 0 || reviewGrade > 5) {
+                this.addError(api.getLabel('validator-review-grade-incorrect'))
+            }
         }
     }
 }
