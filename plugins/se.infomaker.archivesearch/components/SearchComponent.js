@@ -237,7 +237,9 @@ class SearchComponent extends Component {
                 json.items = json.items.map((item) => {
 
                     // TODO: Remove this
-                    item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff.jpg`
+                    // item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff.jpg`
+
+                    item.thumbnail = `/api/oc-proxy?url=${encodeURIComponent(item.thumbnail)}`
 
                     // Convert { "key": ["value"] } to { "key": "value" }
                     Object.keys(item).forEach((key) => {
