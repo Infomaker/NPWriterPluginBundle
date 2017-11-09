@@ -1,17 +1,22 @@
-# Image search plugin for Infomaker Writer
-The image search plugin is a great way of searching for images in image repositories.
+# Archive search plugin for Infomaker Writer
+The archive search plugin is a great way of searching for images in archive repositories.
 
 ## Plugin configuration
 
     {
-        "id": "se.infomaker.imagesearch",
-        "name": "im-imagesearch",
-        "url": "http://localhost:5001/im-imagesearch.js",
-        "style": "http://localhost:5001/im-imagesearch.css",
+        "id": "se.infomaker.archivesearch",
+        "name": "im-archivesearch",
+        "url": "http://localhost:5001/im-archivesearch.js",
+        "style": "http://localhost:5001/im-archivesearch.css",
         "mandatory": false,
         "enabled": true,
         "data": {
-            "tabIdentifier": "im-imagesearch"
+            "archiveHosts": [
+              {
+                "name": "Open Content A",
+                "url": "opencontent.dev.writer.infomaker.io"
+              }
+            ]
         }
     }
 
