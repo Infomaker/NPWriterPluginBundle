@@ -2,7 +2,7 @@ import {api, Validator} from 'writer'
 import saveOrPublish from '../util/saveOrPublish'
 
 
-class Authors extends Validator {
+class Categories extends Validator {
 
     /**
      * Main validation method
@@ -27,4 +27,4 @@ class Authors extends Validator {
     }
 }
 
-export default Authors
+export default Categories
