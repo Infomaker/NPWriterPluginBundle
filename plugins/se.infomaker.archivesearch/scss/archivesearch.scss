@@ -81,6 +81,7 @@
       .image-thumb {
         margin-right: 8px;
         margin-bottom: 8px;
+        cursor: pointer;
         img {
           height: 80px;
           display: block;
@@ -115,7 +116,9 @@
       span {
         display: inline-block;
         cursor: pointer;
-        padding: 5px;
+        line-height: 28px;
+        width: 28px;
+        text-align: center;
         &.active-page {
           background: #0098C7;
           color: #fff;
