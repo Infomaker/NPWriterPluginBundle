@@ -77,8 +77,8 @@ const validationPackage = {
          * Review
          */
         config.addLabel('validator-review-grade-incorrect', {
-            en: 'The article must contain at least one category.',
-            sv: 'Artikeln måste innehålla minst en kategori.'
+            en: 'Review grade must be between 0 and 5.',
+            sv: 'Recensionsbetyget måste vara mellan 0 och 5.'
         })
 
         config.addLabel('validator-review-too-many', {
