@@ -2,7 +2,6 @@ import {Component, FontAwesomeIcon} from 'substance'
 
 class SearchComponent extends Component {
 
-
     getInitialState() {
         return {
             selectedEndpointUrl: this._configuredEndpoints[0].url,
@@ -15,7 +14,7 @@ class SearchComponent extends Component {
     }
 
     didMount() {
-        this.context.api.events.on('archive-search', 'archive:pageChange', (event) => {
+        this.context.api.events.on('archive-search', 'archive-search:pageChange', (event) => {
             this.extendState({
                 start: event.data.pageIndex * this.state.limit
             })
@@ -41,9 +40,10 @@ class SearchComponent extends Component {
                                 icon: this.state.query ? 'fa-times-circle' : 'fa-search'
                             })
                                 .addClass('search-icon')
-                        ).on('click', (e) => {
+                        )
+                        .on('click', (e) => {
                             e.preventDefault()
-                            if(this.state.query) {
+                            if (this.state.query) {
                                 this.extendState({
                                     query: '',
                                     totalHits: 0,
@@ -74,14 +74,11 @@ class SearchComponent extends Component {
     }
 
     /**
-     * @returns {{host: *, query: *, limit: *, start: *, sort: *}}
+     * @returns {{host: *, query: *, limit: *, start: *, sort: *, resultMappings: {Filename: string, thumbnail: string, original: string}}}
      * @private
      */
     get _searchQuery() {
         const {selectedEndpointUrl: host, query, limit, start, sort} = this.state
-
-        console.log(limit)
-
         return {
             host,
             query,
@@ -153,13 +150,7 @@ class SearchComponent extends Component {
             options: configuredEndpoints.map((end) => {
                 return {label: end.name, value: end.url}
             }),
-            disabled: configuredEndpoints.length <= 1,
-            onChangeList: () => {
-                console.log('hEHEHE')
-            },
-            isSelected: () => {
-                console.log('wyi')
-            }
+            disabled: configuredEndpoints.length <= 1
         })
     }
 
@@ -178,9 +169,7 @@ class SearchComponent extends Component {
                     {label: 'Relevans', value: ''},
                     {label: 'Uppdaterad', value: 'updated'}
                 ],
-                isSelected: (options, item) => {
-                    return item.value === this.state.sort
-                },
+                isSelected: (options, item) => item.value === this.state.sort,
                 onChangeList: (selectedValue) => {
                     this.extendState({
                         sort: selectedValue
@@ -196,10 +185,7 @@ class SearchComponent extends Component {
                     {label: '25', value: 25},
                     {label: '50', value: 50}
                 ],
-                isSelected: (options, item) => {
-                    return item.value === this.state.limit
-
-                },
+                isSelected: (options, item) => item.value === this.state.limit,
                 onChangeList: (selectedValue) => {
                     this.extendState({
                         limit: selectedValue
@@ -214,7 +200,6 @@ class SearchComponent extends Component {
      * @private
      */
     _doSearch() {
-
         if (this.state.query === '') {
             return
         }

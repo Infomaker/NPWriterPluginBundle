@@ -13,23 +13,18 @@ class ArchiveImageComponent extends Component {
                 'draggable': true,
                 'id': `archive-img-${this.props.item.uuid}`
             })
+            .ref('imageThumb')
             .on('dragstart', this._onDragStart)
     }
 
     _onDragStart(e) {
         e.stopPropagation()
 
-        console.log(this.props.item)
-
         const data = {
             uuid: this.props.item.uuid,
             author: this.props.item.Authors ? this.props.item.Authors : '',
-            caption: this.props.item.Caption ? this.props.item.Caption : '',
-            imType: 'x-im/image',
-            name: 'ximimage'
+            caption: this.props.item.Caption ? this.props.item.Caption : ''
         }
-
-        console.log('data', data)
 
         e.dataTransfer.setData('text/uri-list', `x-im-archive-entity://x-im/image?data=${encodeURIComponent(JSON.stringify(data))}`)
     }

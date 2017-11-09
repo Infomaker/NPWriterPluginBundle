@@ -36,7 +36,7 @@ class MainComponent extends Component {
                 start: 0,
                 onPageChange: (pageNumber) => {
                     const pageIndex = pageNumber - 1
-                    this.context.api.events.triggerEvent(null, 'archive:pageChange', {
+                    this.context.api.events.triggerEvent(null, 'archive-search:pageChange', {
                         pageIndex
                     })
                 }

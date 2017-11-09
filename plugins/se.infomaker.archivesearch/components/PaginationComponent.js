@@ -3,7 +3,6 @@ import {Component, FontAwesomeIcon} from 'substance'
 class PaginationComponent extends Component {
 
     render($$) {
-
         return $$('div').addClass('pagination')
             .append(
                 this._renderLeftControl($$),
@@ -14,10 +13,18 @@ class PaginationComponent extends Component {
             )
     }
 
+    /**
+     * @returns {number}
+     * @private
+     */
     get currentPageIndex() {
         return this.props.currentPage - 1
     }
 
+    /**
+     * @returns {[Number]}
+     * @private
+     */
     get pageNumberArray() {
 
         const allPages = [...Array(this.props.totalPages).keys()].map(index => index + 1)
@@ -73,6 +80,11 @@ class PaginationComponent extends Component {
         })
     }
 
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
     _renderRightControl($$) {
         const control = $$('button').append(
             $$(FontAwesomeIcon, {icon: 'fa-angle-double-right'})
@@ -87,6 +99,11 @@ class PaginationComponent extends Component {
         return control
     }
 
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
     _renderLeftControl($$) {
         const control = $$('button').append(
             $$(FontAwesomeIcon, {icon: 'fa-angle-double-left'})
