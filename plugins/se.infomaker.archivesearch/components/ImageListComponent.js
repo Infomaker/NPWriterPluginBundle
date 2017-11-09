@@ -1,5 +1,6 @@
 import {Component} from 'substance'
 import PaginationComponent from './PaginationComponent'
+import ArchiveImageComponent from './ArchiveImageComponent'
 
 /**
  * props.totalHits
@@ -14,12 +15,9 @@ class ImageListComponent extends Component {
                 .append(
                     $$('div').addClass('image-list').append(
                         this.props.items.map((item) => {
-                            return $$('div').addClass('image-thumb')
-                                .append(
-                                    $$('img', {
-                                        src: item.thumbnail
-                                    }).attr('alt', item.Caption)
-                                )
+                            return $$(ArchiveImageComponent, {
+                                item
+                            })
                         })
                     ),
                     $$(PaginationComponent, {

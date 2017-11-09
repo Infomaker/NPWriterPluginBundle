@@ -7,7 +7,7 @@ class SearchComponent extends Component {
         return {
             selectedEndpointUrl: this._configuredEndpoints[0].url,
             query: '',
-            sort: 'cool',
+            sort: '',
             limit: 25,
             start: 0,
             totalHits: 0
@@ -87,7 +87,7 @@ class SearchComponent extends Component {
             query,
             limit,
             start,
-            // sort, FIXME: get some sorting sorted
+            sort, //FIXME: get some sorting sorted
             resultMappings: {
                 Filename: 'Filename',
                 thumbnail: 'thumbnail',
@@ -175,8 +175,8 @@ class SearchComponent extends Component {
             $$(DropdownComponent, {
                 header: this.getLabel('Sort'),
                 options: [
-                    {label: 'Relevans', value: 'relevans'},
-                    {label: 'Något annat', value: 'cool'}
+                    {label: 'Relevans', value: ''},
+                    {label: 'Uppdaterad', value: 'updated'}
                 ],
                 isSelected: (options, item) => {
                     return item.value === this.state.sort
@@ -236,7 +236,8 @@ class SearchComponent extends Component {
 
                 json.items = json.items.map((item) => {
 
-                    item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff`
+                    // TODO: Remove this
+                    item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff.jpg`
 
                     // Convert { "key": ["value"] } to { "key": "value" }
                     Object.keys(item).forEach((key) => {

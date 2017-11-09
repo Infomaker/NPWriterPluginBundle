@@ -2,6 +2,7 @@ const { registerPlugin } = writer
 
 import './scss/archivesearch.scss'
 import MainComponent from './components/MainComponent'
+import ArchiveSearchDropHandler from './ArchiveSearchDropHandler'
 
 const archivesearchPackage = {
     id: 'se.infomaker.archivesearch',
@@ -24,7 +25,7 @@ const archivesearchPackage = {
 
         config.addSidebarTab('im-archivesearch', config.getLabelProvider().getLabel('Archive Image Search'))
         config.addComponentToSidebarWithTabId('im-archivesearch-component', 'im-archivesearch', MainComponent)
-
+        config.addDropHandler(new ArchiveSearchDropHandler())
 
         config.addLabel('Search...', {
             sv: 'Sök...'
@@ -49,6 +50,6 @@ export default () => {
         registerPlugin(archivesearchPackage)
     }
     else {
-        console.info('Register method not yet availlable for im-archivesearch package')
+        console.info('Register method not yet available for im-archivesearch package')
     }
 }
