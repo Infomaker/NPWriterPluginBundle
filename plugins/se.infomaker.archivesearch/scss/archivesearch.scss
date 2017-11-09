@@ -9,6 +9,14 @@
       width: 100%;
       padding: 5px;
       border: 1px solid #ccc;
+
+      a {
+        color: #999;
+        transition: color 0.25s ease;
+        &:hover {
+          color: #555;
+        }
+      }
     }
 
     .select-group-gmlist {
@@ -25,7 +33,6 @@
     .search-icon {
       width: 24px;
       line-height: 32px;
-      color: #999;
     }
 
     input[type=text] {
@@ -63,19 +70,29 @@
   }
 
   .image-list-container {
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
     border-top: 1px solid #ccc;
 
-    img {
-      height: 85px;
-      margin-right: 8px;
+    .image-list {
+      display: flex;
+      flex-flow: row wrap;
+
+      .image-thumb {
+        margin-right: 8px;
+        margin-bottom: 8px;
+        img {
+          height: 80px;
+          display: block;
+        }
+      }
     }
   }
 
   .pagination {
     border-top: 1px solid #ccc;
     display: flex;
+    margin-top: 7px;
     padding-top: 15px;
     justify-content: center;
 

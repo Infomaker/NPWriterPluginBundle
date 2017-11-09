@@ -34,11 +34,25 @@ class SearchComponent extends Component {
                 $$('form').append(
                     this._renderEndpointPicker($$),
                     this._renderQueryInput($$),
-                    $$('button').attr('type', 'submit')
+                    $$('a')
+                        .attr('href', '')
                         .append(
-                            $$(FontAwesomeIcon, {icon: 'fa-search'})
+                            $$(FontAwesomeIcon, {
+                                icon: this.state.query ? 'fa-times-circle' : 'fa-search'
+                            })
                                 .addClass('search-icon')
-                        )
+                        ).on('click', (e) => {
+                            e.preventDefault()
+                            if(this.state.query) {
+                                this.extendState({
+                                    query: '',
+                                    totalHits: 0,
+                                    start: 0
+                                })
+                                this.refs.searchInput.val('')
+                                this.props.clearResult()
+                            }
+                        })
                 ).attr('autocomplete', 'off')
                     .on('submit', (e) => {
                         e.stopPropagation()
@@ -116,10 +130,13 @@ class SearchComponent extends Component {
      * @private
      */
     _renderSearchCountInfo($$) {
+        const summed = this.state.start + this.state.limit
+        const showing = summed > this.state.totalHits ? this.state.totalHits : summed
+
         return $$('div').addClass('count-info')
             .append(
                 $$('span').text(
-                    `${this.getLabel('Showing')} ${(this.state.start + this.state.limit)} ${this.getLabel('of')} ${this.state.totalHits}`
+                    `${this.getLabel('Showing')} ${(showing)} ${this.getLabel('of')} ${this.state.totalHits}`
                 )
             )
     }
@@ -175,6 +192,7 @@ class SearchComponent extends Component {
             $$(DropdownComponent, {
                 header: this.getLabel('Show'),
                 options: [
+                    {label: '10', value: 10},
                     {label: '25', value: 25},
                     {label: '50', value: 50}
                 ],
@@ -197,7 +215,7 @@ class SearchComponent extends Component {
      */
     _doSearch() {
 
-        if(this.state.query === '') {
+        if (this.state.query === '') {
             return
         }
 
@@ -218,7 +236,7 @@ class SearchComponent extends Component {
 
                 json.items = json.items.map((item) => {
 
-                    item.thumbnail = `https://dummyimage.com/600x400/${(Math.random() * (65536)).toString(16)}/fff`
+                    item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff`
 
                     // Convert { "key": ["value"] } to { "key": "value" }
                     Object.keys(item).forEach((key) => {

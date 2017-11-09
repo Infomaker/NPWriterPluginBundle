@@ -9,14 +9,17 @@ import PaginationComponent from './PaginationComponent'
 class ImageListComponent extends Component {
 
     render($$) {
-        if(this.props.totalHits > 0) {
+        if (this.props.totalHits > 0) {
             return $$('div').addClass('image-list-container')
                 .append(
                     $$('div').addClass('image-list').append(
                         this.props.items.map((item) => {
-                            return $$('img', {
-                                src: item.thumbnail
-                            }).attr('alt', item.Caption)
+                            return $$('div').addClass('image-thumb')
+                                .append(
+                                    $$('img', {
+                                        src: item.thumbnail
+                                    }).attr('alt', item.Caption)
+                                )
                         })
                     ),
                     $$(PaginationComponent, {

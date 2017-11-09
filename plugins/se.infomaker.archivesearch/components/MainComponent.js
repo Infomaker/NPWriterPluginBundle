@@ -19,6 +19,14 @@ class MainComponent extends Component {
                         limit,
                         start
                     })
+                },
+                clearResult: () => {
+                    this.refs.imageList.extendProps({
+                        items: [],
+                        totalHits: 0,
+                        limit: 0,
+                        start: 0,
+                    })
                 }
             }).ref('searchComponent'),
             $$(ImageListComponent, {
