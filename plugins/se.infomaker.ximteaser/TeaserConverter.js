@@ -1,3 +1,4 @@
+import { DefaultDOMElement, uuid } from 'substance'
 import { idGenerator, api } from 'writer'
 
 export default {
@@ -15,18 +16,28 @@ export default {
         node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
-        // Import teaser data
         const dataEl = el.find(':scope > data')
         if (dataEl) {
-            dataEl.children.forEach(function (child) {
-                if (child.tagName === 'text') {
-                    node.text = converter.annotatedText(child, [node.id, 'text'])
-                }
+            dataEl.children.forEach((child) => {
+                // child.tagName will return the tag name in lowercase.
+                // child.el.tagName, however, will return the tag name with the original capitalization.
+                const tagName = child.el.tagName
 
-                if (child.tagName === 'subject') {
+                if (tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
+                } else if (tagName !== 'flags' && tagName !== 'text') {
+                    this.importCustomFields(child, node, converter)
                 }
             })
+
+            const textEl = dataEl.find(':scope>text')
+            if(textEl) {
+                // Imports simple text or multiline text nodes
+                this.importText(textEl, node, converter)
+            } else {
+                const emptyTextEl = DefaultDOMElement.createElement('text').append('')
+                this.importText(emptyTextEl, node, converter)
+            }
 
             const flagsEl = dataEl.find(':scope>flags')
             if (flagsEl) {
@@ -68,8 +79,7 @@ export default {
             if (linkDataEl) {
                 // New format, image data is found correctly in link data element
                 this.importImageLinkData(linkDataEl, node)
-            }
-            else {
+            } else {
                 // Old, depcrecated format, image data is found in teaser data
                 this.importImageLinkData(dataEl, node)
             }
@@ -81,6 +91,95 @@ export default {
             node.imageFile = imageFile.id
             node.uuid = linkEl.attr('uuid')
         }
+    },
+
+    getConfigForType: function(dataType) {
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        return teaserTypes.find(({type}) => type === dataType)
+    },
+
+    isMultilineEnabled: function(dataType) {
+        const {fields} = this.getConfigForType(dataType)
+        return fields.some(({id, multiline}) => id === 'text' && multiline === true)
+    },
+
+    /**
+     * Import contents of <text>-element. If multiline is configured, sets TeaserNode.nodes
+     * else sets simple value to TeaserNode.text.
+     *
+     * @param {ui/DOMElement} textEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importText: function(textEl, node, converter) {
+        if(this.isMultilineEnabled(node.dataType)) {
+            this.importMultilineText(textEl, node, converter)
+        } else {
+            this.importSimpleText(textEl, node, converter)
+        }
+    },
+
+    /**
+     * Fills TeaserNode.nodes with stored <element>-elements contained in <text>-element.
+     * If <text> only contains simple text, creates a new <element>-element and pushes
+     * it to TeaserNode.nodes to enable multiline editing.
+     *
+     * @param {ui/DOMElement} textEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importMultilineText: function(textEl, node, converter) {
+        if(textEl.getAttribute('format') === 'idf') {
+            // Multiline enabled, text stored as multiline
+            textEl.children.forEach((child) => {
+                const childNode = converter.convertElement(child)
+                node.nodes.push(childNode.id)
+            })
+        } else {
+            // Multiline enabled, text stored as simple text, new paragraph node needs to be injected
+            const {createElement} = DefaultDOMElement
+            const paragraphTextNode = createElement('element').attr('type', 'body').append(textEl.text())
+            const paragraphNode = converter.convertElement(paragraphTextNode)
+            paragraphNode.id = uuid('paragraph')
+            node.nodes.push(paragraphNode.id)
+        }
+    },
+
+    /**
+     * Sets string-value to TeaserNode.text-property.
+     * If <text> is stored as multiline, it flattens the content
+     * and fetches the simple text content from all children.
+     *
+     * @param textEl
+     * @param node
+     * @param converter
+     */
+    importSimpleText: function(textEl, node, converter) {
+        if(textEl.getAttribute('format') === 'idf') {
+            // Text stored as paragraph elements, return annotated text string
+            const textContent = textEl.children.map((child) => child.getInnerHTML()).join(' ')
+            textEl.setInnerHTML(textContent)
+
+            node.text = converter.annotatedText(textEl, [node.id, 'text'])
+        } else {
+            // Normal behavior, stored and return as simple text
+            node.text = converter.annotatedText(textEl, [node.id, 'text'])
+        }
+    },
+
+    /**
+     * Import contents of <customFields>-element.
+     * Custom fields go in TeaserNode.customFields.<field name>
+     *
+     * @param {ui/DOMElement} customFieldsEl
+     * @param {TeaserNode} node
+     * @param {NewsMLImporter} converter
+     */
+    importCustomFields: function(customFieldEl, node, converter) {
+        // child.tagName will return the tag name in lowercase.
+        // child.el.tagName, however, will return the tag name with the original capitalization.
+        const tagName = customFieldEl.el.tagName
+        node.customFields[tagName] = converter.annotatedText(customFieldEl, [node.id, 'customFields', tagName])
     },
 
     /**
@@ -126,16 +225,28 @@ export default {
 
         // Data element
         const data = $$('data')
-        if (node.text) {
-            data.append($$('text').append(
-                converter.annotatedText([node.id, 'text'])
-            ))
+
+        if (node.text || node.nodes.length > 0) {
+            const text = this.exportText($$, node, converter)
+            data.append(text)
         }
 
         if (node.subject) {
             data.append($$('subject').append(
                 converter.annotatedText([node.id, 'subject'])
             ))
+        }
+
+        if (node.customFields) {
+            const customFields = Object.keys(node.customFields)
+                .filter(key => node.customFields[key])
+                .map(key => {
+                    return $$(key).append(
+                        converter.annotatedText([node.id, 'customFields', key])
+                    )
+                })
+
+            data.append(customFields)
         }
 
         if (node.disableAutomaticCrop) {
@@ -189,5 +300,30 @@ export default {
                 $$('links').append(link)
             )
         }
+    },
+
+    /**
+     * Text is either stored as simple text in the TeaserNode.text-property
+     * or as text-nodes in the TeaserNode.nodes-property, depending on configured
+     * multiline value.
+     *
+     * @param $$
+     * @param {TeaserNode} node
+     * @param {NewsMLExporter} converter
+     * @returns {VirtualElement}
+     */
+    exportText: function($$, node, converter) {
+        const text = $$('text')
+
+        if(this.isMultilineEnabled(node.dataType)) {
+            text.attr('format', 'idf')
+            text.append(
+                converter.convertContainer(node)
+            )
+        } else {
+            text.append(converter.annotatedText([node.id, 'text']))
+        }
+
+        return text
     }
 }

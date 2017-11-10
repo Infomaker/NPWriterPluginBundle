@@ -45,7 +45,7 @@ class XimimageTool extends Tool {
             return this.onUploadFailure(nodeId)
         }
 
-        api.editorSession.fileManager.sync().catch(err => {
+        api.editorSession.fileManager.sync().catch(() => {
             return this.onUploadFailure(nodeId)
         })
     }

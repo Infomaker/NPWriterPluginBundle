@@ -1,76 +1,147 @@
 const {Component} = substance
-const {api, event} = writer
+const {api, moment, event} = writer
 import './scss/index.scss'
+
 class TextanalyzerComponent extends Component {
 
     dispose() {
         api.events.off('textanalyzer', event.DOCUMENT_CHANGED);
+        api.events.off('textanalyzer', event.DOCUMENT_SAVED);
     }
 
     constructor(...args) {
         super(...args)
+
         api.events.on('textanalyzer', event.DOCUMENT_CHANGED, () => {
             this.calculateText()
         })
 
-
+        api.events.on('textanalyzer', event.DOCUMENT_SAVED, () => {
+            this.extendState({
+                updatedDate: this._getSafeDate(new Date())
+            })
+        })
     }
 
     calculateText() {
-        var count = this.getCount()
-        this.setState({
+        let count = this.getCount()
+        this.extendState({
             textLength: count.textLength,
             words: count.words
         })
     }
 
-    didMount() {
-        // this.props.popover.setIcon('fa-line-chart')
-    }
-
     render($$) {
-        var el = $$('div').addClass('textanalyzer plugin')
+        let el = $$('div').addClass('textanalyzer plugin')
+        let innerEl = $$('div').addClass('info__container clearfix')
 
-        var numberContainer = $$('div').addClass('number__container clearfix')
+        // Status
+        // TODO: later...
 
-        var textlengthEl = $$('div').addClass('count-info')
-            .append($$('span').append(this.state.textLength.toString()))
-            .append($$('p').append(this.getLabel('Characters')))
-            .attr('title', this.getLabel('Characters'))
+        // Source
+        const source = this._getSource()
+        if (source) {
+            const sourceLabel = this.getLabel('Source')
+            this._createAndAppendRowElement($$, innerEl, sourceLabel, sourceLabel, source)
+        }
 
-        var wordsEl = $$('div').addClass('count-info')
-            .append($$('span').append(this.state.words.toString()))
-            .append($$('p').append(this.getLabel('Words')))
-            .attr('title', this.getLabel('Words'))
+        // Created
+        const createdLabel = this.getLabel('Created')
+        this._createAndAppendRowElement($$, innerEl, createdLabel, createdLabel, this.state.createdDate.toString())
 
-        numberContainer.append([
-            textlengthEl,
-            wordsEl
-        ])
-        el.append(numberContainer)
+        // Updated
+        const updatedLabel = this.getLabel('Updated')
+        this._createAndAppendRowElement($$, innerEl, updatedLabel, updatedLabel, this.state.updatedDate.toString())
 
+        innerEl.append($$('hr'))
+
+        // Nr of words
+        const wordsLabel = this.getLabel('Words')
+        this._createAndAppendRowElement($$, innerEl, 'Words', wordsLabel, this.state.words.toString())
+
+        // Nr of characters
+        const charLabel = this.getLabel('Characters')
+        this._createAndAppendRowElement($$, innerEl, 'Character count', charLabel, this.state.textLength.toString())
+
+        el.append(innerEl)
         return el
     }
 
+    _createAndAppendRowElement($$, parent, title, label, value) {
+        let infoBoxEl = $$('div').addClass('info-box').attr('title', title)
+        let labelEl = $$('div').addClass('label').append(label + ':')
+        let infoEl = $$('div').addClass('info')
+        let valueEl = $$('strong').append(value)
+
+        infoEl.append(valueEl)
+        infoBoxEl.append(labelEl).append(infoEl)
+        parent.append(infoBoxEl)
+    }
+
+    /**
+     * Get source from newsItem > contentMeta > links > link[@type='x-im/articlesource']/@title.
+     *
+     * @returns {*}
+     * @private
+     */
+    _getSource() {
+        const links = api.newsItem.getContentMetaLinkByType(
+            'textanalyzer',
+            'x-im/articlesource'
+        )
+
+        // There can be only one
+        if (links && links.length === 1) {
+            return links[0]['@title']
+        }
+        else if (links && links.length > 1) {
+            console.error('This article has multiple sources. Should only be one')
+        }
+
+        return null
+    }
+
+    _getCreatedDate() {
+        return this._getSafeDate(api.newsItem.getFirstCreated())
+    }
+
+    _getUpdatedDate() {
+        return this._getSafeDate(api.newsItem.getVersionCreated())
+    }
+
+    _getSafeDate(date) {
+        if (date && !this.isTemplate) {
+            return moment(date).format('YYYY-MM-DD HH:mm')
+        }
+        else {
+            return '-'
+        }
+    }
+
     getInitialState() {
-        var count = this.getCount()
+        // Is this a new article? Used when rendering create/update dates
+        this.isTemplate = !api.newsItem.getGuid()
+
+        const count = this.getCount()
         return {
             textLength: count.textLength,
-            words: count.words
+            words: count.words,
+            createdDate: this._getCreatedDate(),
+            updatedDate: this._getUpdatedDate()
         }
     }
 
     getCount() {
-        var nodes = api.document.getDocumentNodes()
-        var textContent = "";
+        const nodes = api.document.getDocumentNodes()
+        let textContent = "";
         nodes.forEach(function (node) {
             if (node.content) {
                 textContent += node.content.trim()
             }
         })
-        var words = textContent.split(/\s+/)
-        var textLength = textContent.length
 
+        const words = textContent.split(/\s+/)
+        const textLength = textContent.length
         return {
             words: words.length,
             textLength: textLength
@@ -78,4 +149,5 @@ class TextanalyzerComponent extends Component {
     }
 
 }
+
 export default TextanalyzerComponent

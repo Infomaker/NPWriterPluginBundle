@@ -8,11 +8,27 @@ export default {
     configure: function (config) {
 
         config.addLabel('Characters', {
-            sv: "Antal tecken"
+            sv: 'Antal tecken'
         })
 
         config.addLabel('Words', {
-            sv: "Antal ord"
+            sv: 'Antal ord'
+        })
+
+        config.addLabel('Source', {
+            sv: 'Källa'
+        })
+
+        config.addLabel('No source found', {
+            sv: 'Ingen källa'
+        })
+
+        config.addLabel('Created', {
+            sv: 'Skapad'
+        })
+
+        config.addLabel('Updated', {
+            sv: 'Uppdaterad'
         })
 
         config.addPopover(

@@ -6,10 +6,42 @@
         // Disable drag for TeaserContainer
         display: none;
     }
+
+    .teaser-container .im-container-editor {
+        .sc-textstyle-label {
+            left: 0;
+            min-width: 12px;
+            line-height: 19px;
+            padding: 0;
+        }
+    }
+}
+
+.se-layout:not(.se-text-style-visible) {
+    .teaser-container {
+        .im-container-editor:before {
+            font-family: FontAwesome;
+            color: #b4b4b4;
+            float: left;
+            content: "\f1dd";
+            width: 20px;
+            margin-left: 2px;
+        }
+    }
 }
 
 .teaser-container {
     padding: 10px;
+
+    .im-container-editor {
+        font-size: 90%;
+        margin-top: 10px;
+
+        .sc-paragraph {
+            padding-bottom: 10px;
+            padding-left: 31px;
+        }
+    }
 
     .x-im-teaser-upload-container {
         position: relative;

@@ -57,6 +57,12 @@ class InsertTeaserContainerCommand extends WriterCommand {
         const generateTeaserTemplate = api.getPluginModule('se.infomaker.ximteaser.teasertemplate')
         const teaserNode = generateTeaserTemplate('x-im/teaser', 'Teaser')
 
+        const emptyParamNode = tx.create({
+            type: 'paragraph',
+            content: ''
+        })
+        teaserNode.nodes.push(emptyParamNode.id)
+
         tx.create(teaserNode)
 
         return teaserNode

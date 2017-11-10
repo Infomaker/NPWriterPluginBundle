@@ -1,22 +1,37 @@
 .textanalyzer {
-    width: 300px;
-    padding: 0.5rem 1.5rem 1.5rem 1.5rem
-}
-.number__container {
-    display: flex;
+  width: 300px;
+  padding: 1.5rem
 }
 
-.count-info {
-    line-height: 40px;
-    flex: 1;
-    text-align: center;
-    font-size:1.2rem;
-    span {
-        font-weight:700;
+.info-box {
+  display: flex;
+  width: 100%;
+  font-size: 90%;
+  line-height: 1.9;
+}
 
-    }
-    p {
-        line-height:0 !important;
-        margin: 0 !important;
-    }
+.info__container .label {
+  width: 50%;
+  float: left;
+  text-align: right;
+  margin-right: 10px;
+  color: #888;
+}
+
+.info__container .info {
+  width: 50%;
+  float: left;
+  margin-left: 10px;
+  color: #444;
+}
+
+.info-box:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #eee;
 }

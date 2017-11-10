@@ -1,3 +1,5 @@
+import './admeta.scss'
+
 import AdmetaComponent from './AdmetaComponent'
 
 export default {
@@ -21,6 +23,10 @@ export default {
         config.addLabel('admeta-set-campaign-id', {
             en: 'Set campaign ID',
             sv: 'Sätt kampanj-id'
+        })
+        config.addLabel('admeta-add-item', {
+            en: 'Add: ',
+            sv: 'Lägg till: '
         })
     }
 }

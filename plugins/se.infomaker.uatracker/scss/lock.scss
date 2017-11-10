@@ -1,0 +1,35 @@
+.uatracker {
+    .lock-container {
+        margin: 9px 8px;
+        height: 34px;
+
+        button.lock-button {
+            color: #b1b1b1;
+            background-color: #f2f4f5;
+            border-color: #d9dddf;
+            vertical-align: top;
+
+            &.locked {
+                color: #4d4d4d;
+            }
+        }
+
+        .popover-content.unlock-alert {
+            max-width: 300px;
+
+            .footer {
+                text-align: right;
+                background-color: transparentize($color: #e5300f, $amount: 0.9);
+
+                button {
+                    text-transform: uppercase;
+                    font-weight: bold;
+
+                    &.unlock {
+                        color: #e5300f;
+                    }
+                }
+            }
+        }
+    }
+}
