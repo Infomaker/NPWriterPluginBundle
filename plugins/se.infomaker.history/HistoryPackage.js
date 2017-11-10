@@ -124,6 +124,26 @@ export default({
             sv: 'Antal tecken'
         })
 
+        config.addLabel('se.infomaker.history-conflict.title', {
+            en: 'The article is outdated',
+            sv: 'Artikeln är inaktuell'
+        })
+
+        config.addLabel('se.infomaker.history-conflict.header', {
+            en: 'There is a newer version of this article',
+            sv: 'Det finns en nyare version av artikeln'
+        })
+
+        config.addLabel('se.infomaker.history-conflict.text', {
+            en: 'The local copies of the article are outdated. In order to get the latest changes the article needs to be reopened.',
+            sv: 'De lokala kopiorna av artikeln är inaktuella. För att visa de senaste ändringarna måste artikeln läsas in på nytt.'
+        })
+
+        config.addLabel('se.infomaker.history-button.reopen', {
+            en: 'Reopen requested article',
+            sv: 'Läs in artikel på nytt'
+        })
+
         config.addPopover(
             'historymaincomponent',
             {
