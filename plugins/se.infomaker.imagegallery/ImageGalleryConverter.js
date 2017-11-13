@@ -28,7 +28,7 @@ const ImageGalleryConverter = {
         if (galleryDataEl) {
             galleryDataEl.children.forEach(child => {
                 if (child.tagName === 'caption') {
-                    node.genericCaption = converter.annotatedText(child, 'caption')
+                    node.genericCaption = converter.annotatedText(child, [node.id, 'genericCaption'])
                 }
             })
         }
@@ -51,14 +51,6 @@ const ImageGalleryConverter = {
                     imageFile: imageFile.id
                 }
 
-                if (imgData) {
-                    imgData.children.forEach(child => {
-                        if (child.tagName === 'byline' || child.tagName === 'caption') {
-                            imageGalleryImage[child.tagName] = converter.annotatedText(child, child.tagName)
-                        }
-                    })
-                }
-
                 // Import author links
                 imageGalleryImage.authors = []
                 let authorLinks
@@ -70,6 +62,14 @@ const ImageGalleryConverter = {
 
                 converter.createNode(imageFile)
                 converter.createNode(imageGalleryImage)
+
+                if (imgData) {
+                    imgData.children.forEach(child => {
+                        if (child.tagName === 'byline' || child.tagName === 'caption') {
+                            imageGalleryImage[child.tagName] = converter.annotatedText(child, [imageGalleryImage.id, child.tagName])
+                        }
+                    })
+                }
 
                 node.nodes.push(imageGalleryImage.id)
             })
@@ -108,17 +108,17 @@ const ImageGalleryConverter = {
 
     /**
      * Substance node to Newsml
-     * 
-     * @param {any} node 
-     * @param {any} el 
-     * @param {any} converter 
+     *
+     * @param {any} node
+     * @param {any} el
+     * @param {any} converter
      */
     export(node, el, converter) {
         const galleryImageNodes = node.nodes || []
         const {$$} = converter
         const data = $$('data')
         const links = $$('links')
-        
+
         el.attr({
             'id': node.id,
             'type': node.dataType,
