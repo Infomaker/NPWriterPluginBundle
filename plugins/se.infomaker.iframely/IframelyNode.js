@@ -10,6 +10,10 @@ class IframelyNode extends BlockNode {
 
         fetchOembed(this.url)
         .then(res => {
+            if (!res.html) {
+                throw new Error('No embedCode found for link')
+            }
+
             this.fetching = false
             callback(null, {
                 url: res.url,
