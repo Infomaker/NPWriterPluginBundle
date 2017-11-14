@@ -1,10 +1,17 @@
 import {Component, FontAwesomeIcon} from 'substance'
 
+import {OpenContentClient, QueryBuilder, QueryResponseHelper} from 'oc-js-client'
+
+
+/**
+ * @class SearchComponent
+ */
 class SearchComponent extends Component {
 
     getInitialState() {
         return {
-            selectedEndpointUrl: this._configuredEndpoints[0].url,
+            selectedEndpoint: this._configuredEndpoints[0],
+            sortings: [],
             query: '',
             sort: '',
             limit: 25,
@@ -21,6 +28,9 @@ class SearchComponent extends Component {
 
             this._doSearch()
         })
+
+
+        this._loadSortings()
     }
 
     dispose() {
@@ -44,13 +54,7 @@ class SearchComponent extends Component {
                         .on('click', (e) => {
                             e.preventDefault()
                             if (this.state.query) {
-                                this.extendState({
-                                    query: '',
-                                    totalHits: 0,
-                                    start: 0
-                                })
-                                this.refs.searchInput.val('')
-                                this.props.clearResult()
+                                this._resetQuery()
                             }
                         })
                 ).attr('autocomplete', 'off')
@@ -65,32 +69,43 @@ class SearchComponent extends Component {
         )
     }
 
+    _loadSortings() {
+        const ocClient = new OpenContentClient(this._ocClientConfig)
+        return ocClient.getSortings()
+            .then(response => this.context.api.router.checkForOKStatus(response))
+            .then(response => response.json())
+            .then(({sortings}) => {
+                this.extendState({
+                    sortings: sortings.map((sorting) => {
+                        return {
+                            name: sorting.name,
+                            field: sorting.sortIndexFields[0].indexField,
+                            ascending: sorting.sortIndexFields[0].ascending
+                        }
+                    })
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    _resetQuery() {
+        this.extendState({
+            query: '',
+            totalHits: 0,
+            start: 0
+        })
+        this.refs.searchInput.val('')
+        this.props.clearResult()
+    }
+
     /**
      * @returns {Array}
      * @private
      */
     get _configuredEndpoints() {
         return this.context.api.getConfigValue('se.infomaker.archivesearch', 'archiveHosts', [])
-    }
-
-    /**
-     * @returns {{host: *, query: *, limit: *, start: *, sort: *, resultMappings: {Filename: string, thumbnail: string, original: string}}}
-     * @private
-     */
-    get _searchQuery() {
-        const {selectedEndpointUrl: host, query, limit, start, sort} = this.state
-        return {
-            host,
-            query,
-            limit,
-            start,
-            sort, //FIXME: get some sorting sorted
-            resultMappings: {
-                Filename: 'Filename',
-                thumbnail: 'thumbnail',
-                original: 'primary'
-            }
-        }
     }
 
     /**
@@ -147,11 +162,36 @@ class SearchComponent extends Component {
         const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
 
         return $$(DropdownComponent, {
-            options: configuredEndpoints.map((end) => {
-                return {label: end.name, value: end.url}
+            options: configuredEndpoints.map(({name: label, name: value}) => {
+                return {
+                    label,
+                    value
+                }
             }),
+            isSelected: (options, item) => item.label === this.state.selectedEndpoint.name,
+            onChangeList: (selectedValue) => {
+                const selectedEndpoint = this._configuredEndpoints.find(({name}) => selectedValue === name)
+                this.extendState({
+                    selectedEndpoint
+                })
+                this._loadSortings()
+                    .then(() => {
+                        this._resetQuery()
+                    })
+            },
             disabled: configuredEndpoints.length <= 1
         })
+    }
+
+    get _sortingOptions() {
+        return [
+            {label: 'Relevans', value: ''},
+            ...this.state.sortings.map(({name: label, name: value}) => {
+                return {
+                    label,
+                    value
+                }
+            })]
     }
 
     /**
@@ -165,10 +205,7 @@ class SearchComponent extends Component {
         return [
             $$(DropdownComponent, {
                 header: this.getLabel('Sort'),
-                options: [
-                    {label: 'Relevans', value: ''},
-                    {label: 'Uppdaterad', value: 'updated'}
-                ],
+                options: this._sortingOptions,
                 isSelected: (options, item) => item.value === this.state.sort,
                 onChangeList: (selectedValue) => {
                     this.extendState({
@@ -196,6 +233,29 @@ class SearchComponent extends Component {
         ]
     }
 
+    get _selectedSorting() {
+        const sortObj = this.state.sortings.find(({name}) => name === this.state.sort)
+        return sortObj ? sortObj : {field: '', ascending: false}
+    }
+
+    /**
+     * @returns {Object}
+     * @private
+     */
+    get _query() {
+        return Object.assign(this.state.selectedEndpoint.standardQuery, {
+            q: this.state.query
+        })
+    }
+
+    /**
+     * @returns {Object}
+     * @private
+     */
+    get _ocClientConfig() {
+        return this.state.selectedEndpoint.host
+    }
+
     /**
      * @private
      */
@@ -204,32 +264,41 @@ class SearchComponent extends Component {
             return
         }
 
-        const requestData = {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this._searchQuery)
-        }
+        const ocClient = new OpenContentClient(this._ocClientConfig)
+        const queryBuilder = new QueryBuilder(this._query)
+        const resultMappings = this.state.selectedEndpoint.resultsMapping
 
-        return this.context.api.router.post('/api/external-search', requestData)
+        console.log(this._selectedSorting.field, this._selectedSorting.ascending)
+
+        queryBuilder.setStart(this.state.start)
+            .setSorting(this._selectedSorting.field, this._selectedSorting.ascending)
+            .setLimit(this.state.limit)
+            .setResponseProperties(Object.keys(resultMappings))
+
+        return ocClient.search(queryBuilder.build())
             .then(response => this.context.api.router.checkForOKStatus(response))
             .then(response => response.json())
-            .then((json) => {
+            .then(json => new QueryResponseHelper(json))
+            .then((qResponse) => {
+                const json = {
+                    totalHits: qResponse.getTotalHits(),
+                    includedHits: qResponse.getIncludedHits()
+                }
 
-                console.log(json)
+                json.items = qResponse.getItems().map((versionedItem) => {
+                    const item = {
+                        uuid: versionedItem.id
+                    }
 
-                json.items = json.items.map((item) => {
-
-                    // TODO: Remove this
-                    // item.thumbnail = `https://dummyimage.com/${Math.random() * (600 - 300) + 300}x400/${(Math.random() * (65536)).toString(16)}/fff.jpg`
-
-                    item.thumbnail = `/api/oc-proxy?url=${encodeURIComponent(item.thumbnail)}`
+                    const itemProperties = versionedItem.versions[0].properties
 
                     // Convert { "key": ["value"] } to { "key": "value" }
-                    Object.keys(item).forEach((key) => {
-                        item[key] = Array.isArray(item[key]) ? item[key][0] : item[key]
-                    })
+                    Object.keys(itemProperties)
+                        .filter((key) => resultMappings.hasOwnProperty(key))
+                        .forEach((key) => {
+                            item[resultMappings[key]] = Array.isArray(itemProperties[key]) ? itemProperties[key][0] : itemProperties[key]
+                        })
+
                     return item
                 })
 
