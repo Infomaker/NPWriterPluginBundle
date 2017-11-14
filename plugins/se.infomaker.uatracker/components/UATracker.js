@@ -58,7 +58,8 @@ class UATracker extends Component {
             username: null,
             email: null,
             users: [],
-            lockedBy: null
+            lockedBy: null,
+            articleOutdated: false
         }
     }
 
@@ -178,6 +179,7 @@ class UATracker extends Component {
     onVersionChange({ savedBy }) {
         if (savedBy !== this.socket.id) {
             const user = this.state.users.find(u => u.socketId === savedBy)
+            this.extendState({articleOutdated: true})
             this.showArticleOutdatedDialog(user)
         }
     }
@@ -188,18 +190,20 @@ class UATracker extends Component {
     }
 
     setLockStatus(lockedBy) {
-        if (lockedBy && lockedBy !== this.socket.id) {
-            // Locked by other user
+        if (lockedBy && lockedBy !== this.socket.id) { // Locked by other user
             this.lockArticle()
-        } else {
-            // Not locked or locked by active user
+        } else if (lockedBy === this.socket.id) { // Locked by active user
             this.unlockArticle()
+        } else { // Not locked
+            if (!this.state.articleOutdated) {
+                this.unlockArticle()
+            }
         }
     }
 
     showArticleLockedDialog() {
         const dialogProps = {
-            message: this.getLabel('uatracker-article-locked-message'),
+            message: this.getLabel('uatracker-article-locked-message')
         }
         const dialogOptions = {
             heading: this.getLabel('uatracker-article-locked-title'),
@@ -231,12 +235,13 @@ class UATracker extends Component {
         const dialogProps = {
             message: this.getLabel('uatracker-article-outdated-message')
                 .replace('{{name}}', user.name)
-                .replace('{{email}}', user.email)
+                .replace('{{email}}', user.email),
+            cbPrimary: () => window.location.reload()
         }
         const dialogOptions = {
             heading: this.getLabel('uatracker-article-outdated-title'),
-            primary: this.getLabel('confirm-understand'),
-            secondary: false,
+            primary: this.getLabel('reload-article'),
+            secondary: this.getLabel('cancel'),
             center: false
         }
 
