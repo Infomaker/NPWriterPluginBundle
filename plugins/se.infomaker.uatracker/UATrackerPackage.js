@@ -88,6 +88,11 @@ export default {
             sv: 'Jag förstår'
         })
 
+        config.addLabel('reload-article', {
+            en: 'Reload article',
+            sv: 'Ladda om artikeln'
+        })
+
         config.addLabel('unlock', {
             en: 'Unlock',
             sv: 'Lås upp'
