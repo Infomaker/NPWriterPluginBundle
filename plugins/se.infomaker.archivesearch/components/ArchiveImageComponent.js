@@ -32,7 +32,7 @@ class ArchiveImageComponent extends Component {
             caption: this.props.item.description ? this.props.item.description : ''
         }
 
-        e.dataTransfer.setData('text/uri-list', `x-im-archive-entity://x-im/image?data=${encodeURIComponent(JSON.stringify(dropData))}`)
+        e.dataTransfer.setData('text/uri-list', `x-im-archive-url://x-im/image?data=${encodeURIComponent(JSON.stringify(dropData))}`)
     }
 
     /**

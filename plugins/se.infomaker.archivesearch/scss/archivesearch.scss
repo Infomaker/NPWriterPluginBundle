@@ -130,13 +130,16 @@
         height: 100px;
         padding-right: 15px;
       }
+
       .image-meta-content {
         display: flex;
         flex-direction: column;
+
         p {
           color: #ddd;
           line-height: 1.38;
           font-size: 14px;
+
           &:last-child {
             color: #b1b1b1;
             margin-top: 15px;

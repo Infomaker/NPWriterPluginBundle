@@ -13,7 +13,7 @@ class ArchiveSearchDropHandler extends DragAndDropHandler {
      * @private
      */
     _isArchiveImageDrop(params) {
-        return params.uri && params.uri.includes('x-im-archive-entity://x-im/image')
+        return params.uri && params.uri.includes('x-im-archive-url://x-im/image')
     }
 
     drop(tx, params) {

@@ -43,20 +43,7 @@ class SearchComponent extends Component {
                 $$('form').append(
                     this._renderEndpointPicker($$),
                     this._renderQueryInput($$),
-                    $$('a')
-                        .attr('href', '')
-                        .append(
-                            $$(FontAwesomeIcon, {
-                                icon: this.state.query ? 'fa-times-circle' : 'fa-search'
-                            })
-                                .addClass('search-icon')
-                        )
-                        .on('click', (e) => {
-                            e.preventDefault()
-                            if (this.state.query) {
-                                this._resetQuery()
-                            }
-                        })
+                    this._renderSearchIcon($$)
                 ).attr('autocomplete', 'off')
                     .on('submit', (e) => {
                         e.stopPropagation()
@@ -69,6 +56,30 @@ class SearchComponent extends Component {
         )
     }
 
+    /**
+     * @param $$
+     * @private
+     */
+    _renderSearchIcon($$) {
+        return $$('a')
+            .attr('href', '')
+            .append(
+                $$(FontAwesomeIcon, {
+                    icon: this.state.query ? 'fa-times-circle' : 'fa-search'
+                }).addClass('search-icon')
+            )
+            .on('click', (e) => {
+                e.preventDefault()
+                if (this.state.query) {
+                    this._resetQuery()
+                }
+            })
+    }
+
+    /**
+     * @returns {Promise<T>}
+     * @private
+     */
     _loadSortings() {
         const ocClient = new OpenContentClient(this._ocClientConfig)
         return ocClient.getSortings()
@@ -90,6 +101,9 @@ class SearchComponent extends Component {
             })
     }
 
+    /**
+     * @private
+     */
     _resetQuery() {
         this.extendState({
             query: '',
@@ -183,6 +197,10 @@ class SearchComponent extends Component {
         })
     }
 
+    /**
+     * @returns {[Object]}
+     * @private
+     */
     get _sortingOptions() {
         return [
             {label: 'Relevans', value: ''},
@@ -218,9 +236,9 @@ class SearchComponent extends Component {
             $$(DropdownComponent, {
                 header: this.getLabel('Show'),
                 options: [
-                    {label: '10', value: 10},
                     {label: '25', value: 25},
-                    {label: '50', value: 50}
+                    {label: '50', value: 50},
+                    {label: '100', value: 100}
                 ],
                 isSelected: (options, item) => item.value === this.state.limit,
                 onChangeList: (selectedValue) => {
@@ -233,6 +251,10 @@ class SearchComponent extends Component {
         ]
     }
 
+    /**
+     * @returns {*}
+     * @private
+     */
     get _selectedSorting() {
         const sortObj = this.state.sortings.find(({name}) => name === this.state.sort)
         return sortObj ? sortObj : {field: '', ascending: false}
@@ -267,8 +289,6 @@ class SearchComponent extends Component {
         const ocClient = new OpenContentClient(this._ocClientConfig)
         const queryBuilder = new QueryBuilder(this._query)
         const resultMappings = this.state.selectedEndpoint.resultsMapping
-
-        console.log(this._selectedSorting.field, this._selectedSorting.ascending)
 
         queryBuilder.setStart(this.state.start)
             .setSorting(this._selectedSorting.field, this._selectedSorting.ascending)

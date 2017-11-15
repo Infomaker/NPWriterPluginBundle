@@ -20,7 +20,6 @@ class ImageListComponent extends Component {
                                 return $$(ArchiveImageComponent, {
                                     item,
                                     onClick: ({item, position}) => {
-                                        console.log(item)
                                         const imageMetaPopup = this.refs.imageMetaPopup
                                         const updatedProps = {}
                                         if (imageMetaPopup.props.imageItem && imageMetaPopup.props.imageItem.uuid === item.uuid) {
