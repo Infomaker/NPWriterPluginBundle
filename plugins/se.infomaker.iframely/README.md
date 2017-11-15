@@ -56,6 +56,11 @@ Set to true to reinsert the pasted link in case Iframely can not fetch the embed
 ### 1.2 - Iframely settings
 Some settings can only be changed on the Iframely [settings page](https://iframely.com/settings/api)
 
+#### Setting: Use smart iFrames as proxy in HTML codes?
+The option `Always smart iFrames for security, speed and any HTML options` should be enabled.
+
+#### Setting: What if no HTML code?
+The option `Respond with error 417 when API call results in no embed codes` should be enabled. The plugin will still work without this enabled, but any URLs that do not produce an embed code will count towards the API usage.
 
 ## 2 - Newsml format
 ```xml
