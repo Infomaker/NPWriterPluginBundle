@@ -15,6 +15,7 @@ Documentation of the Iframely plugin.
     "data": {
         "apiKey": "Your_Iframely_API_key",
         "restoreAfterFailure": true,
+        "restoreAfterFailure": false,
         "urlWhitelist": [],
         "urlBlacklist": []
     }
@@ -28,6 +29,9 @@ The Iframely plugin requires an API key to fetch embeds. Sign up to [Iframely](h
 
 #### `restoreAfterFailure` - Restore link after failure
 Set to true to reinsert the pasted link in case Iframely can not fetch the embed.
+
+#### `omitScript` - Omit the script tag in the embedCode element
+Set to true to disable adding the included iframely embed.js script to all embed codes. See [Omit script](https://iframely.com/docs/omit-script) in the Iframely docs for more information.
 
 #### `urlWhitelist` - URL whitelist
 *Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
