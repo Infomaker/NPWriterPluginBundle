@@ -15,7 +15,7 @@ Documentation of the Iframely plugin.
     "data": {
         "apiKey": "Your_Iframely_API_key",
         "restoreAfterFailure": true,
-        "restoreAfterFailure": false,
+        "omitScript": false,
         "urlWhitelist": [],
         "urlBlacklist": []
     }
