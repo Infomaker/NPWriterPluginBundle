@@ -42,6 +42,9 @@ const archivesearchPackage = {
         config.addLabel('of', {
             sv: 'av'
         })
+        config.addLabel('Missing image description', {
+            sv: 'Saknar bildbeskrivning'
+        })
     }
 }
 
