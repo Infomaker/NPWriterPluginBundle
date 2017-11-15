@@ -1,4 +1,4 @@
-const { registerPlugin } = writer
+const {registerPlugin} = writer
 
 import './scss/archivesearch.scss'
 import MainComponent from './components/MainComponent'
@@ -8,7 +8,7 @@ const archivesearchPackage = {
     id: 'se.infomaker.archivesearch',
     name: 'im-archivesearch',
     version: '{{version}}',
-    configure: (config, pluginConfig) => {
+    configure: (config) => {
 
 
         // TODO: Remove this, maybe use later
