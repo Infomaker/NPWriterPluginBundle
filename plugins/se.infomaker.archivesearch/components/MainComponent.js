@@ -2,14 +2,16 @@ import {Component} from 'substance'
 import ImageListComponent from './ImageListComponent'
 import SearchComponent from './SearchComponent'
 
+/**
+ * @class MainComponent
+ */
 class MainComponent extends Component {
 
-    shouldRerender(newProps, newState) {
+    shouldRerender() {
         return false
     }
 
     render($$) {
-
         return $$('div').addClass('im-archivesearch').append(
             $$(SearchComponent, {
                 onResult: ({items, totalHits, limit, start}) => {

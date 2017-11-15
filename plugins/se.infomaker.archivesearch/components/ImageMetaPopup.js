@@ -27,6 +27,10 @@ class ImageMetaPopup extends Component {
         }
     }
 
+    /**
+     * @returns {String}
+     * @private
+     */
     get _description() {
         const {description} = this.props.imageItem
         return description ? description : this.getLabel('Missing image description')
