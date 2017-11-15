@@ -1,7 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-
 import {OpenContentClient, QueryBuilder, QueryResponseHelper} from 'oc-js-client'
-
 
 /**
  * @class SearchComponent
@@ -29,12 +27,11 @@ class SearchComponent extends Component {
             this._doSearch()
         })
 
-
         this._loadSortings()
     }
 
     dispose() {
-        this.context.api.events.off('archive-search', 'search:trigger')
+        this.context.api.events.off('archive-search', 'archive-search:pageChange')
     }
 
     render($$) {
@@ -47,7 +44,15 @@ class SearchComponent extends Component {
                 ).attr('autocomplete', 'off')
                     .on('submit', (e) => {
                         e.stopPropagation()
-                        this._doSearch()
+
+                        this.extendState({
+                            start: 0
+                        })
+
+                        // Since extending state rerenders component, do the search after state.start has been reset
+                        setTimeout(() => {
+                            this._doSearch()
+                        }, 100)
                     })
             ),
             $$('div').addClass('search-options').append(
