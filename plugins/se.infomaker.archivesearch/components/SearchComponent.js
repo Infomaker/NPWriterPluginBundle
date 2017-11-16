@@ -44,6 +44,7 @@ class SearchComponent extends Component {
                 ).attr('autocomplete', 'off')
                     .on('submit', (e) => {
                         e.stopPropagation()
+                        e.preventDefault()
 
                         this.extendState({
                             start: 0
