@@ -103,7 +103,7 @@ class SearchComponent extends Component {
                 })
             })
             .catch((err) => {
-                console.log(err)
+                console.error(err)
             })
     }
 
@@ -342,7 +342,7 @@ class SearchComponent extends Component {
                 })
             })
             .catch((e) => {
-                console.log(e)
+                console.error(e)
             })
     }
 }

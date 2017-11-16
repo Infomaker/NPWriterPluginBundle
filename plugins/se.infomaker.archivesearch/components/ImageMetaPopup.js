@@ -5,7 +5,6 @@ class ImageMetaPopup extends Component {
     render($$) {
         const imageMetaItem = this.props.imageItem
         if (imageMetaItem) {
-            console.log(imageMetaItem)
             return $$('div').addClass('image-meta')
                 .css('top', this.props.position.top + 15).append(
                     $$('div').addClass('image-meta-popover-arrow')
