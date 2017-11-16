@@ -10,6 +10,7 @@ class Preamble extends Validator {
     validate() {
         const preambles = [...this.newsItem.querySelectorAll('idf > group element[type="preamble"]')]
         this.validatePreambleCount(preambles)
+        this.validatePreamblesNotEmpty(preambles)
     }
 
     /**
@@ -26,6 +27,24 @@ class Preamble extends Validator {
         }
     }
 
+    /**
+     * Ensure that preambles are not empty
+     * @param {Element[]} preambles
+     */
+    validatePreamblesNotEmpty(preambles) {
+        for (let i = 0; i < preambles.length; i++) {
+            const preamble = preambles[i];
+            const content = preamble.childNodes.length === 0 ? '' : preamble.firstChild.textContent.trim()
+            if (content === '') {
+                if (saveOrPublish() === 'save') {
+                    this.addWarning(api.getLabel('validator-preamble-empty'))
+                } else {
+                    this.addError(api.getLabel('validator-preamble-empty'))
+                }
+                break
+            }
+        }
+    }
 }
 
 export default Preamble

@@ -41,6 +41,11 @@ const validationPackage = {
             sv: 'Artikeln måste innehålla minst en ingress.'
         })
 
+        config.addLabel('validator-preamble-empty', {
+            en: 'Preambles should not be empty.',
+            sv: 'Ingressen borde inte vara tom.'
+        })
+
         /**
          * Main channel
          */
