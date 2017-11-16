@@ -1,0 +1,103 @@
+.im-image-gallery {
+    width: 100%;
+    position: relative;
+
+    i {
+        margin: 0 10px 0 0;
+    }
+
+    .image-gallery-header {
+        font-size: 12px;
+        padding: 0 0 10px 0;
+    }
+
+    .image-gallery-dropzone {
+        height: 103px;
+        border: 1px dashed #ddd;
+        display: flex;
+
+        .dropzone-text {
+            margin: auto;
+            color: #ddd;
+        }
+    }
+    .image-gallery-container {
+        overflow: hidden;
+        position: relative;
+        height: 100px;
+
+        .gallery-control {
+            position: absolute;
+            z-index: 1;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            height: 100%;
+
+            &.left-control {
+                left: 0;
+                i {
+                    float:left;
+                    margin: 0 10px 0;
+                }
+            }
+            &.right-control {
+                right:0;
+                i {
+                    float:right;
+                    margin: 0 10px 0;
+                }
+            }
+        }
+
+        .image-gallery-gallery {
+            position: relative;
+            left: 0;
+            transition: all 0.2s ease-in;
+
+            img {
+                max-height: 100px;
+                border: 1px solid #ddd;
+            }
+            .image-container {
+                position: relative;
+                float: left;
+                margin-right: 2px;
+
+                &:hover {
+                    .remove-image-button {
+                        display: inline;
+                    }
+                }
+
+                .remove-image-button {
+                    display: none;
+                    color: #fff;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    i {
+                        text-shadow: 1px 1px #555;
+                    }
+                }
+            }
+
+            // Clearfix
+            &:after {
+                content: '';
+                display: block;
+                clear: both;
+            }
+        }
+    }
+}
+
+.sc-isolated-node.sm-selected {
+    .im-image-gallery {
+        .image-gallery-dropzone {
+            border: 1px dashed rgb(178, 213, 254);
+            .dropzone-text {
+                color: #288dc0;
+            }
+        }
+    }
+}

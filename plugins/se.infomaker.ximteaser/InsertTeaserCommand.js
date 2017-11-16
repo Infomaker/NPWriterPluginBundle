@@ -10,6 +10,13 @@ class InsertTeaserCommand extends WriterCommand {
 
         let createdTeaserNode
         editorSession.transaction(tx => {
+
+            const emptyParamNode = tx.create({
+                type: 'paragraph',
+                content: ''
+            })
+            teaserTemplate.nodes.push(emptyParamNode.id)
+
             createdTeaserNode = tx.create(teaserTemplate)
             tx.set([teaserContainerNode.id, 'nodes'], [...teaserContainerNode.nodes, teaserTemplate.id])
         })

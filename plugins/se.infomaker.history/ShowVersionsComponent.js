@@ -7,9 +7,12 @@ class ShowVersionsComponent extends Component {
 
     getInitialState() {
         let historyForArticle = api.history.getHistoryForArticle(this.props.article.id);
+
+        let hasVersions = (historyForArticle.versions && historyForArticle.versions.length > 0)
+
         return {
             history: historyForArticle,
-            selectedArticle: (historyForArticle.versions && historyForArticle.versions.length > 0) ? historyForArticle.versions[historyForArticle.versions.length-1] : undefined
+            selectedArticle: hasVersions ? historyForArticle.versions[historyForArticle.versions.length - 1] : undefined
         }
     }
 

@@ -48,8 +48,8 @@ export default {
         })
 
         config.addLabel('uatracker-article-outdated-message', {
-            en: 'The article has been saved by another user. Refresh the page to fetch the latest changes.',
-            sv: 'Artikeln har blivit sparad av en annan användare. Ladda om sidan för att se de nya ändringarna.'
+            en: '{{name}} ({{email}}) has saved the article. Refresh the page to fetch the latest changes.',
+            sv: '{{name}} ({{email}}) har sparat artikeln. Ladda om sidan för att se de nya ändringarna.'
         })
 
         // Login Component
@@ -86,6 +86,11 @@ export default {
         config.addLabel('confirm-understand', {
             en: 'I understand',
             sv: 'Jag förstår'
+        })
+
+        config.addLabel('reload-article', {
+            en: 'Reload article',
+            sv: 'Ladda om artikeln'
         })
 
         config.addLabel('unlock', {

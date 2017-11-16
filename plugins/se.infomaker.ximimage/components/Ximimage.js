@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon, TextPropertyEditor} from "substance"
+import {Component, FontAwesomeIcon} from "substance"
 import {NilUUID} from "writer"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
@@ -87,7 +87,7 @@ class XimimageComponent extends Component {
                 metaWrapper.append(this.renderTextField($$, obj))
             }
         })
-        
+
         el.append(metaWrapper)
 
         return el

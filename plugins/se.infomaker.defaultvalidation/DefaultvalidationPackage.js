@@ -1,5 +1,5 @@
 import DefaultValidation from './DefaultValidation'
-const {registerPlugin, Hook, api} = writer
+const {registerPlugin} = writer
 
 const validationPackage = {
     id: 'se.infomaker.defaultvalidation',

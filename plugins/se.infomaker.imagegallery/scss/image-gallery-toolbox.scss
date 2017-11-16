@@ -1,0 +1,125 @@
+.im-image-gallery {
+    .image-gallery-toolbox {
+        display: none;
+        transition: all 1s;
+        overflow: hidden;
+
+        &.drag-started .item-wrapper {
+            & > div, i, em, strong {
+                pointer-events: none;
+            }
+        }
+
+        &.show {
+            position: absolute;
+            left: 0;
+            z-index: 105;
+            display: block;
+            height: 450px;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            outline:1px solid #ddd;
+            box-shadow: 5px 5px 35px -5px #303030;
+            background: white;
+        }
+
+        .image-gallery-header {
+            border-bottom: 1px solid #ddd;
+            height: 6%;
+        }
+        .toolboox-content {
+            overflow-y: scroll;
+            height: 94%;
+            padding-bottom: 10px;
+
+            .drag-me {
+                margin: auto 5px auto -10px;
+                border: 1px solid #ddd;
+                background: #e9e9e9;
+                border-radius: 0 5px 5px 0;
+                padding: 5px 0;
+            }
+
+            svg {
+                display: block;
+                height: 20px;
+                fill: #aaa;
+                cursor: pointer;
+            }
+
+            .item-wrapper {
+                width: 100%;
+                display: flex;
+                padding: 10px;
+                border: 1px solid #ddd;
+                position: relative;
+                margin: auto;
+                border-width: 1px;
+                transition: max-height 0.3s ease, background-color 0.5s ease-in;
+                max-height: 200px;
+
+                &.drag-over {
+                    &.add-above {
+                        border-top: 5px solid #1795CD;
+                    }
+                    &.add-below {
+                        border-bottom: 5px solid #1795CD;
+                    }
+                }
+
+                &.dragging {
+                    opacity: 0;
+                    max-height: 0;
+                    margin: 0;
+                    padding: 0;
+                    border: none;
+                    pointer-events: none;
+                }
+
+                &.drop-succeeded {
+                    transition: background-color 0.1s ease-out;
+                    background-color: rgba(23, 149, 205, 0.2);
+                }
+
+                .number-display {
+                    margin: auto;
+                    padding-right: 10px;
+                    color: #b1b1b1;
+                }
+                .image-wrapper {
+                    background: rgb(236, 236, 236);
+                    border: 1px solid #ddd;
+                    height: 60px;
+                    width: 60px;
+                    display: flex;
+                    img {
+                        max-height: 100%;
+                        max-width: 100%;
+                        margin: auto;
+                    }
+                }
+                .image-meta {
+                    flex-grow: 1;
+                    min-width: 300px;
+                    margin: auto;
+                    padding: 0 10px 10px 10px;
+                    .im-field-editor {
+                        margin-top: 5px;
+                    }
+                }
+                .remove-image {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    margin: 5px 5px 0 0;
+                    padding: 3px 5px;
+                    color: #ddd;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}
