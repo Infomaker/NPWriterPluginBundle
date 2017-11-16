@@ -36,9 +36,9 @@ const validationPackage = {
         /**
          * Preamble
          */
-        config.addLabel('validator-preamble-too-many', {
-            en: 'Only one preamble per article is allowed.',
-            sv: 'Endast en ingress är tillåten per artikel.'
+        config.addLabel('validator-preamble-missing', {
+            en: 'The article needs at least one preamble.',
+            sv: 'Artikeln måste innehålla minst en ingress.'
         })
 
         /**

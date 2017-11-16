@@ -17,11 +17,11 @@ class Preamble extends Validator {
      * @param {Element[]} preambles
      */
     validatePreambleCount(preambles) {
-        if (preambles.length > 1) {
+        if (preambles.length === 0) {
             if (saveOrPublish() === 'save') {
-                this.addWarning(api.getLabel('validator-preamble-too-many'))
+                this.addWarning(api.getLabel('validator-preamble-missing'))
             } else {
-                this.addError(api.getLabel('validator-preamble-too-many'))
+                this.addError(api.getLabel('validator-preamble-missing'))
             }
         }
     }
