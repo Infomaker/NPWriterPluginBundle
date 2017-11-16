@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {OpenContentClient, QueryBuilder, QueryResponseHelper} from 'oc-js-client'
+import {OpenContentClient, QueryBuilder, QueryResponseHelper} from '@infomaker/oc-client'
 
 /**
  * @class SearchComponent
