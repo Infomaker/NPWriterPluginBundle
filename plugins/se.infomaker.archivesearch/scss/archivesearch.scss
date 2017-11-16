@@ -156,9 +156,36 @@
         margin-right: 8px;
         margin-bottom: 8px;
         cursor: pointer;
+
         img {
           height: 80px;
           display: block;
+
+          &[src="null"] {
+            width: 80px;
+            overflow: hidden;
+            position: relative;
+          }
+
+          &:before {
+            content: '';
+            background-color: #ccc;
+            display: block;
+            height: 100%;
+          }
+
+          &:after {
+            font: normal normal normal 14px/1 FontAwesome;
+            content: "\f1c5";
+            color: #999;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            line-height: 80px;
+            text-align: center;
+        }
         }
       }
     }
