@@ -5,6 +5,7 @@ class ImageMetaPopup extends Component {
     render($$) {
         const imageMetaItem = this.props.imageItem
         if (imageMetaItem) {
+            console.log(imageMetaItem)
             return $$('div').addClass('image-meta')
                 .css('top', this.props.position.top + 15).append(
                     $$('div').addClass('image-meta-popover-arrow')
@@ -32,8 +33,8 @@ class ImageMetaPopup extends Component {
      * @private
      */
     get _description() {
-        const {description} = this.props.imageItem
-        return description ? description : this.getLabel('Missing image description')
+        const {caption} = this.props.imageItem
+        return caption ? caption : this.getLabel('Missing image description')
     }
 
     /**
