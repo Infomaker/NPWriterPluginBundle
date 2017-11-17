@@ -3,42 +3,45 @@ const HtmlembedConverter = {
     tagName: 'object',
 
     matchElement: function(el) {
-        return el.is('object') && el.attr('type') === 'x-im/htmlembed';
+        return el.is('object') && el.attr('type') === 'x-im/htmlembed'
     },
 
     import: function(el, node) {
         if (el.attr('uuid')) {
-            node.uuid = el.attr('uuid');
+            node.uuid = el.attr('uuid')
         }
 
-        node.id = el.attr('id');
+        node.id = el.attr('id')
 
-        node.dataType = el.attr('type');
+        node.dataType = el.attr('type')
 
-        const dataEl = el.find('data');
-        dataEl.children.forEach(function(child) {
-            if (child.tagName === 'text') {
-                // let html =  child.text().replace('<![CDATA[', '')
-                // html.replace()
-                node.text = child.text();
-            }
+        const dataEl = el.find('data')
 
-            if (child.tagName === 'format') {
-                node.format = child.text();
-            }
-        });
+        if (dataEl) {
+            dataEl.children.forEach(function(child) {
+                if (child.tagName === 'text') {
+                    // let html =  child.text().replace('<![CDATA[', '')
+                    // html.replace()
+                    node.text = child.text()
+                }
+
+                if (child.tagName === 'format') {
+                    node.format = child.text()
+                }
+            })
+        }
     },
 
     export: function(node, el, converter) {
         const $$ = converter.$$
 
         if (node.uuid) {
-            el.attr('uuid', node.uuid);
+            el.attr('uuid', node.uuid)
         }
 
-        el.attr('type', node.dataType);
-        el.attr('id', node.id);
-        el.removeAttr('data-id');
+        el.attr('type', node.dataType)
+        el.attr('id', node.id)
+        el.removeAttr('data-id')
 
         const data = $$('data')
 
@@ -53,6 +56,6 @@ const HtmlembedConverter = {
         el.append(data)
 
     }
-};
+}
 
 export default HtmlembedConverter
