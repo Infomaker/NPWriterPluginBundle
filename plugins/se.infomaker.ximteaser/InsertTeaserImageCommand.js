@@ -85,18 +85,27 @@ class InsertTeaserImageCommand extends WriterCommand {
     _insertUriImage(tx, uriData, teaserNode) {
         teaserNode.shouldDownloadMetadataForImageUri = true
         // Fetch the image
-        const uuid = uriData.uuid
+        const {uuid, url} = uriData
 
-        if (!uriData.uuid) {
-            throw new Error('Unsupported data. UUID must exist')
+        if (!url && !uuid) {
+            throw new Error('Unsupported data. UUID or URL must exist')
         }
 
         const imageFileNode = {
             parentNodeId: teaserNode.id,
             type: 'npfile',
-            imType: 'x-im/image',
-            uuid: uuid,
-            sourceUUID: uuid,
+            imType: 'x-im/image'
+        }
+
+        if(url) {
+            imageFileNode.sourceUrl = url
+
+            setTimeout(() => {
+                api.editorSession.fileManager.sync()
+            }, 300)
+        } else if(uuid) {
+            imageFileNode.uuid = uuid
+            imageFileNode.sourceUUID = uuid
         }
 
         // Create file node for the image

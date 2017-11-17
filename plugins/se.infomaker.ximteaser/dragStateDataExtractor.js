@@ -77,6 +77,10 @@ export default {
     },
 
     _isUriDrop(dragData) {
-        return dragData.uris && dragData.uris.length > 0 && dragData.uris[0].includes('x-im-entity://x-im/image')
+        return dragData.uris && dragData.uris.length > 0 && this._isValidUri(dragData.uris[0])
+    },
+
+    _isValidUri(uri) {
+        return ['x-im-entity://x-im/image', 'x-im-archive-url://x-im/image'].some((type) => uri.includes(type))
     }
 }
