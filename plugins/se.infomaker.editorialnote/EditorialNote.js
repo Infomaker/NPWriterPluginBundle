@@ -6,9 +6,8 @@ export default {
     version: '{{version}}',
     configure: function(config) {
 
-        config.addLabel('publicationchannel-Channels', {
-            en: 'Channels',
-            sv: 'Publiceringskanaler'
+        config.addLabel('Editorial note', {
+            sv: 'Redaktionell anteckning'
         })
 
         config.addComponentToSidebarWithTabId(
