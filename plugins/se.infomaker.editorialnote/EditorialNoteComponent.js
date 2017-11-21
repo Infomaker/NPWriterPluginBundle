@@ -36,7 +36,7 @@ class EditorialNoteComponent extends Component {
                 $$('div').addClass('form-group').append(
                     $$('textarea')
                         .ref('sc-editorialnote-content')
-                        .on('change', () => {
+                        .on('keyup', () => {
                             this.setEditorialNote()
                         })
                         .addClass('form-control')
