@@ -25,6 +25,7 @@ The plugin adds one or more objects to the metadata-section of the idf.
                     <link rel="crop" type="x-im/crop" title="1:1" uri="im://crop/0.1975/0/0.605/1"/>
                 </links>
             </link>
+            <link rel="article" type="x-im/article" title="Tintin i Hajsjön" uuid="22885008-ec24-4b59-8edf-67109322f49c"/>
         </links>
     </object>
     <object id="NjMsMTExLDIzMSwxNzE" type="x-im/facebook-teaser" title="Lorem ipsum">
@@ -44,7 +45,7 @@ The plugin adds one or more objects to the metadata-section of the idf.
 </metadata>
 ```
 
-*Note* that `object > links` is optional, i.e. if no images are present
+*Note* that `object > links` is optional, i.e. if no images or related articles are present
 this element is omitted.
 
 ## Plugin Configuration
