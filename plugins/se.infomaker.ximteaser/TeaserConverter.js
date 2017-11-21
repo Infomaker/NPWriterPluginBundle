@@ -339,7 +339,7 @@ export default {
 
             return linksElem
         } else {
-            return ""
+            return ''
         }
     },
 
