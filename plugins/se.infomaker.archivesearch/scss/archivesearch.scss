@@ -1,0 +1,231 @@
+
+.im-archivesearch {
+  margin-top: 20px;
+
+  .search-container {
+
+    form {
+      display: flex;
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+
+      a {
+        color: #999;
+        transition: color 0.25s ease;
+        &:hover {
+          color: #555;
+        }
+      }
+    }
+
+    .select-group-gmlist {
+      h2 {
+        padding: 0;
+      }
+    }
+
+    .form-group {
+      flex-grow: 1;
+      margin: 0;
+    }
+
+    .search-icon {
+      width: 24px;
+      line-height: 32px;
+    }
+
+    input[type=text] {
+      border: none;
+    }
+  }
+
+  .search-options {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+
+    .select-group-gmlist {
+      margin-left: 15px;
+
+      select.form-control {
+        height: calc(2rem + 2px);
+      }
+
+      h2 {
+        padding: 0;
+        font-size: 12px;
+      }
+    }
+
+    .count-info {
+      display: flex;
+      flex-grow: 2;
+      align-items: center;
+
+      span {
+        margin-top: 18px;
+      }
+    }
+  }
+
+  .image-list-container {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ccc;
+    position: relative;
+
+    .image-meta {
+      position: absolute;
+      display: flex;
+      padding: 15px;
+      background: #303030;
+      color: #fff;
+      width: 100%;
+      top: 87px;
+      box-shadow: rgba(0, 0, 0, 0.4) 0 1px 2px;
+      border-color: #ddd;
+
+      .image-meta-popover-arrow {
+        position: absolute;
+        top: 0;
+        margin-left: 0;
+        width: 100%;
+
+        &:after, &:before {
+          bottom: 100%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+
+        &:after {
+          border-color: rgba(255, 255, 255, 0);
+          border-bottom-color: #303030;
+          border-width: 10px;
+          margin-left: -10px;
+        }
+
+        &:before {
+          border-color: rgba(221, 221, 221, 0);
+          border-bottom-color: #303030;
+          border-width: 11px;
+          margin-left: -11px;
+        }
+      }
+
+      .image-meta-close {
+        color: #b1b1b1;
+        font-size: 12px;
+        cursor: pointer;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+      }
+
+      img {
+        height: 100px;
+        padding-right: 15px;
+      }
+
+      .image-meta-content {
+        display: flex;
+        flex-direction: column;
+
+        p {
+          color: #ddd;
+          line-height: 1.38;
+          font-size: 14px;
+
+          &:last-child {
+            color: #b1b1b1;
+            margin-top: 15px;
+          }
+        }
+      }
+    }
+
+    .image-list {
+      display: flex;
+      flex-flow: row wrap;
+
+      .image-thumb {
+        margin-right: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+
+        img {
+          height: 80px;
+          display: block;
+
+          &[src="null"] {
+            width: 80px;
+            overflow: hidden;
+            position: relative;
+          }
+
+          &:before {
+            content: '';
+            background-color: #ccc;
+            display: block;
+            height: 100%;
+          }
+
+          &:after {
+            font: normal normal normal 14px/1 FontAwesome;
+            content: "\f1c5";
+            color: #999;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            line-height: 80px;
+            text-align: center;
+        }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    border-top: 1px solid #ccc;
+    display: flex;
+    margin-top: 7px;
+    padding-top: 15px;
+    justify-content: center;
+
+    button {
+      &[disabled] {
+        color: #cacaca;
+        cursor: default;
+      }
+    }
+    i {
+      display: flex;
+      align-items: center;
+    }
+
+    .numbered-pages {
+      display: flex;
+      flex-grow: 2;
+      justify-content: center;
+
+      span {
+        display: inline-block;
+        cursor: pointer;
+        line-height: 28px;
+        padding: 0 8px;
+        text-align: center;
+        &.active-page {
+          background: #0098C7;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+}

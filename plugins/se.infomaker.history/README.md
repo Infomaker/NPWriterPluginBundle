@@ -16,8 +16,8 @@ No `data` configuration needed.
     {
       "id": "se.infomaker.history",
       "name": "history",
-      "url": "https://plugins.writer.infomaker.io/prod/4.0.0/im-history.js",
-      "style": "https://plugins.writer.infomaker.io/prod/4.0.0/im-history.css",
+      "url": "https://plugins.writer.infomaker.io/releases/4.0.0/im-history.js",
+      "style": "https://plugins.writer.infomaker.io/releases/4.0.0/im-history.css",
       "enabled": true,
       "mandatory": false
     }
