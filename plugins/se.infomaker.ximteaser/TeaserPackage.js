@@ -52,14 +52,34 @@ export default {
         config.addLabel('Insert Teaser', {
             sv: 'Infoga puff'
         })
+
         config.addLabel('Add new teaser', {
             sv: 'Lägg till ny puff'
         })
-        config.addLabel('Add Image', {
+
+        config.addLabel('teaser-add-image', {
+            en: 'Add image',
+            sv: 'Lägg till bild'
+        })
+
+        config.addLabel('Replace Image', {
+            en: 'Replace image',
+            sv: 'Ersätt bild'
+        })
+
+        config.addLabel('teaser-add-image-or-article', {
+            en: 'Add image or related article',
             sv: 'Lägg till bild eller relaterad artikel'
         })
-        config.addLabel('Replace Image', {
+
+        config.addLabel('teaser-replace-image-or-article', {
+            en: 'Replace image or add related article',
             sv: 'Ersätt bild eller lägg till relaterad artikel'
+        })
+
+        config.addLabel('teaser-related-articles', {
+            en: 'Related articles',
+            sv: 'Relaterade artiklar'
         })
     }
 }

@@ -113,7 +113,7 @@ class TeaserContainerComponent extends Component {
      */
     getDropzoneSpecs() {
         const currentTeaserNode = this._getActiveTeaserNode()
-        const label = currentTeaserNode.imageFile ? 'Replace Image' : 'Add Image'
+        const label = currentTeaserNode.imageFile ? 'teaser-replace-image-or-article' : 'teaser-add-image-or-article'
 
         return [{
             component: this,

@@ -224,7 +224,7 @@ class TeaserComponent extends Component {
         const container = $$('div').addClass('x-im-teaser-upload-container')
 
         if(extensionModules && extensionModules.length > 0) {
-            const title = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
+            const title = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
             container.append(
                 $$('span')
                     .addClass('upload-button')
@@ -244,7 +244,7 @@ class TeaserComponent extends Component {
     }
 
     openExtensionDialog(extensionComponent) {
-        const label = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
+        const label = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
         api.ui.showDialog(
             extensionComponent,
             {
