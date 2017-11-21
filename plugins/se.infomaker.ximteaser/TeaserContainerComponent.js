@@ -134,7 +134,17 @@ class TeaserContainerComponent extends Component {
      */
     handleDrop(tx, dragState) {
         const dragData = dragStateDataExtractor.extract(dragState)
-        api.editorSession.executeCommand('ximteaser.insert-image', {
+        let command
+
+        if (dragData.type === 'article') {
+            const {name, uuid} = dragData.uriData
+            console.info('Article dropped!', { uuid, name })
+            command = 'ximteaser.insert-article'
+        } else {
+            command = 'ximteaser.insert-image'
+        }
+
+        api.editorSession.executeCommand(command, {
             tx,
             context: {node: this._getActiveTeaserNode()},
             data: dragData

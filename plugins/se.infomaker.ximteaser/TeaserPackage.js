@@ -10,6 +10,7 @@ import InsertTeaserCommand from './InsertTeaserCommand'
 import TeaserConverter from './TeaserConverter'
 import TeaserNode from './TeaserNode'
 import InsertTeaserImageCommand from './InsertTeaserImageCommand'
+import InsertTeaserArticleCommand from './InsertTeaserArticleCommand'
 
 import {idGenerator} from 'writer'
 
@@ -46,6 +47,7 @@ export default {
         config.addNode(TeaserNode)
         config.addCommand('ximteaser.insert-teaser', InsertTeaserCommand)
         config.addCommand('ximteaser.insert-image', InsertTeaserImageCommand)
+        config.addCommand('ximteaser.insert-article', InsertTeaserArticleCommand)
 
         config.addLabel('Insert Teaser', {
             sv: 'Infoga puff'
@@ -54,10 +56,10 @@ export default {
             sv: 'Lägg till ny puff'
         })
         config.addLabel('Add Image', {
-            sv: 'Lägg till bild'
+            sv: 'Lägg till bild eller relaterad artikel'
         })
         config.addLabel('Replace Image', {
-            sv: 'Ersätt bild'
+            sv: 'Ersätt bild eller lägg till relaterad artikel'
         })
     }
 }

@@ -33,6 +33,37 @@ class TeaserNode extends Container {
         return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
     }
 
+    addRelatedArticle(article, tx=null) {
+        const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
+
+        const articleAlreadyPresent = articles.filter(a => a.uuid === article.uuid).length > 0
+
+        if (!articleAlreadyPresent) {
+            articles.push(article)
+
+            if (tx) {
+                tx.set([this.id, 'relatedArticles'], articles)
+            } else {
+                api.editorSession.transaction(tx => {
+                    tx.set([this.id, 'relatedArticles'], articles)
+                })
+            }
+        }
+    }
+
+    removeRelatedArticle(uuid, tx=null) {
+        const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
+        const remainingArticles = articles.filter(article => article.uuid !== uuid)
+
+        if (tx) {
+            tx.set([this.id, 'relatedArticles'], remainingArticles)
+        } else {
+            api.editorSession.transaction(tx => {
+                tx.set([this.id, 'relatedArticles'], remainingArticles)
+            })
+        }
+    }
+
     setSoftcropData(data, disableAutomaticCrop) {
         api.editorSession.transaction((tx) => {
             tx.set([this.id, 'crops'], data)
@@ -109,6 +140,8 @@ TeaserNode.define({
     text: {type: 'string', optional: false, default: ''},
 
     customFields: {type:'object', optional: false, default: {}},
+
+    relatedArticles: {type: 'array', optional: true, defaut: []},
 
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
