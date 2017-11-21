@@ -137,8 +137,6 @@ class TeaserContainerComponent extends Component {
         let command
 
         if (dragData.type === 'article') {
-            const {name, uuid} = dragData.uriData
-            console.info('Article dropped!', { uuid, name })
             command = 'ximteaser.insert-article'
         } else {
             command = 'ximteaser.insert-image'
