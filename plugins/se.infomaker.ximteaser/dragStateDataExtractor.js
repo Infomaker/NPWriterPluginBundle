@@ -80,7 +80,6 @@ export default {
     },
 
     _isUriDrop(dragData) {
-
         return dragData.uris && dragData.uris.length > 0 && this._isValidUri(dragData.uris[0])
     },
 

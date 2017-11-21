@@ -62,7 +62,7 @@ export default {
             sv: 'Lägg till bild'
         })
 
-        config.addLabel('Replace Image', {
+        config.addLabel('teaser-replace-image', {
             en: 'Replace image',
             sv: 'Ersätt bild'
         })
