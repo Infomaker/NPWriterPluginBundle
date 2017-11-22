@@ -44,6 +44,9 @@ class ImageGalleryImageComponent extends Component {
                         if (node.authors.length > 0) {
                             tx.set([this.props.node.id, 'authors'], node.authors)
                         }
+                        if(!imageNode.uri) {
+                            tx.set([imageNode.id, 'uri'], node.uri)
+                        }
                     })
                     this.rerender()
                 })
