@@ -81,5 +81,20 @@ export default {
             en: 'Related articles',
             sv: 'Relaterade artiklar'
         })
+
+        config.addLabel('teaser-related-article-not-added', {
+            en: 'Could not add',
+            sv: 'Kunde inte infoga'
+        })
+
+        config.addLabel('teaser-related-article-already-added', {
+            en: 'The article {title} has already been added to the teaser',
+            sv: 'Artikeln {title} finns redan i teasern'
+        })
+
+        config.addLabel('teaser-related-article-is-self', {
+            en: 'Can not add the article to itself',
+            sv: 'Kan inte infoga artikeln i sig själv'
+        })
     }
 }

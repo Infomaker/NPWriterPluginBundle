@@ -35,20 +35,34 @@ class TeaserNode extends Container {
 
     addRelatedArticle(article, tx=null) {
         const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
-
         const articleAlreadyPresent = articles.filter(a => a.uuid === article.uuid).length > 0
+        const isSameArticle = article.uuid === api.newsItem.getGuid()
+        const notificationTitle = api.getLabel('teaser-related-article-not-added')
 
-        if (!articleAlreadyPresent) {
-            articles.push(article)
+        if (articleAlreadyPresent) {
+            const message = api.getLabel('teaser-related-article-already-added')
+                .replace('{title}', article.title)
 
-            if (tx) {
-                tx.set([this.id, 'relatedArticles'], articles)
-            } else {
-                api.editorSession.transaction(tx => {
-                    tx.set([this.id, 'relatedArticles'], articles)
-                })
-            }
+            return api.ui.showNotification(this.type, notificationTitle, message)
         }
+
+        if (isSameArticle) {
+            const message = api.getLabel('teaser-related-article-is-self')
+                .replace('{title}', article.title)
+
+            return api.ui.showNotification(this.type, notificationTitle, message)
+        }
+
+        articles.push(article)
+
+        if (tx) {
+            tx.set([this.id, 'relatedArticles'], articles)
+        } else {
+            api.editorSession.transaction(tx => {
+                tx.set([this.id, 'relatedArticles'], articles)
+            })
+        }
+
     }
 
     removeRelatedArticle(uuid, tx=null) {
