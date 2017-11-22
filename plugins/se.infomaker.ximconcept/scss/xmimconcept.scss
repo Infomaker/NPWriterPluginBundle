@@ -1,0 +1,140 @@
+.concept-main-component {
+
+    .concept-list-component {
+        display: flex;
+        flex-wrap: wrap;
+
+        .concept-item-component {
+            display: flex;
+            font-size: 14px;
+            -border-radius: 3px;
+            margin-bottom: 5px;
+            margin-right: 3px;
+            line-height: 23px;
+            white-space: nowrap;
+
+            .concept-item-content {
+                flex: 1;
+                padding: 0.2rem 0.5rem;
+                position: relative;
+                border: 1px solid #ddd;
+            }
+
+            &.editable {
+                cursor: pointer;
+                &:hover {
+                    background: #fafafa;
+                }
+            }
+
+            i {
+                width: 15px;
+                height: 15px;
+                margin-left: 0.4rem;
+                color: #b3b3b3;
+                &.remove {
+                    color: #d9524e;
+                    &:hover {
+                        cursor: pointer;
+                        opacity: 0.7;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .concept-search-component {
+        position: relative;
+
+        .concept-search-spinner {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+        }
+        .concept-search-input {
+            border-radius: 0px;
+            padding: 0.5rem;
+            &:disabled {
+                background-color: #f9f9f9;
+            }
+        }
+        .concept-search-result-component{
+            position: absolute;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 4px 4px 13px -4px rgba(0, 0, 0, 0.4);
+            max-height: 150px;
+            overflow-y: scroll;
+            z-index: 5;
+            
+            .concept-search-item {
+                display: flex;
+                border-bottom: 1px dotted #ddd;
+                &:last-of-type {
+                    border-bottom: none;
+                }
+
+                .item-content {
+                    flex: 1;
+                    padding: 0.2rem 0.5rem;
+                }
+                .concept-short {
+                    font-size: 13px;
+                    color: #b3b3b3;
+                }
+                &.selected {
+                    background-color: #f5f5f5;
+                    font-weight: 700;
+                }
+                &.exists{
+                    color: #b3b3b3;
+                    font-style: italic;
+                    i {
+                        color: green;
+                        float: left;
+                        margin: 2px 3px 0 0;
+                    }
+                }
+            }
+        }
+    }
+    /* ConceptStatus colors */
+    .statusbar {
+        width: 5px;
+        // border-top: 1px solid #ddd;
+        // border-bottom: 1px solid #ddd;
+        // border-left: 1px solid #ddd;
+
+        &.draft {
+            background: #FFF;
+            border: 1px solid #ddd;
+            border-right: none;
+            /* White */
+        }
+        &.done {
+            background: #ff9900;
+            border: 1px solid #ff9900;
+        }
+        &.approved {
+            background: #00ab50;
+            border: 1px solid #00ab50;
+            /* Green */
+        }
+        &.withheld {
+            background-size: 6px 6px;
+            background-image: linear-gradient( -45deg, #00c2f4 25%, white 25%, white 50%, #00c2f4 50%, #00c2f4 75%, white 75%, white);
+            border: 1px solid #00c2f4;
+        }
+        &.usable {
+            background: #288cd0;
+            border: 1px solid #288cd0;
+        }
+        &.canceled {
+            background: #828282;
+            border: 1px solid #828282;
+            /* Gray */
+        }
+    }
+}
