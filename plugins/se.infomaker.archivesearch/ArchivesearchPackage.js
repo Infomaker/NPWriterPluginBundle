@@ -45,6 +45,24 @@ const archivesearchPackage = {
         config.addLabel('Missing image description', {
             sv: 'Saknar bildbeskrivning'
         })
+        config.addLabel('Show Image', {
+            sv: 'Visa Bild'
+        })
+        config.addLabel('Close', {
+            sv: 'Stäng'
+        })
+        config.addLabel('Source', {
+            sv: 'Källa'
+        })
+        config.addLabel('Photo Date', {
+            sv: 'Fotodatum'
+        })
+        config.addLabel('Credit', {
+            sv: 'Tillskrivning'
+        })
+        config.addLabel('Name', {
+            sv: 'Objektnamn'
+        })
     }
 }
 

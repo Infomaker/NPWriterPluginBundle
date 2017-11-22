@@ -1,4 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
+import ImageMetaDisplay from './ImageMetaDisplay'
 
 class ImageMetaPopup extends Component {
 
@@ -16,7 +17,7 @@ class ImageMetaPopup extends Component {
                                 imageItem: null
                             })
                         }),
-                    $$('img').attr('src', imageMetaItem.thumbnail),
+                    this._renderImageThumb($$),
                     $$('div').addClass('image-meta-content').append(
                         $$('p').append(this._description),
                         $$('p').append(this._fullCredit)
@@ -44,6 +45,36 @@ class ImageMetaPopup extends Component {
     get _fullCredit() {
         const {credit, source} = this.props.imageItem
         return [credit, source].filter(str => str).join('/')
+    }
+
+    /**
+     * @param $$
+     * @private
+     * @return {VirtualElement}
+     */
+    _renderImageThumb($$) {
+        return $$('div').addClass('image-meta-thumb').append(
+            $$('img').attr('src', this.props.imageItem.thumbnail),
+            $$('button').addClass('btn')
+                .append(this.getLabel('Show Image'))
+                .on('click', (e) => {
+                    e.preventDefault()
+
+                    this.context.api.ui.showDialog(
+                        ImageMetaDisplay,
+                        {
+                            imageItem: this.props.imageItem
+                        },
+                        {
+                            global: true,
+                            primary: false,
+                            secondary: this.getLabel('Close'),
+                            cssClass: 'modal-dialog-full'
+                        }
+                    )
+
+                })
+        )
     }
 }
 

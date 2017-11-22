@@ -1,7 +1,7 @@
-# Archive search plugin for Infomaker Writer
+# Archive Search Plugin
 The archive search plugin is a great way of searching for images in archive repositories.
 
-## Plugin configuration
+## Plugin Configuration
 
 ```json
 {
@@ -29,12 +29,14 @@ The archive search plugin is a great way of searching for images in archive repo
           "latest": "true"
         },
         "resultsMapping": {
-          "Filename": "name",
+          "name": "Filename",
           "thumbnail": "thumbnail",
-          "primary": "url",
-          "Photographer": "credit",
-          "Description": "caption",
-          "ImageSource": "source"
+          "url": "primary",
+          "credit": "Photographer",
+          "caption": "Description",
+          "description": "Description",
+          "source": "ImageSource",
+          "photoDate": "Photodate"
         }
       }
     ]
@@ -60,7 +62,6 @@ Archive Host Configuration Example:
 }
 ```
 
-
 | Property            | Type      | Required  | Description   |
 | --------            | :--:      | :------:  | -----------   |
 | **name**            | String    | `true`    | Name for OC Host, displayed in drop down list of available OC Hosts. Short but descriptive. |
@@ -69,7 +70,7 @@ Archive Host Configuration Example:
 | **resultsMapping**  | Object    | `true`    | Object used for mapping OC Properties to properties used by the plugin. See [Results Mapping Options](#results-mapping-options) |
 
 ### Host Options
-Host configuration used by BA-proxy service.
+Host configuration used by the BA-proxy service.
 
 ```json
 {
@@ -95,26 +96,55 @@ See Open Content API documentation for available properties.
 ```
 
 ### Results Mapping Options
-"key: value"-Object used for mapping OpenContent properties to properties used by the archive search plugin. To customize the mapped values, change the string-value of the "key".
-The "value"-strings used by the plugin are defined below.
+"key: value"-object used for mapping properties used by the plugin to OpenContent properties. To customize the mapped values, change the string-value of the "value".
+The "key"-strings used by the plugin are defined below. It is possible to map multiple keys to the same OC-property.
 
 ```json
 {
-    "thumbnail": "thumbnail",
-    "primary": "url",
-    "Photographer": "credit",
-    "Description": "caption",
-    "ImageSource": "source"
+  "name": "Filename",
+  "thumbnail": "thumbnail",
+  "url": "primary",
+  "credit": "Photographer",
+  "caption": "Caption",
+  "description": "Description",
+  "source": "ImageSource",
+  "photoDate": "Photodate"
 }
 ```
 
-| Value         | Plugin Use    |
-| --------      | -----------   |
-| **thumbnail** | Used for presenting the thumbnail of image. |
-| **url**       | Url to original image binary. Used by plugin to upload archive image to current OC configuration. |
-| **credit**    | String crediting the image. Sets the `credit`-value of the created Image. |
-| **caption**   | String used to set the `caption`-value of created Image. |
-| **source**    | String used by plugin to display the source of the image, alongside the credit-value |
+**Change Mapped OC-property**   
+Example: To change the mapped value of `description` from OC-property `Description` to `Text`:
+
+```json
+{
+  "description": "Text"
+}
+```
+The value of the `description`-property will now get its value from the OC-property `Text`.
+
+**One OC-property mapped to many keys**   
+In this example, both properties `caption` and `description` will get its value from the OC-property `Caption`.
+
+```json
+{
+  "caption": "Caption",
+  "description": "Caption"
+}
+```
+
+#### Available keys and their use
+
+| Key             | Plugin Use    |
+| --------        | -----------   |
+| **name**        | Displayed when viewing the big picture preview. |
+| **thumbnail**   | Used for presenting the thumbnail of image. |
+| **url**         | Url to original image binary. Used by plugin to upload archive image to current OC configuration, and to display big picture preview. |
+| **credit**      | String crediting the image. Sets the `credit`-value of the created Image. |
+| **caption**     | String used to set the `caption`-value of created Image. |
+| **description** | Displayed when viewing the big picture preview. |
+| **source**      | String used by plugin to display the source of the image, alongside the credit-value. |
+| **photoDate**   | Displayed when showing the big picture. Will be formatted to `YYYY-MM-DD` when rendered. |
 
 ## Output
-Generates no direct output.
+Generates no direct output. Images in Archive Search Plugin are draggable and compatible with the Writer surface 
+and plugins which support images.

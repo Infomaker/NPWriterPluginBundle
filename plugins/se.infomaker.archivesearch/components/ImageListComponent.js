@@ -4,9 +4,15 @@ import ArchiveImageComponent from './ArchiveImageComponent'
 import ImageMetaPopup from './ImageMetaPopup'
 
 /**
- * props.totalHits
- * props.limit
- * props.start
+ * @class ImageListComponent
+ *
+
+ * @property {Object}   props
+ * @property {Array}    props.items         Result set which should render
+ * @property {Function} props.onPageChange  Callback from paginator component when page is changed
+ * @property {Integer}  props.totalHits     Total number of hits returned by search
+ * @property {Integer}  props.limit
+ * @property {Integer}  props.start
  */
 class ImageListComponent extends Component {
 

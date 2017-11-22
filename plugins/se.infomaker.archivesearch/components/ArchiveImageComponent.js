@@ -5,9 +5,11 @@ class ArchiveImageComponent extends Component {
     render($$) {
         return $$('div').addClass('image-thumb')
             .append(
-                $$('img', {
-                    src: this.props.item.thumbnail
-                }).attr('alt', this.props.item.caption)
+                $$('div').addClass('thumb-wrapper').append(
+                    $$('img', {
+                        src: this.props.item.thumbnail
+                    }).attr('alt', this.props.item.caption)
+                )
             )
             .attr({
                 'draggable': true,

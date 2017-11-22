@@ -3,6 +3,11 @@ import {OpenContentClient, QueryBuilder, QueryResponseHelper} from '@infomaker/o
 
 /**
  * @class SearchComponent
+ *
+
+ * @property {Object}   props
+ * @property {Function} props.onResult      Callback after search
+ * @property {Function} props.clearResult   Callback when SearchComponent wants to clear results
  */
 class SearchComponent extends Component {
 
@@ -285,6 +290,33 @@ class SearchComponent extends Component {
     }
 
     /**
+     * @returns {[String]}
+     * @private
+     */
+    get _ocResponseProperties() {
+        const resultMapping = this.state.selectedEndpoint.resultsMapping
+        return Object.keys(resultMapping).map(key => resultMapping[key])
+    }
+
+    /**
+     * Builds query depending on state and config,
+     * returns query string
+     *
+     * @returns {String}
+     * @private
+     */
+    get _builtQuery() {
+        const queryBuilder = new QueryBuilder(this._query)
+
+        queryBuilder.setStart(this.state.start)
+            .setSorting(this._selectedSorting.field, this._selectedSorting.ascending)
+            .setLimit(this.state.limit)
+            .setResponseProperties(this._ocResponseProperties)
+
+        return queryBuilder.build()
+    }
+
+    /**
      * @private
      */
     _doSearch() {
@@ -293,47 +325,24 @@ class SearchComponent extends Component {
         }
 
         const ocClient = new OpenContentClient(this._ocClientConfig)
-        const queryBuilder = new QueryBuilder(this._query)
-        const resultMappings = this.state.selectedEndpoint.resultsMapping
 
-        queryBuilder.setStart(this.state.start)
-            .setSorting(this._selectedSorting.field, this._selectedSorting.ascending)
-            .setLimit(this.state.limit)
-            .setResponseProperties(Object.keys(resultMappings))
-
-        return ocClient.search(queryBuilder.build())
+        return ocClient.search(this._builtQuery)
             .then(response => this.context.api.router.checkForOKStatus(response))
             .then(response => response.json())
             .then(json => new QueryResponseHelper(json))
             .then((qResponse) => {
-                const json = {
+                return {
                     totalHits: qResponse.getTotalHits(),
-                    includedHits: qResponse.getIncludedHits()
+                    includedHits: qResponse.getIncludedHits(),
+                    items: this._mapSearchResults(qResponse.getItems())
                 }
-
-                json.items = qResponse.getItems().map((versionedItem) => {
-                    const item = {
-                        uuid: versionedItem.id
-                    }
-
-                    const itemProperties = versionedItem.versions[0].properties
-
-                    // Convert { "key": ["value"] } to { "key": "value" }
-                    Object.keys(itemProperties)
-                        .filter((key) => resultMappings.hasOwnProperty(key))
-                        .forEach((key) => {
-                            item[resultMappings[key]] = Array.isArray(itemProperties[key]) ? itemProperties[key][0] : itemProperties[key]
-                        })
-
-                    return item
-                })
-
-                return json
             })
             .then(json => {
                 this.extendState({
                     totalHits: json.totalHits
                 })
+
+                // Send result to parent
                 this.props.onResult({
                     items: json.items,
                     totalHits: json.totalHits,
@@ -341,9 +350,34 @@ class SearchComponent extends Component {
                     start: this.state.start
                 })
             })
-            .catch((e) => {
-                console.error(e)
-            })
+            .catch((e) => console.error(e))
+    }
+
+    /**
+     * @param items
+     * @private
+     * @return {[Object]}
+     */
+    _mapSearchResults(items) {
+        const resultMappings = this.state.selectedEndpoint.resultsMapping
+
+        return items.map((versionedItem) => {
+            const item = {
+                uuid: versionedItem.id
+            }
+
+            const itemProperties = versionedItem.versions[0].properties
+
+            Object.keys(resultMappings)
+                .filter((key) => Object.keys(itemProperties).includes(resultMappings[key]))
+                .forEach((key) => {
+                    // Convert { "key": ["value"] } to { "key": "value" }
+                    const ocKey = resultMappings[key]
+                    item[key] = Array.isArray(itemProperties[ocKey]) ? itemProperties[ocKey][0] : itemProperties[ocKey]
+                })
+
+            return item
+        })
     }
 }
 
