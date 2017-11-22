@@ -8,7 +8,7 @@ ContentPartNode.defineSchema({
     type: 'contentpart',
     id: { type: 'string', optional: true },
     title: { type: 'string', optional: true },
-    vignette: { type: 'string', optional: true },
+    subject: { type: 'string', optional: true },
     contentpartUri: { type: 'string', optional: true }
 })
 

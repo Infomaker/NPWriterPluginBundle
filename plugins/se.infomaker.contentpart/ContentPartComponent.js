@@ -34,25 +34,25 @@ class ContentPartComponent extends Component {
 
         const el = $$('div')
         el.addClass('contentpart-node im-blocknode__container')
-        
+
         el.append(this.renderHeader($$))
 
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        
+
         if (displayTitle) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
                 multiLine: true,
                 field: 'title',
-                placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title'))
+                placeholder: this.getLabel(this.titleText)
             }).ref('titleFieldEditor'))
         }
 
         if (displaySubject) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
-                field: 'vignette',
-                placeholder: this.getLabel(api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette'))
+                field: 'subject',
+                placeholder: this.getLabel(this.vignetteText)
             }).ref('vignetteFieldEditor'))
         }
 
@@ -61,6 +61,16 @@ class ContentPartComponent extends Component {
         }
 
         return el
+    }
+
+    get vignetteText() {
+        const vignetteText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette')
+        const subjectText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.subject')
+        return subjectText || vignetteText || 'vignette'
+    }
+
+    get titleText() {
+        return api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title')
     }
 
     /**
@@ -101,8 +111,6 @@ class ContentPartComponent extends Component {
         })
     }
 
-
-
     renderContainerEditor($$) {
         return $$(ContainerEditor, {
             name: 'contentpartEditor' + this.props.node.id,
@@ -115,7 +123,6 @@ class ContentPartComponent extends Component {
     toggleMenu() {
         this.extendState({showInlineTextMenu: !this.state.showInlineTextMenu})
     }
-
 }
 
 ContentPartComponent.fullWidth = true

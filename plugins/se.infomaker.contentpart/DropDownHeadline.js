@@ -47,9 +47,8 @@ class DropDownHeadline extends Component {
             }
 
         }
-        return el;
+        return el
     }
-
 
     toggleDropDown() {
         const isolatedNode = this.props.isolatedNodeComponent

@@ -2,10 +2,10 @@
 TODO: migrate to InlineText plugin...
 
 ## Plugin configuration
-```json 
+```json
 {
-    "id": "se.infomaker.factbox",
-    "name": "factbox",
+    "id": "se.infomaker.contentpart",
+    "name": "contentpart",
     "url": "http://localhost:5001/index.js",
     "enabled": true,
     "mandatory": true,
@@ -32,17 +32,17 @@ TODO: migrate to InlineText plugin...
         ],
         "placeholderText": {
             "title": "Rubrik",
-            "vignette": "Fakta"
+            "subject": "Fakta"
         }
     }
 }
 ```
 
 The `placeholderText` serves the placeholder text to be displayed in the input fields when field missing value.
- 
+
 At least one contentpartType should be specified.
- 
-At leaser one contentpartType should be marked as default.
+
+At least one contentpartType should be marked as default.
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).

@@ -23,7 +23,7 @@ export default {
         node.title = el.attr('title')
 
         if (el.find('subject')) {
-            node.vignette = el.find('subject').text()
+            node.subject = el.find('subject').text()
         }
 
         // Get inline-text link if any (optional)
@@ -48,8 +48,6 @@ export default {
         const $$ = converter.$$
         const output = api.getConfigValue('se.infomaker.contentpart', 'output', 'idf')
 
-        // If we need to enable support for another type.
-        //const type = api.getConfigValue('se.infomaker.contentpart', 'type', 'x-im/content-part')
         const type = 'x-im/content-part'
 
         const text = $$('text')
@@ -58,9 +56,6 @@ export default {
         let children
         if('html' === output) {
             console.warn('HTML output not yet implemented')
-            // converter = writer.api.configurator.createExporter('html')
-            // children = converter.convertContainer(node)
-            // text.innerHTML = $$('content').append(children).innerHTML
         } else if('idf' === output) {
             children = converter.convertContainer(node)
             text.append(children)
@@ -74,14 +69,10 @@ export default {
             title: node.title,
         })
 
-        // Wrap contents in CDATA tags to please the XML gods.
-        // const html = '<![CDATA[' + filter.output().replace(']]>', ']]&gt;') + ']]>'
-        // const text = $$('text').append(children)
-        // text.innerHTML = html
         text.attr('format', output)
 
-        const vignette = $$('subject').append(node.vignette)
-        el.append($$('data').append([vignette, text]))
+        const subject = $$('subject').append(node.subject)
+        el.append($$('data').append([subject, text]))
 
         // Export inline-text link if any (optional)
         if (node.contentpartUri) {
