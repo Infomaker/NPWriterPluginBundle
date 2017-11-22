@@ -42,6 +42,7 @@ class ContentPartComponent extends Component {
         if (displayTitle) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
+                icon: this.titleIcon,
                 multiLine: true,
                 field: 'title',
                 placeholder: this.getLabel(this.titleText)
@@ -51,6 +52,7 @@ class ContentPartComponent extends Component {
         if (displaySubject) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
+                icon: this.subjectIcon,
                 field: 'subject',
                 placeholder: this.getLabel(this.subjectText)
             }))
@@ -76,6 +78,20 @@ class ContentPartComponent extends Component {
         const defaultVignetteText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette')
         const customSubjectText = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.subject`)
         return customSubjectText || defaultSubjectText || defaultVignetteText
+    }
+
+    get titleIcon() {
+        const currentUri = this.props.node.contentpartUri
+        const defaultTitleIcon = api.getConfigValue('se.infomaker.contentpart', 'placeholderIcon.title', 'fa-header')
+        const customTitleIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.title`)
+        return customTitleIcon || defaultTitleIcon
+    }
+
+    get subjectIcon() {
+        const currentUri = this.props.node.contentpartUri
+        const defaultTitleIcon = api.getConfigValue('se.infomaker.contentpart', 'placeholderIcon.subject', 'fa-pencil')
+        const customTitleIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.subject`)
+        return customTitleIcon || defaultTitleIcon
     }
 
     /**
