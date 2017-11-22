@@ -45,6 +45,12 @@ const archivesearchPackage = {
         config.addLabel('Missing image description', {
             sv: 'Saknar bildbeskrivning'
         })
+        config.addLabel('Show Image', {
+            sv: 'Visa Bild'
+        })
+        config.addLabel('Close', {
+            sv: 'Stäng'
+        })
     }
 }
 

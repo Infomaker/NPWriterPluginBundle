@@ -56,7 +56,7 @@ class ImageMetaPopup extends Component {
         return $$('div').addClass('image-meta-thumb').append(
             $$('img').attr('src', this.props.imageItem.thumbnail),
             $$('button').addClass('btn')
-                .append('Visa Bild')
+                .append(this.getLabel('Show Image'))
                 .on('click', (e) => {
                     e.preventDefault()
 
@@ -67,8 +67,8 @@ class ImageMetaPopup extends Component {
                         },
                         {
                             global: true,
-                            primary: this.getLabel('Close'),
-                            secondary: false,
+                            primary: false,
+                            secondary: this.getLabel('Close'),
                             cssClass: 'modal-dialog-full'
                         }
                     )
