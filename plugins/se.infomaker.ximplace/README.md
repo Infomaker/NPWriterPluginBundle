@@ -18,8 +18,8 @@ Use the following configuration to enable position geopositions;
 {
     "id": "se.infomaker.ximplace",
     "name": "ximplace",
-    "url": "https://plugins.writer.infomaker.io/dev/im-ximplace.js",
-    "style": "https://plugins.writer.infomaker.io/dev/im-ximplace.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximplace.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximplace.css",
     "enabled": true,
     "mandatory": true,
     "data": {"googleMapAPIKey": "AIzaSyAdlr4ZwU9U8kD9ophla29QaHboNIiyj5c"}
@@ -35,8 +35,8 @@ Use the following configuration to enable polygon geopositions;
 {
     "id": "se.infomaker.ximplace-polygon",
     "name": "ximplace",
-    "url": "https://plugins.writer.infomaker.io/dev/im-ximplace-polygon.js",
-    "style": "https://plugins.writer.infomaker.io/dev/im-ximplace-polygon.js",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximplace-polygon.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximplace-polygon.js",
     "enabled": false,
     "mandatory": false,
     "data": {

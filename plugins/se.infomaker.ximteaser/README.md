@@ -226,8 +226,8 @@ This is a config example for basic teaser support.
 {
     "id": "se.infomaker.ximteaser",
     "name": "ximteaser",
-    "url": "http://localhost:5001/im-ximteaser.js",
-    "style": "http://localhost:5001/im-ximteaser.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximteaser.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximteaser.css",
     "mandatory": false,
     "enabled": true,
     "data": {

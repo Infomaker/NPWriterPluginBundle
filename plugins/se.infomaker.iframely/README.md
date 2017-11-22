@@ -8,8 +8,8 @@ Documentation of the Iframely plugin.
 {
     "id": "se.infomaker.iframely",
     "name": "iframely",
-    "url": "http://url-to/im-iframely.js",
-    "style": "http://url-to/im-iframely.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-iframely.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-iframely.css",
     "mandatory": false,
     "enabled": true,
     "data": {

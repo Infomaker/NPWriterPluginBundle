@@ -1,3 +1,4 @@
+**DEPRECATED**: Use `se.infomaker.options` instead...
 # Article type plugin
 
 Plugin for give your article a type. Available article types are configured in the plugin (see below). The plugin 
@@ -9,8 +10,8 @@ supports choosing one or no article type for an article.
 {
     "id": "se.infomaker.articletype",
     "name": "articletype",
-    "url": "http://localhost:5001/im-articletype.js",
-    "style": "http://localhost:5001/im-articletype.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-articletype.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-articletype.css",
     "enabled": true,
     "mandatory": false,
     "data": {"articletypes": [

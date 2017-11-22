@@ -7,8 +7,8 @@ The archive search plugin is a great way of searching for images in archive repo
 {
   "id": "se.infomaker.archivesearch",
   "name": "im-archivesearch",
-  "url": "https://plugins.writer.infomaker.io/releases/4.1.0/im-archivesearch.js",
-  "style": "https://plugins.writer.infomaker.io/releases/4.1.0/im-archivesearch.css",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-archivesearch.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-archivesearch.css",
   "mandatory": false,
   "enabled": true,
   "data": {
