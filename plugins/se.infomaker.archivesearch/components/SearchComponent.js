@@ -284,6 +284,11 @@ class SearchComponent extends Component {
         return this.state.selectedEndpoint.host
     }
 
+    get _mappedOcProperties() {
+        const resultMapping = this.state.selectedEndpoint.resultsMapping
+        return Object.keys(resultMapping).map(key => resultMapping[key])
+    }
+
     /**
      * @private
      */
@@ -294,12 +299,11 @@ class SearchComponent extends Component {
 
         const ocClient = new OpenContentClient(this._ocClientConfig)
         const queryBuilder = new QueryBuilder(this._query)
-        const resultMappings = this.state.selectedEndpoint.resultsMapping
 
         queryBuilder.setStart(this.state.start)
             .setSorting(this._selectedSorting.field, this._selectedSorting.ascending)
             .setLimit(this.state.limit)
-            .setResponseProperties(Object.keys(resultMappings))
+            .setResponseProperties(this._mappedOcProperties)
 
         return ocClient.search(queryBuilder.build())
             .then(response => this.context.api.router.checkForOKStatus(response))
@@ -346,11 +350,11 @@ class SearchComponent extends Component {
 
             const itemProperties = versionedItem.versions[0].properties
 
-            // Convert { "key": ["value"] } to { "key": "value" }
-            Object.keys(itemProperties)
-                .filter((key) => resultMappings.hasOwnProperty(key))
+            Object.keys(resultMappings)
+                .filter((key) => Object.keys(itemProperties).includes(resultMappings[key]))
                 .forEach((key) => {
-                    item[resultMappings[key]] = Array.isArray(itemProperties[key]) ? itemProperties[key][0] : itemProperties[key]
+                    const ocKey = resultMappings[key]
+                    item[key] = Array.isArray(itemProperties[ocKey]) ? itemProperties[ocKey][0] : itemProperties[ocKey]
                 })
 
             return item
