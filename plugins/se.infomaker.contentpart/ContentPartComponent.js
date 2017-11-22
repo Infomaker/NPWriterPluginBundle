@@ -42,7 +42,7 @@ class ContentPartComponent extends Component {
         if (displayTitle) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
-                icon: this.titleIcon,
+                icon: this.getPlaceholderIcon('title', 'fa-header'),
                 multiLine: true,
                 field: 'title',
                 placeholder: this.getLabel(this.getPlaceholderText('title', 'title'))
@@ -52,7 +52,7 @@ class ContentPartComponent extends Component {
         if (displaySubject) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
-                icon: this.subjectIcon,
+                icon: this.getPlaceholderIcon('subject', 'fa-pencil'),
                 field: 'subject',
                 placeholder: this.getLabel(this.getPlaceholderText('subject') || this.getPlaceholderText('vignette', 'vignette'))
             }))
@@ -72,18 +72,11 @@ class ContentPartComponent extends Component {
         return customPlaceholder || defaultPlaceholder
     }
 
-    get titleIcon() {
+    getPlaceholderIcon(fieldName, defaultIcon) {
         const currentUri = this.props.node.contentpartUri
-        const defaultTitleIcon = api.getConfigValue('se.infomaker.contentpart', 'placeholderIcon.title', 'fa-header')
-        const customTitleIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.title`)
-        return customTitleIcon || defaultTitleIcon
-    }
-
-    get subjectIcon() {
-        const currentUri = this.props.node.contentpartUri
-        const defaultTitleIcon = api.getConfigValue('se.infomaker.contentpart', 'placeholderIcon.subject', 'fa-pencil')
-        const customTitleIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.subject`)
-        return customTitleIcon || defaultTitleIcon
+        const defaultFieldIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${fieldName}`, defaultIcon)
+        const customFieldIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.${fieldName}`)
+        return customFieldIcon || defaultFieldIcon
     }
 
     /**
