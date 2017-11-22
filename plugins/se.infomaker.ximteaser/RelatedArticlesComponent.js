@@ -18,9 +18,6 @@ import { Component } from 'substance'
  * @property {RelatedArticlesComponent.Props} props
  */
 class RelatedArticlesComponent extends Component {
-    constructor(...args) {
-        super(...args)
-    }
 
     /**
      * @param {function} $$ - Substance createElement
