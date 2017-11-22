@@ -311,22 +311,7 @@ class SearchComponent extends Component {
                     includedHits: qResponse.getIncludedHits()
                 }
 
-                json.items = qResponse.getItems().map((versionedItem) => {
-                    const item = {
-                        uuid: versionedItem.id
-                    }
-
-                    const itemProperties = versionedItem.versions[0].properties
-
-                    // Convert { "key": ["value"] } to { "key": "value" }
-                    Object.keys(itemProperties)
-                        .filter((key) => resultMappings.hasOwnProperty(key))
-                        .forEach((key) => {
-                            item[resultMappings[key]] = Array.isArray(itemProperties[key]) ? itemProperties[key][0] : itemProperties[key]
-                        })
-
-                    return item
-                })
+                json.items = this._mapSearchResults(qResponse.getItems())
 
                 return json
             })
@@ -344,6 +329,32 @@ class SearchComponent extends Component {
             .catch((e) => {
                 console.error(e)
             })
+    }
+
+    /**
+     * @param items
+     * @private
+     * @return {[Object]}
+     */
+    _mapSearchResults(items) {
+        const resultMappings = this.state.selectedEndpoint.resultsMapping
+
+        return items.map((versionedItem) => {
+            const item = {
+                uuid: versionedItem.id
+            }
+
+            const itemProperties = versionedItem.versions[0].properties
+
+            // Convert { "key": ["value"] } to { "key": "value" }
+            Object.keys(itemProperties)
+                .filter((key) => resultMappings.hasOwnProperty(key))
+                .forEach((key) => {
+                    item[resultMappings[key]] = Array.isArray(itemProperties[key]) ? itemProperties[key][0] : itemProperties[key]
+                })
+
+            return item
+        })
     }
 }
 

@@ -47,6 +47,11 @@ class ImageMetaPopup extends Component {
         return [credit, source].filter(str => str).join('/')
     }
 
+    /**
+     * @param $$
+     * @private
+     * @return {VirtualElement}
+     */
     _renderImageThumb($$) {
         return $$('div').addClass('image-meta-thumb').append(
             $$('img').attr('src', this.props.imageItem.thumbnail),
