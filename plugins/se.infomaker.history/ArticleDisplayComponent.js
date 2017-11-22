@@ -18,7 +18,7 @@ class ArticleDisplayComponent extends Component {
     render($$) {
 
         if (window.DOMParser) {
-            const articleContent = $$('div').addClass('article-content')
+            const articleContent = $$('div').addClass('im-article-content')
 
             const parser = new DOMParser()
             const doc = parser.parseFromString(this.state.article.src, "application/xml")

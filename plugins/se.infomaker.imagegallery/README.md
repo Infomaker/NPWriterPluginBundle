@@ -2,6 +2,18 @@
 Image Gallery with image preview and toolbox with drag-and-drop support
 for ordering images.
 
+## Plugin configuration
+```json
+{
+  "id": "se.infomaker.imagegallery",
+  "name": "imagegallery",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-imagegallery.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-imagegallery.css",
+  "enabled": true,
+  "mandatory": false
+}
+```
+
 ## Output
 ```xml
 <object id="imagegallery-8a52dde8c22e270f0023d2060b0128b4" type="x-im/imagegallery" >

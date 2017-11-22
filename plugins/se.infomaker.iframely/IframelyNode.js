@@ -1,12 +1,16 @@
 import { api } from 'writer'
 import { BlockNode } from 'substance'
 import fetchOembed from './fetchOembed'
+import fetchWriterIframe from './fetchWriterIframe'
 
 class IframelyNode extends BlockNode {
 
     fetchPayload(context, callback) {
         if (this.fetching) return callback(null, {})
-        this.fetching = true // Prevent fetchPayload from being called twice
+
+        this.fetching = true
+
+        if (this.embedCode) return this.loadFromNode(callback)
 
         fetchOembed(this.url)
         .then(res => {
@@ -19,7 +23,8 @@ class IframelyNode extends BlockNode {
                 url: res.url,
                 title: res.title,
                 provider: res.provider_name,
-                embedCode: res.html
+                embedCode: res.html,
+                iframe: res.writerIframe
             })
         }).catch(err => {
             this.fetching = false
@@ -30,6 +35,19 @@ class IframelyNode extends BlockNode {
             if (api.getConfigValue('se.infomaker.iframely', 'restoreAfterFailure', true)) {
                 this.restoreLink()
             }
+        })
+    }
+
+    /**
+     * Load everything from the node and add the writer iframe
+     * @param  {function} callback
+     */
+    loadFromNode(callback) {
+        fetchWriterIframe(this.url).then(writerIframe => {
+            this.fetching = false
+            callback(null, {
+                iframe: writerIframe
+            })
         })
     }
 
@@ -58,6 +76,7 @@ IframelyNode.isResource = true
 IframelyNode.type = 'iframely'
 IframelyNode.define({
     embedCode: { type: 'string', optional: true },
+    iframe: { type: 'string', optional: true },
     url: {type: 'string', optional: true },
     dataType: { type: 'string' },
     title: { type: 'string', optional: true },

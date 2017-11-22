@@ -7,8 +7,8 @@ Sections are rendered in a drop down menu. Only one section is allowed for an ar
 {
     "id": "se.infomaker.ximsection",
     "name": "ximsection",
-    "url": "http://localhost:5001/index.js",
-    "style": "http://localhost:5001/style.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/index.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/style.css",
     "mandatory": false,
     "enabled": true,
     "data": {"sections": [

@@ -6,7 +6,12 @@ export default {
     name: 'npjob',
     version: '{{version}}',
     configure: function (config) {
-        config.addSidebarTab('npjob', 'Newspilot Jobb')
+
+        config.addLabel('Newspilot Job', {
+            sv: 'Newspilot Jobb'
+        })
+
+        config.addSidebarTab('npjob', config.getLabelProvider().getLabel('Newspilot Job'))
 
         config.addComponentToSidebarWithTabId('npjob', 'npjob', JobComponent)
 

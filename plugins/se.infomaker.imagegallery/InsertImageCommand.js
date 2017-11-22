@@ -116,18 +116,28 @@ class InsertImageCommand extends WriterCommand {
      * @private
      */
     _insertUri(tx, uriData, imageGalleryNode) {
-        const uuid = uriData.uuid
 
-        if (!uriData.uuid) {
-            throw new Error('Unsupported data. UUID must exist')
+        const {uuid, url} = uriData
+
+        if (!url && !uuid) {
+            throw new Error('Unsupported data. UUID or URL must exist')
         }
 
         const imageFileNode = {
             parentNodeId: imageGalleryNode.id,
             type: 'npfile',
-            imType: 'x-im/image',
-            uuid: uuid,
-            sourceUUID: uuid,
+            imType: 'x-im/image'
+        }
+
+        if(url) {
+            imageFileNode.sourceUrl = url
+
+            setTimeout(() => {
+                api.editorSession.fileManager.sync()
+            }, 300)
+        } else if(uuid) {
+            imageFileNode.uuid = uuid
+            imageFileNode.sourceUUID = uuid
         }
 
         // Create file node for the image

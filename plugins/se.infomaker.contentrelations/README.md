@@ -6,6 +6,17 @@ user can drag and drop the article/image onto the article.
 No `data` configuration needed. Note that the configuration for how to search and response fields are
 handled by `Concept Backend`.
 
+```json
+{
+  "id": "se.infomaker.contentrelations",
+  "name": "contentrelations",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.css",
+  "enabled": true,
+  "mandatory": false
+}
+```
+
 ## Output
 In the article, the plugin will add the following xml block under `newsItem > contentSet > inlineXML > idf > group`
 (e.g. article):

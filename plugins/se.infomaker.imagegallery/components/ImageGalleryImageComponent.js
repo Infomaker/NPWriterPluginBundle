@@ -61,7 +61,7 @@ class ImageGalleryImageComponent extends Component {
 
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
-        const imageEl = $$('img', {src: imageNode.getUrl()})
+        const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
 
         const removeIcon = $$('i').addClass('remove-image fa fa-times')
             .on('click', this.props.remove)
