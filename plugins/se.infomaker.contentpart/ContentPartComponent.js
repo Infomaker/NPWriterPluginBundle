@@ -45,15 +45,15 @@ class ContentPartComponent extends Component {
                 multiLine: true,
                 field: 'title',
                 placeholder: this.getLabel(this.titleText)
-            }).ref('titleFieldEditor'))
+            }))
         }
 
         if (displaySubject) {
             el.append($$(FieldEditor, {
                 node: this.props.node,
                 field: 'subject',
-                placeholder: this.getLabel(this.vignetteText)
-            }).ref('vignetteFieldEditor'))
+                placeholder: this.getLabel(this.subjectText)
+            }))
         }
 
         if (displayText) {
@@ -63,14 +63,19 @@ class ContentPartComponent extends Component {
         return el
     }
 
-    get vignetteText() {
-        const vignetteText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette')
-        const subjectText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.subject')
-        return subjectText || vignetteText || 'vignette'
+    get titleText() {
+        const currentUri = this.props.node.contentpartUri
+        const defaultTitleText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title')
+        const customTitleText = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.title`)
+        return customTitleText || defaultTitleText
     }
 
-    get titleText() {
-        return api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title')
+    get subjectText() {
+        const currentUri = this.props.node.contentpartUri
+        const defaultSubjectText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.subject')
+        const defaultVignetteText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette')
+        const customSubjectText = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.subject`)
+        return customSubjectText || defaultSubjectText || defaultVignetteText
     }
 
     /**
@@ -91,7 +96,6 @@ class ContentPartComponent extends Component {
                 dropdownheader
             ])
             .addClass('header')
-
     }
 
     /**
