@@ -45,7 +45,7 @@ class ContentPartComponent extends Component {
                 icon: this.titleIcon,
                 multiLine: true,
                 field: 'title',
-                placeholder: this.getLabel(this.titleText)
+                placeholder: this.getLabel(this.getPlaceholderText('title', 'title'))
             }))
         }
 
@@ -54,7 +54,7 @@ class ContentPartComponent extends Component {
                 node: this.props.node,
                 icon: this.subjectIcon,
                 field: 'subject',
-                placeholder: this.getLabel(this.subjectText)
+                placeholder: this.getLabel(this.getPlaceholderText('subject') || this.getPlaceholderText('vignette', 'vignette'))
             }))
         }
 
@@ -65,19 +65,11 @@ class ContentPartComponent extends Component {
         return el
     }
 
-    get titleText() {
+    getPlaceholderText(fieldName, defaultText) {
         const currentUri = this.props.node.contentpartUri
-        const defaultTitleText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.title', 'title')
-        const customTitleText = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.title`)
-        return customTitleText || defaultTitleText
-    }
-
-    get subjectText() {
-        const currentUri = this.props.node.contentpartUri
-        const defaultSubjectText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.subject')
-        const defaultVignetteText = api.getConfigValue('se.infomaker.contentpart', 'placeholderText.vignette', 'vignette')
-        const customSubjectText = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.subject`)
-        return customSubjectText || defaultSubjectText || defaultVignetteText
+        const defaultPlaceholder = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${fieldName}`, defaultText)
+        const customPlaceholder = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.${fieldName}`)
+        return customPlaceholder || defaultPlaceholder
     }
 
     get titleIcon() {
