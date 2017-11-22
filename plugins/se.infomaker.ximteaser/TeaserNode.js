@@ -155,7 +155,7 @@ TeaserNode.define({
 
     customFields: {type:'object', optional: false, default: {}},
 
-    relatedArticles: {type: 'array', optional: true, defaut: []},
+    relatedArticles: {type: 'array', optional: true, default: []},
 
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
