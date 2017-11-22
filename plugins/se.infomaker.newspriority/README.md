@@ -8,8 +8,8 @@ Note that configuration values in json below are examples.
 {
       "id": "se.infomaker.newspriority",
       "name": "newspriority",
-      "url": "http://localhost:5001/im-ximnewspriority.js",
-      "style": "http://localhost:5001/im-ximnewspriority.css",
+      "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximnewspriority.js",
+      "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximnewspriority.css",
       "mandatory": false,
       "enabled": true,
       "data": {

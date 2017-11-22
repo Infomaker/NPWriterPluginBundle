@@ -9,8 +9,8 @@ No data configuration needed.
     {
       "id": "se.infomaker.editorialnote",
       "name": "editorialnote",
-      "url": "https://plugins.writer.infomaker.io/releases/4.0.0/im-editorialnote.js",
-      "style": "https://plugins.writer.infomaker.io/releases/4.0.0/im-editorialnote.css",
+      "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-editorialnote.js",
+      "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-editorialnote.css",
       "enabled": true,
       "mandatory": false
     }

@@ -9,17 +9,17 @@ A PUT updates the Newspilot article through NIS.
 
 ## Plugin configuration
 Install this plugin in the writer environment by adding the settings below to your Newspilot Writer `/server/config/writer.json` file.
-```
+```json
 {
-      "id": "se.infomaker.newspilot.notify",
-      "name": "Newspilot Notifier",
-      "url": "https://plugins.writer.infomaker.io/dev/im-newspilot-notify.js",
-      "enabled": true,
-      "mandatory": true,
-      "data": {
-        "integrationService": "https://jreu0y7org.execute-api.eu-west-1.amazonaws.com/dev",
-        "integrationService-apikey": "xxxxx"
-      }
+  "id": "se.infomaker.newspilot.notify",
+  "name": "Newspilot Notifier",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-newspilot-notify.js",
+  "enabled": true,
+  "mandatory": true,
+  "data": {
+    "integrationService": "https://jreu0y7org.execute-api.eu-west-1.amazonaws.com/dev",
+    "integrationService-apikey": "xxxxx"
+  }
 }
 ```
 `integrationService` corresponds to Newspilot Integration Service.

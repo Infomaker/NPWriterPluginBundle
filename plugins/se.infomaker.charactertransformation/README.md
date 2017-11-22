@@ -2,11 +2,11 @@
 This plugin can be configured to replace certain characters for others. For example to apply the correct typographical quotation marks instead of staight quotation marks that is the default on many systems.
 
 ## Plugin configuration
-
+```json
 {
   "id": "se.infomaker.charactertransformation",
   "name": "charactertransformation",
-  "url": "http://localhost:5001/index.js",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/index.js",
   "enabled": true,
   "mandatory": false,
   "data": {
@@ -27,7 +27,7 @@ This plugin can be configured to replace certain characters for others. For exam
     ]
   }
 }
-
+```
 ## Rules
 Rules describe what characters should be replaced with what characters.
 

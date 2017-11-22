@@ -2,39 +2,41 @@
 TODO: migrate to InlineText plugin...
 
 ## Plugin configuration
-```json 
+
+```json
 {
-    "id": "se.infomaker.factbox",
-    "name": "factbox",
-    "url": "http://localhost:5001/index.js",
-    "enabled": true,
-    "mandatory": true,
-    "data": {
-        "type": "x-im/content-part",
-        "disableUseOfAnnotationTools": true,
-        "contentpartTypes": [
-            {
-                "uri": "im://content-part/fact",
-                "name": "Faktaruta",
-                "displayTitle": false,
-                "displaySubject": false,
-            },
-            {
-                "uri": "im://content-part/factbox",
-                "name": "Faktabox",
-                "displayText": false,
-                "default": true
-            },
-            {
-                "uri": "im://content-part/stick",
-                "name": "Sticka"
-            }
-        ],
-        "placeholderText": {
-            "title": "Rubrik",
-            "vignette": "Fakta"
-        }
-    }
+  "id": "se.infomaker.contentpart",
+  "name": "contentpart",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.css",
+  "enabled": true,
+  "mandatory": true,
+  "data": {
+      "type": "x-im/content-part",
+      "disableUseOfAnnotationTools": true,
+      "contentpartTypes": [
+          {
+              "uri": "im://content-part/fact",
+              "name": "Faktaruta",
+              "displayTitle": false,
+              "displaySubject": false,
+          },
+          {
+              "uri": "im://content-part/factbox",
+              "name": "Faktabox",
+              "displayText": false,
+              "default": true
+          },
+          {
+              "uri": "im://content-part/stick",
+              "name": "Sticka"
+          }
+      ],
+      "placeholderText": {
+          "title": "Rubrik",
+          "vignette": "Fakta"
+      }
+  }
 }
 ```
 
