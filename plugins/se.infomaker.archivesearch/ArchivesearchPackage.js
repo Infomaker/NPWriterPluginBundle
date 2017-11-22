@@ -51,6 +51,18 @@ const archivesearchPackage = {
         config.addLabel('Close', {
             sv: 'Stäng'
         })
+        config.addLabel('Source', {
+            sv: 'Källa'
+        })
+        config.addLabel('Photo Date', {
+            sv: 'Fotodatum'
+        })
+        config.addLabel('Credit', {
+            sv: 'Tillskrivning'
+        })
+        config.addLabel('Name', {
+            sv: 'Objektnamn'
+        })
     }
 }
 

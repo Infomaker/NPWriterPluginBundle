@@ -40,10 +40,10 @@ class ImageMetaDisplay extends Component {
         const imageItem = this.props.imageItem
         const items = [
             {label: 'UUID', key: 'uuid'},
-            {label: 'Bild', key: 'credit'},
-            {label: 'Fotodatum', key: 'photoDate', format: (value) => moment(value).format('YYYY-MM-DD')},
-            {label: 'Tillskrivning', key: 'credit'},
-            {label: 'Objektnamn', key: 'name'}
+            {label: this.getLabel('Source'), key: 'source'},
+            {label: this.getLabel('Credit'), key: 'credit'},
+            {label: this.getLabel('Photo Date'), key: 'photoDate', format: (value) => moment(value).format('YYYY-MM-DD')},
+            {label: this.getLabel('Name'), key: 'name'}
         ]
 
         return $$('div').addClass('meta-list').append(
