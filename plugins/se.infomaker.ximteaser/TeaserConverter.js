@@ -50,15 +50,17 @@ export default {
         }
 
         // Handle related article links in teaser
-        const relatedArticleLinksElems = el.findAll('links > link[type="x-im/article"]')
-        const relatedArticles = []
-        relatedArticleLinksElems.forEach(relatedArticleElem => {
-            relatedArticles.push({
-                title: relatedArticleElem.attr('title'),
-                uuid: relatedArticleElem.attr('uuid')
+        if(this.isRelatedArticlesEnabled(node.dataType)) {
+            const relatedArticleLinksElems = el.findAll('links > link[type="x-im/article"]')
+            const relatedArticles = []
+            relatedArticleLinksElems.forEach(relatedArticleElem => {
+                relatedArticles.push({
+                    title: relatedArticleElem.attr('title'),
+                    uuid: relatedArticleElem.attr('uuid')
+                })
             })
-        })
-        node.relatedArticles = relatedArticles
+            node.relatedArticles = relatedArticles
+        }
 
         // Handle image link in teaser
         const linkEl = el.find('links > link[rel="image"]')
@@ -112,6 +114,11 @@ export default {
     isMultilineEnabled: function(dataType) {
         const {fields} = this.getConfigForType(dataType)
         return fields.some(({id, multiline}) => id === 'text' && multiline === true)
+    },
+
+    isRelatedArticlesEnabled: function(dataType) {
+        const {enableRelatedArticles} = this.getConfigForType(dataType)
+        return enableRelatedArticles === true
     },
 
     /**
@@ -315,7 +322,7 @@ export default {
         }
 
         let relatedArticleLinks = null
-        if (node.relatedArticles && node.relatedArticles.length) {
+        if (this.isRelatedArticlesEnabled(node.dataType) && node.relatedArticles && node.relatedArticles.length) {
             relatedArticleLinks = node.relatedArticles.map(article => {
                 return $$('link').attr({
                     rel: 'article',

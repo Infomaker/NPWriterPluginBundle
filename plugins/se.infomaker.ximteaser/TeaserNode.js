@@ -34,6 +34,12 @@ class TeaserNode extends Container {
     }
 
     addRelatedArticle(article, tx=null) {
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        const currentType = teaserTypes.find(({type}) => type === this.dataType)
+        const relatedArticlesEnabled = currentType.enableRelatedArticles === true
+
+        if (!relatedArticlesEnabled) { return }
+
         const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
         const articleAlreadyPresent = articles.filter(a => a.uuid === article.uuid).length > 0
         const isSameArticle = article.uuid === api.newsItem.getGuid()
@@ -62,7 +68,6 @@ class TeaserNode extends Container {
                 tx.set([this.id, 'relatedArticles'], articles)
             })
         }
-
     }
 
     removeRelatedArticle(uuid, tx=null) {

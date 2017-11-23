@@ -113,7 +113,13 @@ class TeaserContainerComponent extends Component {
      */
     getDropzoneSpecs() {
         const currentTeaserNode = this._getActiveTeaserNode()
-        const label = currentTeaserNode.imageFile ? 'teaser-replace-image-or-article' : 'teaser-add-image-or-article'
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        const currentType = teaserTypes.find(({type}) => type === currentTeaserNode.dataType)
+        const relatedArticlesEnabled = currentType.enableRelatedArticles === true
+
+        const imageAndArticlelabel = currentTeaserNode.imageFile ? 'teaser-replace-image-or-article' : 'teaser-add-image-or-article'
+        const imageLabel = currentTeaserNode.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
+        const label = relatedArticlesEnabled ? imageAndArticlelabel : imageLabel
 
         return [{
             component: this,

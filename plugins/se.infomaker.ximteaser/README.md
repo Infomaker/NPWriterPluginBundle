@@ -92,6 +92,7 @@ For the most basic configuration, with one teaser and the standard text fields, 
               }
             ],
             "icon": "fa-newspaper-o",
+            "enableRelatedArticles": false,
             "imageoptions": {
               "crops": {
                 "16:9": [16, 9],
@@ -121,7 +122,7 @@ For the most basic configuration, with one teaser and the standard text fields, 
                 "icon": "fa-paragraph",
                 "id": "text",
                 "label": "Text"
-              },              
+              },
               {
                 "id": "customDateField",
                 "label": "Custom Date Field",
@@ -130,6 +131,7 @@ For the most basic configuration, with one teaser and the standard text fields, 
               }
             ],
             "icon": "fa-facebook",
+            "enableRelatedArticles": false,
             "imageoptions": {
               "crops": {
                 "16:9": [16, 9],
@@ -164,19 +166,21 @@ Types Configuration Example:
     "type": "x-im/teaser",
     "label": "Teaser",
     "icon": "fa-newspaper-o",
+    "enableRelatedArticles": false,
     "imageoptions": { ... },
     "fields": [ ... ]
 }
 ```
 
 
-| Property          | Type      | Required  | Description   |
-| --------          | :--:      | :------:  | -----------   |
-| **type**          | String    | `true`    | Datatype of teaser which is rendered in the XML as `<object type="[type]">`, e.g `<object type="x-im/teaser">`. |
-| **label**         | String    | `true`    | Descriptive label for Type, displayed in tab menu. |
-| **icon**          | String    | `true`    | Icon used in tab menu, uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
-| **imageoptions**  | Object    | `true`    | Describes image options for type. See [Image Options Configuration](#image-options-configuration) |
-| **fields**        | Array     | `true`    | Description of enabled input fields. To disable a specific field, remove it from this array. See [Fields Options Configuration](#fields-options-configuration) |
+| Property                      | Type      | Required  | Description   |
+| --------                      | :--:      | :------:  | -----------   |
+| **type**                      | String    | `true`    | Datatype of teaser which is rendered in the XML as `<object type="[type]">`, e.g `<object type="x-im/teaser">`. |
+| **label**                     | String    | `true`    | Descriptive label for Type, displayed in tab menu. |
+| **icon**                      | String    | `true`    | Icon used in tab menu, uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| **enableRelatedArticles**     | Boolean   | `false`   | Set to `true` to enable adding related articles to teaser. Defaults to `false`. |
+| **imageoptions**              | Object    | `true`    | Describes image options for type. See [Image Options Configuration](#image-options-configuration) |
+| **fields**                    | Array     | `true`    | Description of enabled input fields. To disable a specific field, remove it from this array. See [Fields Options Configuration](#fields-options-configuration) |
 
 ### Image Options Configuration
 Image Options Configuration Example:
