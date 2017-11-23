@@ -49,8 +49,21 @@ export default {
             }
         }
 
+        // Handle related article links in teaser
+        if(this.isRelatedArticlesEnabled(node.dataType)) {
+            const relatedArticleLinksElems = el.findAll('links > link[type="x-im/article"]')
+            const relatedArticles = []
+            relatedArticleLinksElems.forEach(relatedArticleElem => {
+                relatedArticles.push({
+                    title: relatedArticleElem.attr('title'),
+                    uuid: relatedArticleElem.attr('uuid')
+                })
+            })
+            node.relatedArticles = relatedArticles
+        }
+
         // Handle image link in teaser
-        const linkEl = el.find('links > link')
+        const linkEl = el.find('links > link[rel="image"]')
         if (linkEl) {
             node.imageType = linkEl.attr('type')
 
@@ -101,6 +114,11 @@ export default {
     isMultilineEnabled: function(dataType) {
         const {fields} = this.getConfigForType(dataType)
         return fields.some(({id, multiline}) => id === 'text' && multiline === true)
+    },
+
+    isRelatedArticlesEnabled: function(dataType) {
+        const {enableRelatedArticles} = this.getConfigForType(dataType)
+        return enableRelatedArticles === true
     },
 
     /**
@@ -259,11 +277,24 @@ export default {
 
         el.append(data)
 
-        let fileNode = node.document.get(node.imageFile)
+        const links = this.exportLinks($$, node)
+        el.append(links)
 
+    },
+    /**
+     * The links element contains both the teasers image and related articles
+     *
+     * @param $$
+     * @param {TeaserNode} node
+     * @param {NewsMLExporter} converter
+     * @returns {VirtualElement}
+     */
+    exportLinks: function($$, node) {
         // Links
+        let imageLink = null
+        let fileNode = node.document.get(node.imageFile)
         if (fileNode && fileNode.uuid !== '' && node.uri) {
-            const link = $$('link').attr({
+            imageLink = $$('link').attr({
                 rel: 'image',
                 type: 'x-im/image',
                 uri: node.uri,
@@ -273,32 +304,49 @@ export default {
 
             // Add image data and crops to data
             if(node.width) {
-                linkData.append(
-                    $$('width').append(
-                        String(node.width)
-                    )
-                )
-            }
-            if(node.height) {
-                linkData.append(
-                    $$('height').append(
-                        String(node.height)
-                    )
-                )
+                linkData.append($$('width').append(String(node.width)))
             }
 
-            link.append(linkData)
+            if(node.height) {
+                linkData.append($$('height').append(String(node.height)))
+            }
+
+            imageLink.append(linkData)
 
             if (node.crops) {
                 let cropLinks = $$('links')
                 let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
                 imageModule.exportSoftcropLinks($$, cropLinks, node.crops.crops)
-                link.append(cropLinks)
+                imageLink.append(cropLinks)
+            }
+        }
+
+        let relatedArticleLinks = null
+        if (this.isRelatedArticlesEnabled(node.dataType) && node.relatedArticles && node.relatedArticles.length) {
+            relatedArticleLinks = node.relatedArticles.map(article => {
+                return $$('link').attr({
+                    rel: 'article',
+                    type: 'x-im/article',
+                    title: article.title,
+                    uuid: article.uuid
+                })
+            })
+        }
+
+        if (relatedArticleLinks || imageLink) {
+            const linksElem = $$('links')
+
+            if (imageLink) {
+                linksElem.append(imageLink)
             }
 
-            el.append(
-                $$('links').append(link)
-            )
+            if (relatedArticleLinks) {
+                linksElem.append(relatedArticleLinks)
+            }
+
+            return linksElem
+        } else {
+            return ''
         }
     },
 
