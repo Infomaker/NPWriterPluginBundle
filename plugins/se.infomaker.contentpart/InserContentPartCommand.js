@@ -16,7 +16,7 @@ class InserContentPartCommand extends InsertNodeCommand {
                 type: 'contentpart',
                 id: id,
                 title: '',
-                vignette: '',
+                subject: '',
                 contentpartUri: this.getDefaultContentPartUri(),
                 nodes: [emptyParamNode.id]
             }
