@@ -21,6 +21,10 @@ of options to choose from.
         "multivalue": false,
         "values": [
             {
+                "title": "Select article option",
+                "label": true
+            },
+            {
                 "uri": "im://articleoptions/premium",
                 "title": "Premium"
             },
@@ -116,12 +120,18 @@ The dropdown component, configured with **dropdown** supports selecting a single
           },
           "multivalue": false,
           "values": [
+            { 
+              "title": "-- Choose something --",
+              "label": true
+            }, 
             {
               "uri": "im://articleoptions/premium",
               "title": "Premium"
             },
             ...
 ```
+
+If `"label":true` is set for an item in `values`, the item is considered being a label an does not generate a link in the NewsML. 
 
 ### Button
 The button component, configured with **button** stacks horizontally and supports selecting multiple values: 
