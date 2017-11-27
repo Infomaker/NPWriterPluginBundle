@@ -16,7 +16,7 @@ for sorting images.
 
 ## Output
 ```xml
-<object id="imagegallery-8a52dde8c22e270f0023d2060b0128b4" type="x-im/imagegallery" >
+<object id="imagegallery-8a52dde8c22e270f0023d2060b0128b4" type="x-im/imagegallery">
     <data>
         <text>In sodales lectus vel egestas rhoncus</text>
     </data>
