@@ -3,9 +3,22 @@ Enables for user to either drag and drop a PDF file from disk or from URL or use
 PDF will be uploaded in a configured (in the backend) S3 bucket and a NewsItem will be created for the PDF.
 
 ## Plugin configuration
-```
-{"data": {"disableUseOfAnnotationTools": true}} 
+
+
+```json
+{
+"id": "se.infomaker.ximpdf",
+"name": "ximpdf",
+"url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximpdf.js",
+"style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximpdf.css",
+"enabled": true,
+"mandatory": false,
+"data": {
+  "disableUseOfAnnotationTools": true
+  }
+}
 ``` 
+
 Disable/Enable annotation tool (e.g. bold) for the plugin.
 
 ## Output
