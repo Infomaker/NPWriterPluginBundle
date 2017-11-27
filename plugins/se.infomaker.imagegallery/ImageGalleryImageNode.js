@@ -206,6 +206,8 @@ ImageGalleryImageNode.define({
     imageFile: {type: 'file', optional: true},
     authors: {type: 'array', default: []},
     caption: {type: 'string', default: ''},
+    width: {type: 'number', optional: true},
+    height: {type: 'number', optional: true}
 })
 
 export default ImageGalleryImageNode

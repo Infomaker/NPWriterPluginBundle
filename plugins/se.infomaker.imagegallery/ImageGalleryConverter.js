@@ -71,6 +71,12 @@ const ImageGalleryConverter = {
                         if (child.tagName === 'text') {
                             imageGalleryImage.caption = converter.annotatedText(child, [imageGalleryImage.id, 'caption'])
                         }
+                        if (child.tagName === 'height') {
+                            imageGalleryImage.height = parseInt(child.text(), 10)
+                        }
+                        if (child.tagName === 'width') {
+                            imageGalleryImage.width = parseInt(child.text(), 10)
+                        }
                     })
                 }
 
@@ -153,6 +159,16 @@ const ImageGalleryConverter = {
                 imageData.append($$('text').append(
                     converter.annotatedText([galleryImageNode.id, 'caption'])
                 ))
+            }
+            if(galleryImageNode.height) {
+                imageData.append(
+                    $$('height').append(String(galleryImageNode.height))
+                )
+            }
+            if(galleryImageNode.width) {
+                imageData.append(
+                    $$('width').append(String(galleryImageNode.width))
+                )
             }
 
             link.append(imageData)
