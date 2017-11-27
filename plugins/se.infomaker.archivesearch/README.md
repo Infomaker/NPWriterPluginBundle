@@ -26,6 +26,7 @@ The archive search plugin is a great way of searching for images in archive repo
         },
         "standardQuery": {
           "contenttype": "Image",
+          "mimetype": "image/jpeg OR image/gif OR image/png",
           "latest": "true"
         },
         "resultsMapping": {
