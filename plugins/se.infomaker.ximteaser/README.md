@@ -12,7 +12,9 @@ The plugin adds one or more objects to the metadata-section of the idf.
     <object id="MjE5LDE2MywyNDgsMjA4" type="x-im/teaser" title="Lorem ipsum">
         <data>
             <title>
-                <strong id="strong-9f41d08cb368cf894754d2d26f376823">Lorem ipsum</strong>
+                <title>
+                    <strong id="strong-10fab667cd669d088f1a04deb90ff32d">Lorem ipsum <em id="emphasis-01524d79eb8d6d0c54fbf04e9f871df4">dolor sit</em></strong>
+                </title>
             </title>
             <text>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</text>
             <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
