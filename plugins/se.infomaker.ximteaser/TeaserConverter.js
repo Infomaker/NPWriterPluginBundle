@@ -1,4 +1,4 @@
-import { DefaultDOMElement, uuid } from 'substance'
+import { DefaultDOMElement, uuid, BrowserDOMElement } from 'substance'
 import { idGenerator, api } from 'writer'
 
 export default {
@@ -13,7 +13,6 @@ export default {
 
     import: function(el, node, converter) {
         const nodeId = el.attr('id')
-        node.title = el.attr('title') ? el.attr('title') : ''
         node.dataType = el.attr('type')
 
         const dataEl = el.find(':scope > data')
@@ -23,7 +22,9 @@ export default {
                 // child.el.tagName, however, will return the tag name with the original capitalization.
                 const tagName = child.el.tagName
 
-                if (tagName === 'subject') {
+                if(tagName === 'title') {
+                    node.title = converter.annotatedText(child, [node.id, 'title'])
+                } else if (tagName === 'subject') {
                     node.subject = converter.annotatedText(child, [node.id, 'subject'])
                 } else if (tagName !== 'flags' && tagName !== 'text') {
                     this.importCustomFields(child, node, converter)
@@ -47,6 +48,11 @@ export default {
                     }
                 })
             }
+        }
+
+        // If title was not set by <title> element, look for title attribute
+        if(!node.title) {
+            node.title = el.attr('title') ? el.attr('title') : ''
         }
 
         // Handle related article links in teaser
@@ -189,7 +195,7 @@ export default {
      * Import contents of <customFields>-element.
      * Custom fields go in TeaserNode.customFields.<field name>
      *
-     * @param {ui/DOMElement} customFieldsEl
+     * @param {ui/DOMElement} customFieldEl
      * @param {TeaserNode} node
      * @param {NewsMLImporter} converter
      */
@@ -237,12 +243,16 @@ export default {
             type: node.dataType
         })
 
-        if(node.title) {
-            el.attr('title', converter.annotatedText([node.id, 'title']))
-        }
-
         // Data element
         const data = $$('data')
+
+        if(node.title) {
+            const text = converter.annotatedText([node.id, 'title'])
+            data.append(
+                $$('title').append(text)
+            )
+            el.attr('title', text[0] instanceof BrowserDOMElement ? text[0].text() : text)
+        }
 
         if (node.text || node.nodes.length > 0) {
             const text = this.exportText($$, node, converter)

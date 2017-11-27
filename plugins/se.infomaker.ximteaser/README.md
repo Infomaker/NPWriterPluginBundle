@@ -11,6 +11,11 @@ The plugin adds one or more objects to the metadata-section of the idf.
 <metadata xmlns="http://www.infomaker.se/newsml/1.0">
     <object id="MjE5LDE2MywyNDgsMjA4" type="x-im/teaser" title="Lorem ipsum">
         <data>
+            <title>
+                <title>
+                    <strong id="strong-10fab667cd669d088f1a04deb90ff32d">Lorem ipsum <em id="emphasis-01524d79eb8d6d0c54fbf04e9f871df4">dolor sit</em></strong>
+                </title>
+            </title>
             <text>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</text>
             <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
             <customText>Duis aute irure dolor</customText>
@@ -31,6 +36,7 @@ The plugin adds one or more objects to the metadata-section of the idf.
     </object>
     <object id="NjMsMTExLDIzMSwxNzE" type="x-im/facebook-teaser" title="Lorem ipsum">
         <data>
+            <title>Lorem ipsum</title>
             <text format="idf">
                 <element id="paragraph-88beb76cb6af9ca39303bebc20497c56" type="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</element>
                 <element id="paragraph-360f09442467b39801c6f60971b9c02c" type="body">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</element>
@@ -45,6 +51,7 @@ The plugin adds one or more objects to the metadata-section of the idf.
 **Notes on Output**
  * `object > links` is optional, i.e. if no images or related articles are present this element is omitted.
  * `object > data` may contain different elements depending on the teaser's `fields`-configuration. See [Custom Fields](#custom-fields)
+ * `object[@title]` is deprecated but will contain title value if `object > title` is not present
 
 ## Plugin configuration
 For the most basic configuration, with one teaser and the standard text fields, see [Basic plugin configuration example](#basic-configuration-example).
@@ -60,9 +67,7 @@ For the most basic configuration, with one teaser and the standard text fields, 
       "mandatory": false,
       "enabled": true,
       "data": {
-        "disableUseOfAnnotationToolsForFields": [
-          "title"
-        ],
+        "disableUseOfAnnotationToolsForFields": [],
         "teaserPosition": "top",
         "types": [
           {
