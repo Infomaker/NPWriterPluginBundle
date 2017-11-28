@@ -27,7 +27,7 @@ const ImageGalleryConverter = {
 
         if (galleryDataEl) {
             galleryDataEl.children.forEach(child => {
-                if (child.tagName === 'caption') {
+                if (child.tagName === 'text') {
                     node.genericCaption = converter.annotatedText(child, [node.id, 'genericCaption'])
                 }
             })
@@ -65,8 +65,17 @@ const ImageGalleryConverter = {
 
                 if (imgData) {
                     imgData.children.forEach(child => {
-                        if (child.tagName === 'byline' || child.tagName === 'caption') {
-                            imageGalleryImage[child.tagName] = converter.annotatedText(child, [imageGalleryImage.id, child.tagName])
+                        if (child.tagName === 'byline') {
+                            imageGalleryImage.byline = converter.annotatedText(child, [imageGalleryImage.id, 'byline'])
+                        }
+                        if (child.tagName === 'text') {
+                            imageGalleryImage.caption = converter.annotatedText(child, [imageGalleryImage.id, 'caption'])
+                        }
+                        if (child.tagName === 'height') {
+                            imageGalleryImage.height = parseInt(child.text(), 10)
+                        }
+                        if (child.tagName === 'width') {
+                            imageGalleryImage.width = parseInt(child.text(), 10)
                         }
                     })
                 }
@@ -125,7 +134,7 @@ const ImageGalleryConverter = {
         })
 
         if (node.genericCaption && node.genericCaption.length) {
-            data.append($$('caption').append(
+            data.append($$('text').append(
                 converter.annotatedText([node.id, 'genericCaption'])
             ))
             el.append(data)
@@ -147,9 +156,19 @@ const ImageGalleryConverter = {
                 ))
             }
             if (galleryImageNode.caption) {
-                imageData.append($$('caption').append(
+                imageData.append($$('text').append(
                     converter.annotatedText([galleryImageNode.id, 'caption'])
                 ))
+            }
+            if(galleryImageNode.height) {
+                imageData.append(
+                    $$('height').append(String(galleryImageNode.height))
+                )
+            }
+            if(galleryImageNode.width) {
+                imageData.append(
+                    $$('width').append(String(galleryImageNode.width))
+                )
             }
 
             link.append(imageData)

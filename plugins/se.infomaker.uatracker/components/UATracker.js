@@ -88,10 +88,9 @@ class UATracker extends Component {
 
 
     reserveArticle() {
-        this.extendState({ lockedBy: this.socket.id })
-
         // Only send lock information if article has a uuid.
         if (this.articleInformation.uuid) {
+            this.extendState({ lockedBy: this.socket.id })
             // Trigger an event telling the socket server that we have locked this article
             this.socket.emit('article/locked', this.articleInformation)
         }

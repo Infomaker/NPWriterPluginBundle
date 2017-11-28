@@ -1,6 +1,7 @@
 import {ContainerEditor, StrongCommand, EmphasisCommand, SwitchTextCommand, Component, FontAwesomeIcon} from 'substance'
 import {api} from 'writer'
 import FileInputComponent from './FileInputComponent'
+import RelatedArticlesComponent from './RelatedArticlesComponent'
 
 class TeaserComponent extends Component {
 
@@ -55,6 +56,7 @@ class TeaserComponent extends Component {
         const currentType = types.find(({type}) => type === this.props.node.dataType)
         const hasImage = this.props.node.imageFile
         const hasFields = currentType.fields && currentType.fields.length
+        const hasRelatedArticles = this.props.node.relatedArticles && this.props.node.relatedArticles.length
 
         if (hasImage) {
             el.append(this._renderImageDisplay($$, currentType))
@@ -66,6 +68,10 @@ class TeaserComponent extends Component {
             el.append(this._renderEditorFields($$, currentType, hasImage))
         } else {
             el.append($$('span').append('No fields configured for teaser'))
+        }
+
+        if (hasRelatedArticles) {
+            el.append(this._renderRelatedArticles($$))
         }
 
         return el
@@ -159,6 +165,15 @@ class TeaserComponent extends Component {
             })
     }
 
+    _renderRelatedArticles($$) {
+        return $$(RelatedArticlesComponent, {
+            articles: this.props.node.relatedArticles,
+            remove: (uuid) => {
+                this.props.node.removeRelatedArticle(uuid)
+            }
+        })
+    }
+
     /**
      * Since the extra fields are dynamic and are not created when the node is instanciated they
      * have to be created here
@@ -209,7 +224,7 @@ class TeaserComponent extends Component {
         const container = $$('div').addClass('x-im-teaser-upload-container')
 
         if(extensionModules && extensionModules.length > 0) {
-            const title = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
+            const title = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
             container.append(
                 $$('span')
                     .addClass('upload-button')
@@ -229,7 +244,7 @@ class TeaserComponent extends Component {
     }
 
     openExtensionDialog(extensionComponent) {
-        const label = this.props.node.imageFile ? 'Replace Image' : 'Add Image'
+        const label = this.props.node.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
         api.ui.showDialog(
             extensionComponent,
             {
