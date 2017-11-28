@@ -61,7 +61,7 @@ class ConceptSearchComponent extends Component {
             
             if (this.shouldShowCreate()) {
                 searchResult = [...searchResult, {
-                    ConceptName: `${this.getLabel('create')}: ${searchedTerm}`
+                    ConceptName: `${this.getLabel('create')}: ${searchedTerm}`,
                 }]
             }
 
@@ -88,8 +88,8 @@ class ConceptSearchComponent extends Component {
     }
 
     handleBlur() {
-        // this.refs.searchInput.val('')
-        // this.resetState()
+        this.refs.searchInput.val('')
+        this.resetState()
     }
 
     handleKeyUp() {
@@ -156,7 +156,8 @@ class ConceptSearchComponent extends Component {
 
     getItemToAdd() {
         return this.state.searchResult[this.state.selected] || {
-            ConceptName: this.state.searchedTerm
+            ConceptName: this.state.searchedTerm,
+            ConceptImTypeFull: this.props.conceptTypes //TODO: This wont work when we have multiple types
         }
     }
 

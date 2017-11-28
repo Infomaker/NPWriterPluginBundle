@@ -40,7 +40,7 @@ class ConceptItemComponent extends Component {
     }
 
     getIconString() {
-        const conceptType = this.state.ConceptImSubTypeFull ? this.state.ConceptImSubTypeFull : this.state.item.ConceptImTypeFull
+        const conceptType = this.state.item.ConceptImSubTypeFull ? this.state.item.ConceptImSubTypeFull : this.state.item.ConceptImTypeFull
         return this.state.isHovered ? 'fa-times remove' : this.getConceptTypeIcon(conceptType)
     }
 

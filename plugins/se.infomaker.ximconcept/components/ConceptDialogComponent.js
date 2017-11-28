@@ -1,36 +1,84 @@
 import { Component } from 'substance'
+import FormItemModel from '../models/FormItemModel'
 
 class ConceptDialogComponent extends Component {
 
-    render($$){
-        const title = this.generateInputFormGroup($$, 'name', this.props.item.ConceptName)
-        const short = this.generateInputFormGroup($$, 'short', this.props.item.ConceptDefinitionShort)
-        const long = this.generateTextFormGroup($$, 'long', this.props.item.ConceptDefinitionLong)
-        const form = $$('form')
-            .append(title)
-            .append(short)
-            .append(long)
+    constructor(...args) {
+        super(...args)
+        this.formItemModel = new FormItemModel()
+    }
 
-        const el = $$('div').addClass('conceptDialogComponent col-sm-12')
-            .append(form)
+    getInitialState() {
+        return {
+            loading: true,
+            uiGroups: []
+        }
+    }
+
+    async didMount() {
+        const uiGroups = await this.formItemModel.getUiGroups(this.props.item)
+        const error = (uiGroups[0].error) ? uiGroups.shift().error : false
+
+        this.extendState({
+            loading: false,
+            uiGroups: error ? [] : uiGroups,
+            error: error ? error : false
+        })
+    }
+
+    render($$) {
+        const el = $$('div').addClass('concept-dialog-component col-sm-12')
+
+        if (this.state.loading) {
+            const spinner = $$('i', {
+                class: 'fa fa-spinner fa-spin dialog-spinner',
+                "aria-hidden": 'true'
+            })
+            el.append(spinner)
+        }
+
+        if (this.state.error) {
+            const error = $$('div').addClass('warning').append(this.state.error)
+
+            el.append(error)
+        } else {
+            this.state.uiGroups.forEach(uiGroup => {
+                const fields = []
+                const title = $$('h2').append(uiGroup.title)
+                const groupTitle = $$('div').append(title).addClass('uigroup-title')
+
+                uiGroup.fields.forEach((field) => {
+                    fields.push(
+                        field.type === 'text' ?
+                            this.generateTextFormGroup($$, field) :
+                            this.generateInputFormGroup($$, field)
+                    )
+                })
+
+                if (fields.length) {
+                    el.append(groupTitle)
+                    el.append(fields)
+                }
+            })
+        }
 
         return el
     }
 
-    generateInputFormGroup($$, type, value) {
-        const label = $$('label', { for: type }).append(type)
-        const input = $$('input', { id: type, class: 'form-control', value: value, placeholder: type }).ref(`${type}Text`)
-        const formGroup = $$('div').addClass('form-group')
+    generateInputFormGroup($$, field) {
+        const label = $$('label', { for: field.label }).append(field.label)
+        const input = $$('input', { id: field.label, class: 'form-control', value: field.value ? field.value : '', placeholder: field.placeholder }).ref(`${field.refId}`)
+        const formGroup = $$('fieldset').addClass('form-group')
             .append(label)
             .append(input)
 
         return formGroup
     }
 
-    generateTextFormGroup($$, type, value) {
-        const label = $$('label', { for: type }).append(type)
-        const textarea = $$('textarea', { id: type, class: 'form-control', placeholder: type }).append(value).ref(`${type}Text`)
-        const formGroup = $$('div').addClass('form-group')
+    generateTextFormGroup($$, field) {
+        const label = $$('label', { for: field.label }).append(field.label)
+        const textarea = $$('textarea', { id: field.label, class: 'form-control', placeholder: field.placeholder }).append(field.value ? field.value : '').ref(`${field.refId}`)
+        const formGroup = $$('fieldset').addClass('form-group')
             .append(label)
             .append(textarea)
 
@@ -38,16 +86,9 @@ class ConceptDialogComponent extends Component {
     }
 
     onClose(action) {
-
         if (action === 'save') {
-            this.props.save(Object.assign(this.props.item, {
-                ConceptName: this.refs.nameText.val().trim(),
-                ConceptDefinitionShort: this.refs.shortText.val().trim(),
-                ConceptDefinitionLong: this.refs.longText.val().trim()
-            }))
+            return this.formItemModel.save(this.refs)
         }
-
-        return true
     }
 
 }

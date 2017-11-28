@@ -29,7 +29,7 @@ class ConceptMainComponent extends Component {
     }
 
     addItem(item) {
-        if (item && item.uuid) {
+        if (item.uuid) {
             if (!this.itemExists(item)) {
 
                 if (this.state.pluginConfig.appendDataToLink) {
@@ -51,6 +51,14 @@ class ConceptMainComponent extends Component {
 
     editItem(item) {
         this.showDialog(item)
+    }
+
+    handleUpdatedConcept(item) {
+        this.stitch = item
+    }
+
+    handleAddedConcept(item) {
+        this.addItem(item)
     }
 
     removeItem(item) {
@@ -81,6 +89,7 @@ class ConceptMainComponent extends Component {
             ConceptDialogComponent,
             {
                 item,
+                config: this.state.pluginConfig,
                 save: (item && item.uuid) ? this.handleUpdatedConcept : this.handleAddedConcept
             },
             {
@@ -90,14 +99,6 @@ class ConceptMainComponent extends Component {
                 global: true
             }
         )
-    }
-
-    handleUpdatedConcept(item) {
-        
-    }
-
-    handleAddedConcept(item) {
-        
     }
 
     render($$) {

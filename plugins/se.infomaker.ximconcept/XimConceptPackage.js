@@ -1,5 +1,6 @@
 import ConceptMainComponent from './components/ConceptMainComponent'
 import './scss/xmimconcept.scss'
+import './scss/ximconcept-dialog.scss'
 
 const XimConceptPackage = {
     
