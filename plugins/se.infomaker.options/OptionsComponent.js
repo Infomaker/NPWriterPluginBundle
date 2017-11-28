@@ -138,6 +138,7 @@ class OptionsComponent extends Component {
     /**
      * Responsible for reporting whether a specific list data element is selected or not
      *
+     * @param list
      * @param data The element to check
      * @return True if selected, false otherwise
      */
