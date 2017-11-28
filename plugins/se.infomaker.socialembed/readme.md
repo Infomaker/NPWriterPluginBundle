@@ -1,9 +1,13 @@
+# Social embed plugin
+
 ## Rendering Facebook post and Tweets
 
 Rendering Facebook and Tweets requires that external libraries from Twitter and Facebook is loaded in the browser.
 
-This is handled by the writer it self, that's why the configuration for appId and disabling is placed directly in the writer configuration.
+This is handled by the writer it self, that's why the configuration for appId and disabling is placed directly in 
+the writer configuration.
 
+## Plugin configuration
 
 ### Disable loading of external libraries
 
@@ -28,15 +32,11 @@ A appId key can be retrieved by creating an app at Facebook. [https://developers
 
 ```
 
-
-
 ## Alternate links configuration
 
 Alternate links is created for every social embed object. 
 
 There is more information about alternate links at [Writer-format at Github](https://github.com/Infomaker/writer-format/blob/master/newsml/newsitem/newsitem-text.xml)
-
-
 
 Following variables could/should be defined in Writer Config.
 
@@ -65,6 +65,18 @@ _Example_
   "alternateFacebookTitle": "{author_name} postade på Facebook",
   "alternateDefaultTitle": "{author_name} postade på {provider_name}"
 }
+```
+
+## Output
+In the article, the plugin will add the following xml block under `newsItem > contentSet > inlineXML > idf > group`:
+
+```xml
+<object id="socialembed-4c4cfaef42e8cf621190fc66e8089d58" type="x-im/socialembed">
+    <links>
+        <link rel="self" type="x-im/tweet" url="https://twitter.com/infomakernews/status/910422014271348736" uri="im://tweet/910422014271348736"/>
+        <link rel="alternate" type="text/html" url="https://twitter.com/infomakernews/status/910422014271348736" title="Infomaker skrev på Twitter"/>
+    </links>
+</object>
 ```
 
 

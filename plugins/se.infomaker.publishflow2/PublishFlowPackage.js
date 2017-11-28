@@ -9,7 +9,7 @@ export default {
         config.addPopover(
             this.id + '_1',
             {
-                icon: 'fa-ellipsis-h',
+                icon: 'fa-caret-down',
                 button: 'Save',
                 align: 'right'
             },

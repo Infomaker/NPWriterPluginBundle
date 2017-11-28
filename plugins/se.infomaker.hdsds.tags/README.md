@@ -1,3 +1,5 @@
+**DEPRECATED!** Use `se.infomaker.ximtags`.
+
 # Tag plugin
 This plugin handles searching and selecting "tags".
 
@@ -6,8 +8,8 @@ This plugin handles searching and selecting "tags".
 {
     "id": "se.infomaker.hdsds.tags",
     "name": "hdsdsmtags",
-    "url": "http://localhost:5001/index.js",
-    "style": "http://localhost:5001/style.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/index.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/style.css",
     "mandatory": false,
     "enabled": true,
     "data": {"filters": [

@@ -54,6 +54,11 @@
         background-color: #efefef;
     }
 
+    .versions {
+        display: block;
+        font-size: 0.9rem;
+    }
+
     .time {
         display: block;
         color: #777;
@@ -143,6 +148,20 @@
     }
 }
 
+.im-article-content {
+    border: 1px solid #cccccc;
+    padding: 1rem 2rem;
+    margin: 1.5rem 0;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.object-content {
+    border: 1px solid #eeeeee;
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
 .imc-history {
     height: 350px;
 
@@ -164,3 +183,101 @@
     }
 
 }
+
+* {
+    box-sizing: border-box;
+}
+
+
+.timeline-component {
+    width: 100%;
+    height: 20%;
+    margin-top: 70px;
+    margin-bottom: 45px;
+}
+
+#timeline {
+    height: 6px;
+    width: 85%;
+    background: black;
+    border-radius: 5px;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
+}
+
+#date {
+    display: none;
+    width: 70%;
+    margin: auto;
+    margin-top: 25%;
+    text-align: center;
+    color: white;
+}
+
+.showVersions {
+    padding: 1rem 3rem;
+}
+
+.showConflict {
+    padding: 1rem 3rem;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 15px;
+    position: absolute;
+    top: -7px;
+    border: 3px solid black;
+    cursor: pointer;
+    &:before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: #000000;
+        position: absolute;
+        border-radius: 100%;
+        top: 2px;
+        left: 2px;
+        display: none;
+    }
+    .popupSpan {
+        width: auto;
+        height: auto;
+        padding-left: 2rem;
+        white-space: nowrap;
+        display: inline-block;
+        color: #000000;
+        position: absolute;
+        top: 20px;
+        left: -75px;
+        display: none;
+        transition: all 0.1s ease-out;
+        text-align: center;
+    }
+
+    .moment-date {
+        font-size: 12pt;
+    }
+
+    .moment-time {
+        font-size: 10pt;
+    }
+
+    // &:nth-child(odd) .popupSpan {
+    //   top: 20px;
+    // }
+    &.hover:before, &.active:before {
+        display: block;
+    }
+    &.hover .popupSpan, &.active .popupSpan {
+        display: block;
+    }
+    &.active .popupSpan {
+        top: -50px;
+    }
+}
+

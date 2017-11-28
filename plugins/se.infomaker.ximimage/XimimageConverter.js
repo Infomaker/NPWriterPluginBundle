@@ -124,6 +124,16 @@ export default {
             )
 
             if (softcrops.length) {
+
+                // Convert properties back to numbers
+                softcrops = softcrops.map(softcrop => {
+                    if (softcrop.x) softcrop.x = parseFloat(softcrop.x, 10)
+                    if (softcrop.y) softcrop.y = parseFloat(softcrop.y, 10)
+                    if (softcrop.width) softcrop.width = parseFloat(softcrop.width, 10)
+                    if (softcrop.height) softcrop.height = parseFloat(softcrop.height, 10)
+                    return softcrop
+                })
+
                 node.crops = {
                     crops: softcrops
                 }
@@ -173,7 +183,6 @@ export default {
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         })
 
-
         var data = $$('data').append([
             $$('width').append(String(node.width)),
             $$('height').append(String(node.height)),
@@ -216,14 +225,12 @@ export default {
             imageModule.exportSoftcropLinks($$, imageLinks, node.crops.crops)
         }
 
-
         var link = $$('link').attr({
             rel: 'self',
             type: 'x-im/image',
             uri: node.uri ? node.uri : '',
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
         }).append(data);
-
 
         if (node.authors.length) {
             const authorLink = node.authors.map((author) => {

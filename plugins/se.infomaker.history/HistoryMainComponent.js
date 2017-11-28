@@ -1,7 +1,9 @@
 import {Component} from 'substance'
 import HistoryItemComponent from './HistoryItemComponent'
-import {event, api} from 'writer'
+import {api, event} from 'writer'
 import RemoveAll from './RemoveAll'
+
+const DEFAULT_MAX_DAYS = 7
 
 class HistoryMainComponent extends Component {
 
@@ -9,7 +11,8 @@ class HistoryMainComponent extends Component {
         super(...args)
 
         api.events.on('history', event.DOCUMENT_SAVED, () => {
-            api.history.deleteHistory(api.newsItem.getIdForArticle());
+            api.history.snapshot();
+            api.history.cleanVersionsOlderThanMaxDays(DEFAULT_MAX_DAYS);
             this.updateHistoryState()
         })
 
@@ -27,8 +30,6 @@ class HistoryMainComponent extends Component {
         api.events.off('history', 'history:saved');
     }
 
-
-
     updateHistoryState() {
         this.extendState({
             historyArticles: this.context.api.history.getHistory()
@@ -41,14 +42,13 @@ class HistoryMainComponent extends Component {
         }
     }
 
-
     render($$) {
 
         const el = $$('div').ref('historyContainer').addClass('imc-history light').append(
             $$('h2').append(this.getLabel('history-popover-headline'))
         )
         el.append($$('p').append(this.getLabel('history-popover-description')))
-        if(this.state.historyArticles.length === 0) {
+        if (this.state.historyArticles.length === 0) {
             el.append($$('p').append(this.getLabel('history-popover-no-items-description')))
         }
         if (this.state.historyForArticle === false) {
@@ -60,19 +60,16 @@ class HistoryMainComponent extends Component {
             scrollbarType: 'native'
         }).ref('historyScroll')
 
-
         let versions = this.state.historyArticles.map(function (article) {
             return this.renderHistoryItem($$, article);
         }.bind(this));
 
         scroll.append(versions)
-        if(this.state.historyArticles.length > 0) {
+        if (this.state.historyArticles.length > 0) {
             scroll.append($$(RemoveAll, {removeAll: this.removeAll.bind(this)}))
         }
 
         el.append(scroll)
-
-
 
         return el;
     }
@@ -93,16 +90,16 @@ class HistoryMainComponent extends Component {
     removeArticle(article) {
         api.history.deleteHistory(article.id)
     }
+
     applyVersion(version, article) {
+
         // this function can fire onclick handler for any DOM-Element
-
-
-        if(article.id.indexOf('__temp__') === -1) {
+        if (article.id.indexOf('__temp__') === -1) {
             api.newsItem.setTemporaryId(article.id)
             api.browser.ignoreNextHashChange = true
             api.browser.setHash(article.id)
             api.newsItem.setSource(version.src, null, article.etag)
-            //
+
             api.events.documentChanged(
                 'se.infomaker.history',
                 {
@@ -117,7 +114,7 @@ class HistoryMainComponent extends Component {
             api.browser.ignoreNextHashChange = true
             api.browser.setHash('')
             api.newsItem.setSource(version.src, null, article.etag)
-            //
+
             api.events.documentChanged(
                 'se.infomaker.history',
                 {
@@ -126,8 +123,6 @@ class HistoryMainComponent extends Component {
                 }
             )
         }
-
-
     }
 }
 

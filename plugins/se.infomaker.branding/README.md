@@ -8,21 +8,21 @@ Example of things that may be overriden are:
 
 ## Configuration
 
-
-    {
-      "id": "se.infomaker.branding",
-      "name": "branding",
-      "url": "http://localhost:5001/im-branding.js",
-      "enabled": true,
-      "mandatory": false,
-      "data": {
-        "ximstory-story": {"en":"Chapter", "sv": "Kapitel"},
-        "ximstory-search_stories": {"en":"Search chapter", "sv": "Hitta kapitel"},
-        "ximstory-error-save": {"en":"Error when saving chapter", "sv":"Fel vid sparande av kapitel"},
-        "dateline.short": {"sv":"ORT"}
-      }
-    }
-
+```json
+{
+  "id": "se.infomaker.branding",
+  "name": "branding",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-branding.js",
+  "enabled": true,
+  "mandatory": false,
+  "data": {
+    "ximstory-story": {"en":"Chapter", "sv": "Kapitel"},
+    "ximstory-search_stories": {"en":"Search chapter", "sv": "Hitta kapitel"},
+    "ximstory-error-save": {"en":"Error when saving chapter", "sv":"Fel vid sparande av kapitel"},
+    "dateline.short": {"sv":"ORT"}
+  }
+}
+```
 
 The example above overrides labels for the `ximstory` plugin and renames it to 'Chapter' in english
 and 'Kapitel' in swedish.

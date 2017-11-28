@@ -36,8 +36,11 @@ const IframelyConverter = {
         el.attr('type', node.dataType)
         el.attr('url', node.url)
 
-        titleElem.innerHTML = node.title
-        embedCodeElem.innerHTML = '<![CDATA[' + node.embedCode.replace(']]>', ']]&gt;') + ']]>'
+        titleElem.append(String(node.title))
+
+        if (node.embedCode) {
+            embedCodeElem.innerHTML = '<![CDATA[' + node.embedCode.replace(']]>', ']]&gt;') + ']]>'
+        }
 
         dataElem.append([titleElem, embedCodeElem])
         el.append(dataElem)

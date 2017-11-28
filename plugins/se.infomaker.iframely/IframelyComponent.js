@@ -8,15 +8,31 @@ class IframelyComponent extends Component {
     didMount() {
         // Rerender component when the embedCode has loaded
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
+        if (this.props.node.embedCode && !this.props.node.iframe) {
+            this.props.node.fetchPayload(this.context, (err, res) => {
+                this.props.node.document.set([this.props.node.id, 'iframe'], res.iframe)
+                this.extendState({
+                    iframe: res.iframe
+                })
+            })
+        }
     }
 
     dispose() {
         this._onClose()
     }
 
-    shouldRerender(newProps) {
+    getInitialState() {
+        return {
+            iframe: null
+        }
+    }
+
+    shouldRerender(newProps, newState) {
         // Prevent rerendering every time the node is selected
-        return newProps.node.embedCode !== this.props.node.embedCode
+        const embedCodeChanged = newProps.node.embedCode !== this.props.node.embedCode
+        const iframeChanged = newState.iframe !== this.state.iframe
+        return embedCodeChanged || iframeChanged
     }
 
     remove() {
@@ -26,7 +42,7 @@ class IframelyComponent extends Component {
     render($$) {
         const el = $$('div').addClass(`im-${Package.name} im-blocknode__container`)
 
-        if (!this.props.node.embedCode) {
+        if (!this.state.iframe) {
             el.append(this._renderLoader($$))
         } else {
             el.append([this._renderHeader($$), this._renderEmbed($$)])
@@ -49,13 +65,15 @@ class IframelyComponent extends Component {
     }
     _renderEmbed($$) {
         const embedContent = $$('div').addClass('embed-content').ref('embedContent')
-        embedContent.innerHTML = this.props.node.embedCode
+        embedContent.innerHTML = this.state.iframe
         return embedContent
     }
 
     _onDocumentChange(change) {
         if (change.isAffected(this.props.node.id)) {
-            this.rerender()
+            this.extendState({
+                iframe: this.props.node.iframe
+            })
         }
     }
 

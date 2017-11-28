@@ -7,7 +7,6 @@ export default({
     name: 'history',
     version: '{{version}}',
     configure: function(config) {
-        // config.addComponentToSidebarWithTabId('historyagentcomponent', 'main', HistoryAgentComponent)
 
         config.addLabel('Unsaved articles found', {
             sv: 'Osparade artiklar har hittats'
@@ -90,6 +89,61 @@ export default({
             sv: 'Radera denna versionshistorik'
         })
 
+        config.addLabel('history-popover-versions', {
+            en: 'versions',
+            sv: 'versioner'
+        })
+
+        config.addLabel('history-popover-Show versions', {
+            en: 'Show versions',
+            sv: 'Visa versioner'
+        })
+
+        config.addLabel('history-popover-Replace current article', {
+            en: 'Replace current article',
+            sv: 'Ersätt nuvarande artikeltext'
+        })
+
+        config.addLabel('se.infomaker.history-header', {
+            en: 'Saved local backup copies of article',
+            sv: 'Sparade lokala kopior av artikeln'
+        })
+
+        config.addLabel('se.infomaker.history-description', {
+            en: 'The timeline below displays local backup copies of the selected article. Select the version to restore and click "Replace current article".',
+            sv: 'Tidslinjen nedan visar lokala kopior av vald artikel. Välj den version som skall återställas och klicka på "Ersätt nuvarande artikeltext".'
+        })
+
+        config.addLabel('se.infomaker.history-preview.header', {
+            en: 'Preview',
+            sv: 'Förhandsvisning'
+        })
+
+        config.addLabel('se.intomaker.history-charactercount.label', {
+            en: 'Character count',
+            sv: 'Antal tecken'
+        })
+
+        config.addLabel('se.infomaker.history-conflict.title', {
+            en: 'The article is outdated',
+            sv: 'Artikeln är inaktuell'
+        })
+
+        config.addLabel('se.infomaker.history-conflict.header', {
+            en: 'There is a newer version of this article',
+            sv: 'Det finns en nyare version av artikeln'
+        })
+
+        config.addLabel('se.infomaker.history-conflict.text', {
+            en: 'The local copies of the article are outdated. In order to get the latest changes the article needs to be reopened.',
+            sv: 'De lokala kopiorna av artikeln är inaktuella. För att visa de senaste ändringarna måste artikeln läsas in på nytt.'
+        })
+
+        config.addLabel('se.infomaker.history-button.reopen', {
+            en: 'Reopen requested article',
+            sv: 'Läs in artikel på nytt'
+        })
+
         config.addPopover(
             'historymaincomponent',
             {
@@ -99,7 +153,5 @@ export default({
             },
             HistoryMainComponent
         )
-
-
     }
 })

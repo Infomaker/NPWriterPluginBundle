@@ -1,4 +1,4 @@
-import {Component, FontAwesomeIcon, TextPropertyEditor} from "substance"
+import {Component, FontAwesomeIcon} from "substance"
 import {NilUUID} from "writer"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
@@ -39,12 +39,6 @@ class XimimageComponent extends Component {
         }
     }
 
-    willReceiveProps(newProps) {
-        if (newProps.disabled && this.refs.cropsPreview) {
-            this.refs.cropsPreview.selectCrop(undefined)
-        }
-    }
-
     render($$) {
         let node = this.props.node
         let el = $$('div').addClass('sc-ximimage im-blocknode__container')
@@ -79,9 +73,6 @@ class XimimageComponent extends Component {
                     crops,
                     cropInstructions,
                     isolatedNodeState: this.props.isolatedNodeState,
-                    cropSelected: (cropUrl) => {
-                        this.refs.image.displayCrop(cropUrl)
-                    }
                 }).ref('cropsPreview')
             )
         }
@@ -96,7 +87,7 @@ class XimimageComponent extends Component {
                 metaWrapper.append(this.renderTextField($$, obj))
             }
         })
-        
+
         el.append(metaWrapper)
 
         return el

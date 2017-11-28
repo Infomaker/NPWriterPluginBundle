@@ -10,16 +10,17 @@ export default {
     version: '{{version}}',
     configure: function(config) {
 
-        config.addSidebarTab('contentrelations', 'Relaterat innehåll')
+        config.addLabel('ContentRelations', {
+            en: 'Related content',
+            sv: 'Relaterat innehåll'
+        })
+        config.addSidebarTab('contentrelations', config.getLabelProvider().getLabel('ContentRelations'))
         config.addComponentToSidebarWithTabId('contentrelations', 'contentrelations', ContentRelationsMainComponent)
         config.addDropHandler(new ContentRelationsDropHandler())
         config.addComponent('contentrelations', ContentRelationsComponent)
         config.addNode(ContentRelationsNode)
         config.addConverter('newsml', ContentRelationsConverter)
 
-        config.addLabel('ContentRelations', {
-            sv: 'Relaterat innehåll'
-        })
         config.addLabel('Enter query', {
             sv: 'Sökfråga'
         })
@@ -27,7 +28,5 @@ export default {
         config.addLabel('Search', {
             sv: 'Sök'
         })
-
-
     }
 }

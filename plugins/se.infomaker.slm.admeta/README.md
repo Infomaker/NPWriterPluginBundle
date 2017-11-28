@@ -7,7 +7,8 @@ Enables adding ad keywords and an ad campaign ID to the article.
 {
     "id": "se.infomaker.slm.admeta",
     "name": "admeta",
-    "url": "http://localhost:5001/slm-admeta.js",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/slm-admeta.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/slm-admeta.css",
     "enabled": true,
     "mandatory": false
 }

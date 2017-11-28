@@ -6,10 +6,42 @@
         // Disable drag for TeaserContainer
         display: none;
     }
+
+    .teaser-container .im-container-editor {
+        .sc-textstyle-label {
+            left: 0;
+            min-width: 12px;
+            line-height: 19px;
+            padding: 0;
+        }
+    }
+}
+
+.se-layout:not(.se-text-style-visible) {
+    .teaser-container {
+        .im-container-editor:before {
+            font-family: FontAwesome;
+            color: #b4b4b4;
+            float: left;
+            content: "\f1dd";
+            width: 20px;
+            margin-left: 2px;
+        }
+    }
 }
 
 .teaser-container {
     padding: 10px;
+
+    .im-container-editor {
+        font-size: 90%;
+        margin-top: 10px;
+
+        .sc-paragraph {
+            padding-bottom: 10px;
+            padding-left: 31px;
+        }
+    }
 
     .x-im-teaser-upload-container {
         position: relative;
@@ -30,6 +62,55 @@
         input[type="file"] {
             display: none;
         }
+    }
+
+    .related-articles-container {
+        margin-top: 10px;
+
+        .related-articles-heading {
+            font-size: 0.9em;
+            color: #b4b4b4;
+        }
+
+        .related-article {
+            border: 1px solid #eee;
+            background-color: #fff;
+            border-left-width: 6px;
+            border-radius: 2px;
+            margin: 2px 0;
+            padding: 4px 8px;
+            font-size: 0.9em;
+
+            .article-title {
+                margin: 2px 8px;
+            }
+
+            .article-icon {
+                color: #d0d0d0;
+            }
+
+            .article-remove {
+                display: none;
+                float: right;
+                color: #d0d0d0;
+
+                &:hover {
+                    color: #b4b4b4;
+                }
+            }
+        }
+
+        &:hover .article-remove {
+            display: initial;
+        }
+    }
+}
+
+// Style related articles when teaser doesn't have focus
+.sm-selected .related-articles-container .related-article {
+    background-color: #eee;
+    a {
+        color: #b4b4b4;
     }
 }
 

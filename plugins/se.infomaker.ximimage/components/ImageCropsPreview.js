@@ -5,7 +5,9 @@ function executeTemplate(template, context) {
     let result = template;
 
     for (let key in context) {
-        result = result.replace(`{{${key}}}`, context[key])
+        if (context.hasOwnProperty(key)) {
+            result = result.replace(`{{${key}}}`, context[key])
+        }
     }
 
     return result
@@ -111,22 +113,22 @@ class ImageCropsPreview extends Component {
         const crops = this.props.crops
         const cropInstructions = this.props.cropInstructions
         const node = this.props.node
-    
+
         for (let key in crops) {
+            if (crops.hasOwnProperty(key)) {
+                let cropDefinedInNode
+                if (node.crops && node.crops.crops) {
+                    cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
+                }
 
-            let cropDefinedInNode
-            if (node.crops && node.crops.crops) {
-                cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
-            }
+                const width = node.width
+                const height = node.height
 
-            const width = node.width
-            const height = node.height
-
-            const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
+                const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
 
 
-            if (this.props.node.uuid && this.props.node.getServiceUrl) {
-                this.props.node.getServiceUrl(params)
+                if (this.props.node.uuid && this.props.node.getServiceUrl) {
+                    this.props.node.getServiceUrl(params)
                     .then((url) => {
                         this.cropUrls.set(key, url)
                         this.updateSrc(key, url)
@@ -136,27 +138,15 @@ class ImageCropsPreview extends Component {
                         this.cropUrls.set(key, url)
                         this.updateSrc(key, url)
                     })
+                }
             }
         }
-
-        // If crops has changed, clear the selected crop
-        this.selectCrop(undefined)
     }
 
     updateSrc(key, url) {
         if (this.refs['img-' + key]) {
             this.refs['img-' + key].setAttribute('src', url)
         }
-    }
-
-    selectCrop(url) {
-        if (url === undefined || this.state.selectedUrl === url) {
-            this.extendState({selectedUrl: undefined})
-        } else {
-            this.extendState({selectedUrl: url})
-        }
-
-        this.props.cropSelected(this.state.selectedUrl)
     }
 
     render($$) {
@@ -169,18 +159,9 @@ class ImageCropsPreview extends Component {
                 const url = this.cropUrls.get(key)
                 const cropDiv = $$('div')
                     .addClass('image-crops-item')
-                    .on('click', () => this.selectCrop(url))
 
                 const img = $$('img')
                     .setAttribute('src', url).ref('img-' + key)
-
-                if (this.state.selectedUrl && this.props.isolatedNodeState !== null) {
-                    if (url === this.state.selectedUrl) {
-                        img.addClass('crop-selected')
-                    } else {
-                        img.addClass('crop-unselected')
-                    }
-                }
 
                 cropDiv.append(
                     [

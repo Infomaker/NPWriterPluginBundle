@@ -1,16 +1,12 @@
 # ximtags plugin
-This plugin handles searching, creating and editing "tags". What is handled by the plugin depends on the plugin
-configuration (see below).
+This plugin handles searching and selecting "tags" for an article. These tags are `Concepts` which
+are documented here: https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem.
+
+The plugin allows a user to create new and edit existing tags depending on the plugin configuration (see below).
 
 ## Plugin configuration
 ```json
-{
-    "id": "se.infomaker.ximtags",
-    "name": "ximtags",
-    "url": "http://localhost:5001/index.js",
-    "style": "http://localhost:5001/style.css",
-    "mandatory": false,
-    "enabled": true,
+{    
     "data": {"tags": {
         "x-im/person": {
             "icon": "fa-user",
@@ -39,18 +35,8 @@ concept types are used both in plugin and in Concept backend.
 If editable is true, the tag may be created and updated. If false, the tag is not possible to create and just the information about
 the tag is shown when clicking on an existing tag.
 
-
-## Tag concept format
-See [Concept Items](https://github.com/Infomaker/writer-format/tree/master/newsml/conceptitem).
-
-## Tag format in article
-When applying a tag in the article the relation will be represented as a link;
+## Output
+When applying a tag in the article the relation will be represented as a link under `newsItem > itemMeta > links`;
 ```xml
-<newsItem>
-    <itemMeta>
-        <links>
-            <link title="Volvo" rel="author" type="x-im/organisation" uuid="4w1653f3-6575-5cb7-8b74-qc4dea63513e"/>                
-        </links>
-    </itemMeta>
-</newsItem>
+<link title="Volvo" rel="author" type="x-im/organisation" uuid="4w1653f3-6575-5cb7-8b74-qc4dea63513e"/>                      
 ```

@@ -1,39 +1,15 @@
-# News priority plugin
-This plugin sets priority and lifetime for an article.
+# Newspriority plugin
+Plugin handles the different newspriority information that can be attached to the article.
 
-## NewsItem format
-
-The plugin adds metadata to the contentMeta block in the NewsML XML.
-
-```xml
-    <contentMeta>
-        <metadata xmlns="http://www.infomaker.se/newsml/1.0">
-            <object id="RYaudnAJj8gQ" type="x-im/newsvalue">
-                <data>
-                    <score>3</score>
-                    <description>6H</description>
-                    <format>lifetimecode</format>
-                    <end/>
-                    <duration>21600</duration>
-                </data>
-            </object>
-        </metadata>
-    </contentMeta>
-```
-
-The `score` element maps to the `value` key in the `scores` array in the configuration.
-
-The `description`, `end` and `duration` maps to the keys in the `lifetime` array in the configuration.
-
-## Configuration
-
+## Plugin configuration
+Note that configuration values in json below are examples.
 
 ```json
 {
       "id": "se.infomaker.newspriority",
       "name": "newspriority",
-      "url": "http://localhost:5001/im-ximnewspriority.js",
-      "style": "http://localhost:5001/im-ximnewspriority.css",
+      "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximnewspriority.js",
+      "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximnewspriority.css",
       "mandatory": false,
       "enabled": true,
       "data": {
@@ -89,6 +65,23 @@ The `description`, `end` and `duration` maps to the keys in the `lifetime` array
       }
 }
 ```
-
 It is possible to disable lifetime, which is done by setting the `preventLifetime` key to `true` in the config above.
 
+## Output
+In the article, the plugin will add the following xml block under `newsItem > contentMeta > metadata`:
+
+```xml
+<object id="RYaudnAJj8gQ" type="x-im/newsvalue">
+    <data>
+        <score>3</score>
+        <description>1D</description>
+        <format>lifetimecode</format>
+        <end/>        
+        <duration>84600</duration>
+    </data>
+</object>
+```
+
+The `score` element maps to the `value` key in the `scores` array in the configuration.
+
+The `description`, `end` and `duration` maps to the keys in the `lifetime` array in the configuration.
