@@ -18,9 +18,7 @@ export default {
     },
 
     /**
-     * 
-     * 
-     * @param {any} dragState 
+     * @param {any} dragState
      * @param {Boolean} multiple
      */
     _extractData(dragState, multiple) {
@@ -46,6 +44,11 @@ export default {
                 result.type = 'url'
                 result.url = url
             }
+        } else if (this._isArticleDrop(dragState.data)){
+            const uri = dragState.data.uris[0]
+            result.type = 'article'
+            result.uri = uri
+            result.uriData = this._getDataFromURL(uri)
         }
 
         return result
@@ -78,6 +81,10 @@ export default {
 
     _isUriDrop(dragData) {
         return dragData.uris && dragData.uris.length > 0 && this._isValidUri(dragData.uris[0])
+    },
+
+    _isArticleDrop(dragData) {
+        return dragData.uris && dragData.uris.length > 0 && dragData.uris[0].includes('x-im-entity://x-im/article')
     },
 
     _isValidUri(uri) {

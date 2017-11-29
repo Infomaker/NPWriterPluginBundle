@@ -4,7 +4,6 @@ import {Component, FontAwesomeIcon} from 'substance'
  * @class PaginationComponent
  *
 
-
  * @property {Object}   props
  * @property {Number}   props.currentPage   Current page number, not zero-indexed
  * @property {Number}   props.totalPages    Number of total pages

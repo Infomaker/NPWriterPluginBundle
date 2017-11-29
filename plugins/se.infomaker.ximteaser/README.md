@@ -4,15 +4,21 @@ the plugin configuration (see below).
 
 Each teaser type has configurable data-type, content fields, and image options.
 
-## NewsItem Format
+## Output
 The plugin adds one or more objects to the metadata-section of the idf.
 
 ```xml
 <metadata xmlns="http://www.infomaker.se/newsml/1.0">
     <object id="MjE5LDE2MywyNDgsMjA4" type="x-im/teaser" title="Lorem ipsum">
         <data>
+            <title>
+                <title>
+                    <strong id="strong-10fab667cd669d088f1a04deb90ff32d">Lorem ipsum <em id="emphasis-01524d79eb8d6d0c54fbf04e9f871df4">dolor sit</em></strong>
+                </title>
+            </title>
             <text>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</text>
             <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
+            <customText>Duis aute irure dolor</customText>
         </data>
         <links>
             <link rel="image" type="x-im/image" uri="im://image/fmglga0fK54ZwKjnufQgG027eOA.png" uuid="00000000-0000-0000-0000-000000000000">
@@ -25,66 +31,127 @@ The plugin adds one or more objects to the metadata-section of the idf.
                     <link rel="crop" type="x-im/crop" title="1:1" uri="im://crop/0.1975/0/0.605/1"/>
                 </links>
             </link>
+            <link rel="article" type="x-im/article" title="Tintin i Hajsjön" uuid="22885008-ec24-4b59-8edf-67109322f49c"/>
         </links>
     </object>
     <object id="NjMsMTExLDIzMSwxNzE" type="x-im/facebook-teaser" title="Lorem ipsum">
         <data>
+            <title>Lorem ipsum</title>
             <text format="idf">
                 <element id="paragraph-88beb76cb6af9ca39303bebc20497c56" type="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</element>
                 <element id="paragraph-360f09442467b39801c6f60971b9c02c" type="body">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</element>
                 <element id="paragraph-337d42c0a735a1faab645382bbf39fff" type="body">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</element>
             </text>
-        </data>
-    </object>
-    <object id="PkEs6SJgLeQ0FS1qMjk" type="x-im/twitter-teaser" title="Lorem ipsum">
-        <data>
-            <text>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</text>
+            <customDateField>2017-01-30</customDateField>
         </data>
     </object>
 </metadata>
 ```
 
-*Note* that `object > links` is optional, i.e. if no images are present
-this element is omitted.
+**Notes on Output**
+ * `object > links` is optional, i.e. if no images or related articles are present this element is omitted.
+ * `object > data` may contain different elements depending on the teaser's `fields`-configuration. See [Custom Fields](#custom-fields)
+ * `object[@title]` is deprecated but will contain title value if `object > title` is not present
 
-## Plugin Configuration
-[Basic plugin configuration example](#basic-configuration-example)
+## Plugin configuration
+For the most basic configuration, with one teaser and the standard text fields, see [Basic plugin configuration example](#basic-configuration-example).
 
-```javascript
+```json
 {
-    "id": "se.infomaker.ximteaser",
-    "name": "ximteaser",
-    "mandatory": false,
-    "enabled": true,
-    "data": {
+  "plugins": [
+    {
+      "id": "se.infomaker.ximteaser",
+      "name": "ximteaser",
+      "url": "https://plugins.writer.infomaker.io/releases/4.1.0/im-ximteaser.js",
+      "style": "https://plugins.writer.infomaker.io/releases/4.1.0/im-ximteaser.css",
+      "mandatory": false,
+      "enabled": true,
+      "data": {
+        "disableUseOfAnnotationToolsForFields": [],
         "teaserPosition": "top",
-        "disableUseOfAnnotationToolsForFields": [
-            "title"
-        ],
         "types": [
-            {
-                "type": "x-im/teaser",
-                "label": "Teaser",
-                "icon": "fa-newspaper-o",
-                "imageoptions": { ... },
-                "fields": [ ... ]
-            },
-            {
-                "type": "x-im/facebook-teaser",
-                "label": "Facebook",
-                "icon": "fa-facebook",
-                "imageoptions": { ... },
-                "fields": [ ... ]
-            },
-            {
-                "type": "x-im/twitter-teaser",
-                "label": "Twitter",
-                "icon": "fa-twitter",
-                "imageoptions": { ... },
-                "fields": [ ... ]
+          {
+            "label": "Teaser",
+            "type": "x-im/teaser",
+            "fields": [
+              {
+                "icon": "fa-flag",
+                "id": "subject",
+                "label": "Subject"
+              },
+              {
+                "icon": "fa-header",
+                "id": "title",
+                "label": "Rubrik"
+              },
+              {
+                "icon": "fa-paragraph",
+                "id": "text",
+                "label": "Text"
+              },
+              {
+                "icon": "fa-paragraph",
+                "id": "customText",
+                "type": "text",
+                "label": "Custom Text"
+              }
+            ],
+            "icon": "fa-newspaper-o",
+            "enableRelatedArticles": false,
+            "imageoptions": {
+              "crops": {
+                "16:9": [16, 9],
+                "1:1": [1, 1],
+                "4:3": [4, 3],
+                "8:5": [8, 5]
+              },
+              "imageinfo": true,
+              "softcrop": true
             }
+          },
+          {
+            "type": "x-im/facebook-teaser",
+            "label": "Facebook",
+            "fields": [
+              {
+                "icon": "fa-flag",
+                "id": "subject",
+                "label": "Subject"
+              },
+              {
+                "icon": "fa-header",
+                "id": "title",
+                "label": "Rubrik"
+              },
+              {
+                "icon": "fa-paragraph",
+                "id": "text",
+                "label": "Text"
+              },
+              {
+                "id": "customDateField",
+                "label": "Custom Date Field",
+                "icon": "fa-calendar",
+                "type": "date"
+              }
+            ],
+            "icon": "fa-facebook",
+            "enableRelatedArticles": false,
+            "imageoptions": {
+              "crops": {
+                "16:9": [16, 9],
+                "1:1": [1, 1],
+                "4:3": [4, 3],
+                "8:5": [8, 5]
+              },
+              "imageinfo": true,
+              "softcrop": true
+            }
+          }
         ]
+      }
     }
+  ]
 }
 ```
 
@@ -104,19 +171,21 @@ Types Configuration Example:
     "type": "x-im/teaser",
     "label": "Teaser",
     "icon": "fa-newspaper-o",
+    "enableRelatedArticles": false,
     "imageoptions": { ... },
     "fields": [ ... ]
 }
 ```
 
 
-| Property          | Type      | Required  | Description   |
-| --------          | :--:      | :------:  | -----------   |
-| **type**          | String    | `true`    | Datatype of teaser which is rendered in the XML as `<object type="[type]">`, e.g `<object type="x-im/teaser">`. |
-| **label**         | String    | `true`    | Descriptive label for Type, displayed in tab menu. |
-| **icon**          | String    | `true`    | Icon used in tab menu, uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
-| **imageoptions**  | Object    | `true`    | Describes image options for type. See [Image Options Configuration](#image-options-configuration) |
-| **fields**        | Array     | `true`    | Description of enabled input fields. To disable a specific field, remove it from this array. See [Fields Options Configuration](#fields-options-configuration) |
+| Property                      | Type      | Required  | Description   |
+| --------                      | :--:      | :------:  | -----------   |
+| **type**                      | String    | `true`    | Datatype of teaser which is rendered in the XML as `<object type="[type]">`, e.g `<object type="x-im/teaser">`. |
+| **label**                     | String    | `true`    | Descriptive label for Type, displayed in tab menu. |
+| **icon**                      | String    | `true`    | Icon used in tab menu, uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| **enableRelatedArticles**     | Boolean   | `false`   | Set to `true` to enable adding related articles to teaser. Defaults to `false`. |
+| **imageoptions**              | Object    | `true`    | Describes image options for type. See [Image Options Configuration](#image-options-configuration) |
+| **fields**                    | Array     | `true`    | Description of enabled input fields. To disable a specific field, remove it from this array. See [Fields Options Configuration](#fields-options-configuration) |
 
 ### Image Options Configuration
 Image Options Configuration Example:
@@ -172,13 +241,14 @@ Field Configuration Example:
 ]
 ```
 
-| Property      | Type      | Required  | Description   |
-| --------      | :--:      | :------:  | -----------   |
-| **id**        | String    | `true`    | subject, title, or text (any other string will result in a custom field) |
-| **label**     | String    | `true`    | Placeholder for field |
-| **icon**      | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
+| Property       | Type      | Required  | Description   |
+| --------       | :--:      | :------:  | -----------   |
+| **id**         | String    | `true`    | subject, title, or text (any other string will result in a custom field) |
+| **label**      | String    | `true`    | Placeholder for field |
+| **icon**       | String    | `false`   | Sets icon used for field. Default value is `"fa-header"` Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`. |
 | **multiline*** | Boolean   | `false`   | **Only available for field with id `text`** Set to `true` to enable multiline text editing. Default value is `false` |
-| **type***     | String    | `false`    |  **Only available on custom fields** Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"`|
+| **type***      | String    | `false`   |  **Only available on custom fields** Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"`|
+
 **\*Warning** Enabling multiline editing will change the output of `data > text`-element.
 
 ### Outout Difference Between Multiline and Simple Text
@@ -226,8 +296,8 @@ This is a config example for basic teaser support.
 {
     "id": "se.infomaker.ximteaser",
     "name": "ximteaser",
-    "url": "http://localhost:5001/im-ximteaser.js",
-    "style": "http://localhost:5001/im-ximteaser.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximteaser.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximteaser.css",
     "mandatory": false,
     "enabled": true,
     "data": {

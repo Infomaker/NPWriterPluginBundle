@@ -113,7 +113,13 @@ class TeaserContainerComponent extends Component {
      */
     getDropzoneSpecs() {
         const currentTeaserNode = this._getActiveTeaserNode()
-        const label = currentTeaserNode.imageFile ? 'Replace Image' : 'Add Image'
+        const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
+        const currentType = teaserTypes.find(({type}) => type === currentTeaserNode.dataType)
+        const relatedArticlesEnabled = currentType.enableRelatedArticles === true
+
+        const imageAndArticlelabel = currentTeaserNode.imageFile ? 'teaser-replace-image-or-article' : 'teaser-add-image-or-article'
+        const imageLabel = currentTeaserNode.imageFile ? 'teaser-replace-image' : 'teaser-add-image'
+        const label = relatedArticlesEnabled ? imageAndArticlelabel : imageLabel
 
         return [{
             component: this,
@@ -134,7 +140,15 @@ class TeaserContainerComponent extends Component {
      */
     handleDrop(tx, dragState) {
         const dragData = dragStateDataExtractor.extract(dragState)
-        api.editorSession.executeCommand('ximteaser.insert-image', {
+        let command
+
+        if (dragData.type === 'article') {
+            command = 'ximteaser.insert-article'
+        } else {
+            command = 'ximteaser.insert-image'
+        }
+
+        api.editorSession.executeCommand(command, {
             tx,
             context: {node: this._getActiveTeaserNode()},
             data: dragData

@@ -4,7 +4,14 @@ Plugin for selecting one or more publication channels for the article.
 ## Plugin configuration
 
 ```json
-{"data": {
+{
+  "id": "se.infomaker.publicationchannel",
+  "name": "publicationchannel",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-publicationchannel.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-publicationchannel.css",
+  "mandatory": false,
+  "enabled": true,
+  "data": {
     "useMainChannel": false,
     "publicationchannels": [
         {
@@ -14,19 +21,14 @@ Plugin for selecting one or more publication channels for the article.
             "iconInactive": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i"
         },
         {
-            "qcode": "imchn:public",
-            "name": "public.se",
-            "icon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOD",
-            "iconInactive": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOD"
-        },
-        {
             "qcode": "imchn:demo",
             "name": "demo.se",
             "icon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTg",
             "iconInactive": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc"
         }
     ]
-}}
+  }
+}
 ```
 
 ## Output

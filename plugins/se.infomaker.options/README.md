@@ -8,7 +8,7 @@ of options to choose from.
 {
     "id": "se.infomaker.options",
     "name": "options",
-    "url": "http://localhost:5001/im-options.js",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-options.js",
     "enabled": true,
     "mandatory": true,
     "data": {"options": {
@@ -79,7 +79,7 @@ by appending "?..." to the URL.
 {
     "id": "se.infomaker.socialoptions",
     "name": "options",
-    "url": "http://localhost:5001/im-options.js",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-options.js",
     "enabled": true,
     "mandatory": true,
     ...
@@ -87,7 +87,7 @@ by appending "?..." to the URL.
 {
     "id": "se.infomaker.articletone",
     "name": "options",
-    "url": "http://localhost:5001/im-options.js?2",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-options.js?2",
     "enabled": true,
     "mandatory": true,
     ...
@@ -201,5 +201,11 @@ It is also possible to have an image icon, which is specified using the 'image' 
 The plugin will add `link` under `newsItem > contentMeta > links`. Here's an example where a user marked the article as 
 being 'premium'.
 ```xml
-<link rel="premium" title="Premium" type="x-im/premium" uri="im://premium"/>
+<newsItem>
+    <contentMeta>
+        <links xmlns="http://www.infomaker.se/newsml/1.0">
+            <link rel="premium" title="Premium" type="x-im/premium" uri="im://premium"/>
+        </links>
+    </contentMeta>
+</newsItem>
 ```

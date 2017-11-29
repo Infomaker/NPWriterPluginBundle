@@ -40,10 +40,17 @@ class ImageGalleryImageComponent extends Component {
             fetchImageMeta(imageNode.uuid)
                 .then((node) => {
                     this.context.editorSession.transaction((tx) => {
-                        tx.set([this.props.node.id, 'caption'], node.caption)
+                        if (!node.caption) {
+                            tx.set([this.props.node.id, 'caption'], node.caption)
+                        }
                         if (node.authors.length > 0) {
                             tx.set([this.props.node.id, 'authors'], node.authors)
                         }
+                        if (!imageNode.uri) {
+                            tx.set([imageNode.id, 'uri'], node.uri)
+                        }
+                        tx.set([this.props.node.id, 'width'], node.width)
+                        tx.set([this.props.node.id, 'height'], node.height)
                     })
                     this.rerender()
                 })

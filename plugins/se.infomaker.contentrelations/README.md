@@ -8,16 +8,12 @@ handled by `Concept Backend`.
 
 ```json
 {
-  "plugins": [
-    {
-      "id": "se.infomaker.contentrelations",
-      "name": "contentrelations",
-      "url": "https://plugins.writer.infomaker.io/releases/4.0.0/im-contentrelations.js",
-      "style": "https://plugins.writer.infomaker.io/releases/4.0.0/im-contentrelations.css",
-      "enabled": true,
-      "mandatory": false
-    }
-  ]
+  "id": "se.infomaker.contentrelations",
+  "name": "contentrelations",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.js",
+  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.css",
+  "enabled": true,
+  "mandatory": false
 }
 ```
 

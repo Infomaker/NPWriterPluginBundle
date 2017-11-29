@@ -8,8 +8,8 @@ A workflow consists of a number of workflow items. These are defined in the plug
 {
     "id": "se.infomaker.publishflow2",
     "name": "publishflow2",
-    "url": "https://plugins.writer.infomaker.io/dev/im-publishflow2.js",
-    "style": "https://plugins.writer.infomaker.io/dev/im-publishflow2.css",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-publishflow2.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-publishflow2.css",
     "enabled": true,
     "mandatory": true,
     "data": {
