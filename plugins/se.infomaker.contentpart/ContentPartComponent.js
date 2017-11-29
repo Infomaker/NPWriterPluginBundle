@@ -12,6 +12,24 @@ import {api} from 'writer'
 
 import ContentPartManager from './ContentPartManager'
 
+/**
+ * @typedef ContentPartComponent.Props
+ * @property {Node} node
+ * @property {String} isolatedNodeState
+ */
+
+ /**
+ * @typedef ContentPartComponent.State
+ * @property {Object} contentPartType - The current content part type
+ */
+
+/**
+ * Content part component
+ *
+ * @param {ContentPartComponent.Props} props
+ * @property {ContentPartComponent.Props} props
+ * @property {ContentPartComponent.State} state
+ */
 class ContentPartComponent extends Component {
 
     _loadManager() {
@@ -19,62 +37,59 @@ class ContentPartComponent extends Component {
     }
 
     shouldRerender(oldProps, oldState) {
-        const showInlineTextMenuChanged = this.state.showInlineTextMenu !== oldState.showInlineTextMenu
         const isolatedNodeStateChanged = this.props.isolatedNodeState !== oldProps.isolatedNodeState
         const contentPartTypeChanged = this.state.contentPartType.uri !== oldState.contentPartType.uri
 
-        return contentPartTypeChanged || isolatedNodeStateChanged || showInlineTextMenuChanged
+        return contentPartTypeChanged || isolatedNodeStateChanged
     }
 
     getInitialState() {
         // Manager has to be loaded here as getInitialState is called before the constructor has completed
         this._loadManager()
-        const contentPartUri = this.props.node.contentpartUri
-
+        const contentPartUri = this.props.node.contentPartUri
         const initialContentPartType = contentPartUri ? this.manager.getContentPartTypeByURI(contentPartUri) : this.manager.getDefaultContentPartType()
+
         return {
-            showInlineTextMenu: false,
-            contentPartType: initialContentPartType,
-            selectedUri: null
+            contentPartType: initialContentPartType
         }
     }
 
     render($$) {
         return $$('div', {class: 'contentpart-node im-blocknode__container'}, [
-            this.renderHeader($$),
-            this.state.contentPartType.fields.map(field => this.renderFieldsByType($$, field))
-        ])
+            this._renderHeader($$),
+            this.state.contentPartType.fields.map(field => this._renderFieldsByType($$, field))
+        ]).ref('container')
     }
 
-    renderFieldsByType($$, field) {
+    _renderFieldsByType($$, field) {
         switch (field.type) {
             case '__ContainerEditor__':
-                return this.renderContainerEditor($$, field)
+                return this._renderContainerEditor($$, field)
             case 'datetime':
             case 'date':
             case 'time':
-                return this.renderDateField($$, field)
+                return this._renderDateField($$, field)
             case 'text':
             default:
-                return this.renderTextField($$, field)
+                return this._renderTextField($$, field)
         }
     }
 
-    renderTextField($$, field) {
+    _renderTextField($$, field) {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
         const editorProps = {
             node: this.props.node,
             multiLine: field.multiLine,
             field: ['fields', field.id],
-            placeholder: this.getLabel(field.label),
-            _cache: new Date()
+            placeholder: this.getLabel(field.label)
         }
         if (field.icon) { editorProps.icon = field.icon }
 
-        return $$(FieldEditor, editorProps)
+        const refName = `field-${field.id}-${this.state.contentPartType.uri}`
+        return $$(FieldEditor, editorProps).ref(refName)
     }
 
-    renderDateField($$, field) {
+    _renderDateField($$, field) {
         const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
         const editorProps = {
             node: this.props.node,
@@ -83,12 +98,12 @@ class ContentPartComponent extends Component {
             type: field.type
         }
         if (field.icon) { editorProps.icon = field.icon }
-        const refName = `field-${field.id}-${this.props.node.contentpartUri}`
-        console.info('ref-name', refName)
+
+        const refName = `field-${field.id}-${this.state.contentPartType.uri}`
         return $$(DatetimeFieldEditor, editorProps).ref(refName)
     }
 
-    renderContainerEditor($$) {
+    _renderContainerEditor($$) {
         return $$(ContainerEditor, {
             name: 'contentpartEditor' + this.props.node.id,
             containerId: this.props.node.id,
@@ -100,7 +115,7 @@ class ContentPartComponent extends Component {
     /**
      * Renders the component's header.
      */
-    renderHeader($$) {
+    _renderHeader($$) {
         const dropdownheader = $$(DropDownHeadline, {
             icon: 'fa-sort',
             items: this.manager.getContentPartTypes(),
@@ -117,22 +132,17 @@ class ContentPartComponent extends Component {
 
     /**
      * When selecting a content part type in a drop down list
-     * Update `contentpartUri` property on the node
+     * Update `contentPartUri` property on the node
      * and change the component state to hide the dropdown
      * @param inlineText
      */
     selectInlineText(inlineText) {
+        api.editorSession.transaction((tx) => {
+            tx.set([this.props.node.id, 'contentPartUri'], inlineText.uri)
+        })
         this.extendState({
-            showInlineTextMenu: false,
             contentPartType: this.manager.getContentPartTypeByURI(inlineText.uri)
         })
-        api.editorSession.transaction((tx) => {
-            tx.set([this.props.node.id, 'contentpartUri'], inlineText.uri)
-        })
-    }
-
-    toggleMenu() {
-        this.extendState({showInlineTextMenu: !this.state.showInlineTextMenu})
     }
 }
 

@@ -22,8 +22,11 @@ class ContentPartManager {
     }
 
 
+    /**
+     * @private
+     */
     _loadContentPartTypes() {
-        const contentPartTypes = this._config.contentPartTypes
+        const contentPartTypes = this._config.types
         if (!contentPartTypes || contentPartTypes.length === 0) {
             throw new Error('No content part types configured for contentpart')
         }
@@ -38,12 +41,18 @@ class ContentPartManager {
         })
     }
 
+    /**
+     * @private
+     */
     _mapFields(field) {
         this._createFieldOnNode(field)
         const _defaults = this._getFieldDefaultsForID(field.id)
         return Object.assign({}, _defaults, field)
     }
 
+    /**
+     * @private
+     */
     _createFieldOnNode(field) {
         const currentValue = this.node.fields[field.id]
         if (!this.reservedFields.includes(field.id) && currentValue === undefined) {
@@ -52,6 +61,9 @@ class ContentPartManager {
         }
     }
 
+    /**
+     * @private
+     */
     _getFieldDefaultsForID(fieldID) {
         const _default = {
             type: 'text',
@@ -94,12 +106,6 @@ class ContentPartManager {
             return this.contentPartTypes[0]
         }
         return defaultContentPartType
-    }
-
-    getFieldsByURI(uri) {
-        const contentPartType = this.getContentPartTypeByURI(uri)
-        if (!contentPartType) { return }
-        return contentPartType
     }
 }
 

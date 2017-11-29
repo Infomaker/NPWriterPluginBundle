@@ -65,14 +65,14 @@ export default {
     importURI: function(node, link, manager) {
         const configuredURIs = manager.getContentPartTypes().map(type => type.uri)
         if (link && configuredURIs.includes(link.attr('uri'))) {
-            node.contentpartUri = link.attr('uri')
+            node.contentPartUri = link.attr('uri')
         } else {
             if (link && link.attr('uri')) {
                 console.warn(`Imported content part type "${link.attr('uri')}" was not found in config. Using default type.`)
             } else {
                 console.warn(`Imported content part type was not found in config. Using default type.`)
             }
-            node.contentpartUri = manager.getDefaultContentPartType().uri
+            node.contentPartUri = manager.getDefaultContentPartType().uri
         }
     },
 
@@ -92,7 +92,7 @@ export default {
         const manager = new ContentPartManager(node)
         const $$ = converter.$$
 
-        const uri = node.contentpartUri
+        const uri = node.contentPartUri
         const contentPart = uri ? manager.getContentPartTypeByURI(uri) : manager.getDefaultContentPartType()
 
         el.attr({
