@@ -1,62 +1,134 @@
-# Inline text plugin
-TODO: migrate to InlineText plugin...
+# Content part plugin
 
 ## Plugin configuration
+
 ```json
 {
     "id": "se.infomaker.contentpart",
     "name": "contentpart",
-    "url": "http://localhost:5001/index.js",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.css",
     "enabled": true,
-    "mandatory": true,
+    "mandatory": false,
     "data": {
-        "type": "x-im/content-part",
-        "disableUseOfAnnotationTools": true,
-        "contentpartTypes": [
+        "disableUseOfAnnotationTools": false,
+        "types": [
             {
-                "uri": "im://content-part/fact",
-                "name": "Faktaruta",
-                "displayTitle": false,
-                "displaySubject": false,
+                "name": "Fakta",
+                "uri": "im:/content-part/fact",
+                "default": true,
+                "fields": [
+                    { "id": "title" },
+                    { "id": "subject" },
+                    { "id": "text" }
+                ]
             },
             {
-                "uri": "im://content-part/factbox",
-                "name": "Faktabox",
-                "displayText": false,
-                "default": true
+                "name": "Sammanfattning",
+                "uri": "im:/content-part/summary",
+                "fields": [
+                    { "id": "title" },
+                    { "id": "subject" }
+                ]
             },
             {
-                "uri": "im://content-part/stick",
-                "name": "Sticka"
+                "name": "Bakgrund",
+                "uri": "im:/content-part/background",
+                "fields": [
+                    {
+                        "id": "title",
+                        "icon": "fa-custom-icon"
+                    },
+                    {
+                        "id": "subject",
+                        "label": "Custom label for background"
+                    },
+                    {
+                        "id": "customField",
+                        "label": "My Custom Field",
+                        "type": "datetime"
+                    },
+                    {
+                        "id": "customFieldTwo",
+                        "label": "My Second Custom Field"
+                    },
+                    { "id": "text" }
+                ]
             }
-        ],
-        "placeholderText": {
-            "title": "Rubrik",
-            "subject": "Fakta"
-        }
-    }
+        ]
+  }
 }
 ```
 
-The `placeholderText` serves the placeholder text to be displayed in the input fields when field missing value.
+### Basic Options
 
-At least one contentpartType should be specified.
+| Property  | Type  | Required | Description                                                 |
+| --------- | :---: | :------: | ----------------------------------------------------------- |
+| **types** | Array | `true`   | Content part types. See **Types Options** for configuration |
 
-At least one contentpartType should be marked as default.
+### Types Options
+```json
+{
+    "name": "Faktan",
+    "uri": "im:/content-part/fact",
+    "default": true,
+    "fields": [...]
+}
+```
+
+| Property    | Type    | Required | Description                                                                                         |
+| ----------- | :-----: | :------: | --------------------------------------------------------------------------------------------------- |
+| **name**    | String  | `false`  | The display name of the content part type                                                           |
+| **uri**     | Boolean | `true`   | Description of enabled types                                                                        |
+| **default** | Boolean | `false`  | If the type should be the default content part type. **At lease one type should be set as default** |
+| **fields**  | Array   | `true`   | Fields on the content part type. See **Fields Options** for configuration                           |
+
+### Fields Options
+```json
+[
+    {
+        "id": "title",
+        "icon": "fa-custom-icon"
+    },
+    {
+        "id": "subject",
+        "label": "Custom label for background"
+    },
+    {
+        "id": "customField",
+        "label": "My Custom Field",
+        "type": "datetime"
+    },
+    {
+        "id": "customFieldTwo",
+        "label": "My Second Custom Field"
+    },
+    { "id": "text" }
+]
+```
+
+| Property  | Type    | Required | Description                                                                                                         |
+| --------- | :-----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
+| **id**    | String  | `true`   | The name of the field on the node and in the XML output.                                                            |
+| **label** | String  | `false`  | Placeholder for field                                                                                               |
+| **icon**  | Boolean | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`.               |
+| **type**  | Array   | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).
 
 ```xml
-<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="Lorem ipsum">
+<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="[Plain-text title]">
     <data>
+        <title>[Title with annotations]</title>
         <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
-        <text format="html"><![CDATA[<p>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</p>]]></text>
+        <text format="idf">
+            <element id="paragraph-273ee570c1469bdf5badeea5f0524166" type="body">Text element here</element>
+        </text>
+        <customField>2017-01-30T12:00:00+01:00</customField>
     </data>
     <links>
-        <link uri="im://content-part/fact" rel="content-part"/>
+        <link uri="im:/content-part/background" rel="content-part"/>
     </links>
 </object>
 ```
-*Note* that `object > links` is optional, i.e. if no inline-text uri:s are configured (see Plugin configuration above) 
-this element is omitted.
