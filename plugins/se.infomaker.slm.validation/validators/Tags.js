@@ -8,7 +8,9 @@ class Tags extends Validator {
      * Main validation method
      */
     validate() {
-        const tags = api.newsItemArticle.querySelectorAll('itemMeta > links > link[rel="subject"]')
+        const tags = [...api.newsItemArticle.querySelectorAll('itemMeta > links > link[rel="subject"]')]
+            .filter(tag => tag.getAttribute('type') !== 'x-im/category')
+
         this.validateTagCount(tags)
     }
 
