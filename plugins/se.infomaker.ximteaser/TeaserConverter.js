@@ -247,11 +247,12 @@ export default {
         const data = $$('data')
 
         if(node.title) {
-            const text = converter.annotatedText([node.id, 'title'])
             data.append(
-                $$('title').append(text)
+                $$('title').append(converter.annotatedText([node.id, 'title']))
             )
-            el.attr('title', text[0] instanceof BrowserDOMElement ? text[0].text() : text)
+            
+            const simpleText = converter.getDocument().get([node.id, 'title'])
+            el.attr('title', simpleText)
         }
 
         if (node.text || node.nodes.length > 0) {
