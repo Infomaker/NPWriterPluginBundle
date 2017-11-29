@@ -10,73 +10,91 @@ import {
 import DropDownHeadline from './DropDownHeadline'
 import {api} from 'writer'
 
+import ContentPartManager from './ContentPartManager'
+
 class ContentPartComponent extends Component {
 
-    /**
-     * Default state before actions happens (render).
-     *
-     * Get initial state for Contentpart
-     * @returns {object}
-     */
+    _loadManager() {
+        this.manager = new ContentPartManager(this.props.node)
+    }
+
+    shouldRerender(oldProps, oldState) {
+        const showInlineTextMenuChanged = this.state.showInlineTextMenu !== oldState.showInlineTextMenu
+        const isolatedNodeStateChanged = this.props.isolatedNodeState !== oldProps.isolatedNodeState
+        const contentPartTypeChanged = this.state.contentPartType.uri !== oldState.contentPartType.uri
+
+        return contentPartTypeChanged || isolatedNodeStateChanged || showInlineTextMenuChanged
+    }
+
     getInitialState() {
+        // Manager has to be loaded here as getInitialState is called before the constructor has completed
+        this._loadManager()
+        const contentPartUri = this.props.node.contentpartUri
+
+        const initialContentPartType = contentPartUri ? this.manager.getContentPartTypeByURI(contentPartUri) : this.manager.getDefaultContentPartType()
         return {
             showInlineTextMenu: false,
-            contentpartTypes: api.getConfigValue('se.infomaker.contentpart', 'contentpartTypes'),
+            contentPartType: initialContentPartType,
             selectedUri: null
         }
     }
 
     render($$) {
-        const currentPartConfig = this.state.contentpartTypes.filter(contentPartType => contentPartType.uri === this.props.node.contentpartUri).pop()
-        const displayTitle = (currentPartConfig && currentPartConfig.displayTitle !== undefined) ? currentPartConfig.displayTitle : true
-        const displaySubject = (currentPartConfig && currentPartConfig.displaySubject !== undefined) ? currentPartConfig.displaySubject : true
-        const displayText = (currentPartConfig && currentPartConfig.displayText !== undefined) ? currentPartConfig.displayText : true
+        return $$('div', {class: 'contentpart-node im-blocknode__container'}, [
+            this.renderHeader($$),
+            this.state.contentPartType.fields.map(field => this.renderFieldsByType($$, field))
+        ])
+    }
 
-        const el = $$('div')
-        el.addClass('contentpart-node im-blocknode__container')
+    renderFieldsByType($$, field) {
+        switch (field.type) {
+            case '__ContainerEditor__':
+                return this.renderContainerEditor($$, field)
+            case 'datetime':
+            case 'date':
+            case 'time':
+                return this.renderDateField($$, field)
+            case 'text':
+            default:
+                return this.renderTextField($$, field)
+        }
+    }
 
-        el.append(this.renderHeader($$))
-
+    renderTextField($$, field) {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
-
-        if (displayTitle) {
-            el.append($$(FieldEditor, {
-                node: this.props.node,
-                icon: this.getPlaceholderIcon('title', 'fa-header'),
-                multiLine: true,
-                field: 'title',
-                placeholder: this.getLabel(this.getPlaceholderText('title', 'title'))
-            }))
+        const editorProps = {
+            node: this.props.node,
+            multiLine: field.multiLine,
+            field: ['fields', field.id],
+            placeholder: this.getLabel(field.label),
+            _cache: new Date()
         }
+        if (field.icon) { editorProps.icon = field.icon }
 
-        if (displaySubject) {
-            el.append($$(FieldEditor, {
-                node: this.props.node,
-                icon: this.getPlaceholderIcon('subject', 'fa-pencil'),
-                field: 'subject',
-                placeholder: this.getLabel(this.getPlaceholderText('subject') || this.getPlaceholderText('vignette', 'vignette'))
-            }))
-        }
-
-        if (displayText) {
-            el.append(this.renderContainerEditor($$))
-        }
-
-        return el
+        return $$(FieldEditor, editorProps)
     }
 
-    getPlaceholderText(fieldName, defaultText) {
-        const currentUri = this.props.node.contentpartUri
-        const defaultPlaceholder = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${fieldName}`, defaultText)
-        const customPlaceholder = api.getConfigValue('se.infomaker.contentpart', `placeholderText.${currentUri}.${fieldName}`)
-        return customPlaceholder || defaultPlaceholder
+    renderDateField($$, field) {
+        const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
+        const editorProps = {
+            node: this.props.node,
+            field: ['fields', field.id],
+            label: this.getLabel(field.label),
+            type: field.type
+        }
+        if (field.icon) { editorProps.icon = field.icon }
+        const refName = `field-${field.id}-${this.props.node.contentpartUri}`
+        console.info('ref-name', refName)
+        return $$(DatetimeFieldEditor, editorProps).ref(refName)
     }
 
-    getPlaceholderIcon(fieldName, defaultIcon) {
-        const currentUri = this.props.node.contentpartUri
-        const defaultFieldIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${fieldName}`, defaultIcon)
-        const customFieldIcon = api.getConfigValue('se.infomaker.contentpart', `placeholderIcon.${currentUri}.${fieldName}`)
-        return customFieldIcon || defaultFieldIcon
+    renderContainerEditor($$) {
+        return $$(ContainerEditor, {
+            name: 'contentpartEditor' + this.props.node.id,
+            containerId: this.props.node.id,
+            textTypes: this.manager.enableTextTypes ? this.context.configurator.getTextTypes() : [],
+            commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
+        }).ref('editor').addClass('contentpart-editor')
     }
 
     /**
@@ -85,18 +103,16 @@ class ContentPartComponent extends Component {
     renderHeader($$) {
         const dropdownheader = $$(DropDownHeadline, {
             icon: 'fa-sort',
-            items: this.state.contentpartTypes,
+            items: this.manager.getContentPartTypes(),
             node: this.props.node,
             isolatedNodeComponent: this.parent,
             change: this.selectInlineText.bind(this)
         }).ref('dropdownHeadline')
 
-        return $$('div')
-            .append([
-                $$(FontAwesomeIcon, {icon: 'fa-bullhorn'}),
-                dropdownheader
-            ])
-            .addClass('header')
+        return $$('div', {class: 'header'}, [
+            $$(FontAwesomeIcon, {icon: 'fa-bullhorn'}),
+            dropdownheader
+        ])
     }
 
     /**
@@ -106,23 +122,13 @@ class ContentPartComponent extends Component {
      * @param inlineText
      */
     selectInlineText(inlineText) {
+        this.extendState({
+            showInlineTextMenu: false,
+            contentPartType: this.manager.getContentPartTypeByURI(inlineText.uri)
+        })
         api.editorSession.transaction((tx) => {
             tx.set([this.props.node.id, 'contentpartUri'], inlineText.uri)
         })
-
-        this.extendState({
-            showInlineTextMenu: false,
-            contentpartTypes: this.state.contentpartTypes
-        })
-    }
-
-    renderContainerEditor($$) {
-        return $$(ContainerEditor, {
-            name: 'contentpartEditor' + this.props.node.id,
-            containerId: this.props.node.id,
-            textTypes: [],
-            commands: [StrongCommand, EmphasisCommand, SwitchTextCommand]
-        }).ref('editor').addClass('contentpart-editor')
     }
 
     toggleMenu() {
@@ -130,6 +136,7 @@ class ContentPartComponent extends Component {
     }
 }
 
+// Does this do anything?
 ContentPartComponent.fullWidth = true
 
 export default ContentPartComponent
