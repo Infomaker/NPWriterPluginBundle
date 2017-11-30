@@ -1,4 +1,4 @@
-import {idGenerator, NilUUID} from 'writer'
+import {idGenerator, NilUUID, api} from 'writer'
 import ImageGalleryNode from './ImageGalleryNode'
 
 const ImageGalleryConverter = {
@@ -53,11 +53,29 @@ const ImageGalleryConverter = {
 
                 // Import author links
                 imageGalleryImage.authors = []
-                let authorLinks
-                authorLinks = child.find('links')
+                let imageLinks
+                imageLinks = child.find('links')
 
-                if (authorLinks) {
-                    imageGalleryImage.authors = this.convertAuthors(node, authorLinks)
+                if (imageLinks) {
+                    imageGalleryImage.authors = this.convertAuthors(node, imageLinks)
+
+                    // Import softcrops
+                    let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
+                    let softCrops = imageModule.importSoftcropLinks(imageLinks)
+                    if (softCrops.length) {
+                        // Convert properties back to numbers
+                        softCrops = softCrops.map(softCrop => {
+                            if (softCrop.x) softCrop.x = parseFloat(softCrop.x)
+                            if (softCrop.y) softCrop.y = parseFloat(softCrop.y)
+                            if (softCrop.width) softCrop.width = parseFloat(softCrop.width)
+                            if (softCrop.height) softCrop.height = parseFloat(softCrop.height)
+                            return softCrop
+                        })
+
+                        imageGalleryImage.crops = {
+                            crops: softCrops
+                        }
+                    }
                 }
 
                 converter.createNode(imageFile)
@@ -173,8 +191,15 @@ const ImageGalleryConverter = {
 
             link.append(imageData)
 
+            const imageLinks = $$('links')
+
+            // Add crops to data
+            if (galleryImageNode.crops) {
+                const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
+                imageModule.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
+            }
+
             if (galleryImageNode.authors.length) {
-                const imageLinks = $$('links')
                 const authorLinks = galleryImageNode.authors.map((author) => {
                     const authorLink = $$('link').attr({
                         rel: 'author',
@@ -191,10 +216,11 @@ const ImageGalleryConverter = {
                     }
                     return authorLink
                 })
+                imageLinks.append(authorLinks)
+            }
 
-                link.append(
-                    imageLinks.append(authorLinks)
-                )
+            if (imageLinks.children.length > 0) {
+                link.append(imageLinks)
             }
 
             links.append(link)
