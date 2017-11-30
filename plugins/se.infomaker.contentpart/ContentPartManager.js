@@ -1,6 +1,22 @@
 import {api} from 'writer'
 
 /**
+ * @typedef ContentPart.Type
+ * @property {string} name - Display name of the content part type
+ * @property {string} uri - Unique URI to identify the content part type
+ * @property {Boolean} [default] - If the type is the default content part type
+ * @property {ContentPart.Field[]} fields - Fields on the content part type
+ */
+
+/**
+ * @typedef ContentPart.Field
+ * @property {string} id - Name of the field on the node
+ * @property {string} [label=id] - Placeholder
+ * @property {string} [icon] - FontAwesome icon
+ * @property {string} [type="text"] - What kind of field editor should be rendered
+ */
+
+/**
  * Handles configuration and defaults for content parts
  */
 class ContentPartManager {
@@ -31,6 +47,7 @@ class ContentPartManager {
             throw new Error('No content part types configured for contentpart')
         }
 
+        /** @type ContentPart.Type[] */
         this.contentPartTypes = contentPartTypes.map(contentPartType => {
             return {
                 uri: contentPartType.uri,
@@ -57,7 +74,6 @@ class ContentPartManager {
         const currentValue = this.node.fields[field.id]
         if (!this.reservedFields.includes(field.id) && currentValue === undefined) {
             this.node.fields[field.id] = ''
-            console.info('Creating field', field.id, 'on node')
         }
     }
 

@@ -1,14 +1,6 @@
-import {
-    Component,
-    ContainerEditor,
-    EmphasisCommand,
-    FontAwesomeIcon,
-    StrongCommand,
-    SwitchTextCommand
-} from 'substance'
-
+import { Component, ContainerEditor, EmphasisCommand, FontAwesomeIcon, StrongCommand, SwitchTextCommand } from 'substance'
 import DropDownHeadline from './DropDownHeadline'
-import {api} from 'writer'
+import { api } from 'writer'
 
 import ContentPartManager from './ContentPartManager'
 
@@ -18,9 +10,9 @@ import ContentPartManager from './ContentPartManager'
  * @property {String} isolatedNodeState
  */
 
- /**
+/**
  * @typedef ContentPartComponent.State
- * @property {Object} contentPartType - The current content part type
+ * @property {ContentPart.Type} contentPartType - The current content part type
  */
 
 /**
@@ -32,10 +24,18 @@ import ContentPartManager from './ContentPartManager'
  */
 class ContentPartComponent extends Component {
 
+    /**
+     * Loads the ContentPartManager
+     * @private
+     */
     _loadManager() {
         this.manager = new ContentPartManager(this.props.node)
     }
 
+    /**
+     * @param {ContentPartComponent.Props} oldProps
+     * @param {ContentPartComponent.State} oldState
+     */
     shouldRerender(oldProps, oldState) {
         const isolatedNodeStateChanged = this.props.isolatedNodeState !== oldProps.isolatedNodeState
         const contentPartTypeChanged = this.state.contentPartType.uri !== oldState.contentPartType.uri
@@ -43,6 +43,9 @@ class ContentPartComponent extends Component {
         return contentPartTypeChanged || isolatedNodeStateChanged
     }
 
+    /**
+     * @returns {ContentPartComponent.State}
+     */
     getInitialState() {
         // Manager has to be loaded here as getInitialState is called before the constructor has completed
         this._loadManager()
@@ -55,12 +58,16 @@ class ContentPartComponent extends Component {
     }
 
     render($$) {
-        return $$('div', {class: 'contentpart-node im-blocknode__container'}, [
+        return $$('div', { class: 'contentpart-node im-blocknode__container' }, [
             this._renderHeader($$),
             this.state.contentPartType.fields.map(field => this._renderFieldsByType($$, field))
         ]).ref('container')
     }
 
+    /**
+     * @param {*} $$
+     * @param {ContentPartManager.Field} field
+     */
     _renderFieldsByType($$, field) {
         switch (field.type) {
             case '__ContainerEditor__':
@@ -124,8 +131,8 @@ class ContentPartComponent extends Component {
             change: this.selectInlineText.bind(this)
         }).ref('dropdownHeadline')
 
-        return $$('div', {class: 'header'}, [
-            $$(FontAwesomeIcon, {icon: 'fa-bullhorn'}),
+        return $$('div', { class: 'header' }, [
+            $$(FontAwesomeIcon, { icon: 'fa-bullhorn' }),
             dropdownheader
         ])
     }
