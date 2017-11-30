@@ -2,15 +2,16 @@ import {Component, Button} from 'substance'
 
 /**
  * @class ImageGalleryPreviewComponent
+ * @description
  * Spinning Image Gallery Preview.
  *
-
- * @property {Object} props
- * @property {Node} props.node
- * @property {Number} props.initialPosition Initial position for the gallery slider, useful for keeping position between renders
- * @property {string} props.isolatedNodeState
- * @property {Function} props.removeImage
- * @property {Function} props.onTransitionEnd Fires when the slider has finished an animation transition
+ * @property {object}   props
+ * @property {node}     props.node
+ * @property {number}   props.initialPosition Initial position for the gallery slider, useful for keeping position between renders
+ * @property {string}   props.isolatedNodeState
+ * @property {boolean}  props.cropsEnabled
+ * @property {function} props.removeImage
+ * @property {function} props.onTransitionEnd Fires when the slider has finished an animation transition
  */
 class ImageGalleryPreviewComponent extends Component {
 
@@ -141,7 +142,7 @@ class ImageGalleryPreviewComponent extends Component {
      */
     _onTransitionEnd() {
         this.lock = false
-        if(this.props.onTransitionEnd) {
+        if (this.props.onTransitionEnd) {
             this.props.onTransitionEnd(this.leftPosition)
         }
     }

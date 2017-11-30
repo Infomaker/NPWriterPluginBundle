@@ -7,14 +7,15 @@ import {fetchImageMeta} from 'writer'
  * for image. When added it fetches metadata from image and populates
  * the ImageGalleryImageNode related to the component.
  *
-
- * @property {Object} props
- * @property {Number} props.index
- * @property {Node} props.node
- * @property {String} props.isolatedNodeState
- * @property {Function} props.remove
- * @property {Function} props.dragStart
- * @property {Function} props.dragEnd
+ * @property {object}   props
+ * @property {number}   props.index
+ * @property {node}     props.node
+ * @property {string}   props.isolatedNodeState
+ * @property {boolean}  props.cropsEnabled
+ * @property {function} props.remove
+ * @property {function} props.dragStart
+ * @property {function} props.dragEnd
+ * @property {function} props.onCropClick
  */
 class ImageGalleryImageComponent extends Component {
 
