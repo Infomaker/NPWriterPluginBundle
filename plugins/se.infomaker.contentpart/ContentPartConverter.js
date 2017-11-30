@@ -1,4 +1,4 @@
-import {DefaultDOMElement, uuid, BrowserDOMElement} from 'substance'
+import {DefaultDOMElement, uuid} from 'substance'
 import ContentPartManager from './ContentPartManager'
 
 /**
@@ -104,7 +104,7 @@ export default {
         const fields = contentPart.fields.map(field => {
             if (node.fields[field.id]) {
                 const fieldText = converter.annotatedText([node.id, 'fields', field.id])
-                if (field.id === 'title') { this.setTitleAttribute(el, fieldText) }
+                if (field.id === 'title') { this.setTitleAttribute(el, node.fields[field.id]) }
                 return $$(field.id).append(fieldText)
             } else if(field.id === 'text') {
                 return $$('text').attr('format', 'idf').append(converter.convertContainer(node))
@@ -129,7 +129,7 @@ export default {
     },
 
     setTitleAttribute: (el, text) => {
-        el.attr('title', text[0] instanceof BrowserDOMElement ? text[0].text() : text)
+        el.attr('title', text)
     }
 
 }
