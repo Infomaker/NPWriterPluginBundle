@@ -1,5 +1,6 @@
 import './scss/image-gallery.scss'
 import './scss/image-gallery-toolbox.scss'
+import './scss/image-gallery-cropper.scss'
 
 import ImageGalleryNode, {INSERT_IMAGE_GALLERY_COMMAND, INSERT_IMAGE_COMMAND} from './ImageGalleryNode'
 import ImageGalleryImageNode from './ImageGalleryImageNode'
@@ -27,6 +28,7 @@ const ImageGalleryPackage = {
         config.addIcon('angle-left', { 'fontawesome': 'fa-angle-left' })
         config.addIcon('angle-right', { 'fontawesome': 'fa-angle-right' })
         config.addIcon('remove', { 'fontawesome': 'fa-times' })
+        config.addIcon('crop', {'fontawesome': 'fa-crop'})
 
         /* Labels */
         config.addLabel('im-imagegallery.image-gallery-name', {

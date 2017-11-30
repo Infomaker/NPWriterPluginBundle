@@ -64,18 +64,22 @@
                 margin-right: 2px;
 
                 &:hover {
-                    .remove-image-button {
+                    button {
                         display: inline;
                     }
                 }
 
-                .remove-image-button {
+                button {
                     display: none;
                     color: #fff;
                     position: absolute;
-                    right: 0;
+                    right: 5px;
                     top: 0;
+                    &.crop-image-button {
+                        right: 20px;
+                    }
                     i {
+                        margin: 0;
                         text-shadow: 0 0 1px #222;
                     }
                 }

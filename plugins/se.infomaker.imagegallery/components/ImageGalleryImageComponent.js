@@ -70,8 +70,11 @@ class ImageGalleryImageComponent extends Component {
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
 
-        const removeIcon = $$('i').addClass('remove-image fa fa-times')
+        const removeIcon = $$('i').addClass('image-control remove-image fa fa-times')
             .on('click', this.props.remove)
+
+        const cropsIcon = $$('i').addClass('image-control crop-image fa fa-crop')
+            .on('click', this.props.onCropClick)
 
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)
@@ -98,7 +101,7 @@ class ImageGalleryImageComponent extends Component {
             .append(numberDisplay)
             .append(imageWrapper)
             .append(this._renderImageMeta($$))
-            .append(removeIcon)
+            .append([removeIcon, cropsIcon])
     }
 
     /**

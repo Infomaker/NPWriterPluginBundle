@@ -44,7 +44,15 @@ class ImageGalleryPreviewComponent extends Component {
                 .on('click', () => {
                     this.props.removeImage(galleryImageNodeId)
                 })
-            imageContainer.append(deleteButton)
+
+            const cropsButton = $$(Button, {icon: 'crop'})
+                .addClass('crop-image-button')
+                .attr('title', this.getLabel('crop-image-button-title'))
+                .on('click', () => {
+                    this.props.openCrops(galleryImageNode)
+                })
+
+            imageContainer.append([deleteButton, cropsButton])
 
             return imageContainer
                 .append(
