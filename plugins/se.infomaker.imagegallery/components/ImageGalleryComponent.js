@@ -63,6 +63,7 @@ class ImageGalleryComponent extends Component {
             const galleryPreview = $$(ImageGalleryPreviewComponent, {
                 node: this.props.node,
                 isolatedNodeState: this.props.isolatedNodeState,
+                cropsEnabled: this._cropsEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
                 openCrops: (galleryImageNode) => {
@@ -123,6 +124,14 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * @returns {boolean}
+     * @private
+     */
+    get _cropsEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'cropsEnabled', false)
+    }
+
+    /**
      * @param $$
      * @returns {VirtualElement}
      * @private
@@ -143,6 +152,7 @@ class ImageGalleryComponent extends Component {
                         index,
                         node: galleryImageNode,
                         isolatedNodeState: this.props.isolatedNodeState,
+                        cropsEnabled: this._cropsEnabled,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
                         },

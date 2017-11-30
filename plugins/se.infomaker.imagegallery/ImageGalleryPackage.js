@@ -31,6 +31,14 @@ const ImageGalleryPackage = {
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
 
         /* Labels */
+        config.addLabel('remove-image-button-title', {
+            en: 'Remove image',
+            sv: 'Ta bort bild'
+        })
+        config.addLabel('crop-image-button-title', {
+            en: 'Crop image',
+            sv: 'Beskär bild'
+        })
         config.addLabel('im-imagegallery.image-gallery-name', {
             'en': 'Image gallery',
             'sv': 'Bildspel'

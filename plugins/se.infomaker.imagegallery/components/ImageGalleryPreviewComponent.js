@@ -37,22 +37,29 @@ class ImageGalleryPreviewComponent extends Component {
         const galleryImages = this.props.node.nodes.map((galleryImageNodeId) => {
             const galleryImageNode = this.context.doc.get(galleryImageNodeId)
             const imageContainer = $$('div').addClass('image-container')
+            const imageControls = $$('div').addClass('preview-image-controls')
 
-            const deleteButton = $$(Button, {icon: 'remove'})
-                .addClass('remove-image-button')
-                .attr('title', this.getLabel('remove-image-button-title'))
-                .on('click', () => {
-                    this.props.removeImage(galleryImageNodeId)
-                })
+            imageControls.append(
+                $$(Button, {icon: 'remove'})
+                    .addClass('remove-image-button')
+                    .attr('title', this.getLabel('remove-image-button-title'))
+                    .on('click', () => {
+                        this.props.removeImage(galleryImageNodeId)
+                    })
+            )
 
-            const cropsButton = $$(Button, {icon: 'crop'})
-                .addClass('crop-image-button')
-                .attr('title', this.getLabel('crop-image-button-title'))
-                .on('click', () => {
-                    this.props.openCrops(galleryImageNode)
-                })
+            if (this.props.cropsEnabled === true) {
+                imageControls.append(
+                    $$(Button, {icon: 'crop'})
+                        .addClass('crop-image-button')
+                        .attr('title', this.getLabel('crop-image-button-title'))
+                        .on('click', () => {
+                            this.props.openCrops(galleryImageNode)
+                        })
+                )
+            }
 
-            imageContainer.append([deleteButton, cropsButton])
+            imageContainer.append(imageControls)
 
             return imageContainer
                 .append(
