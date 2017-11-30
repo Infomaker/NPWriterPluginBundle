@@ -2,7 +2,7 @@
 
 ## Plugin configuration
 
-```json
+```javascript
 {
     "id": "se.infomaker.contentpart",
     "name": "contentpart",
@@ -56,7 +56,7 @@
                 ]
             }
         ]
-  }
+    }
 }
 ```
 
@@ -67,7 +67,7 @@
 | **types** | Array | `true`   | Content part types. See **Types Options** for configuration |
 
 ### Types Options
-```json
+```javascript
 {
     "name": "Faktan",
     "uri": "im:/content-part/fact",
@@ -79,12 +79,12 @@
 | Property    | Type    | Required | Description                                                                                         |
 | ----------- | :-----: | :------: | --------------------------------------------------------------------------------------------------- |
 | **name**    | String  | `false`  | The display name of the content part type                                                           |
-| **uri**     | Boolean | `true`   | Description of enabled types                                                                        |
+| **uri**     | String  | `true`   | A unique URI to identify the content part type. e.g., `"im:/content-part/fact"`                                                                                            |
 | **default** | Boolean | `false`  | If the type should be the default content part type. **At lease one type should be set as default** |
 | **fields**  | Array   | `true`   | Fields on the content part type. See **Fields Options** for configuration                           |
 
 ### Fields Options
-```json
+```javascript
 [
     {
         "id": "title",
@@ -107,12 +107,12 @@
 ]
 ```
 
-| Property  | Type    | Required | Description                                                                                                         |
-| --------- | :-----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
-| **id**    | String  | `true`   | The name of the field on the node and in the XML output.                                                            |
-| **label** | String  | `false`  | Placeholder for field                                                                                               |
-| **icon**  | Boolean | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g `"fa-twitter"`.               |
-| **type**  | Array   | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
+| Property  | Type   | Required | Description                                                                                                         |
+| --------- | :----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
+| **id**    | String | `true`   | The name of the field on the node and in the XML output.                                                            |
+| **label** | String | `false`  | Placeholder for field                                                                                               |
+| **icon**  | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.               |
+| **type**  | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).
