@@ -484,7 +484,7 @@ class PublishFlowComponent extends Component {
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
-            hasPublishedVersion: false,
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
