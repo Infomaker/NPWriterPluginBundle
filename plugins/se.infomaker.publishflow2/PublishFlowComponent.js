@@ -27,7 +27,7 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
-            if(!this.saveInProgress) {
+            if (!this.saveInProgress) {
                 this.saveInProgress = true
                 this.defaultAction()
             }
@@ -50,23 +50,21 @@ class PublishFlowComponent extends Component {
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
         api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.USERACTION_SAVE)
-        // TODO add LOCK/UNLOCK
+        api.events.off(pluginId, event.USERACTION_LOCK)
+        api.events.off(pluginId, event.USERACTION_UNLOCK)
         this._clearSaveTimeout();
     }
 
     getInitialState() {
-        let status = api.newsItem.getPubStatus()
         this.publishFlowMgr = new PublishFlowManager(pluginId)
 
         return {
-            status: status,
+            status: api.newsItem.getPubStatus(),
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            // TODO HasPublishedVersion
-
-            // TODO Choices, ACtions are plain WRONG
-            allowed: this.publishFlowMgr.getAllowedTransitionChoices(status.qcode)
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
+            previousState: null
         }
     }
 
@@ -79,11 +77,9 @@ class PublishFlowComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div')
+        return $$('div')
             .addClass('sc-np-publishflow')
             .append(this.renderBody($$))
-
-        return el
     }
 
     renderBody($$) {
@@ -93,7 +89,7 @@ class PublishFlowComponent extends Component {
 
         el.append(this.renderScheduling($$))
 
-        el.append(this.renderAllowedActions($$))
+        el.append(this.renderTransitions($$))
 
         el.append(
             $$('div')
@@ -134,7 +130,7 @@ class PublishFlowComponent extends Component {
     }
 
     renderCurrentStatus($$) {
-        const statusDef = this.publishFlowMgr.getWorkflowStateDefinition(this.state.status.qcode)
+        const statusDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
 
         if (statusDef === null) {
             return [
@@ -147,16 +143,14 @@ class PublishFlowComponent extends Component {
             ]
         }
 
-        const currentStatus = [
+        return [
             $$('h2').append(
-                this.getLabel(statusDef.actionName)
+                this.getLabel(statusDef.title)
             ),
             $$('p').append(
-                this.getLabel(statusDef.statusDescription)
+                this.getLabel(statusDef.description)
             )
         ]
-
-        return currentStatus
     }
 
     /**
@@ -210,14 +204,14 @@ class PublishFlowComponent extends Component {
         }
 
         if (this.state.status.qcode === 'stat:withheld') {
-            const action = this.publishFlowMgr.getWorkflowStateDefinition(api.newsItem.getPubStatus().qcode)
-            if (typeof action.actions === 'object') {
-                if (action.actions.pubStart === 'required') {
+            const stateDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
+            if (typeof stateDef.actions === 'object') {
+                if (stateDef.actions.pubStart === 'required') {
                     pubStartdateAttribs.required = true
                     pubStarttimeAttribs.required = true
                 }
 
-                if (action.actions.pubStop === 'required') {
+                if (stateDef.actions.pubStop === 'required') {
                     pubStopdateAttribs.required = true
                     pubStoptimeAttribs.required = true
                 }
@@ -301,13 +295,14 @@ class PublishFlowComponent extends Component {
             this.extendState({pubStart: api.newsItem.getPubStart()})
             this._onDocumentChanged() // Have to do this to make sure we get our own change
         }
-        catch(ex) {
+        catch (ex) {
             api.ui.showMessageDialog(
                 [{
                     type: 'error',
                     message: ex.message
                 }],
-                () => {}
+                () => {
+                }
             )
         }
     }
@@ -333,108 +328,76 @@ class PublishFlowComponent extends Component {
             this.extendState({pubStop: api.newsItem.getPubStop()})
             this._onDocumentChanged() // Have to do this to make sure we get our own change
         }
-        catch(ex) {
+        catch (ex) {
             api.ui.showMessageDialog(
                 [{
                     type: 'error',
                     message: ex.message
                 }],
-                () => {}
+                () => {
+                }
             )
         }
     }
 
     /**
-     * Render all allowed actions for the current status
+     * Render all allowed transitions for the current state
      *
-     * @param {object}
-     * @return {object}
+     * @param {VirtualElement} $$
+     * @return {VirtualObject}
      */
-    renderAllowedActions($$) {
+    renderTransitions($$) {
         let actionsEl = $$('div')
             .addClass('sc-np-publish-actions')
 
-        this.publishFlowMgr.getAllowedTransitionChoices(this.state.status.qcode).forEach(qcode => {
-            actionsEl.append(this.renderGenericAction($$, qcode))
-        })
+        this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .forEach(transition => {
+                actionsEl.append(this.renderTransition($$, transition))
+            })
 
         return actionsEl
     }
 
     /**
-     * Render a generic action button in the action list. If actionLabel and
-     * actionIcon contains an array this indicates that the second label/icon
-     * should be used for when the current status is the same as the wanted
-     * action. I e When you want to have a label "republish" instead of
-     * "publish" for the what is essentially the same action.
-     *
-     * @todo Fetch pubStart/pubStop values for action === 'set'
-     *
-     * @param {object}
-     * @param {string} The qcode for the action to render
-     * @return {object}
+     * Render transition which is defined in config file.
+     * @param {VirtualElement} $$
+     * @param {string} transition The transition, in the configuration, to render
+     * @return {VirtualObject}
      */
-    renderGenericAction($$, qcode) {
-        const action = this.publishFlowMgr.getWorkflowStateDefinition(qcode)
-        if (action === null) {
-            return
-        }
+    renderTransition($$, transition) {
 
-        // Which label should be used
-        let actionLabel = ''
-        if (!Array.isArray(action.actionLabel)) {
-            actionLabel = action.actionLabel
-        }
-        else if (qcode !== this.state.status.qcode) {
-            actionLabel = action.actionLabel[0]
-        }
-        else {
-            actionLabel = action.actionLabel[1]
-        }
+        return $$('a')
+            .append([
+                $$('i')
+                    .addClass('fa ' + transition.icon)
+                    .css('color', (transition.color ? transition.color : '#888888')),
+                $$('span').append(
+                    this.getLabel(transition.title)
+                )
+            ])
+            .on('click', () => {
+                this._save(() => {
+                    try {
+                        this.publishFlowMgr.executeTransition(
+                            transition.nextState,
+                            this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
+                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+                        )
+                    }
+                    catch (ex) {
+                        api.ui.showMessageDialog(
+                            [{
+                                type: 'error',
+                                message: this.getLabel(ex.message)
+                            }],
+                            () => {
+                            }
+                        )
 
-        // Which icon should be used
-        let icon = ''
-        if (!Array.isArray(action.icon)) {
-            icon = action.icon
-        }
-        else if (qcode !== this.state.status.qcode) {
-            icon = action.icon[0]
-        }
-        else {
-            icon = action.icon[1]
-        }
-
-        // Render element
-        return $$('a').append([
-            $$('i')
-                .addClass('fa ' + icon)
-                .css('color', (action.color ? action.color : '#888888')),
-            $$('span').append(
-                this.getLabel(actionLabel)
-            )
-        ])
-        .on('click', () => {
-            this._save(() => {
-                try {
-                    this.publishFlowMgr.executeAction(
-                        qcode,
-                        this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
-                        this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
-                    )
-                }
-                catch(ex) {
-                    api.ui.showMessageDialog(
-                        [{
-                            type: 'error',
-                            message: this.getLabel(ex.message)
-                        }],
-                        () => {}
-                    )
-
-                    return false
-                }
+                        return false
+                    }
+                })
             })
-        })
     }
 
     /**
@@ -521,10 +484,10 @@ class PublishFlowComponent extends Component {
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
+            hasPublishedVersion: false,
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.publishFlowMgr.getAllowedTransitionChoices(status.qcode),
             previousState: null
         })
 
@@ -556,7 +519,8 @@ class PublishFlowComponent extends Component {
             previousState: {
                 pubStatus: api.newsItem.getPubStatus(),
                 pubStart: api.newsItem.getPubStart(),
-                pubStop: api.newsItem.getPubStop()
+                pubStop: api.newsItem.getPubStop(),
+                hasPublishedVersion: api.newsItem.getHasPublishedVersion()
             }
         })
     }
@@ -578,6 +542,8 @@ class PublishFlowComponent extends Component {
 
         api.newsItem.setPubStatus(pluginId, this.state.previousState.pubStatus)
 
+        api.newsItem.setHasPublishedVersion(pluginId, this.state.previousState.hasPublishedVersion)
+
         if (this.state.previousState.pubStart) {
             api.newsItem.setPubStart(pluginId, this.state.previousState.pubStart)
         }
@@ -596,6 +562,7 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             previousState: null,
             unsavedChanges: true
         })
@@ -626,6 +593,7 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             unsavedChanges: false
         })
 
@@ -637,8 +605,7 @@ class PublishFlowComponent extends Component {
      */
     // TODO can we call this in render function?
     renderPopover() {
-        // TODO this.publishFlowMgr.getStateDefinition
-        const stateDef = this.publishFlowMgr.getWorkflowStateDefinition(this.state.status.qcode)
+        const stateDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
 
         this.props.popover.setButtonText(
             stateDef.saveButtonLabel + (this.state.unsavedChanges ? ' *' : '')
