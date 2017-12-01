@@ -3,27 +3,70 @@ class PublishFlowConfiguration {
     constructor(pluginId) {
         this.pluginId = pluginId
 
-        this.status = api.getConfigValue('se.infomaker.publishflow2', 'workflow')
+        this.workflowStates = api.getConfigValue(pluginId, 'workflow')
     }
 
-    getActionDefinition(qcode) {
-        if (!this.status[qcode]) {
-            return null
+    getWorkflowStateDefinition(pubStatus) {
+
+        return this.workflowStates.find((elem) => {
+            return elem.pubStatus === pubStatus
+        })
+
+    }
+
+
+    nextMatcher(nextDef, pubStatus, hasPublishedVersion) {
+        if (!nextDef.preCondition) {
+            return true;
         }
 
-        return this.status[qcode]
+        if (!hasPublishedVersion && hasPublishedVersion !== false) {
+            throw new Error("hasPublishedVersion is not set in article")
+        }
+
+        const condition = nextDef.preCondition
+
+        if (condition.pubStatus === pubStatus && condition.hasPublishedVersion === hasPublishedVersion) {
+            return true;
+        }
+
+        if (condition.pubStatus === pubStatus && !condition.hasPublishedVersion) {
+            return true
+        }
+
+        if (condition.hasPublishedVersion === hasPublishedVersion && !condition.pubStatus) {
+            return true
+        }
+
+        return false;
+
     }
 
-    getAllowedActions(status) {
-        if (this.status[status]) {
-            return this.status[status].allowed
+    // TODO rename to getAllowedTransitions
+    getAllowedTransitionChoices(pubStatus, hasPublishedVersion) {
+        // TODO Iterate over all states and find pubStatus values in config and match with current pubStatus, condition
+
+        const workflowState = this.getWorkflowStateDefinition()
+
+        if (!workflowState) {
+            return []
+        }
+
+        workflowState.next.find((nextDef) => {
+
+        })
+
+
+
+        if (this.workflowStates[pubStatus]) {
+            return this.workflowStates[pubStatus].allowed
         }
 
         return []
     }
 
     executeAction(qcode, pubStart, pubStop) {
-        const action = this.getActionDefinition(qcode)
+        const action = this.getWorkflowStateDefinition(qcode)
         if (action === null) {
             return
         }
@@ -81,11 +124,11 @@ class PublishFlowConfiguration {
 
         if (typeof qcode === 'string') {
             // Use next action definition
-            action = this.getActionDefinition(qcode)
+            action = this.getWorkflowStateDefinition(qcode)
         }
         else {
             // Use current action definition
-            action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+            action = this.getWorkflowStateDefinition(api.newsItem.getPubStatus().qcode)
         }
 
         if (typeof action.actions === 'object' && action.actions.pubStart === 'required') {
@@ -118,11 +161,11 @@ class PublishFlowConfiguration {
 
         if (typeof qcode === 'string') {
             // Use next action definition
-            action = this.getActionDefinition(qcode)
+            action = this.getWorkflowStateDefinition(qcode)
         }
         else {
             // Use current action definition
-            action = this.getActionDefinition(api.newsItem.getPubStatus().qcode)
+            action = this.getWorkflowStateDefinition(api.newsItem.getPubStatus().qcode)
         }
 
         if (typeof action.actions === 'object' && action.actions.pubStop === 'required') {

@@ -47,9 +47,10 @@ class PublishFlowComponent extends Component {
     dispose() {
         api.events.off(pluginId, event.DOCUMENT_CHANGED)
         api.events.off(pluginId, event.DOCUMENT_SAVED)
-        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
+        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.USERACTION_SAVE)
+        // TODO add LOCK/UNLOCK
         this._clearSaveTimeout();
     }
 
@@ -62,12 +63,15 @@ class PublishFlowComponent extends Component {
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.publishFlowMgr.getAllowedActions(status.qcode)
+            // TODO HasPublishedVersion
+
+            // TODO Choices, ACtions are plain WRONG
+            allowed: this.publishFlowMgr.getAllowedTransitionChoices(status.qcode)
         }
     }
 
     didMount() {
-        this._updateStatus(true, false)
+        this.renderPopover()
 
         if (!api.browser.isSupported()) {
             this.props.popover.disable()
@@ -130,7 +134,7 @@ class PublishFlowComponent extends Component {
     }
 
     renderCurrentStatus($$) {
-        const statusDef = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
+        const statusDef = this.publishFlowMgr.getWorkflowStateDefinition(this.state.status.qcode)
 
         if (statusDef === null) {
             return [
@@ -206,7 +210,7 @@ class PublishFlowComponent extends Component {
         }
 
         if (this.state.status.qcode === 'stat:withheld') {
-            const action = this.publishFlowMgr.getActionDefinition(api.newsItem.getPubStatus().qcode)
+            const action = this.publishFlowMgr.getWorkflowStateDefinition(api.newsItem.getPubStatus().qcode)
             if (typeof action.actions === 'object') {
                 if (action.actions.pubStart === 'required') {
                     pubStartdateAttribs.required = true
@@ -350,7 +354,7 @@ class PublishFlowComponent extends Component {
         let actionsEl = $$('div')
             .addClass('sc-np-publish-actions')
 
-        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(qcode => {
+        this.publishFlowMgr.getAllowedTransitionChoices(this.state.status.qcode).forEach(qcode => {
             actionsEl.append(this.renderGenericAction($$, qcode))
         })
 
@@ -371,7 +375,7 @@ class PublishFlowComponent extends Component {
      * @return {object}
      */
     renderGenericAction($$, qcode) {
-        const action = this.publishFlowMgr.getActionDefinition(qcode)
+        const action = this.publishFlowMgr.getWorkflowStateDefinition(qcode)
         if (action === null) {
             return
         }
@@ -520,12 +524,12 @@ class PublishFlowComponent extends Component {
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.publishFlowMgr.getAllowedActions(status.qcode),
+            allowed: this.publishFlowMgr.getAllowedTransitionChoices(status.qcode),
             previousState: null
         })
 
         api.article.copy();
-        this._updateStatus(true, true)
+        this.renderPopover()
         this.props.popover.close()
     }
 
@@ -568,7 +572,7 @@ class PublishFlowComponent extends Component {
         this.props.popover.enable()
 
         if (!this.state.previousState) {
-            this._updateStatus(false)
+            this.renderPopover()
             return
         }
 
@@ -596,15 +600,13 @@ class PublishFlowComponent extends Component {
             unsavedChanges: true
         })
 
-        this._updateStatus(true)
+        this.renderPopover()
     }
 
     /**
      * When document is marked unsaved
      */
     _onDocumentChanged() {
-        this._updateButton(true)
-
         this.extendState({
             unsavedChanges: true
         })
@@ -627,50 +629,45 @@ class PublishFlowComponent extends Component {
             unsavedChanges: false
         })
 
-        this._updateStatus(true)
+        this.renderPopover()
     }
 
     /**
      * Update UI
      */
-    _updateStatus(updateButtonSavedLabel, unsavedChanges) {
-        const statusDef = this.publishFlowMgr.getActionDefinition(this.state.status.qcode)
+    // TODO can we call this in render function?
+    renderPopover() {
+        // TODO this.publishFlowMgr.getStateDefinition
+        const stateDef = this.publishFlowMgr.getWorkflowStateDefinition(this.state.status.qcode)
 
-        if (updateButtonSavedLabel) {
-            this._updateButton(unsavedChanges)
-        }
+        this.props.popover.setButtonText(
+            stateDef.saveButtonLabel + (this.state.unsavedChanges ? ' *' : '')
+        )
+
+        // TODO Visualize pubStatus and hasPublishedVersion according to Joacim
 
         if (this.state.status.qcode === 'stat:usable') {
             this.props.popover.setStatusText(
-                statusDef.statusTitle +
+                stateDef.statusTitle +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else if (this.state.status.qcode === 'stat:withheld') {
             this.props.popover.setStatusText(
-                statusDef.statusTitle +
+                stateDef.statusTitle +
                 " " +
                 moment(this.state.pubStart.value).fromNow()
             )
         }
         else {
+            // TODO Extend writer with more texts in popover
             this.props.popover.setStatusText(
-                statusDef.statusTitle
+                stateDef.statusTitle
             )
         }
     }
 
-    _updateButton(unsavedChanges) {
-        let caption = (this.state.status.qcode === 'stat:usable') ? 'Update' : 'Save'
-        if (unsavedChanges) {
-            caption += ' *'
-        }
-
-        this.props.popover.setButtonText(
-            this.getLabel(caption)
-        )
-    }
 }
 
 export default PublishFlowComponent
