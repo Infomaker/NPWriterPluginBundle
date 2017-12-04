@@ -1,4 +1,4 @@
-import { DefaultDOMElement, uuid, BrowserDOMElement } from 'substance'
+import { DefaultDOMElement, uuid } from 'substance'
 import { idGenerator, api } from 'writer'
 
 export default {
