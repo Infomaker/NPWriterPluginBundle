@@ -70,19 +70,36 @@ class ImageGalleryImageComponent extends Component {
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
-        const imageControls = $$('div').addClass('image-control')
+        const imageControls = $$('div').addClass('image-controls')
+
+        if (this.props.cropsEnabled === true) {
+            const configuredCrops = this.props.configuredCrops
+            let currentCrops = 0
+            let cropBadgeClass = false
+
+            if (this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
+                currentCrops = this.props.node.crops.crops.length
+            }
+
+            const definedCrops = (Array.isArray(configuredCrops)) ? configuredCrops.length : Object.keys(configuredCrops).length
+            if (currentCrops < definedCrops) {
+                cropBadgeClass = 'se-warning'
+            }
+
+            imageControls.append([
+                $$('b').append(currentCrops)
+                    .addClass('image-control crop-badge')
+                    .addClass(cropBadgeClass)
+                    .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
+                $$('i').addClass('image-control crop-image fa fa-crop')
+                    .on('click', this.props.onCropClick)
+            ])
+        }
 
         imageControls.append(
             $$('i').addClass('image-control remove-image fa fa-times')
                 .on('click', this.props.remove)
         )
-
-        if (this.props.cropsEnabled === true) {
-            imageControls.append(
-                $$('i').addClass('image-control crop-image fa fa-crop')
-                    .on('click', this.props.onCropClick)
-            )
-        }
 
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)

@@ -153,6 +153,7 @@ class ImageGalleryComponent extends Component {
                         node: galleryImageNode,
                         isolatedNodeState: this.props.isolatedNodeState,
                         cropsEnabled: this._cropsEnabled,
+                        configuredCrops: this._configuredCrops,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
                         },

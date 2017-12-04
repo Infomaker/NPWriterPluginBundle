@@ -107,18 +107,34 @@
                         margin-top: 5px;
                     }
                 }
-                .image-control {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    margin: 5px 5px 0 0;
-                    padding: 3px 5px;
-                    color: #ddd;
-                    &:hover {
+                .image-controls {
+                    .image-control {
+                        display: inline-block;
+                        margin: 0 5px 0 0;
+                        color: #ddd;
                         cursor: pointer;
-                    }
-                    &.crop-image {
-                        right: 15px;
+                        &.crop-image {
+                            right: 15px;
+                        }
+                        &.crop-badge {
+                            right: 40px;
+                            top: 2px;
+                            height: 20px;
+                            line-height: 20px;
+                            padding: 0;
+                            min-width: 20px;
+                            border-radius: 15px;
+                            font-size: 70%;
+                            font-weight: bold;
+                            color: #fff;
+                            background: rgba(0, 171, 80, 0.6);
+                            text-align: center;
+                            cursor: default;
+
+                            &.se-warning {
+                                background: rgba(229, 48, 15, 0.6);
+                            }
+                        }
                     }
                 }
             }
