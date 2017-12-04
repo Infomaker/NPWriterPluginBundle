@@ -40,24 +40,27 @@ const ImageGalleryPackage = {
             sv: 'Beskär bild'
         })
         config.addLabel('im-imagegallery.image-gallery-name', {
-            'en': 'Image gallery',
-            'sv': 'Bildspel'
+            en: 'Image gallery',
+            sv: 'Bildspel'
         })
         config.addLabel('im-imagegallery.insert-image-gallery', {
-            'en': 'Insert Image gallery',
-            'sv': 'Infoga bildspel'
+            en: 'Insert Image gallery',
+            sv: 'Infoga bildspel'
         })
         config.addLabel('im-imagegallery.dropzone-label', {
-            'en': 'Drop image(s) here',
-            'sv': 'Dra och släpp bild(er) här'
+            en: 'Drop image(s) here',
+            sv: 'Dra och släpp bild(er) här'
         })
         config.addLabel('im-imagegallery.generic-caption', {
-            'en': 'Generic caption',
-            'sv': 'Gemensam bildtext'
+            en: 'Generic caption',
+            sv: 'Gemensam bildtext'
         })
         config.addLabel('im-imagegallery.caption-placeholder', {
-            'en': 'Caption',
-            'sv': 'Bildtext'
+            en: 'Caption',
+            sv: 'Bildtext'
+        })
+        config.addLabel('crops defined', {
+            sv: 'beskärningar valda'
         })
     }
 }

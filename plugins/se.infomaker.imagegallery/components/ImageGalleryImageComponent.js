@@ -92,12 +92,14 @@ class ImageGalleryImageComponent extends Component {
                     .addClass(cropBadgeClass)
                     .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
                 $$('i').addClass('image-control crop-image fa fa-crop')
+                    .attr('title', this.getLabel('crop-image-button-title'))
                     .on('click', this.props.onCropClick)
             ])
         }
 
         imageControls.append(
             $$('i').addClass('image-control remove-image fa fa-times')
+                .attr('title', this.getLabel('remove-image-button-title'))
                 .on('click', this.props.remove)
         )
 
