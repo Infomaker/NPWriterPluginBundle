@@ -24,8 +24,9 @@ for sorting images.
 ```
 
 ### Options
-| Property          | Type      | Required  | Description   |
-| --------          | :--:      | :------:  | -----------   |
+
+| Property          | Type      | Required  | Description  |
+| --------          | :--:      | :------:  | -----------  |
 | **cropsEnabled**  | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `cropsEnabled` to `true` to enable. Default `false`. |
 | **crops**         | Object    | `false`   | *Required if crops is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
 
@@ -41,6 +42,9 @@ for sorting images.
                 <text>Image caption</text>
                 <height>200</height>
                 <width>400</width>
+                <flags>
+                    <flag>disableAutomaticCrop</flag>
+                </flags>
             </data>
             <links>
                 <link rel="crop" type="x-im/crop" title="16:9" uri="im://crop/0/0/0.445/0.3707865168539326"/>
@@ -66,4 +70,7 @@ for sorting images.
 </object>
 ```
 
-**Note** that `object > data > text` is optional and will only render if it has a value.
+**Notes**
+* `object > data > text` is optional and will only render if it has a value.
+* `object > links > link > data > flags` is optional and will only render if it has a value
+* `object > links > link > links` is optional and will only render if it has a value
