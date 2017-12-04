@@ -130,7 +130,7 @@ class PublishFlowComponent extends Component {
     }
 
     renderCurrentStatus($$) {
-        const statusDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
+        const statusDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         if (statusDef === null) {
             return [
@@ -204,7 +204,7 @@ class PublishFlowComponent extends Component {
         }
 
         if (this.state.status.qcode === 'stat:withheld') {
-            const stateDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
+            const stateDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
             if (typeof stateDef.actions === 'object') {
                 if (stateDef.actions.pubStart === 'required') {
                     pubStartdateAttribs.required = true
@@ -381,7 +381,9 @@ class PublishFlowComponent extends Component {
                         this.publishFlowMgr.executeTransition(
                             transition.nextState,
                             this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
-                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val(),
+                            this.state.status.qcode,
+                            this.state.hasPublishedVersion
                         )
                     }
                     catch (ex) {
@@ -605,34 +607,24 @@ class PublishFlowComponent extends Component {
      */
     // TODO can we call this in render function?
     renderPopover() {
-        const stateDef = this.publishFlowMgr.getStateDefinition(this.state.status.qcode)
+        const stateDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         this.props.popover.setButtonText(
-            stateDef.saveButtonLabel + (this.state.unsavedChanges ? ' *' : '')
+            stateDef.saveActionLabel + (this.state.unsavedChanges ? ' *' : '')
         )
 
         // TODO Visualize pubStatus and hasPublishedVersion according to Joacim
 
-        if (this.state.status.qcode === 'stat:usable') {
-            this.props.popover.setStatusText(
-                stateDef.statusTitle +
-                " " +
-                moment(this.state.pubStart.value).fromNow()
-            )
+        let status = {title:stateDef.title}
+
+        if (this.state.hasPublishedVersion) {
+            status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
+
         }
-        else if (this.state.status.qcode === 'stat:withheld') {
-            this.props.popover.setStatusText(
-                stateDef.statusTitle +
-                " " +
-                moment(this.state.pubStart.value).fromNow()
-            )
-        }
-        else {
-            // TODO Extend writer with more texts in popover
-            this.props.popover.setStatusText(
-                stateDef.statusTitle
-            )
-        }
+
+        this.props.popover.setStatusText(
+            status
+        )
     }
 
 }

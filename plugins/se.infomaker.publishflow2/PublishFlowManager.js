@@ -15,12 +15,28 @@ class PublishFlowManager {
      * @param {string} pubStatus The qcode for the publication status
      * @return {T|number|*|{ID, TAG, NAME, CLASS}}
      */
-    getStateDefinition(pubStatus) {
+    getStateDefinitionByPubStatus(pubStatus) {
 
-        return this.workflowStates.find((elem) => {
-            return elem.pubStatus === pubStatus
+        const objectKeys = Object.keys(this.workflowStates);
+
+        const key = objectKeys.find((e) => {
+            return this.workflowStates[e].pubStatus === pubStatus
         })
 
+        if (key) {
+            return this.workflowStates[key]
+        }
+
+        return null;
+
+        // return this.workflowStates.find((elem) => {
+        //     return elem.pubStatus === pubStatus
+        // })
+
+    }
+
+    getStateDefinitionByName(name) {
+        return this.workflowStates[name]
     }
 
     /**
@@ -65,7 +81,7 @@ class PublishFlowManager {
      */
     getTransitions(pubStatus, hasPublishedVersion) {
 
-        const stateDef = this.getStateDefinition(pubStatus)
+        const stateDef = this.getStateDefinitionByPubStatus(pubStatus)
 
         if (!stateDef) {
             return []
@@ -89,58 +105,74 @@ class PublishFlowManager {
      * @param {string} nextStateKey The state key defined in the config file
      * @param {string} pubStart A date in ISO 8601 format. Used in verification
      * @param {string} pubStop A date in ISO 8601 format. Used in verification
+     * @param {string} pubStatus Specified as qcode. Used for pre-condition checking
+     * @param {boolean} hasPublishedVersion Used for pre-condition checking
      */
-    executeTransition(nextStateKey, pubStart, pubStop) {
-        const nextStateDef = this.getStateDefinition(nextStateKey)
+    executeTransition(nextStateKey, pubStart, pubStop, pubStatus, hasPublishedVersion) {
+        const nextStateDef = this.getStateDefinitionByName(nextStateKey)
         if (nextStateDef === null) {
             throw new Error(`Cannot find state ${nextStateKey}`)
         }
 
-        const actions = nextStateDef.actions
+        let actions = nextStateDef.actions
 
-        if (typeof actions === 'object') {
-            switch (actions.pubStart) {
-                case 'required':
-                    if (!moment(pubStart).isValid()) {
-                        throw new Error('A valid publication start time required for this status')
-                    }
-                    this.setPubStart(pubStart)
-                    break
+        if (actions === undefined) {
+            return;
+        }
 
-                case 'set':
-                    this.setPubStart(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
-                    break
+        if (!Array.isArray(actions)) {
+            actions = [actions]
+        }
 
-                case 'clear':
-                    this.setPubStart(null)
-                    break
+        actions.forEach((action) => {
+
+            if (this.isAllowed(action, pubStatus, hasPublishedVersion)) {
+
+                switch (action.pubStart) {
+                    case 'required':
+                        if (!moment(pubStart).isValid()) {
+                            throw new Error('A valid publication start time required for this status')
+                        }
+                        this.setPubStart(pubStart)
+                        break
+
+                    case 'set':
+                        this.setPubStart(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                        break
+
+                    case 'clear':
+                        this.setPubStart(null)
+                        break
+                }
+
+                switch (action.pubStop) {
+                    case 'required':
+                        if (!moment(pubStop).isValid()) {
+                            throw new Error('A valid publication stop time required for this status')
+                        }
+                        this.setPubStop(pubStop)
+                        break
+
+                    case 'set':
+                        this.setPubStop(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
+                        break
+
+                    case 'clear':
+                        this.setPubStop(null)
+                        break
+                }
+
+                if (action.pubStatus !== undefined) {
+                    this.setPubStatus(action.pubStatus)
+                }
+
+                if (action.hasPublishedVersion !== undefined) {
+                    this.setHasPublishedVersion(action.hasPublishedVersion)
+                }
             }
 
-            switch (actions.pubStop) {
-                case 'required':
-                    if (!moment(pubStop).isValid()) {
-                        throw new Error('A valid publication stop time required for this status')
-                    }
-                    this.setPubStop(pubStop)
-                    break
+        })
 
-                case 'set':
-                    this.setPubStop(moment().format('YYYY-MM-DDTHH:mm:ssZ'))
-                    break
-
-                case 'clear':
-                    this.setPubStop(null)
-                    break
-            }
-        }
-
-        if (actions.pubStatus) {
-            this.setPubStatus(pubStatus)
-        }
-
-        if (actions.hasPublishedVersion !== undefined) {
-            this.setHasPublishedVersion(actions.hasPublishedVersion)
-        }
     }
 
     /**
@@ -195,6 +227,11 @@ class PublishFlowManager {
      * @param value
      */
     getFormattedTime(value) {
+
+        if (value === null) {
+            return null;
+        }
+
         const obj = moment(value)
 
         if (!obj.isValid()) {
