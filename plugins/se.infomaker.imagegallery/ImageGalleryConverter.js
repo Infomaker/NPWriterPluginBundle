@@ -1,4 +1,4 @@
-import {idGenerator, NilUUID} from 'writer'
+import {idGenerator, NilUUID, api} from 'writer'
 import ImageGalleryNode from './ImageGalleryNode'
 
 const ImageGalleryConverter = {
@@ -53,11 +53,16 @@ const ImageGalleryConverter = {
 
                 // Import author links
                 imageGalleryImage.authors = []
-                let authorLinks
-                authorLinks = child.find('links')
+                const imageLinks = child.find('links')
+                if (imageLinks) {
+                    imageGalleryImage.authors = this.convertAuthors(node, imageLinks)
+                    imageGalleryImage.crops = this.convertCrops(imageLinks)
+                }
 
-                if (authorLinks) {
-                    imageGalleryImage.authors = this.convertAuthors(node, authorLinks)
+
+                const flagsEl = imgData.find(':scope>flags')
+                if (flagsEl) {
+                    imageGalleryImage.disableAutomaticCrop = [...flagsEl.children].some((childEl) => childEl.text() === 'disableAutomaticCrop')
                 }
 
                 converter.createNode(imageFile)
@@ -90,7 +95,7 @@ const ImageGalleryConverter = {
 
         return authorLinks.children
             .filter((authorLinkEl) => authorLinkEl.getAttribute('rel') === 'author')
-            .map(function(authorLinkEl) {
+            .map((authorLinkEl) => {
                 const emailElement = authorLinkEl.find('email')
                 const uuid = authorLinkEl.getAttribute('uuid')
                 return {
@@ -98,12 +103,12 @@ const ImageGalleryConverter = {
                     uuid,
                     name: authorLinkEl.getAttribute('title'),
                     email: emailElement ? emailElement.textContent : null,
-                    isSimpleAuthor: NilUUID.isNilUUID(uuid) ? true : false,
+                    isSimpleAuthor: NilUUID.isNilUUID(uuid),
                     isLoaded: false
                 }
             })
             .filter((author) => {
-                if(author.isSimpleAuthor) {
+                if (author.isSimpleAuthor) {
                     return true
                 }
                 if (seen.get(author.uuid) !== undefined) {
@@ -113,6 +118,27 @@ const ImageGalleryConverter = {
                     return true
                 }
             })
+    },
+
+    convertCrops: function(imageLinks) {
+        // Import softcrops
+        const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
+        const crops = imageModule.importSoftcropLinks(imageLinks)
+        if (crops.length) {
+            // Convert properties back to numbers
+            return {
+                crops: crops.map(softCrop => {
+                    Object.keys(softCrop)
+                        .filter(key => key !== 'name')
+                        .forEach((key) => {
+                            softCrop[key] = parseFloat(softCrop.x)
+                        })
+                    return softCrop
+                })
+            }
+        } else {
+            return []
+        }
     },
 
     /**
@@ -160,12 +186,12 @@ const ImageGalleryConverter = {
                     converter.annotatedText([galleryImageNode.id, 'caption'])
                 ))
             }
-            if(galleryImageNode.height) {
+            if (galleryImageNode.height) {
                 imageData.append(
                     $$('height').append(String(galleryImageNode.height))
                 )
             }
-            if(galleryImageNode.width) {
+            if (galleryImageNode.width) {
                 imageData.append(
                     $$('width').append(String(galleryImageNode.width))
                 )
@@ -173,8 +199,22 @@ const ImageGalleryConverter = {
 
             link.append(imageData)
 
+            const imageLinks = $$('links')
+
+            // Add crops to data
+            if (galleryImageNode.crops) {
+                const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
+                imageModule.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
+            }
+            if (galleryImageNode.disableAutomaticCrop) {
+                imageData.append(
+                    $$('flags').append(
+                        $$('flag').append('disableAutomaticCrop')
+                    )
+                )
+            }
+
             if (galleryImageNode.authors.length) {
-                const imageLinks = $$('links')
                 const authorLinks = galleryImageNode.authors.map((author) => {
                     const authorLink = $$('link').attr({
                         rel: 'author',
@@ -183,7 +223,7 @@ const ImageGalleryConverter = {
                         type: 'x-im/author'
                     })
 
-                    if(author.email) {
+                    if (author.email) {
                         const data = $$('data')
                         const email = $$('email').append(author.email)
                         data.append(email)
@@ -191,10 +231,11 @@ const ImageGalleryConverter = {
                     }
                     return authorLink
                 })
+                imageLinks.append(authorLinks)
+            }
 
-                link.append(
-                    imageLinks.append(authorLinks)
-                )
+            if (imageLinks.children.length > 0) {
+                link.append(imageLinks)
             }
 
             links.append(link)

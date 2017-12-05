@@ -55,7 +55,6 @@
                 border: 1px solid #ddd;
                 position: relative;
                 margin: auto;
-                border-width: 1px;
                 transition: max-height 0.3s ease, background-color 0.5s ease-in;
                 max-height: 200px;
 
@@ -107,16 +106,44 @@
                     .im-field-editor {
                         margin-top: 5px;
                     }
+                    .author-element {
+                        i {
+                            margin: 0;
+                        }
+                    }
                 }
-                .remove-image {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    margin: 5px 5px 0 0;
-                    padding: 3px 5px;
-                    color: #ddd;
-                    &:hover {
+                .image-controls {
+                    .image-control {
+                        display: inline-block;
+                        margin: 0 0 0 10px;
+                        color: #ccc;
                         cursor: pointer;
+                        transition: color 0.2s ease-out;
+                        &:hover {
+                            color: #777;
+                        }
+                        &.crop-image {
+                            right: 15px;
+                        }
+                        &.crop-badge {
+                            right: 40px;
+                            top: 2px;
+                            height: 20px;
+                            line-height: 20px;
+                            padding: 0;
+                            min-width: 20px;
+                            border-radius: 15px;
+                            font-size: 70%;
+                            font-weight: bold;
+                            color: #fff;
+                            background: rgba(0, 171, 80, 0.6);
+                            text-align: center;
+                            cursor: default;
+
+                            &.se-warning {
+                                background: rgba(229, 48, 15, 0.6);
+                            }
+                        }
                     }
                 }
             }

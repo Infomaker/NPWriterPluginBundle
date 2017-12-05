@@ -7,14 +7,15 @@ import {fetchImageMeta} from 'writer'
  * for image. When added it fetches metadata from image and populates
  * the ImageGalleryImageNode related to the component.
  *
-
- * @property {Object} props
- * @property {Number} props.index
- * @property {Node} props.node
- * @property {String} props.isolatedNodeState
- * @property {Function} props.remove
- * @property {Function} props.dragStart
- * @property {Function} props.dragEnd
+ * @property {object}   props
+ * @property {number}   props.index
+ * @property {node}     props.node
+ * @property {string}   props.isolatedNodeState
+ * @property {boolean}  props.cropsEnabled
+ * @property {function} props.remove
+ * @property {function} props.dragStart
+ * @property {function} props.dragEnd
+ * @property {function} props.onCropClick
  */
 class ImageGalleryImageComponent extends Component {
 
@@ -69,9 +70,38 @@ class ImageGalleryImageComponent extends Component {
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
+        const imageControls = $$('div').addClass('image-controls')
 
-        const removeIcon = $$('i').addClass('remove-image fa fa-times')
-            .on('click', this.props.remove)
+        if (this.props.cropsEnabled === true) {
+            const configuredCrops = this.props.configuredCrops
+            let currentCrops = 0
+            let cropBadgeClass = false
+
+            if (this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
+                currentCrops = this.props.node.crops.crops.length
+            }
+
+            const definedCrops = (Array.isArray(configuredCrops)) ? configuredCrops.length : Object.keys(configuredCrops).length
+            if (currentCrops < definedCrops) {
+                cropBadgeClass = 'se-warning'
+            }
+
+            imageControls.append([
+                $$('b').append(currentCrops)
+                    .addClass('image-control crop-badge')
+                    .addClass(cropBadgeClass)
+                    .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
+                $$('i').addClass('image-control crop-image fa fa-crop')
+                    .attr('title', this.getLabel('crop-image-button-title'))
+                    .on('click', this.props.onCropClick)
+            ])
+        }
+
+        imageControls.append(
+            $$('i').addClass('image-control remove-image fa fa-times')
+                .attr('title', this.getLabel('remove-image-button-title'))
+                .on('click', this.props.remove)
+        )
 
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)
@@ -98,7 +128,7 @@ class ImageGalleryImageComponent extends Component {
             .append(numberDisplay)
             .append(imageWrapper)
             .append(this._renderImageMeta($$))
-            .append(removeIcon)
+            .append(imageControls)
     }
 
     /**
@@ -197,7 +227,7 @@ class ImageGalleryImageComponent extends Component {
         const wrapper = this.refs.itemWrapper.el
         wrapper.el.scrollIntoViewIfNeeded()
         wrapper.addClass('drop-succeeded')
-        setTimeout(() => wrapper.removeClass('drop-succeeded'), 2000)
+        setTimeout(() => wrapper.removeClass('drop-succeeded'), 700)
     }
 
     /**
