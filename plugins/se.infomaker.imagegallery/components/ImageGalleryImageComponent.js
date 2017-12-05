@@ -70,6 +70,42 @@ class ImageGalleryImageComponent extends Component {
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
+        const imageControls = this._renderImageControls($$)
+
+        imageWrapper.append(imageEl)
+        numberDisplay.append(this.props.index + 1)
+
+        // When clicking on dragAnchor, set draggable on itemWrapper
+        // effectively dragging the wrapper using one of its child elements
+        const dragAnchor = $$('div')
+            .html(this._getSvg())
+            .addClass('drag-me')
+            .on('mousedown', () => this.refs.itemWrapper.attr('draggable', true))
+            .on('mouseup', () => this.refs.itemWrapper.attr('draggable', false))
+
+        itemWrapper
+            .attr('id', `index_${this.props.node.id}`)
+            .attr('draggable', false)
+            .on('dragenter', this._dragEnter)
+            .on('dragleave', this._dragLeave)
+            .on('dragover', this._dragOver)
+            .on('dragstart', this._dragStart)
+            .on('dragend', this._dragEnd)
+
+        return itemWrapper
+            .append(dragAnchor)
+            .append(numberDisplay)
+            .append(imageWrapper)
+            .append(this._renderImageMeta($$))
+            .append(imageControls)
+    }
+
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderImageControls($$) {
         const imageControls = $$('div').addClass('image-controls')
 
         if (this.props.cropsEnabled === true) {
@@ -106,32 +142,8 @@ class ImageGalleryImageComponent extends Component {
                 .on('click', this.props.remove)
         )
 
-        imageWrapper.append(imageEl)
-        numberDisplay.append(this.props.index + 1)
 
-        // When clicking on dragAnchor, set draggable on itemWrapper
-        // effectively dragging the wrapper using one of its child elements
-        const dragAnchor = $$('div')
-            .html(this._getSvg())
-            .addClass('drag-me')
-            .on('mousedown', () => this.refs.itemWrapper.attr('draggable', true))
-            .on('mouseup', () => this.refs.itemWrapper.attr('draggable', false))
-
-        itemWrapper
-            .attr('id', `index_${this.props.node.id}`)
-            .attr('draggable', false)
-            .on('dragenter', this._dragEnter)
-            .on('dragleave', this._dragLeave)
-            .on('dragover', this._dragOver)
-            .on('dragstart', this._dragStart)
-            .on('dragend', this._dragEnd)
-
-        return itemWrapper
-            .append(dragAnchor)
-            .append(numberDisplay)
-            .append(imageWrapper)
-            .append(this._renderImageMeta($$))
-            .append(imageControls)
+        return imageControls
     }
 
     /**
