@@ -136,14 +136,16 @@ class ImageGalleryPreviewComponent extends Component {
     _renderImageControls($$, galleryImageNode) {
         const imageControls = $$('div').addClass('preview-image-controls')
 
-        imageControls.append(
-            $$(Button, {icon: 'info'})
-                .addClass('info-image-button')
-                .attr('title', this.getLabel('Image archive information'))
-                .on('click', () => {
-                    this.props.onInfoClick(galleryImageNode)
-                })
-        )
+        if(this.props.imageInfoEnabled === true) {
+            imageControls.append(
+                $$(Button, {icon: 'info'})
+                    .addClass('info-image-button')
+                    .attr('title', this.getLabel('Image archive information'))
+                    .on('click', () => {
+                        this.props.onInfoClick(galleryImageNode)
+                    })
+            )
+        }
 
         if (this.props.cropsEnabled === true) {
             imageControls.append(

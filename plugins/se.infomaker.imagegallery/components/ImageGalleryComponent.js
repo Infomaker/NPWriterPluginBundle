@@ -64,6 +64,7 @@ class ImageGalleryComponent extends Component {
                 node: this.props.node,
                 isolatedNodeState: this.props.isolatedNodeState,
                 cropsEnabled: this._cropsEnabled,
+                imageInfoEnabled: this._imageInfoEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
                 onCropsClick: (galleryImageNode) => {
@@ -119,6 +120,8 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * Gets crops value from configuration
+     *
      * @returns {Array}
      * @private
      */
@@ -127,11 +130,23 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * Gets cropsEnabled value from configuration
+     *
      * @returns {boolean}
      * @private
      */
     get _cropsEnabled() {
         return this.context.api.getConfigValue('se.infomaker.imagegallery', 'cropsEnabled', false)
+    }
+
+    /**
+     * Gets imageInfoEnabled value from configuration
+     *
+     * @returns {*}
+     * @private
+     */
+    get _imageInfoEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'imageInfoEnabled', false)
     }
 
     /**
@@ -156,6 +171,7 @@ class ImageGalleryComponent extends Component {
                         node: galleryImageNode,
                         isolatedNodeState: this.props.isolatedNodeState,
                         cropsEnabled: this._cropsEnabled,
+                        imageInfoEnabled: this._imageInfoEnabled,
                         configuredCrops: this._configuredCrops,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)

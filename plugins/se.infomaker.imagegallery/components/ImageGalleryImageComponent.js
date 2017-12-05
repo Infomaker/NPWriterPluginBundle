@@ -127,13 +127,18 @@ class ImageGalleryImageComponent extends Component {
                     .addClass('image-control crop-badge')
                     .addClass(cropBadgeClass)
                     .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
-                $$('i').addClass('image-control fa fa-info')
-                    .attr('title', this.getLabel('Image archive information'))
-                    .on('click', this.props.onInfoClick),
                 $$('i').addClass('image-control fa fa-crop')
                     .attr('title', this.getLabel('crop-image-button-title'))
                     .on('click', this.props.onCropClick)
             ])
+        }
+
+        if(this.props.imageInfoEnabled === true) {
+            imageControls.append(
+                $$('i').addClass('image-control fa fa-info')
+                    .attr('title', this.getLabel('Image archive information'))
+                    .on('click', this.props.onInfoClick)
+            )
         }
 
         imageControls.append(
