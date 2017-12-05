@@ -227,7 +227,7 @@ class ImageGalleryImageComponent extends Component {
         const wrapper = this.refs.itemWrapper.el
         wrapper.el.scrollIntoViewIfNeeded()
         wrapper.addClass('drop-succeeded')
-        setTimeout(() => wrapper.removeClass('drop-succeeded'), 2000)
+        setTimeout(() => wrapper.removeClass('drop-succeeded'), 700)
     }
 
     /**

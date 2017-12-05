@@ -32,6 +32,11 @@
             background: rgba(0,0,0,0.4);
             color: #fff;
             height: 100%;
+            transition: background-color 0.2s ease-in;
+
+            &:hover {
+                background: rgba(0,0,0,0.55);
+            }
 
             &.left-control {
                 left: 0;
@@ -71,16 +76,22 @@
 
                 button {
                     display: none;
-                    color: #fff;
+                    color: #ccc;
                     position: absolute;
                     right: 5px;
-                    top: 0;
+                    top: 3px;
+
+                    &:hover i {
+                        color: #fff;
+                        text-shadow: 0 0 1px #222;
+                    }
                     &.crop-image-button {
-                        right: 20px;
+                        right: 25px;
                     }
                     i {
                         margin: 0;
-                        text-shadow: 0 0 1px #222;
+                        text-shadow: 0 0 1px #000;
+                        transition: text-shadow 0.1s ease-in, color 0.1s ease-in;
                     }
                 }
             }

@@ -106,13 +106,22 @@
                     .im-field-editor {
                         margin-top: 5px;
                     }
+                    .author-element {
+                        i {
+                            margin: 0;
+                        }
+                    }
                 }
                 .image-controls {
                     .image-control {
                         display: inline-block;
-                        margin: 0 5px 0 0;
-                        color: #ddd;
+                        margin: 0 0 0 10px;
+                        color: #ccc;
                         cursor: pointer;
+                        transition: color 0.2s ease-out;
+                        &:hover {
+                            color: #777;
+                        }
                         &.crop-image {
                             right: 15px;
                         }
