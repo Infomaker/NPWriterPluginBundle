@@ -29,6 +29,7 @@ const ImageGalleryPackage = {
         config.addIcon('angle-right', { 'fontawesome': 'fa-angle-right' })
         config.addIcon('remove', { 'fontawesome': 'fa-times' })
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
+        config.addIcon('info', {'fontawesome': 'fa-info'})
 
         /* Labels */
         config.addLabel('remove-image-button-title', {
@@ -38,6 +39,10 @@ const ImageGalleryPackage = {
         config.addLabel('crop-image-button-title', {
             en: 'Crop image',
             sv: 'Beskär bild'
+        })
+        config.addLabel('info-image-button-title', {
+            en: 'Archive information',
+            sv: 'Arkivinformation'
         })
         config.addLabel('im-imagegallery.image-gallery-name', {
             en: 'Image gallery',
@@ -61,6 +66,9 @@ const ImageGalleryPackage = {
         })
         config.addLabel('crops defined', {
             sv: 'beskärningar valda'
+        })
+        config.addLabel('Image archive information', {
+            sv: 'Arkivinformation om bild'
         })
     }
 }

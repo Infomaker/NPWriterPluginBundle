@@ -40,12 +40,13 @@ class ImageGalleryPreviewComponent extends Component {
             const imageContainer = $$('div').addClass('image-container')
             const imageControls = $$('div').addClass('preview-image-controls')
 
+
             imageControls.append(
-                $$(Button, {icon: 'remove'})
-                    .addClass('remove-image-button')
-                    .attr('title', this.getLabel('remove-image-button-title'))
+                $$(Button, {icon: 'info'})
+                    .addClass('info-image-button')
+                    .attr('title', this.getLabel('Image archive information'))
                     .on('click', () => {
-                        this.props.removeImage(galleryImageNodeId)
+                        this.props.onInfoClick(galleryImageNode)
                     })
             )
 
@@ -55,10 +56,19 @@ class ImageGalleryPreviewComponent extends Component {
                         .addClass('crop-image-button')
                         .attr('title', this.getLabel('crop-image-button-title'))
                         .on('click', () => {
-                            this.props.openCrops(galleryImageNode)
+                            this.props.onCropsClick(galleryImageNode)
                         })
                 )
             }
+
+            imageControls.append(
+                $$(Button, {icon: 'remove'})
+                    .addClass('remove-image-button')
+                    .attr('title', this.getLabel('remove-image-button-title'))
+                    .on('click', () => {
+                        this.props.removeImage(galleryImageNodeId)
+                    })
+            )
 
             imageContainer.append(imageControls)
 

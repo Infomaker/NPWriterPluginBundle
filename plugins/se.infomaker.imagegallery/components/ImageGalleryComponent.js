@@ -66,8 +66,11 @@ class ImageGalleryComponent extends Component {
                 cropsEnabled: this._cropsEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
-                openCrops: (galleryImageNode) => {
+                onCropsClick: (galleryImageNode) => {
                     this._openCropper($$, galleryImageNode)
+                },
+                onInfoClick: (galleryImageNode) => {
+                    this._openMetaData(galleryImageNode)
                 },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
@@ -167,6 +170,9 @@ class ImageGalleryComponent extends Component {
                         },
                         onCropClick: () => {
                             this._openCropper($$, galleryImageNode)
+                        },
+                        onInfoClick: () => {
+                            this._openMetaData(galleryImageNode)
                         }
                     }).ref(galleryImageNodeId))
                 })
@@ -270,6 +276,34 @@ class ImageGalleryComponent extends Component {
                     type: 'error',
                     message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
                 }])
+            })
+    }
+
+    /**
+     * Show image meta data in a modal dialog
+     *
+     * @memberof ImageDisplay
+     */
+    _openMetaData(galleryImageNode) {
+        const imageNode = this.context.api.doc.get(galleryImageNode.imageFile)
+        api.router.getNewsItem(imageNode.uuid, 'x-im/image')
+            .then(response => {
+                api.ui.showDialog(
+                    this.getComponent('dialog-image'),
+                    {
+                        node: imageNode,
+                        url: imageNode.getUrl(),
+                        newsItem: response,
+                        disablebylinesearch: false
+                    },
+                    {
+                        title: this.getLabel('Image archive information'),
+                        global: true,
+                        primary: this.getLabel('Save'),
+                        secondary: this.getLabel('Cancel'),
+                        cssClass: 'np-image-dialog'
+                    }
+                )
             })
     }
 
