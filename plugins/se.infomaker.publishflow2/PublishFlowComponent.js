@@ -77,9 +77,15 @@ class PublishFlowComponent extends Component {
     }
 
     render($$) {
-        return $$('div')
+        const el = $$('div')
             .addClass('sc-np-publishflow')
             .append(this.renderBody($$))
+
+        if (this.state.hasPublishedVersion) {
+            el.addClass('sc-np-publishflow-haspublishedversion')
+        }
+
+        return el
     }
 
     renderBody($$) {
@@ -143,9 +149,19 @@ class PublishFlowComponent extends Component {
             ]
         }
 
+        const usableDef = this.publishFlowMgr.getStateDefinitionByPubStatus('stat:usable')
+        const title = this.state.hasPublishedVersion ? usableDef.title : statusDef.title
+        const h2 = $$('h2')
+
+        if (this.state.hasPublishedVersion) {
+            h2.append(
+                $$('i').addClass('fa fa-globe')
+            )
+        }
+
         return [
-            $$('h2').append(
-                this.getLabel(statusDef.title)
+            h2.append(
+                this.getLabel(title)
             ),
             $$('p').append(
                 this.getLabel(statusDef.description)

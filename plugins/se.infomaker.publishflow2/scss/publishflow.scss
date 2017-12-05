@@ -1,19 +1,31 @@
 .sc-np-publishflow {
-    width: 250px;
-    margin: 15px;
+    width: 280px;
+    padding: 15px;
+
+    &.sc-np-publishflow-haspublishedversion {
+        background: #E1F3FE;
+    }
 
     .sc-np-publish-body {
 
         &>h2 {
             font-weight: 600;
             color: #555;
+
+            i {
+                margin-right: 6px;
+                color: #288dc0;
+                opacity: 0.9;
+            }
         }
 
         &>p {
-            color: #888;
+            color: #666;
             line-height: 1.3rem !important;
-            margin-top: 0.6rem !important;
-            font-size: 90%;
+            margin-top: 0.5rem !important;
+            font-size: 85%;
+            font-family: LatoWebLight;
+            font-weight: bold;
 
             &.dates {
                 span {
@@ -25,6 +37,7 @@
 
         .sc-np-publish-actions {
             margin: 15px -15px 15px -15px;
+            background: #ffffff;
 
             &>* {
                 border-bottom: 1px solid #ddd;
@@ -62,7 +75,7 @@
                     }
 
                     i.fa-stack-2x {
-                        font-size: 28px;
+                        font-size: 30px;
                     }
 
                     i.fa-stack-1x {
@@ -72,6 +85,7 @@
 
                 span {
                     line-height: 46px;
+                    padding-left: 10px;
                 }
 
                 &:hover {
@@ -92,7 +106,7 @@
         }
 
         div.sc-np-publish-action-section {
-            background: #fafafa;
+            background: #fbfbfb;
             margin: 15px -15px -15px -15px;
             border-top: 1px solid #ddd;
             padding: 0 0 10px 0;
@@ -126,29 +140,38 @@
                     opacity: 0.4;
                     font-family: "FontAwesome";
                     position: absolute;
-                    right: 13px;
-                    top: 9px;
+                    left: 1px;
+                    top: 7px;
+                    font-size: 14px;
+                }
+
+                input:hover:after {
+                    opacity: 0.2;
+                }
+
+                input[type="date"],
+                input[type="time"] {
+                    padding-left: 18px;
+                    border: none;
+                    border-bottom: 1px solid #cccbcb;
+                    background: none;
+                    border-radius: 0;
                 }
 
                 input[type="date"] {
-                    width: 62%;
+                    width: 60%;
                     margin-right:2%;
                 }
                 input[type="date"]:after {
                     content: "\f271";
                 }
-                input[type="date"]:hover:after {
-                    content: "";
-                }
+
 
                 input[type="time"] {
-                    width: 36%;
+                    width: 38%;
                 }
                 input[type="time"]:after {
                     content: "\f017";
-                }
-                input[type="time"]:hover:after {
-                    content: "";
                 }
 
                 input:required:invalid,
