@@ -365,12 +365,16 @@ class PublishFlowComponent extends Component {
      * @return {VirtualObject}
      */
     renderTransition($$, transition) {
+        const nextState = this.publishFlowMgr.getStateDefinitionByName(transition.nextState)
+        const icon = nextState && nextState.icon ? nextState.icon : 'fa-question'
+        const color = nextState && nextState.color ? nextState.color : '#888888'
 
         return $$('a')
             .append([
-                $$('i')
-                    .addClass('fa ' + transition.icon)
-                    .css('color', (transition.color ? transition.color : '#888888')),
+                $$('span').addClass('fa-stack fa-lg').append([
+                    $$('i').addClass('fa fa-circle fa-stack-2x').css('color', color),
+                    $$('i').addClass(`fa ${icon} fa-stack-1x fa-inverse`)
+                ]),
                 $$('span').append(
                     this.getLabel(transition.title)
                 )

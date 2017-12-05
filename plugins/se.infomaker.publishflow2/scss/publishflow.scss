@@ -4,10 +4,16 @@
 
     .sc-np-publish-body {
 
+        &>h2 {
+            font-weight: 600;
+            color: #555;
+        }
+
         &>p {
-            color: #777;
-            line-height: 1.4rem;
-            margin-top: 0.7rem;
+            color: #888;
+            line-height: 1.3rem !important;
+            margin-top: 0.6rem !important;
+            font-size: 90%;
 
             &.dates {
                 span {
@@ -48,29 +54,19 @@
                     color: #666;
                 }
 
-                i {
-                    opacity: 0.7;
-                    line-height: 46px;
-                    width: 30px;
+                span.fa-stack {
+                    font-size: 16px;
 
-                    &.fa-check-circle-o {
-                        color: #565656;
+                    i {
+                        line-height: 46px;
                     }
 
-                    &.fa-send {
-                        color: #5cb85c;
+                    i.fa-stack-2x {
+                        font-size: 28px;
                     }
 
-                    &.fa-retweet {
-                        color: #2e94b7;
-                    }
-
-                    &.fa-clock-o {
-                        color: #2e94b7;
-                    }
-
-                    &.fa-ban {
-                        color: #d9534f;
+                    i.fa-stack-1x {
+                        font-size: 14px;
                     }
                 }
 
@@ -205,6 +201,7 @@
 
         button:last-child {
             border-radius: 0 3px 3px 0;
+            padding: 0.5rem 0.5rem;
         }
 
         &.disabled {
@@ -218,6 +215,7 @@
 
     // Override publish status
     .sc-np-bar-item {
-        color: #888
+        color: #888;
+        margin: 0 18px !important;
     }
 }
