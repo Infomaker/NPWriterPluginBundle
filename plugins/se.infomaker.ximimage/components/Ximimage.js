@@ -1,8 +1,6 @@
-import {Component, FontAwesomeIcon} from "substance"
-import {NilUUID} from "writer"
+import {Component} from "substance"
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
-import AddToByline from "./AddToByline";
 
 const {api} = writer
 
@@ -77,7 +75,9 @@ class XimimageComponent extends Component {
             )
         }
 
-        this._renderAuthors($$, metaWrapper)
+        metaWrapper.append(
+            this._renderByline($$)
+        )
 
         fields.forEach(obj => {
             if (obj.type === 'option') {
@@ -93,108 +93,23 @@ class XimimageComponent extends Component {
         return el
     }
 
-    _renderAuthors($$, el) {
-        if (api.getConfigValue('se.infomaker.ximimage', 'byline')) {
-            const authorList = $$('ul')
-                .addClass('dialog-image-authorlist')
-                .attr('contenteditable', false);
-
-            this.props.node.authors.forEach((item) => {
-                const authorItem = this._renderAuthor($$, item);
-                if (authorItem) {
-                    authorList.append(authorItem);
-                }
-            })
-
-            if (['selected', 'focused'].includes(this.props.isolatedNodeState) && api.getConfigValue('se.infomaker.ximimage', 'byline')) {
-                authorList.append($$('a')
-                    .addClass('add-author-link')
-                    .on('click', this._openAddToByline)
-                    .append(`+ ${this.getLabel('Add to image byline')}`))
-            }
-
-            el.append($$('div')
-                .attr('contenteditable', false)
-                .addClass('x-im-image-authors')
-                .append(
-                    authorList
-                ))
-        }
+    get _showByline() {
+        return api.getConfigValue('se.infomaker.ximimage', 'byline', true)
     }
 
-    _openAddToByline() {
-        api.ui.showDialog(
-            AddToByline,
-            {
+    get _bylineSearchEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.ximimage', 'bylinesearch', true)
+    }
+
+    _renderByline($$) {
+        if (this._showByline) {
+            const BylineComponent = this.context.api.ui.getComponent('byline')
+            return $$(BylineComponent, {
                 node: this.props.node,
-                addAuthor: (author) => {
-                    this.props.node.addAuthor(author)
-                }
-            },
-            {
-                title: this.getLabel('Add to image byline'),
-                global: true,
-                primary: this.getLabel('Close'),
-                secondary: false
-            }
-        )
-    }
-
-    _renderAuthor($$, author) {
-
-        const Avatar = api.ui.getComponent('avatar')
-
-        let twitterHandle
-        if (author.isLoaded && author.links && author.links.link) {
-            const twitterLink = Avatar._getLinkForType(author.links.link, 'x-im/social+twitter')
-            if (twitterLink) {
-                const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
-                twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
-            }
+                bylineSearch: this._bylineSearchEnabled,
+                isolatedNodeState: this.props.isolatedNodeState
+            })
         }
-
-        const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid;
-        const avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle}).ref('avatar-' + refid)
-        return $$('li').append(
-            $$('div').addClass('author-element').append([
-                avatarEl,
-                $$('div').append([
-                    $$('strong').append(author.name),
-                    //$$('em').append(this.authors[n].data.email ? this.authors[n].data.email : '')
-                ]),
-                $$('span').append(
-                    $$('a').append(
-                        $$(FontAwesomeIcon, {icon: 'fa-times-circle'})
-                    )
-                        .attr('title', this.getLabel('Remove'))
-                        .on('click', () => {
-                            this.removeAuthor(author)
-                        })
-                )
-            ]).ref('container-' + refid)
-        ).ref('item-' + refid);
-
-    }
-
-    removeAuthor(author) {
-        const refid = (NilUUID.isNilUUID(author.uuid)) ? author.name : author.uuid
-
-        delete this.refs['item-' + refid]
-
-        const authors = this.props.node.authors
-        for (let n = 0; n < authors.length; n++) {
-
-            if (!NilUUID.isNilUUID(author.uuid) && authors[n].uuid === author.uuid) {
-                authors.splice(n, 1)
-                break
-            }
-            else if (NilUUID.isNilUUID(author.uuid) && authors[n].name === author.name) {
-                authors.splice(n, 1)
-                break
-            }
-        }
-
-        this.props.node.setAuthors(authors)
     }
 
     renderTextField($$, obj) {
