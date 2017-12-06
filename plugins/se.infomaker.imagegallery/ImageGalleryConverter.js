@@ -131,7 +131,7 @@ const ImageGalleryConverter = {
                     Object.keys(softCrop)
                         .filter(key => key !== 'name')
                         .forEach((key) => {
-                            softCrop[key] = parseFloat(softCrop.x)
+                            softCrop[key] = parseFloat(softCrop[key])
                         })
                     return softCrop
                 })

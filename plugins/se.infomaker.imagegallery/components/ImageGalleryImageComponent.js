@@ -41,7 +41,7 @@ class ImageGalleryImageComponent extends Component {
             fetchImageMeta(imageNode.uuid)
                 .then((node) => {
                     this.context.editorSession.transaction((tx) => {
-                        if (!node.caption) {
+                        if (!imageNode.caption) {
                             tx.set([this.props.node.id, 'caption'], node.caption)
                         }
                         if (node.authors.length > 0) {
@@ -70,38 +70,7 @@ class ImageGalleryImageComponent extends Component {
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageNode = this.context.doc.get(this.props.node.imageFile)
         const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
-        const imageControls = $$('div').addClass('image-controls')
-
-        if (this.props.cropsEnabled === true) {
-            const configuredCrops = this.props.configuredCrops
-            let currentCrops = 0
-            let cropBadgeClass = false
-
-            if (this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
-                currentCrops = this.props.node.crops.crops.length
-            }
-
-            const definedCrops = (Array.isArray(configuredCrops)) ? configuredCrops.length : Object.keys(configuredCrops).length
-            if (currentCrops < definedCrops) {
-                cropBadgeClass = 'se-warning'
-            }
-
-            imageControls.append([
-                $$('b').append(currentCrops)
-                    .addClass('image-control crop-badge')
-                    .addClass(cropBadgeClass)
-                    .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
-                $$('i').addClass('image-control crop-image fa fa-crop')
-                    .attr('title', this.getLabel('crop-image-button-title'))
-                    .on('click', this.props.onCropClick)
-            ])
-        }
-
-        imageControls.append(
-            $$('i').addClass('image-control remove-image fa fa-times')
-                .attr('title', this.getLabel('remove-image-button-title'))
-                .on('click', this.props.remove)
-        )
+        const imageControls = this._renderImageControls($$)
 
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)
@@ -129,6 +98,57 @@ class ImageGalleryImageComponent extends Component {
             .append(imageWrapper)
             .append(this._renderImageMeta($$))
             .append(imageControls)
+    }
+
+    /**
+     * @param $$
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderImageControls($$) {
+        const imageControls = $$('div').addClass('image-controls')
+
+        if (this.props.cropsEnabled === true) {
+            const configuredCrops = this.props.configuredCrops
+            let currentCrops = 0
+            let cropBadgeClass = false
+
+            if (this.props.node.crops && Array.isArray(this.props.node.crops.crops)) {
+                currentCrops = this.props.node.crops.crops.length
+            }
+
+            const definedCrops = (Array.isArray(configuredCrops)) ? configuredCrops.length : Object.keys(configuredCrops).length
+            if (currentCrops < definedCrops) {
+                cropBadgeClass = 'se-warning'
+            }
+
+            imageControls.append([
+                $$('b').append(currentCrops)
+                    .addClass('image-control crop-badge')
+                    .addClass(cropBadgeClass)
+                    .attr('title', `${currentCrops}/${definedCrops} ${this.getLabel('crops defined')}`),
+                $$('i').addClass('image-control fa fa-crop')
+                    .attr('title', this.getLabel('crop-image-button-title'))
+                    .on('click', this.props.onCropClick)
+            ])
+        }
+
+        if(this.props.imageInfoEnabled === true) {
+            imageControls.append(
+                $$('i').addClass('image-control fa fa-info')
+                    .attr('title', this.getLabel('Image archive information'))
+                    .on('click', this.props.onInfoClick)
+            )
+        }
+
+        imageControls.append(
+            $$('i').addClass('image-control remove-image fa fa-times')
+                .attr('title', this.getLabel('remove-image-button-title'))
+                .on('click', this.props.remove)
+        )
+
+
+        return imageControls
     }
 
     /**

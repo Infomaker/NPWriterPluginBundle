@@ -64,10 +64,14 @@ class ImageGalleryComponent extends Component {
                 node: this.props.node,
                 isolatedNodeState: this.props.isolatedNodeState,
                 cropsEnabled: this._cropsEnabled,
+                imageInfoEnabled: this._imageInfoEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
-                openCrops: (galleryImageNode) => {
+                onCropsClick: (galleryImageNode) => {
                     this._openCropper($$, galleryImageNode)
+                },
+                onInfoClick: (galleryImageNode) => {
+                    this._openMetaData(galleryImageNode)
                 },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
@@ -116,6 +120,8 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * Gets crops value from configuration
+     *
      * @returns {Array}
      * @private
      */
@@ -124,11 +130,23 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * Gets cropsEnabled value from configuration
+     *
      * @returns {boolean}
      * @private
      */
     get _cropsEnabled() {
         return this.context.api.getConfigValue('se.infomaker.imagegallery', 'cropsEnabled', false)
+    }
+
+    /**
+     * Gets imageInfoEnabled value from configuration
+     *
+     * @returns {*}
+     * @private
+     */
+    get _imageInfoEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'imageInfoEnabled', false)
     }
 
     /**
@@ -153,6 +171,7 @@ class ImageGalleryComponent extends Component {
                         node: galleryImageNode,
                         isolatedNodeState: this.props.isolatedNodeState,
                         cropsEnabled: this._cropsEnabled,
+                        imageInfoEnabled: this._imageInfoEnabled,
                         configuredCrops: this._configuredCrops,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
@@ -167,6 +186,9 @@ class ImageGalleryComponent extends Component {
                         },
                         onCropClick: () => {
                             this._openCropper($$, galleryImageNode)
+                        },
+                        onInfoClick: () => {
+                            this._openMetaData(galleryImageNode)
                         }
                     }).ref(galleryImageNodeId))
                 })
@@ -270,6 +292,34 @@ class ImageGalleryComponent extends Component {
                     type: 'error',
                     message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
                 }])
+            })
+    }
+
+    /**
+     * Show image meta data in a modal dialog
+     *
+     * @memberof ImageDisplay
+     */
+    _openMetaData(galleryImageNode) {
+        const imageNode = this.context.api.doc.get(galleryImageNode.imageFile)
+        api.router.getNewsItem(imageNode.uuid, 'x-im/image')
+            .then(response => {
+                api.ui.showDialog(
+                    this.getComponent('dialog-image'),
+                    {
+                        node: imageNode,
+                        url: imageNode.getUrl(),
+                        newsItem: response,
+                        disablebylinesearch: false
+                    },
+                    {
+                        title: this.getLabel('Image archive information'),
+                        global: true,
+                        primary: this.getLabel('Save'),
+                        secondary: this.getLabel('Cancel'),
+                        cssClass: 'np-image-dialog'
+                    }
+                )
             })
     }
 

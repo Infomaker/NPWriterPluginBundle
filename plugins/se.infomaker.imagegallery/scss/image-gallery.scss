@@ -68,30 +68,29 @@
                 float: left;
                 margin-right: 2px;
 
-                &:hover {
-                    button {
-                        display: inline;
-                    }
+                &:hover .preview-image-controls button {
+                    display: inline-block;
                 }
 
-                button {
-                    display: none;
-                    color: #ccc;
+                .preview-image-controls {
                     position: absolute;
                     right: 5px;
                     top: 3px;
 
-                    &:hover i {
+                    button {
+                        display: none;
                         color: #fff;
-                        text-shadow: 0 0 1px #222;
-                    }
-                    &.crop-image-button {
-                        right: 25px;
-                    }
-                    i {
-                        margin: 0;
-                        text-shadow: 0 0 1px #000;
-                        transition: text-shadow 0.1s ease-in, color 0.1s ease-in;
+                        margin-left: 10px;
+
+                        i {
+                            margin: 0;
+                            text-shadow: 0 0 1px #000;
+                            transition: text-shadow 0.1s ease-in, color 0.1s ease-in;
+                        }
+                        &:hover i {
+                            color: #ddd;
+                            text-shadow: 0 0 1px #222;
+                        }
                     }
                 }
             }

@@ -38,27 +38,7 @@ class ImageGalleryPreviewComponent extends Component {
         const galleryImages = this.props.node.nodes.map((galleryImageNodeId) => {
             const galleryImageNode = this.context.doc.get(galleryImageNodeId)
             const imageContainer = $$('div').addClass('image-container')
-            const imageControls = $$('div').addClass('preview-image-controls')
-
-            imageControls.append(
-                $$(Button, {icon: 'remove'})
-                    .addClass('remove-image-button')
-                    .attr('title', this.getLabel('remove-image-button-title'))
-                    .on('click', () => {
-                        this.props.removeImage(galleryImageNodeId)
-                    })
-            )
-
-            if (this.props.cropsEnabled === true) {
-                imageControls.append(
-                    $$(Button, {icon: 'crop'})
-                        .addClass('crop-image-button')
-                        .attr('title', this.getLabel('crop-image-button-title'))
-                        .on('click', () => {
-                            this.props.openCrops(galleryImageNode)
-                        })
-                )
-            }
+            const imageControls = this._renderImageControls($$, galleryImageNode)
 
             imageContainer.append(imageControls)
 
@@ -145,6 +125,49 @@ class ImageGalleryPreviewComponent extends Component {
         if (this.props.onTransitionEnd) {
             this.props.onTransitionEnd(this.leftPosition)
         }
+    }
+
+    /**
+     * @param $$
+     * @param galleryImageNode
+     * @returns {VirtualElement}
+     * @private
+     */
+    _renderImageControls($$, galleryImageNode) {
+        const imageControls = $$('div').addClass('preview-image-controls')
+
+        if(this.props.imageInfoEnabled === true) {
+            imageControls.append(
+                $$(Button, {icon: 'info'})
+                    .addClass('info-image-button')
+                    .attr('title', this.getLabel('Image archive information'))
+                    .on('click', () => {
+                        this.props.onInfoClick(galleryImageNode)
+                    })
+            )
+        }
+
+        if (this.props.cropsEnabled === true) {
+            imageControls.append(
+                $$(Button, {icon: 'crop'})
+                    .addClass('crop-image-button')
+                    .attr('title', this.getLabel('crop-image-button-title'))
+                    .on('click', () => {
+                        this.props.onCropsClick(galleryImageNode)
+                    })
+            )
+        }
+
+        imageControls.append(
+            $$(Button, {icon: 'remove'})
+                .addClass('remove-image-button')
+                .attr('title', this.getLabel('remove-image-button-title'))
+                .on('click', () => {
+                    this.props.removeImage(galleryImageNode.id)
+                })
+        )
+
+        return imageControls
     }
 
     /**
