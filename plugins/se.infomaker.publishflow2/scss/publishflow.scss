@@ -1,31 +1,13 @@
 .sc-np-publishflow {
-    width: 280px;
-    padding: 15px;
-
-    &.sc-np-publishflow-haspublishedversion {
-        background: #E1F3FE;
-    }
+    width: 250px;
+    margin: 15px;
 
     .sc-np-publish-body {
 
-        &>h2 {
-            font-weight: 600;
-            color: #555;
-
-            i {
-                margin-right: 6px;
-                color: #288dc0;
-                opacity: 0.9;
-            }
-        }
-
         &>p {
-            color: #666;
-            line-height: 1.3rem !important;
-            margin-top: 0.5rem !important;
-            font-size: 85%;
-            font-family: LatoWebLight;
-            font-weight: bold;
+            color: #777;
+            line-height: 1.4rem;
+            margin-top: 0.7rem;
 
             &.dates {
                 span {
@@ -37,7 +19,6 @@
 
         .sc-np-publish-actions {
             margin: 15px -15px 15px -15px;
-            background: #ffffff;
 
             &>* {
                 border-bottom: 1px solid #ddd;
@@ -67,25 +48,34 @@
                     color: #666;
                 }
 
-                span.fa-stack {
-                    font-size: 16px;
+                i {
+                    opacity: 0.7;
+                    line-height: 46px;
+                    width: 30px;
 
-                    i {
-                        line-height: 46px;
+                    &.fa-check-circle-o {
+                        color: #565656;
                     }
 
-                    i.fa-stack-2x {
-                        font-size: 30px;
+                    &.fa-send {
+                        color: #5cb85c;
                     }
 
-                    i.fa-stack-1x {
-                        font-size: 14px;
+                    &.fa-retweet {
+                        color: #2e94b7;
+                    }
+
+                    &.fa-clock-o {
+                        color: #2e94b7;
+                    }
+
+                    &.fa-ban {
+                        color: #d9534f;
                     }
                 }
 
                 span {
                     line-height: 46px;
-                    padding-left: 10px;
                 }
 
                 &:hover {
@@ -106,7 +96,7 @@
         }
 
         div.sc-np-publish-action-section {
-            background: #fbfbfb;
+            background: #fafafa;
             margin: 15px -15px -15px -15px;
             border-top: 1px solid #ddd;
             padding: 0 0 10px 0;
@@ -140,34 +130,29 @@
                     opacity: 0.4;
                     font-family: "FontAwesome";
                     position: absolute;
-                    left: 1px;
-                    top: 7px;
-                    font-size: 14px;
-                }
-
-                input[type="date"],
-                input[type="time"] {
-                    padding-left: 18px;
-                    border: none;
-                    border-bottom: 1px solid #cccbcb;
-                    background: none;
-                    border-radius: 0;
+                    right: 13px;
+                    top: 9px;
                 }
 
                 input[type="date"] {
-                    width: 60%;
+                    width: 62%;
                     margin-right:2%;
                 }
                 input[type="date"]:after {
                     content: "\f271";
                 }
-
+                input[type="date"]:hover:after {
+                    content: "";
+                }
 
                 input[type="time"] {
-                    width: 38%;
+                    width: 36%;
                 }
                 input[type="time"]:after {
                     content: "\f017";
+                }
+                input[type="time"]:hover:after {
+                    content: "";
                 }
 
                 input:required:invalid,
@@ -220,7 +205,6 @@
 
         button:last-child {
             border-radius: 0 3px 3px 0;
-            padding: 0.5rem 0.5rem;
         }
 
         &.disabled {
@@ -234,7 +218,6 @@
 
     // Override publish status
     .sc-np-bar-item {
-        color: #888;
-        margin: 0 18px !important;
+        color: #888
     }
 }
