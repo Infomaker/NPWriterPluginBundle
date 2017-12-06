@@ -107,6 +107,9 @@
                         margin-top: 5px;
                     }
                     .author-element {
+                        .avatar {
+                            pointer-events: none;
+                        }
                         .fa-times-circle {
                             margin: 0;
                         }
