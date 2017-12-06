@@ -234,6 +234,13 @@ class PublishFlowComponent extends Component {
             }
         }
 
+        if (this.state.hasPublishedVersion) {
+            pubStartdateAttribs.disabled = true
+            pubStarttimeAttribs.disabled = true
+            pubStopdateAttribs.disabled = true
+            pubStoptimeAttribs.disabled = true
+        }
+
         el.append(
             $$('div')
                 .addClass('sc-np-publish-action-section-content sc-np-date-time')
@@ -401,9 +408,7 @@ class PublishFlowComponent extends Component {
                         this.publishFlowMgr.executeTransition(
                             transition.nextState,
                             this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
-                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val(),
-                            this.state.status.qcode,
-                            this.state.hasPublishedVersion
+                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
                         )
                     }
                     catch (ex) {
@@ -554,7 +559,7 @@ class PublishFlowComponent extends Component {
         this._clearSaveTimeout()
         this.saveInProgress = false
 
-        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.setIcon('fa-caret-down')
         this.props.popover.enable()
 
         if (!this.state.previousState) {
@@ -608,7 +613,7 @@ class PublishFlowComponent extends Component {
         this._clearSaveTimeout()
         this.saveInProgress = false
 
-        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.setIcon('fa-caret-down')
         this.props.popover.enable()
 
         this.extendState({
