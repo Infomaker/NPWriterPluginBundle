@@ -103,7 +103,7 @@ class XimimageComponent extends Component {
 
     _renderByline($$) {
         if (this._showByline) {
-            const BylineComponent = this.context.api.ui.getComponent('byline')
+            const BylineComponent = this.context.api.ui.getComponent('BylineComponent')
             return $$(BylineComponent, {
                 node: this.props.node,
                 bylineSearch: this._bylineSearchEnabled,
