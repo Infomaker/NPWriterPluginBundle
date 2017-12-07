@@ -1,11 +1,10 @@
 import { Component } from 'substance'
-import FormItemModel from '../models/FormItemModel'
+import ConceptItemModel from '../models/ConceptItemModel'
 
 class ConceptDialogComponent extends Component {
 
     constructor(...args) {
         super(...args)
-        this.formItemModel = new FormItemModel()
     }
 
     getInitialState() {
@@ -15,15 +14,32 @@ class ConceptDialogComponent extends Component {
         }
     }
 
-    async didMount() {
-        const uiGroups = await this.formItemModel.getUiGroups(this.props.item)
-        const error = (uiGroups[0].error) ? uiGroups.shift().error : false
+    dispose() {
+        this.conceptItemModel = null
+    }
 
-        this.extendState({
-            loading: false,
-            uiGroups: error ? [] : uiGroups,
-            error: error ? error : false
-        })
+    async didMount() {
+        this.send('dialog:disablePrimaryBtn')
+        this.conceptItemModel = new ConceptItemModel(this.props.item, this.props.config)
+
+        const uiGroups = await this.conceptItemModel.getUiGroups()
+        const errors = (uiGroups.errors && uiGroups.errors.length) ? uiGroups.errors : false
+
+        if(errors) {
+            this.extendState({
+                loading: false,
+                uiGroups: [],
+                errors: errors
+            })
+        } else {
+            this.send('dialog:enablePrimaryBtn')
+
+            this.extendState({
+                loading: false,
+                uiGroups: uiGroups,
+                errors: errors
+            })
+        }
     }
 
     render($$) {
@@ -37,22 +53,39 @@ class ConceptDialogComponent extends Component {
             el.append(spinner)
         }
 
-        if (this.state.error) {
-            const error = $$('div').addClass('warning').append(this.state.error)
+        if (this.state.errors) {
+            const errorEl = $$('div').addClass('warning')
+            
+            this.state.errors.forEach(error => {
+                errorEl.append(error)  
+            })
 
-            el.append(error)
-        } else {
+            el.append(errorEl)
+        }
+        
+        if (this.state.uiGroups.length) {
             this.state.uiGroups.forEach(uiGroup => {
                 const fields = []
                 const title = $$('h2').append(uiGroup.title)
-                const groupTitle = $$('div').append(title).addClass('uigroup-title')
+                const groupTitle = $$('div').append(title).addClass('concept-form-title')
 
                 uiGroup.fields.forEach((field) => {
-                    fields.push(
-                        field.type === 'text' ?
-                            this.generateTextFormGroup($$, field) :
-                            this.generateInputFormGroup($$, field)
-                    )
+                    let group
+                    switch (field.type) {
+                        case 'text':
+                            group = this.generateTextFormGroup($$, field)
+                            break
+
+                        case 'string':
+                        case 'email':
+                            group = this.generateInputFormGroup($$, field)
+                            break
+
+                        default:
+                            break;
+                    }
+
+                    fields.push(group)
                 })
 
                 if (fields.length) {
@@ -66,28 +99,40 @@ class ConceptDialogComponent extends Component {
     }
 
     generateInputFormGroup($$, field) {
-        const label = $$('label', { for: field.label }).append(field.label)
-        const input = $$('input', { id: field.label, class: 'form-control', value: field.value ? field.value : '', placeholder: field.placeholder }).ref(`${field.refId}`)
-        const formGroup = $$('fieldset').addClass('form-group')
-            .append(label)
-            .append(input)
+        const input = $$('input', { id: field.label, class: 'concept-form-control', type: field.type, value: field.value ? field.value : '', placeholder: field.placeholder, pattern: field.validation }).ref(`${field.refId}`)
 
-        return formGroup
+        if (field.required) {
+            input.attr('required', true)
+        }
+        
+        return this.generateFormGroup($$)
+            .append(this.generateLabel($$, field))
+            .append(input)
     }
 
     generateTextFormGroup($$, field) {
-        const label = $$('label', { for: field.label }).append(field.label)
-        const textarea = $$('textarea', { id: field.label, class: 'form-control', placeholder: field.placeholder }).append(field.value ? field.value : '').ref(`${field.refId}`)
-        const formGroup = $$('fieldset').addClass('form-group')
-            .append(label)
-            .append(textarea)
+        const rows = (field.value && field.value.length) ? (field.value.length / 80) + 2 : 3
+        const textarea = $$('textarea', { id: field.label, class: 'concept-form-control', placeholder: field.placeholder, rows: rows }).append(field.value ? field.value : '').ref(`${field.refId}`)
 
-        return formGroup
+        return this.generateFormGroup($$)
+            .addClass('textarea-group')
+            .append(this.generateLabel($$, field))
+            .append(textarea)
     }
 
-    onClose(action) {
+    generateFormGroup($$) {
+        return $$('div').addClass('concept-form-group')
+    }
+
+    generateLabel($$, field) {
+        return $$('label', { for: field.label, class: 'concept-form-label' }).append(field.label)
+    }
+
+    async onClose(action) {
         if (action === 'save') {
-            return this.formItemModel.save(this.refs)
+            this.props.save(
+                await this.conceptItemModel.save(this.refs)
+            )
         }
     }
 

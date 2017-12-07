@@ -15,6 +15,7 @@ class ConceptSearchComponent extends Component {
     }
 
     resetState() {
+        this.refs.searchInput.val('')
         this.extendState({
             searching: false,
             searchResult: null,
@@ -24,78 +25,73 @@ class ConceptSearchComponent extends Component {
     }
 
     render($$){
-        let spinner = ''
+        let icon, searchResultsContainer
         const { searchedTerm } = this.state
         const disabled = this.props.disabled
         const searchInput = $$('input', {
             type: 'text',
             name: 'concept-search',
-            class: 'concept-search-input form-control',
+            class: `concept-search-input ${this.state.searchResult && this.state.searchResult.length ? 'results' : '   '}`,
             placeholder: this.props.placeholderText,
             autocomplete: 'off',
         })
         .on('keydown', this.handleKeyDown)
         .on('keyup', this.handleKeyUp)
         .on('blur', this.handleBlur)
-        .on('focus', this.handleFocus)
         .ref('searchInput')
 
         if (disabled) {
             searchInput.attr('disabled', true)
+        } else {
+            if (this.state.searching) {
+                icon = $$('i', {
+                    class: 'fa fa-spinner fa-spin concept-search-icon searching',
+                    "aria-hidden": 'true'
+                })
+            } else if (searchedTerm) {
+                icon = $$('i', {
+                    class: 'fa fa-times concept-search-icon abort',
+                    "aria-hidden": 'true'
+                }).on('click', this.resetState.bind(this))
+            } else {
+                icon = $$('i', {
+                    class: 'fa fa-search concept-search-icon search',
+                    "aria-hidden": 'true'
+                })
+            }
         }
 
-        if (this.state.searching) {
-            spinner = $$('i', {
-                class: 'fa fa-spinner fa-spin concept-search-spinner',
-                "aria-hidden": 'true'
-            })
+        if (searchedTerm) {
+            let { searchResult, selected } = this.state
+
+            searchResultsContainer = $$(ConceptSearchResultComponent, {
+                searchedTerm,
+                searchResult,
+                selected,
+                editable: this.props.editable,
+                itemExists: this.props.itemExists,
+                addItem: this.addItem.bind(this)
+            }).ref('searchResultComponent')
         }
 
         const el = $$('div')
             .addClass('concept-search-component')
             .append(searchInput)
-            .append(spinner)
-
-        if (searchedTerm) {
-            let { searchResult } = this.state
-            
-            if (this.shouldShowCreate()) {
-                searchResult = [...searchResult, {
-                    ConceptName: `${this.getLabel('create')}: ${searchedTerm}`,
-                }]
-            }
-
-            const searchResults = $$(ConceptSearchResultComponent, {
-                searchResult: searchResult,
-                selected: this.state.selected,
-                itemExists: this.props.itemExists
-            }).ref('searchResultComponent')
-            el.append(searchResults)
-        }
+            .append(icon)
+            .append(searchResultsContainer)
 
         return el
     }
 
-    shouldShowCreate() {
-        return (
-            this.props.editable &&
-            this.state.searchedTerm !== '*'
-        )
-    }
-
-    handleFocus() {
-
-    }
-
     handleBlur() {
-        this.refs.searchInput.val('')
-        this.resetState()
+        // this.refs.searchInput.val('')
+        // this.resetState()
     }
 
     handleKeyUp() {
         const term = this.refs.searchInput.val().trim()
         
-        if (term !== this.state.searchedTerm && (term.length > 2 || term === '*')) {
+        if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             if (!this.state.searching) {
                 this.extendState({
                     searching: true
@@ -117,9 +113,16 @@ class ConceptSearchComponent extends Component {
         })
     }
 
+    addItem(item) {
+        item = (item && item.ConceptReplacedByRelation) ? item.ConceptReplacedByRelation : 
+            (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
+            
+        console.info(item)
+        this.props.addItem(item)
+    }
+
     handleKeyDown(e) {
         const {keyCode} = e
-        let atTheEnd, newItem
         switch (keyCode) {
             case 27: // escape
                 e.preventDefault()
@@ -132,32 +135,21 @@ class ConceptSearchComponent extends Component {
                     selected: (this.state.selected > 0) ? this.state.selected - 1 : 0
                 })
                 break
-            case 9:
+            case 9: // tab
             case 40: // arrow down
                 e.preventDefault()
-                atTheEnd = this.shouldShowCreate() ? (this.state.selected === this.state.searchResult.length) : (this.state.selected === this.state.searchResult.length - 1)
-                if (!atTheEnd) {
-                    this.extendState({
-                        selected: this.state.selected + 1
-                    })
-                }
+                this.extendState({
+                    selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
+                })
                 break
             case 13: // enter
                 e.preventDefault()
-                newItem = this.getItemToAdd()
-                this.props.addItem(newItem)
+                this.addItem(this.state.searchResult[this.state.selected])
                 this.refs.searchInput.val('')
                 this.resetState()
                 break
             default:
                 break
-        }
-    }
-
-    getItemToAdd() {
-        return this.state.searchResult[this.state.selected] || {
-            ConceptName: this.state.searchedTerm,
-            ConceptImTypeFull: this.props.conceptTypes //TODO: This wont work when we have multiple types
         }
     }
 

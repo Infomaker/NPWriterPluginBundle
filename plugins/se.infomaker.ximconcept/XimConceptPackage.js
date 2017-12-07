@@ -1,6 +1,8 @@
 import ConceptMainComponent from './components/ConceptMainComponent'
 import './scss/xmimconcept.scss'
+import './scss/ximconcept-icon.scss'
 import './scss/ximconcept-dialog.scss'
+import './scss/ximconcept-image.scss'
 
 const XimConceptPackage = {
     
@@ -23,6 +25,9 @@ const XimConceptPackage = {
         })
         configurator.addLabel('cancel', {
             sv: 'Avbryt'
+        })
+        configurator.addLabel('Replaced by', {
+            sv: 'Ersatt av'
         })
     }
 }

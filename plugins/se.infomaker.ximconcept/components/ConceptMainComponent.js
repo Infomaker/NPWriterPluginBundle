@@ -1,13 +1,32 @@
 import {Component} from "substance"
-import { api, ConceptService } from 'writer'
+import { api, ConceptService, event } from 'writer'
 import ConceptListComponent from './ConceptListComponent'
 import ConceptSearchComponent from "./ConceptSearchComponent";
 import ConceptDialogComponent from './ConceptDialogComponent'
+import ConceptItemModel from '../models/ConceptItemModel'
 
 class ConceptMainComponent extends Component {
 
     constructor(...args) {
         super(...args)
+    }
+
+    didMount() {
+        api.events.on(this.state.conceptName, event.DOCUMENT_CHANGED, async function(event) {
+            if (event.name === this.state.name) {
+                this.reloadArticleConcepts()
+            }
+        }.bind(this))
+    }
+
+    dispose() {
+        api.events.off(this.state.name, event.DOCUMENT_CHANGED)
+    }
+
+    reloadArticleConcepts() {
+        this.extendState({
+            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.entities)
+        })
     }
 
     getInitialState() {
@@ -16,7 +35,7 @@ class ConceptMainComponent extends Component {
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const entities = pluginConfig.entities
-        const existingItems = ConceptService.getExistingConceptsByType(conceptType, types, entities)
+        const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, entities)
 
         return {
             name,
@@ -28,51 +47,32 @@ class ConceptMainComponent extends Component {
         }
     }
 
+    updateArticleConcept(item) {
+        ConceptService.updateArticleConcept(this.state.name, item)
+    }
+
+    async addConceptToArticle(item) {
+        item = await (new ConceptItemModel(item, this.state.pluginConfig)).extractConceptArticleData(item)
+        ConceptService.addArticleConcept(this.state.name, item)
+    }
+
     addItem(item) {
-        if (item.uuid) {
+        if (item && item.uuid) {
             if (!this.itemExists(item)) {
 
-                if (this.state.pluginConfig.appendDataToLink) {
-                    ConceptService.addExtendedDataLink(this.state.name, item)
-                } else {
-                    ConceptService.addPlainLink(this.state.name, item)
-                }
+                this.addConceptToArticle(item)
 
-                this.extendState({
-                    existingItems: [...this.state.existingItems, item]
-                })
+                this.reloadArticleConcepts()
             } else {
                 api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
             }
         } else {
-            this.showDialog(item)
+            this.editItem({ ConceptImTypeFull: this.state.conceptType, ...item })
         }
     }
 
-    editItem(item) {
-        this.showDialog(item)
-    }
-
-    handleUpdatedConcept(item) {
-        this.stitch = item
-    }
-
-    handleAddedConcept(item) {
-        this.addItem(item)
-    }
-
     removeItem(item) {
-        ConceptService.removeConceptItem(this.state.name, item)
-        const newItemList = []
-        this.state.existingItems.forEach((existingItem) => {
-            if (existingItem.uuid !== item.uuid) {
-                newItemList.push(existingItem)
-            }
-        })
-
-        this.extendState({
-            existingItems: newItemList
-        })
+        ConceptService.removeArticleConceptItem(this.state.name, item)
     }
 
     itemExists(item) {
@@ -84,13 +84,13 @@ class ConceptMainComponent extends Component {
     /**
      * Show information about the author in AuthorInfoComponent rendered in a dialog
      */
-    showDialog(item) {
+    editItem(item) {
         api.ui.showDialog(
             ConceptDialogComponent,
             {
                 item,
                 config: this.state.pluginConfig,
-                save: (item && item.uuid) ? this.handleUpdatedConcept : this.handleAddedConcept
+                save: (item && item.create) ? this.addConceptToArticle.bind(this) : this.updateArticleConcept.bind(this),
             },
             {
                 primary: this.getLabel('save'),
@@ -102,28 +102,33 @@ class ConceptMainComponent extends Component {
     }
 
     render($$) {
+        let search
         const config = this.state.pluginConfig || {}
         const { label, enableHierarchy, placeholderText, singleValue, editable, entities } = config
         const { conceptType, types } = this.state || {}
-        const header = $$('h2').append(label)
+        const header = $$('h2')
+            .append(`${label} (${this.state.existingItems.length})`)
+            .addClass('concept-header')
 
         const list = $$(ConceptListComponent, {
             editItem: this.editItem.bind(this),
             removeItem: this.removeItem.bind(this),
-            list: this.state.existingItems,
+            existingItems: this.state.existingItems,
             enableHierarchy,
             editable,
-        })
+        }).ref('conceptListComponent')
 
-        const search = $$(ConceptSearchComponent, {
-            placeholderText,
-            conceptTypes: types.length ? types : conceptType,
-            entities,
-            editable,
-            disabled: (singleValue && this.state.existingItems.length) ? true : false,
-            addItem: this.addItem.bind(this),
-            itemExists: this.itemExists.bind(this)
-        }).ref('conceptSearchComponent')
+        if (!singleValue || !this.state.existingItems.length) {
+            search = $$(ConceptSearchComponent, {
+                placeholderText,
+                conceptTypes: types.length ? types : conceptType,
+                entities,
+                editable,
+                disabled: (singleValue && this.state.existingItems.length) ? true : false,
+                addItem: this.addItem.bind(this),
+                itemExists: this.itemExists.bind(this)
+            }).ref('conceptSearchComponent')
+        }
 
         const el = $$('div')
             .addClass(`concept-main-component ${conceptType}`)

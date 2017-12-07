@@ -1,8 +1,71 @@
 .concept-dialog-component {
+    padding: 10px 25px;
+
+    .warning {
+        text-align: center;
+        padding: 20px;
+        background: rgb(253, 183, 61);
+        border: 1px solid orange;
+    }
     .dialog-spinner {
             margin: 20px auto;
             text-align: center;
             width: 100%;
             font-size: 2rem;
+    }
+    .concept-form-title {
+        color: #878787;
+        text-transform: uppercase;
+        margin: 30px 0 5px 0;
+
+        &:first-of-type {
+            margin-top: 10px;
+        }
+
+        h2 {
+            font-size: 12px;
+        }
+    }
+    .concept-form-group {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 5px;
+
+        .concept-form-label {
+            width: 125px;
+            color: #878787;
+            text-align: right;
+            margin-right: 15px;
+        }
+        .concept-form-control {
+            flex-grow: 1;
+            border: none;
+            border-bottom: 1px solid #d9d9d9;
+            color: #5c5c5c;
+            padding: 6px 10px;
+            &::placeholder {
+                color: #b1b1b1;
+                font-family: 'Lato';
+            }
+            &:focus {
+                border-bottom: 1px solid #288dc0;
+                color: #303030;
+            }
+            &:invalid {
+                -background-color: pink;
+            }
+        }
+        &.textarea-group {
+            display: block;
+            .concept-form-label {
+                width: 100%;
+                display: block;
+                text-align: left;
+            }
+            .concept-form-control {
+                width: 100%;
+            }
+        }
     }
 }

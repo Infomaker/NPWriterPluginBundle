@@ -1,5 +1,7 @@
 import { Component } from 'substance'
 import { ConceptService, api } from 'writer'
+import ConceptItemImageComponent from './ConceptItemImageComponent'
+import ConceptItemIcon from './ConceptItemIconComponent'
 
 class ConceptItemComponent extends Component {
 
@@ -7,41 +9,18 @@ class ConceptItemComponent extends Component {
         return { isHovered: false }
     }
 
-    getConceptTypeIcon(type) {
-        const conceptTypeIcons = {
-            'x-im/category': 'fa-folder',
-            'x-im/tag': 'fa-tag',
-            'x-im/person': 'fa-user',
-            'x-im/organisation': 'fa-sitemap',
-            'x-im/content-profile': 'fa-cogs',
+    async willReceiveProps(newProps) {
+        let { item } = newProps
 
-            'x-im/place': 'fa-map-marker',
-            'x-im/position': 'fa-map-marker',
-            'x-im/polygon': 'fa-map',
-
-            'x-im/event': 'fa-map-marker',
-            'x-im/author': 'fa-user',
-            'x-im/story': 'fa-circle',
-
-            'x-im/channel': 'fa-random',
-            'x-im/topic': 'fa-tag',
-        }
-
-        return conceptTypeIcons[type] || ''
-    }
-
-    async didMount() {
-        let { item } = this.props
-        if (item && !this.state.item) {
+        if (item) {
             this.setState({
                 item: await ConceptService.fetchConceptItemProperties(item)
             })
         }
     }
 
-    getIconString() {
-        const conceptType = this.state.item.ConceptImSubTypeFull ? this.state.item.ConceptImSubTypeFull : this.state.item.ConceptImTypeFull
-        return this.state.isHovered ? 'fa-times remove' : this.getConceptTypeIcon(conceptType)
+    didMount() {
+        this.Tooltip = api.ui.getComponent('tooltip')
     }
 
     onMouseEnter() {
@@ -63,50 +42,67 @@ class ConceptItemComponent extends Component {
     }
 
     render($$){
-        const { item } = this.state
+        const { item, isHovered } = this.state
         const type = (item && item.ConceptImTypeFull) ? item.ConceptImTypeFull : ''
         const editable = this.props.editable ? 'editable' : ''
         const el = $$('div')
+        
+        let icon
+        let removeIcon
+        let image
 
         if (item) {
-            const Tooltip = api.ui.getComponent('tooltip')
             const broaderString = this.props.enableHierarchy ? ConceptService.extractBroaderText(item) : ''
-            const statusBar = $$('div').addClass(`statusbar ${item.ConceptStatus}`)
-            const tooltip = $$(Tooltip, {
+            const tooltip = $$(this.Tooltip, {
                 title: `${item.ConceptDefinitionShort || ' - '}`,
                 text: `(status: ${item.ConceptStatus})`,
                 parent: this,
             }).ref('tooltip')
 
-            const title = $$('span')
-                .append(item.title || item.ConceptName)
+            if (item.image && !isHovered) {
+                image = $$(ConceptItemImageComponent, {
+                    src: image
+                })
+            } else {
+                icon = $$(ConceptItemIcon, {
+                    isHovered,
+                    item,
+                    editable: this.props.editable
+                }).on('click', this.editItem.bind(this))
+            }
 
-            const icon = $$('i', {
-                "class": `fa ${this.getIconString()}`,
+            removeIcon = $$('i', {
+                "class": `fa ${isHovered ? 'fa-times remove' : ''} concept-remove-item-icon`,
                 "aria-hidden": "true"
-            }).on('click', () => { this.props.removeItem(item) })
+            }).on('click', this.removeItem.bind(this))
 
             const itemContent = $$('div')
                 .addClass('concept-item-content')
-                .append(title)
+                .append(item.name || item.title || item.ConceptName)
                 .append(tooltip)
+                .on('click', this.editItem.bind(this))
 
             if (broaderString.length) {
                 itemContent.append(` (${broaderString})`)
             }
 
-            itemContent.append(icon)
-
-            el.addClass('concept-item-component')
-                .append(statusBar)
+            el.addClass(`concept-item-component ${item.ConceptStatus}`)
+                .append(image)
+                .append(icon)
                 .append(itemContent)
+                .append(removeIcon)
                 .addClass(`${type} ${editable}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
-                .on('click', this.editItem)
         }
 
         return el
+    }
+
+    removeItem(e) {
+        e.preventDefault()
+        this.props.removeItem(this.state.item)
+        return false
     }
 
     editItem() {

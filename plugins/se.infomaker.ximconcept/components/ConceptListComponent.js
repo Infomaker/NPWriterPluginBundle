@@ -2,9 +2,10 @@ import { Component } from "substance"
 import ConceptItemComponent from './ConceptItemComponent'
 
 class ConceptListComponent extends Component {
+
     render($$) {
         const { editable } = this.props
-        const listItems = this.props.list.map(item => {
+        const listItems = this.props.existingItems.map(item => {
             return $$(ConceptItemComponent, {
                 item,
                 editable,
