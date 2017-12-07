@@ -32,6 +32,11 @@
             background: rgba(0,0,0,0.4);
             color: #fff;
             height: 100%;
+            transition: background-color 0.2s ease-in;
+
+            &:hover {
+                background: rgba(0,0,0,0.55);
+            }
 
             &.left-control {
                 left: 0;
@@ -63,20 +68,29 @@
                 float: left;
                 margin-right: 2px;
 
-                &:hover {
-                    .remove-image-button {
-                        display: inline;
-                    }
+                &:hover .preview-image-controls button {
+                    display: inline-block;
                 }
 
-                .remove-image-button {
-                    display: none;
-                    color: #fff;
+                .preview-image-controls {
                     position: absolute;
-                    right: 0;
-                    top: 0;
-                    i {
-                        text-shadow: 0 0 1px #222;
+                    right: 5px;
+                    top: 3px;
+
+                    button {
+                        display: none;
+                        color: #fff;
+                        margin-left: 10px;
+
+                        i {
+                            margin: 0;
+                            text-shadow: 0 0 1px #000;
+                            transition: text-shadow 0.1s ease-in, color 0.1s ease-in;
+                        }
+                        &:hover i {
+                            color: #ddd;
+                            text-shadow: 0 0 1px #222;
+                        }
                     }
                 }
             }

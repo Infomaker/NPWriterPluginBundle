@@ -81,20 +81,8 @@ export default {
             sv: 'Lägg till byline'
         })
 
-        config.addLabel('Restore all', {
-            'sv': 'Återställ alla'
-        })
-
         config.addLabel('Remove', {
             sv: 'Ta bort'
-        })
-
-        config.addLabel('Disable automatic crop in frontend', {
-            sv: 'Använd inte automatisk crop vid utvisning'
-        })
-
-        config.addLabel('Crop', {
-            sv: 'Beskär'
         })
 
         config.addLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.', {

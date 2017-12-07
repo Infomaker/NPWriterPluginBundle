@@ -1,6 +1,5 @@
 import {Button, Component, FontAwesomeIcon} from "substance";
 import {api} from "writer";
-import ImageCropper from "./ImageCropper";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -136,9 +135,10 @@ class ImageDisplay extends Component {
      */
     _openCropper($$) {
         const imageOptions = this._getImageOptions()
+        const ImageCropperComponent = api.ui.getComponent('ImageCropperComponent')
         this.props.node.fetchSpecifiedUrls(['service', 'original'])
             .then(src => {
-                let cropper = $$(ImageCropper, {
+                let cropper = $$(ImageCropperComponent, {
                     parentId: this.props.parentId,
                     src: src,
                     width: this.props.node.width,
