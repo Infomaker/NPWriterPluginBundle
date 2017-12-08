@@ -107,7 +107,7 @@ class ConceptSearchComponent extends Component {
     async search(term) {
         this.extendState({
             searching: false,
-            searchResult: await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.entities),
+            searchResult: await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.subtypes),
             selected: 0,
             searchedTerm: term,
         })
@@ -116,8 +116,7 @@ class ConceptSearchComponent extends Component {
     addItem(item) {
         item = (item && item.ConceptReplacedByRelation) ? item.ConceptReplacedByRelation : 
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
-            
-        console.info(item)
+
         this.props.addItem(item)
     }
 

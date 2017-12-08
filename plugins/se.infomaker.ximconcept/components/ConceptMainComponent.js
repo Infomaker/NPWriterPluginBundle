@@ -4,6 +4,7 @@ import ConceptListComponent from './ConceptListComponent'
 import ConceptSearchComponent from "./ConceptSearchComponent";
 import ConceptDialogComponent from './ConceptDialogComponent'
 import ConceptItemModel from '../models/ConceptItemModel'
+import ConceptSelectTypeComponent from './ConceptSelectTypeComponent'
 
 class ConceptMainComponent extends Component {
 
@@ -25,7 +26,7 @@ class ConceptMainComponent extends Component {
 
     reloadArticleConcepts() {
         this.extendState({
-            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.entities)
+            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
         })
     }
 
@@ -34,14 +35,14 @@ class ConceptMainComponent extends Component {
         const conceptType = pluginConfig.name
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
-        const entities = pluginConfig.entities
-        const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, entities)
+        const subtypes = pluginConfig.subtypes
+        const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
 
         return {
             name,
             pluginConfig,
             types,
-            entities,
+            subtypes,
             conceptType,
             existingItems
         }
@@ -67,7 +68,7 @@ class ConceptMainComponent extends Component {
                 api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
             }
         } else {
-            this.editItem({ ConceptImTypeFull: this.state.conceptType, ...item })
+            this.editItem({ ...item, ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType })
         }
     }
 
@@ -85,26 +86,45 @@ class ConceptMainComponent extends Component {
      * Show information about the author in AuthorInfoComponent rendered in a dialog
      */
     editItem(item) {
-        api.ui.showDialog(
-            ConceptDialogComponent,
-            {
-                item,
-                config: this.state.pluginConfig,
-                save: (item && item.create) ? this.addConceptToArticle.bind(this) : this.updateArticleConcept.bind(this),
-            },
-            {
-                primary: this.getLabel('save'),
-                secondary: this.getLabel('cancel'),
-                title: `${this.state.pluginConfig.label}: ${item ? item.ConceptName : ''}`,
-                global: true
-            }
-        )
+        const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item.ConceptName ? item.ConceptName : ''}`
+
+        if (this.state.pluginConfig.types && !item.ConceptImTypeFull) {
+            api.ui.showDialog(
+                ConceptSelectTypeComponent,
+                {
+                    item,
+                    config: this.state.pluginConfig,
+                    typeSelected: this.editItem.bind(this)
+                },
+                {
+                    title,
+                    primary: false,
+                    secondary: this.getLabel('cancel'),
+                    global: true
+                }
+            )
+        } else {
+            api.ui.showDialog(
+                ConceptDialogComponent,
+                {
+                    item,
+                    config: this.state.pluginConfig,
+                    save: (item && item.create) ? this.addConceptToArticle.bind(this) : this.updateArticleConcept.bind(this),
+                },
+                {
+                    title,
+                    primary: this.getLabel('save'),
+                    secondary: this.getLabel('cancel'),
+                    global: true
+                }
+            )
+        }
     }
 
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, editable, entities } = config
+        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes } = config
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
             .append(`${label} (${this.state.existingItems.length})`)
@@ -122,7 +142,7 @@ class ConceptMainComponent extends Component {
             search = $$(ConceptSearchComponent, {
                 placeholderText,
                 conceptTypes: types.length ? types : conceptType,
-                entities,
+                subtypes,
                 editable,
                 disabled: (singleValue && this.state.existingItems.length) ? true : false,
                 addItem: this.addItem.bind(this),

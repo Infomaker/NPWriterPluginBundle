@@ -69,3 +69,21 @@
         }
     }
 }
+.concept-select-type-component {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 25px 0;
+    .concept-select-type-icon-wrapper {
+        text-align: center;
+        color: #999;
+
+        &:hover {
+            cursor: pointer;
+            color: #757575;
+        }
+
+        .fa {
+            font-size: 45px;
+        }
+    }
+}

@@ -23,9 +23,11 @@ class ConceptDialogComponent extends Component {
         this.conceptItemModel = new ConceptItemModel(this.props.item, this.props.config)
 
         const uiGroups = await this.conceptItemModel.getUiGroups()
-        const errors = (uiGroups.errors && uiGroups.errors.length) ? uiGroups.errors : false
+        const errors = uiGroups.filter(group => {
+            return group.error
+        })
 
-        if(errors) {
+        if (errors.length) {
             this.extendState({
                 loading: false,
                 uiGroups: [],
@@ -37,7 +39,7 @@ class ConceptDialogComponent extends Component {
             this.extendState({
                 loading: false,
                 uiGroups: uiGroups,
-                errors: errors
+                errors: null
             })
         }
     }
@@ -56,8 +58,8 @@ class ConceptDialogComponent extends Component {
         if (this.state.errors) {
             const errorEl = $$('div').addClass('warning')
             
-            this.state.errors.forEach(error => {
-                errorEl.append(error)  
+            this.state.errors.forEach(errorObject => {
+                errorEl.append($$('p').append(errorObject.error))
             })
 
             el.append(errorEl)
