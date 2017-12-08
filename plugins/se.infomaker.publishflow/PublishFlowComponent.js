@@ -604,6 +604,8 @@ class PublishFlowComponent extends Component {
         this.extendState({
             unsavedChanges: true
         })
+
+        this.renderPopover()
     }
 
     /**
