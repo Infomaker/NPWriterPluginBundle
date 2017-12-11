@@ -1,7 +1,7 @@
 import Headline from './validators/Headline'
 import Preamble from './validators/Preamble'
 import MainChannel from './validators/MainChannel'
-import Tags from './validators/Tags'
+// import Tags from './validators/Tags'
 import Authors from './validators/Authors'
 import Categories from './validators/Categories'
 import Review from './validators/Review'
