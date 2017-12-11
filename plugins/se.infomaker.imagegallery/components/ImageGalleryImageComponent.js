@@ -221,7 +221,7 @@ class ImageGalleryImageComponent extends Component {
      */
     _renderImageMeta($$) {
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        const BylineComponent = this.context.api.ui.getComponent('byline')
+        const BylineComponent = this.context.api.ui.getComponent('BylineComponent')
         const node = this.props.node
         const imageMeta = $$('div').addClass('image-meta')
 

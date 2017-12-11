@@ -1,44 +1,18 @@
 import {Container, DefaultDOMElement} from 'substance'
-import {api} from 'writer'
+import {api, withTraits, traitBundle} from 'writer'
 
-class TeaserNode extends Container {
+const {imageNodeTrait, imageCropTrait} = traitBundle
 
-    getImageFile() {
-        if (!this.imageFile) {
-            return
-        }
+class TeaserNode extends withTraits(Container, imageNodeTrait, imageCropTrait) {
 
-        // FIXME: This should not be done if already done
-        // Right now this is done multiple times.
-        return this.document.get(this.imageFile)
-    }
-
-    getUrl() {
-        let imageFile = this.getImageFile()
-        if (imageFile) {
-            return imageFile.getUrl()
-        }
-    }
-
-    fetchSpecifiedUrls(fallbacks) {
-        let imageFile = this.getImageFile()
-        if (!imageFile) {
-            return Promise.reject('No image file available')
-        }
-
-        if (!imageFile.proxy) {
-            return Promise.reject('No image file available')
-        }
-
-        return imageFile.proxy.fetchSpecifiedUrls(fallbacks)
-    }
-
-    addRelatedArticle(article, tx=null) {
+    addRelatedArticle(article, tx = null) {
         const teaserTypes = api.getConfigValue('se.infomaker.ximteaser', 'types', [])
         const currentType = teaserTypes.find(({type}) => type === this.dataType)
         const relatedArticlesEnabled = currentType.enableRelatedArticles === true
 
-        if (!relatedArticlesEnabled) { return }
+        if (!relatedArticlesEnabled) {
+            return
+        }
 
         const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
         const articleAlreadyPresent = articles.filter(a => a.uuid === article.uuid).length > 0
@@ -70,7 +44,7 @@ class TeaserNode extends Container {
         }
     }
 
-    removeRelatedArticle(uuid, tx=null) {
+    removeRelatedArticle(uuid, tx = null) {
         const articles = Array.isArray(this.relatedArticles) ? this.relatedArticles.slice() : []
         const remainingArticles = articles.filter(article => article.uuid !== uuid)
 
@@ -81,13 +55,6 @@ class TeaserNode extends Container {
                 tx.set([this.id, 'relatedArticles'], remainingArticles)
             })
         }
-    }
-
-    setSoftcropData(data, disableAutomaticCrop) {
-        api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'crops'], data)
-            tx.set([this.id, 'disableAutomaticCrop'], disableAutomaticCrop)
-        })
     }
 
     handleDOMDocument(newsItemDOMDocument) {
@@ -158,7 +125,7 @@ TeaserNode.define({
     subject: {type: 'string', optional: false, default: ''},
     text: {type: 'string', optional: false, default: ''},
 
-    customFields: {type:'object', optional: false, default: {}},
+    customFields: {type: 'object', optional: false, default: {}},
 
     relatedArticles: {type: 'array', optional: true, default: []},
 
