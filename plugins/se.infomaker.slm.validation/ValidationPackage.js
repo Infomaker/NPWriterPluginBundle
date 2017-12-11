@@ -102,7 +102,7 @@ const validationPackage = {
         config.addValidator(Headline)
         config.addValidator(Preamble)
         config.addValidator(MainChannel)
-        config.addValidator(Tags)
+        // config.addValidator(Tags)
         config.addValidator(Authors)
         config.addValidator(Categories)
         config.addValidator(Review)
