@@ -108,7 +108,7 @@ class XimimageComponent extends Component {
                 node: this.props.node,
                 bylineSearch: this._bylineSearchEnabled,
                 isolatedNodeState: this.props.isolatedNodeState
-            })
+            }).ref('byline')
         }
     }
 

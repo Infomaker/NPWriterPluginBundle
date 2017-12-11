@@ -229,7 +229,7 @@ class ImageGalleryImageComponent extends Component {
             node: this.props.node,
             bylineSearch: true,
             isolatedNodeState: this.props.isolatedNodeState
-        })
+        }).ref('byline')
 
         const captionInput = $$(FieldEditor, {
             node,

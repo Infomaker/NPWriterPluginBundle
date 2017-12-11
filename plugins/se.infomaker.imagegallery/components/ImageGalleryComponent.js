@@ -159,42 +159,40 @@ class ImageGalleryComponent extends Component {
         imageGalleryToolbox.append(this._renderHeader($$))
             .on('drop', this._onDrop)
 
+        const toolboxContent = $$('div').addClass('toolboox-content')
+        this.props.node.nodes.forEach((galleryImageNodeId, index) => {
+            const galleryImageNode = this.context.doc.get(galleryImageNodeId)
+            toolboxContent.append($$(ImageGalleryImageComponent, {
+                index,
+                node: galleryImageNode,
+                isolatedNodeState: this.props.isolatedNodeState,
+                cropsEnabled: this._cropsEnabled,
+                imageInfoEnabled: this._imageInfoEnabled,
+                configuredCrops: this._configuredCrops,
+                remove: () => {
+                    this._removeImage(galleryImageNodeId)
+                },
+                dragStart: () => {
+                    // Add class which prevents interaction with toolbox input fields when dragging image components
+                    this.refs.toolBox.addClass('drag-started')
+                },
+                dragEnd: () => {
+                    // Remove class which prevents interaction with toolbox input fields when dragging image components
+                    this.refs.toolBox.removeClass('drag-started')
+                },
+                onCropClick: () => {
+                    this._openCropper($$, galleryImageNode)
+                },
+                onInfoClick: () => {
+                    this._openMetaData(galleryImageNode)
+                }
+            }).ref(`image-${galleryImageNode.id}`))
+        })
+
+        imageGalleryToolbox.append(toolboxContent)
+
         if (this.props.isolatedNodeState) {
             imageGalleryToolbox.addClass('show')
-
-            if (this.props.node.nodes && this.props.node.nodes.length) {
-                const toolboxContent = $$('div').addClass('toolboox-content')
-                this.props.node.nodes.forEach((galleryImageNodeId, index) => {
-                    const galleryImageNode = this.context.doc.get(galleryImageNodeId)
-                    toolboxContent.append($$(ImageGalleryImageComponent, {
-                        index,
-                        node: galleryImageNode,
-                        isolatedNodeState: this.props.isolatedNodeState,
-                        cropsEnabled: this._cropsEnabled,
-                        imageInfoEnabled: this._imageInfoEnabled,
-                        configuredCrops: this._configuredCrops,
-                        remove: () => {
-                            this._removeImage(galleryImageNodeId)
-                        },
-                        dragStart: () => {
-                            // Add class which prevents interaction with toolbox input fields when dragging image components
-                            this.refs.toolBox.addClass('drag-started')
-                        },
-                        dragEnd: () => {
-                            // Remove class which prevents interaction with toolbox input fields when dragging image components
-                            this.refs.toolBox.removeClass('drag-started')
-                        },
-                        onCropClick: () => {
-                            this._openCropper($$, galleryImageNode)
-                        },
-                        onInfoClick: () => {
-                            this._openMetaData(galleryImageNode)
-                        }
-                    }).ref(galleryImageNodeId))
-                })
-
-                imageGalleryToolbox.append(toolboxContent)
-            }
         }
 
         return imageGalleryToolbox
