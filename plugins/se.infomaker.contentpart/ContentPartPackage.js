@@ -16,10 +16,11 @@ export default {
         config.addComponent('contentpart', ContentPartComponent)
         config.addConverter('newsml', ContentPartConverter)
 
+
         if (platform.isMac) {
-            config.addKeyboardShortcut('cmd+alt+c', { command: 'insert-contentpart' })
+            config.addKeyboardShortcut('cmd+alt+c', { command: 'insert-contentpart' }, false, 'Add content part')
         } else {
-            config.addKeyboardShortcut('ctrl+alt+c', { command: 'insert-contentpart' })
+            config.addKeyboardShortcut('ctrl+alt+c', { command: 'insert-contentpart' }, false, 'Add content part')
         }
 
 

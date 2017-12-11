@@ -31,10 +31,15 @@ const htmlEmbedPackage = {
             sv: 'Redigera embedkod'
         })
 
+        config.addLabel('htmlembed-insert', {
+            en: 'Insert HTML embed',
+            sv: 'Infoga inbäddad HTML'
+        })
+
         if (platform.isMac) {
-            config.addKeyboardShortcut('cmd+alt+h', { command: 'htmlembed' })
+            config.addKeyboardShortcut('cmd+alt+h', { command: 'htmlembed' }, false, 'htmlembed-insert')
         } else {
-            config.addKeyboardShortcut('ctrl+alt+h', { command: 'htmlembed' })
+            config.addKeyboardShortcut('ctrl+alt+h', { command: 'htmlembed' }, false, 'htmlembed-insert')
         }
 
     }
