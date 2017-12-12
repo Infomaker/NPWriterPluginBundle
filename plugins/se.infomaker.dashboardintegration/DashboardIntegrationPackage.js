@@ -1,11 +1,11 @@
 import './scss/index.scss'
-import DevKitComponent from './DevKitComponent'
+import DashboardIntegrationComponent from './DashboardIntegrationComponent'
 
 export default {
-    name: 'DW Plugin',
-    id: 'se.infomaker.writerdashboardplugin',
+    name: 'dashboardintegration',
+    id: 'se.infomaker.dashboardintegration',
     configure: config => {
-        config.addComponentToSidebarWithTabId('DW Plugin', 'main', DevKitComponent)
+        config.addComponentToSidebarWithTabId('dashboardintegration', 'main', DashboardIntegrationComponent)
     },
 
     title: 'DW Plugin',

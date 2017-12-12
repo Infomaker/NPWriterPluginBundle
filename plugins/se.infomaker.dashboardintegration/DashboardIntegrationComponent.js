@@ -1,9 +1,10 @@
 import { Component } from 'substance'
 import { api, event } from 'writer'
 
-const BASE_CLASS = 'se-infomaker-writer-dashboard-plugin'
+const BASE_CLASS = 'se-infomaker-dashboard-integration'
 
-class DevKitComponent extends Component {
+
+class DashboardIntegrationComponent extends Component {
 
     dispose() {
         window.removeEventListener('keydown', this.handleKeyDown)
@@ -43,7 +44,7 @@ class DevKitComponent extends Component {
                 event: event
             })
         })
-        
+
         api.events.on('DW Plugin', event.DOCUMENT_SAVED, event => {
             this.handleSendData({
                 identifier: this.state.identifier,
@@ -62,7 +63,7 @@ class DevKitComponent extends Component {
                 event: event
             })
         })
-        
+
         this.handleSendData({
             identifier: this.state.identifier,
             uuid: this.state.uuid,
@@ -78,7 +79,6 @@ class DevKitComponent extends Component {
 
     handleReceivedData(event) {
         if (event.data.identifier === this.state.identifier) {
-            // console.log('Write-Plugin ::::', event.data)
 
             this.extendState({
                 connected: true,
@@ -111,7 +111,7 @@ class DevKitComponent extends Component {
                 return false
             }
         })
-        
+
         return title
     }
 
@@ -140,22 +140,8 @@ class DevKitComponent extends Component {
     }
 
     render($$) {
-        // const { connected, user } = this.state
-
-        // const wrapper = $$('div').addClass(`${BASE_CLASS}-wrapper`)
-
-        // wrapper.append($$('h2').append(this.getLabel('Dashboard')).addClass(`${BASE_CLASS}-wrapper-title`))
-        
-        // if (connected) {
-        //     wrapper.append($$('p').append(`username: ${user.name}`))
-        //     wrapper.append($$('p').append(`organization: ${user.organization}`))
-        // } else {
-        //     wrapper.append($$('p').append('not connected'))
-        // }
-
-        // return wrapper
-
         return $$('div').addClass(`${BASE_CLASS}-wrapper`)
     }
 }
-export default DevKitComponent
+
+export default DashboardIntegrationComponent

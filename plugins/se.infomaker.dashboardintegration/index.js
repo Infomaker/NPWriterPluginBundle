@@ -1,9 +1,9 @@
-import DevkitPackage from './DevKitPackage'
+import DashboardIntegrationPackage from './DashboardIntegrationPackage'
 import {registerPlugin} from 'writer'
 
 export default () => {
     if (registerPlugin) {
-        registerPlugin(DevkitPackage)
+        registerPlugin(DashboardIntegrationPackage)
     } else {
         console.error("Register method not yet available");
     }
