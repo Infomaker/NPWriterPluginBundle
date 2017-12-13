@@ -518,7 +518,7 @@ class PublishFlowComponent extends Component {
             previousState: null
         })
 
-        api.article.copy();
+        api.article.copy(pluginId);
         this.renderPopover()
         this.props.popover.close()
     }
@@ -604,6 +604,8 @@ class PublishFlowComponent extends Component {
         this.extendState({
             unsavedChanges: true
         })
+
+        this.renderPopover()
     }
 
     /**

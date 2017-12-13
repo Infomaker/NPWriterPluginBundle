@@ -252,7 +252,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
     }
 
     _validateEmail(email) {
-        return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+        return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(email))
     }
 
     _validatePhone(phone) {
@@ -350,8 +350,9 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let extProperty = this._getItemMetaExtPropertyNode(authorConcept, type)
 
         if (!extProperty) {
-            extProperty = authorConcept.createElement('itemMetaExtProperty')
-            authorConcept.documentElement.querySelector('itemMeta').appendChild(extProperty)
+            const el = authorConcept.documentElement.querySelector('itemMeta')
+            extProperty = authorConcept.createElementNS(el.namespaceURI, 'itemMetaExtProperty')
+            el.appendChild(extProperty)
         }
 
         extProperty.setAttribute('value', value)
@@ -377,7 +378,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         }
 
         if (url || uri) {
-            const linkNode = authorConcept.createElement('link')
+            const linkNode = authorConcept.createElementNS(linksNode.namespaceURI, 'link')
 
             linkNode.setAttribute('rel', rel)
             linkNode.setAttribute('type', type)
@@ -410,9 +411,10 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let definitionNode = authorConcept.documentElement.querySelector('concept > definition[role="' + role + '"]')
 
         if (!definitionNode) {
-            definitionNode = authorConcept.createElement('definition')
+            const el = authorConcept.documentElement.querySelector('concept')
+            definitionNode = authorConcept.createElementNS(el.namespaceURI, 'definition')
             definitionNode.setAttribute('role', role)
-            authorConcept.documentElement.querySelector('concept').appendChild(definitionNode)
+            el.appendChild(definitionNode)
         }
 
         definitionNode.textContent = value
@@ -422,8 +424,9 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let nameNode = authorXml.documentElement.querySelector('concept > name')
 
         if (!nameNode) {
-            nameNode = authorXml.createElement('name')
-            authorXml.documentElement.querySelector('concept').appendChild(nameNode)
+            const el = authorXml.documentElement.querySelector('concept')
+            nameNode = authorXml.createElementNS(el.namespaceURI, 'name')
+            el.appendChild(nameNode)
         }
 
         return nameNode
@@ -441,8 +444,9 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let node = this._getDataChildNode(authorXml, nodeName)
 
         if (!node) {
-            node = authorXml.createElement(nodeName)
-            this._getSafeDataNode(authorXml).appendChild(node)
+            const el = this._getSafeDataNode(authorXml)
+            node = authorXml.createElementNS(el.namespaceURI, nodeName)
+            el.appendChild(node)
         }
 
         return node
@@ -453,7 +457,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
 
         let dataNode = contactInfoObject.querySelector('data')
         if (!dataNode) {
-            dataNode = authorXml.createElement('data')
+            dataNode = authorXml.createElementNS(contactInfoObject.namespaceURI, 'data')
             contactInfoObject.appendChild(dataNode)
         }
 
@@ -465,7 +469,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
 
         let objectNode = metadataNode.querySelector('object[type="x-im/contact-info"]')
         if (!objectNode) {
-            objectNode = authorXml.createElement('object')
+            objectNode = authorXml.createElementNS(metadataNode.namespaceURI, 'object')
             objectNode.setAttribute('type', 'x-im/contact-info')
             objectNode.setAttribute('id', 'KaPjxsuzpQz8')
 
@@ -479,8 +483,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let metadataNode = authorXml.documentElement.querySelector('concept > metadata')
 
         if (!metadataNode) {
-            metadataNode = authorXml.createElement('metadata')
-            metadataNode.setAttribute('xmlns', 'http://www.infomaker.se/newsml/1.0')
+            metadataNode = authorXml.createElementNS('http://www.infomaker.se/newsml/1.0', 'metadata')
             authorXml.documentElement.querySelector('concept').appendChild(metadataNode)
         }
 
@@ -491,8 +494,7 @@ class AuthorEditComponent extends AuthorBaseComponent {
         let links = authorXml.documentElement.querySelector('itemMeta > links')
 
         if (!links) {
-            links = authorXml.createElement('links')
-            links.setAttribute('xmlns', 'http://www.infomaker.se/newsml/1.0')
+            links = authorXml.createElementNS('http://www.infomaker.se/newsml/1.0', 'links')
             authorXml.documentElement.querySelector('itemMeta').appendChild(links)
         }
 
