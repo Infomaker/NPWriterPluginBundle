@@ -1,4 +1,5 @@
 import insertImage from "../models/insertImage";
+import {getExtensions} from '../models/ImageTypes'
 import {DragAndDropHandler} from "substance";
 import {api} from "writer";
 
@@ -10,7 +11,7 @@ class DropImageUri extends DragAndDropHandler {
     }
 
     match(params) {
-        const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
+        const isImage = (filename) => getExtensions().some((extension) => filename.includes(extension))
 
         return params.type === 'uri' && isImage(params.uri)
     }

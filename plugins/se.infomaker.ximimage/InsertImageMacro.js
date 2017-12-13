@@ -1,5 +1,5 @@
 //http://www.examplesof.com/photography/nature/rice-terraces.jpg
-import isImageUrl from './models/isImageUrl'
+import {getExtensions} from './models/ImageTypes'
 
 export default {
 
@@ -15,7 +15,9 @@ export default {
             return
         }
 
-        if(isImageUrl(url)) {
+        const isImage = (filename) => getExtensions().some((extension) => filename.includes(extension))
+
+        if(isImage(url)) {
             editorSession.executeCommand('ximimage-insert-image-url', {
                 imageUrl: url,
                 isPaste: params.action === 'paste',

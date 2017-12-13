@@ -210,8 +210,8 @@ export default {
      * Import the image link structure
      */
     importSoftcrops: function(el, node) {
-        let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-        let softcrops = imageModule.importSoftcropLinks(
+        let softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+        let softcrops = softcropTools.importSoftcropLinks(
             el.find('links')
         )
 
@@ -250,7 +250,6 @@ export default {
             data.append(
                 $$('title').append(converter.annotatedText([node.id, 'title']))
             )
-            
             const simpleText = converter.getDocument().get([node.id, 'title'])
             el.attr('title', simpleText)
         }
@@ -325,9 +324,9 @@ export default {
             imageLink.append(linkData)
 
             if (node.crops) {
-                let cropLinks = $$('links')
-                let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-                imageModule.exportSoftcropLinks($$, cropLinks, node.crops.crops)
+                const cropLinks = $$('links')
+                const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+                softcropTools.exportSoftcropLinks($$, cropLinks, node.crops.crops)
                 imageLink.append(cropLinks)
             }
         }

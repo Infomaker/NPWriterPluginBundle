@@ -122,8 +122,8 @@ const ImageGalleryConverter = {
 
     convertCrops: function(imageLinks) {
         // Import softcrops
-        const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-        const crops = imageModule.importSoftcropLinks(imageLinks)
+        const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+        const crops = softcropTools.importSoftcropLinks(imageLinks)
         if (crops.length) {
             // Convert properties back to numbers
             return {
@@ -203,8 +203,8 @@ const ImageGalleryConverter = {
 
             // Add crops to data
             if (galleryImageNode.crops) {
-                const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-                imageModule.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
+                const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+                softcropTools.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
             }
             if (galleryImageNode.disableAutomaticCrop) {
                 imageData.append(

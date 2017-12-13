@@ -15,9 +15,6 @@ import InsertImagesCommand from "./InsertImagesCommand";
 import InsertImageUrlCommand from "./InsertImageUrlCommand";
 import InsertImageMacro from './InsertImageMacro'
 
-import Softcrops from "./models/Softcrops"
-import isImage from './models/isImage'
-
 export default {
     name: 'ximimage',
     id: 'se.infomaker.ximimage',
@@ -37,16 +34,6 @@ export default {
         config.addDropHandler(new DropImageUUID())
         config.addDropHandler(new DropImageFile())
         config.addDropHandler(new DropImageUri())
-
-        config.addPluginModule(
-            'se.infomaker.ximimage.ximimagehandler',
-            Softcrops
-        )
-
-        config.addPluginModule(
-            'se.infomaker.ximimage.isImage',
-            isImage
-        )
 
         config.addIcon('image', {'fontawesome': 'fa-image'})
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
