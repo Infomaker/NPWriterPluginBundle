@@ -7,16 +7,16 @@ import ImageGalleryPreviewComponent from './ImageGalleryPreviewComponent'
 
 /**
  * @class ImageGalleryComponent
+ * @description
  * Image Gallery Component renders slider-preview, and image toolbox.
  * Contains nodes of ImageGalleryImageComponents.
  *
-
- * @property {Object} props
- * @property {Node} props.node
- * @property {Number} props.initialPosition Initial position for the gallery slider, useful for keeping position between renders
- * @property {string} props.isolatedNodeState
- * @property {Function} props.removeImage
- * @property {Function} props.onTransitionEnd Fires when the slider has finished an animation transition
+ * @property {object}   props
+ * @property {node}     props.node
+ * @property {number}   props.initialPosition Initial position for the gallery slider, useful for keeping position between renders
+ * @property {string}   props.isolatedNodeState
+ * @property {function} props.removeImage
+ * @property {function} props.onTransitionEnd Fires when the slider has finished an animation transition
  */
 class ImageGalleryComponent extends Component {
 
@@ -58,18 +58,27 @@ class ImageGalleryComponent extends Component {
 
         const FieldEditor = this.context.api.ui.getComponent('field-editor')
 
-        if(this.props.node.length > 0) {
+        if (this.props.node.length > 0) {
+            const cropperOverlay = $$('div').addClass('cropper-overlay hidden').ref('cropperOverlay')
             const galleryPreview = $$(ImageGalleryPreviewComponent, {
                 node: this.props.node,
                 isolatedNodeState: this.props.isolatedNodeState,
+                cropsEnabled: this._cropsEnabled,
+                imageInfoEnabled: this._imageInfoEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
+                onCropsClick: (galleryImageNode) => {
+                    this._openCropper($$, galleryImageNode)
+                },
+                onInfoClick: (galleryImageNode) => {
+                    this._openMetaData(galleryImageNode)
+                },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
                 }
             })
 
-            el.append(galleryPreview)
+            el.append([cropperOverlay, galleryPreview])
         } else {
             const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('im-imagegallery.dropzone-label'))
             const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
@@ -111,6 +120,36 @@ class ImageGalleryComponent extends Component {
     }
 
     /**
+     * Gets crops value from configuration
+     *
+     * @returns {Array}
+     * @private
+     */
+    get _configuredCrops() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'crops', [])
+    }
+
+    /**
+     * Gets cropsEnabled value from configuration
+     *
+     * @returns {boolean}
+     * @private
+     */
+    get _cropsEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'cropsEnabled', false)
+    }
+
+    /**
+     * Gets imageInfoEnabled value from configuration
+     *
+     * @returns {*}
+     * @private
+     */
+    get _imageInfoEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'imageInfoEnabled', false)
+    }
+
+    /**
      * @param $$
      * @returns {VirtualElement}
      * @private
@@ -124,14 +163,16 @@ class ImageGalleryComponent extends Component {
             imageGalleryToolbox.addClass('show')
 
             if (this.props.node.nodes && this.props.node.nodes.length) {
-                let toolboxContent = $$('div').addClass('toolboox-content')
-
+                const toolboxContent = $$('div').addClass('toolboox-content')
                 this.props.node.nodes.forEach((galleryImageNodeId, index) => {
                     const galleryImageNode = this.context.doc.get(galleryImageNodeId)
                     toolboxContent.append($$(ImageGalleryImageComponent, {
                         index,
                         node: galleryImageNode,
                         isolatedNodeState: this.props.isolatedNodeState,
+                        cropsEnabled: this._cropsEnabled,
+                        imageInfoEnabled: this._imageInfoEnabled,
+                        configuredCrops: this._configuredCrops,
                         remove: () => {
                             this._removeImage(galleryImageNodeId)
                         },
@@ -142,6 +183,12 @@ class ImageGalleryComponent extends Component {
                         dragEnd: () => {
                             // Remove class which prevents interaction with toolbox input fields when dragging image components
                             this.refs.toolBox.removeClass('drag-started')
+                        },
+                        onCropClick: () => {
+                            this._openCropper($$, galleryImageNode)
+                        },
+                        onInfoClick: () => {
+                            this._openMetaData(galleryImageNode)
                         }
                     }).ref(galleryImageNodeId))
                 })
@@ -210,6 +257,72 @@ class ImageGalleryComponent extends Component {
         })
     }
 
+    _openCropper($$, galleryImageNode) {
+        const ImageCropperComponent = api.ui.getComponent('ImageCropperComponent')
+        galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
+            .then((src) => {
+                const cropper = $$(ImageCropperComponent, {
+                    parentId: galleryImageNode,
+                    src,
+                    configuredCrops: this._configuredCrops,
+                    width: galleryImageNode.width,
+                    height: galleryImageNode.height,
+                    crops: galleryImageNode.crops.crops || [],
+                    disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
+                    abort: () => {
+                        this.refs.cropperOverlay.addClass('hidden')
+                        return true
+                    },
+                    restore: () => {
+                        galleryImageNode.setSoftcropData([])
+                        this.rerender()
+                    },
+                    save: (newCrops, disableAutomaticCrop) => {
+                        galleryImageNode.setSoftcropData(newCrops, disableAutomaticCrop)
+                        this.rerender()
+                    }
+                })
+
+                this.refs.cropperOverlay.removeClass('hidden')
+                this.refs.cropperOverlay.append(cropper)
+            })
+            .catch(err => {
+                console.error(err)
+                api.ui.showMessageDialog([{
+                    type: 'error',
+                    message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
+                }])
+            })
+    }
+
+    /**
+     * Show image meta data in a modal dialog
+     *
+     * @memberof ImageDisplay
+     */
+    _openMetaData(galleryImageNode) {
+        const imageNode = this.context.api.doc.get(galleryImageNode.imageFile)
+        api.router.getNewsItem(imageNode.uuid, 'x-im/image')
+            .then(response => {
+                api.ui.showDialog(
+                    this.getComponent('dialog-image'),
+                    {
+                        node: imageNode,
+                        url: imageNode.getUrl(),
+                        newsItem: response,
+                        disablebylinesearch: false
+                    },
+                    {
+                        title: this.getLabel('Image archive information'),
+                        global: true,
+                        primary: this.getLabel('Save'),
+                        secondary: this.getLabel('Cancel'),
+                        cssClass: 'np-image-dialog'
+                    }
+                )
+            })
+    }
+
     /**
      * Handles dropped node event propagated from
      * an ImageGalleryImageComponent
@@ -226,7 +339,7 @@ class ImageGalleryComponent extends Component {
         const toId = ev.target.id.split('_').pop()
         const addAfter = ev.target.classList.contains('add-below')
 
-        if(!fromId) {
+        if (!fromId) {
             return
         }
 

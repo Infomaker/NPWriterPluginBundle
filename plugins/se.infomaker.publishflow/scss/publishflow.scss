@@ -1,60 +1,31 @@
 .sc-np-publishflow {
-    width: 300px;
-    margin: 15px;
+    width: 280px;
+    padding: 15px;
 
-    .sc-np-date-time {
-        padding: 0 15px 0 45px;
-
-        label,
-        input {
-            clear: both;
-            font-size: 80%;
-            width: auto;
-        }
-
-        label {
-            display: block;
-            margin-bottom: -10px;
-            line-height: 1.4rem;
-        }
-
-        input {
-            display: inline-block;
-            margin-bottom: 4px;
-            position: relative;
-            overflow: visible;
-        }
-
-        input:required:invalid,
-        input:focus:invalid {
-            background: #FFF0F0;
-
-            &::after {
-                font-family: FontAwesome;
-                content: "\f00d";
-                position: absolute;
-                right: -25px;
-                color: #d9534f;
-            }
-        }
-
-        input:required:valid {
-            &::after {
-                font-family: FontAwesome;
-                content: "\f00c";
-                position: absolute;
-                right: -25px;
-                color: #5cb85c;
-            }
-        }
+    &.sc-np-publishflow-haspublishedversion {
+        background: #E1F3FE;
     }
 
     .sc-np-publish-body {
 
+        &>h2 {
+            font-weight: 600;
+            color: #555;
+
+            i {
+                margin-right: 6px;
+                color: #288dc0;
+                opacity: 0.9;
+            }
+        }
+
         &>p {
-            color: #777;
-            line-height: 1.4rem;
-            margin-top: 0.7rem;
+            color: #666;
+            line-height: 1.3rem !important;
+            margin-top: 0.5rem !important;
+            font-size: 85%;
+            font-family: LatoWebLight;
+            font-weight: bold;
 
             &.dates {
                 span {
@@ -66,6 +37,7 @@
 
         .sc-np-publish-actions {
             margin: 15px -15px 15px -15px;
+            background: #ffffff;
 
             &>* {
                 border-bottom: 1px solid #ddd;
@@ -95,34 +67,25 @@
                     color: #666;
                 }
 
-                i {
-                    opacity: 0.7;
-                    line-height: 46px;
-                    width: 30px;
+                span.fa-stack {
+                    font-size: 16px;
 
-                    &.fa-check-circle-o {
-                        color: #565656;
+                    i {
+                        line-height: 46px;
                     }
 
-                    &.fa-send {
-                        color: #5cb85c;
+                    i.fa-stack-2x {
+                        font-size: 30px;
                     }
 
-                    &.fa-retweet {
-                        color: #2e94b7;
-                    }
-
-                    &.fa-clock-o {
-                        color: #2e94b7;
-                    }
-
-                    &.fa-ban {
-                        color: #d9534f;
+                    i.fa-stack-1x {
+                        font-size: 14px;
                     }
                 }
 
                 span {
                     line-height: 46px;
+                    padding-left: 10px;
                 }
 
                 &:hover {
@@ -140,43 +103,138 @@
                 }
             }
 
-            div.sc-np-publish-action-section {
-                div.sc-np-publish-action-section-content {
-                    display: none;
-                    margin-top: -6px;
+        }
 
-                    div.sc-np-publish-action-section-content-actions {
-                        button {
-                            font-size: 90%;
-                            line-height: 90%;
-                        }
-                    }
+        div.sc-np-publish-action-section {
+            background: #fbfbfb;
+            margin: 15px -15px -15px -15px;
+            border-top: 1px solid #ddd;
+            padding: 0 0 10px 0;
+
+            .sc-np-date-time {
+                padding: 10px 15px 0 15px;
+
+                label,
+                input {
+                    clear: both;
+                    font-size: 80%;
+                    width: auto;
                 }
 
-                &.active {
+                label {
                     display: block;
-                    background: #fafafa;
-                    padding-bottom: 15px;
+                    margin-bottom: -10px;
+                    line-height: 1.4rem;
+                }
 
-                    a {
-                        color: #000;
-                        &.more::after {
-                            content: "\f0d8";
-                            color: #000;
-                        }
-                    }
+                input {
+                    display: inline-block;
+                    margin-bottom: 4px;
+                    position: relative;
+                    overflow: visible;
+                    width: 225px;
+                    padding: 0.4rem 0.5rem;
+                }
 
-                    i {
-                        opacity: 1;
-                    }
+                input:after {
+                    opacity: 0.4;
+                    font-family: "FontAwesome";
+                    position: absolute;
+                    left: 1px;
+                    top: 7px;
+                    font-size: 14px;
+                }
 
-                    div.sc-np-publish-action-section-content {
-                        display: block;
+                input[type="date"],
+                input[type="time"] {
+                    padding-left: 18px;
+                    border: none;
+                    border-bottom: 1px solid #cccbcb;
+                    background: none;
+                    border-radius: 0;
+                }
+
+                input[type="date"] {
+                    width: 60%;
+                    margin-right:2%;
+                }
+                input[type="date"]:after {
+                    content: "\f271";
+                }
+
+
+                input[type="time"] {
+                    width: 38%;
+                }
+                input[type="time"]:after {
+                    content: "\f017";
+                }
+
+                input:required:invalid,
+                input:focus:invalid {
+                    background: #FFF0F0;
+
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\f00d";
+                        position: absolute;
+                        right: -25px;
+                        color: #d9534f;
                     }
                 }
 
+                input:required:valid {
+                    &::after {
+                        font-family: FontAwesome;
+                        content: "\f00c";
+                        position: absolute;
+                        right: -25px;
+                        color: #5cb85c;
+                    }
+                }
             }
 
+            strong {
+                display: none;
+                margin-left: -30px;
+                font-size: 80%;
+            }
         }
+
+        .sc-np-other-actions {
+            padding: 10px;
+            background: #fafafa;
+            height: 60px;
+            margin: -15px;
+        }
+    }
+}
+
+.sc-np-bar-container {
+
+    // Override save button style
+    .sc-np-btn-group {
+        button:first-child {
+            border-radius: 3px 0 0 3px;
+        }
+
+        button:last-child {
+            border-radius: 0 3px 3px 0;
+            padding: 0.5rem 0.5rem;
+        }
+
+        &.disabled {
+            button {
+                border-color: #878787;
+                color: #b1b1b1;
+                background-color: #878787;
+            }
+        }
+    }
+
+    // Override publish status
+    .sc-np-bar-item {
+        color: #888;
+        margin: 0 18px !important;
     }
 }

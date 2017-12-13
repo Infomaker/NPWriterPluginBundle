@@ -27,37 +27,49 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
-            if(!this.saveInProgress) {
+            if (!this.saveInProgress) {
                 this.saveInProgress = true
                 this.defaultAction()
             }
-        });
+        })
+
+        api.events.on(pluginId, event.USERACTION_LOCK, () => {
+            this.locked = true
+            this.props.popover.disable()
+        })
+
+        api.events.on(pluginId, event.USERACTION_UNLOCK, () => {
+            this.locked = false
+            this.props.popover.enable()
+        })
     }
 
     dispose() {
         api.events.off(pluginId, event.DOCUMENT_CHANGED)
         api.events.off(pluginId, event.DOCUMENT_SAVED)
-        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
+        api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.USERACTION_SAVE)
+        api.events.off(pluginId, event.USERACTION_LOCK)
+        api.events.off(pluginId, event.USERACTION_UNLOCK)
         this._clearSaveTimeout();
     }
 
     getInitialState() {
-        let status = api.newsItem.getPubStatus()
         this.publishFlowMgr = new PublishFlowManager(pluginId)
 
         return {
-            status: status,
+            status: api.newsItem.getPubStatus(),
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.publishFlowMgr.getAllowedActions(status.qcode)
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
+            previousState: null
         }
     }
 
     didMount() {
-        this._updateStatus(true, false)
+        this.renderPopover()
 
         if (!api.browser.isSupported()) {
             this.props.popover.disable()
@@ -65,124 +77,29 @@ class PublishFlowComponent extends Component {
     }
 
     render($$) {
-        var el = $$('div')
+        const el = $$('div')
             .addClass('sc-np-publishflow')
             .append(this.renderBody($$))
+
+        if (this.state.hasPublishedVersion) {
+            el.addClass('sc-np-publishflow-haspublishedversion')
+        }
 
         return el
     }
 
     renderBody($$) {
-        let el = $$('div').addClass('sc-np-publish-body'),
-            actions = this.renderAllowedActions($$)
+        let el = $$('div').addClass('sc-np-publish-body')
 
-        switch (this.state.status.qcode) {
-            case 'imext:draft':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('This article is currently an unpublished draft')
-                    )
-                ])
-                break
+        el.append(this.renderCurrentStatus($$))
 
-            case 'imext:done':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article is currently pending approval')
-                    )
-                ])
-                break
+        el.append(this.renderScheduling($$))
 
-            case 'stat:withheld':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Scheduled')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article is scheduled to be published') +
-                        ' ' +
-                        moment(this.state.pubStart.value).fromNow()
-                    )
-                ])
+        el.append(this.renderTransitions($$))
 
-                var specEl = $$('p').addClass('dates').append([
-                    $$('span').append(
-                        this.getLabel('From') + ': '
-                    ),
-                    $$('strong').append(
-                        moment(this.state.pubStart.value).format('YYYY-MM-DD HH:mm')
-                    )
-                ])
-
-                if (this.state.pubStop) {
-                    let toObj = moment(this.state.pubStop.value)
-                    if (toObj.isValid()) {
-                        specEl.append([
-                            $$('br'),
-                            $$('span').append(
-                                this.getLabel('To') + ': '
-                            ),
-                            $$('strong').append(
-                                moment(this.state.pubStop.value).format('YYYY-MM-DD HH:mm')
-                            )
-                        ])
-                    }
-                }
-
-                el.append(specEl)
-
-                break
-
-            case 'stat:usable':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Republish article?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article was published') +
-                        ' ' +
-                        moment(this.state.pubStart.value).fromNow()
-                    )
-                ])
-                break
-
-            case 'stat:canceled':
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Publish article again?')
-                    ),
-                    $$('p').append(
-                        this.getLabel('Article has been canceled and is no longer published')
-                    )
-                ])
-                break
-
-            default:
-                el.append([
-                    $$('h2').append(
-                        this.getLabel('Unknown state')
-                    ),
-                    $$('p').append(
-                        this.getLabel('This article has an unknown, unsupported, status')
-                    )
-                ])
-                break
-        }
-
-        el.append(actions)
         el.append(
             $$('div')
-                .css({
-                    'float': 'left',
-                    'padding-bottom': '13px',
-                    'width': '100%'
-                })
+                .addClass('sc-np-other-actions')
                 .append([
                     $$('button')
                         .attr({
@@ -218,94 +135,110 @@ class PublishFlowComponent extends Component {
         return el
     }
 
-    renderAllowedActions($$) {
-        let actionsEl = $$('div')
-            .addClass('sc-np-publish-actions')
+    renderCurrentStatus($$) {
+        const statusDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
-        this.publishFlowMgr.getAllowedActions(this.state.status.qcode).forEach(action => {
-            switch (action) {
-                case 'imext:draft':
-                    actionsEl.append(this.renderActionDraft($$))
-                    break
-                case 'imext:done':
-                    actionsEl.append(this.renderActionDone($$))
-                    break
-                case 'stat:withheld':
-                    actionsEl.append(this.renderActionWithheld($$))
-                    break
-                case 'stat:usable':
-                    actionsEl.append(this.renderActionUsable($$))
-                    break
-                case 'stat:canceled':
-                    actionsEl.append(this.renderActionCanceled($$))
-                    break
-            }
-        })
-
-        return actionsEl
-    }
-
-    renderActionDraft($$) {
-        return $$('a').append([
-            $$('i').addClass('fa fa-pencil'),
-            $$('span').append(
-                this.getLabel('Save as draft')
-            )
-        ])
-            .on('click', () => {
-                this._save(() => {
-                    this.publishFlowMgr.setToDraft()
-                })
-            })
-    }
-
-    renderActionDone($$) {
-        return $$('a').append([
-            $$('i').addClass('fa fa-check-circle-o'),
-            $$('span').append(
-                this.getLabel('Ready for approval')
-            )
-        ])
-            .on('click', () => {
-                this._save(() => {
-                    this.publishFlowMgr.setToDone()
-                })
-            })
-
-    }
-
-    renderActionWithheld($$) {
-        let el = $$('div')
-            .addClass('sc-np-publish-action-section')
-            .ref('pfc-withheld')
-
-        el.append(
-            $$('a').append([
-                $$('i').addClass('fa fa-clock-o'),
-                $$('span').append(
-                    this.getLabel('Schedule for publish')
+        if (statusDef === null) {
+            return [
+                $$('h2').append(
+                    this.getLabel('Unknown state')
+                ),
+                $$('p').append(
+                    this.getLabel('This article has an unknown, unsupported, status')
                 )
-            ])
-                .addClass('more')
-                .on('click', () => {
-                    if (this.refs['pfc-withheld'].hasClass('active')) {
-                        this.refs['pfc-withheld'].removeClass('active')
-                    }
-                    else {
-                        this.refs['pfc-withheld'].addClass('active')
-                    }
-                })
-        )
+            ]
+        }
 
-        let fromVal = '',
-            toVal = '';
+        const usableDef = this.publishFlowMgr.getStateDefinitionByPubStatus('stat:usable')
+        const title = this.state.hasPublishedVersion ? usableDef.title : statusDef.title
+        const h2 = $$('h2')
+
+        if (this.state.hasPublishedVersion) {
+            h2.append(
+                $$('i').addClass('fa fa-globe')
+            )
+        }
+
+        return [
+            h2.append(
+                this.getLabel(title)
+            ),
+            $$('p').append(
+                this.getLabel(statusDef.description)
+            )
+        ]
+    }
+
+    /**
+     * Render pubStart and pubStop fields
+     *
+     * @param {object}
+     * @return {object}
+     */
+    renderScheduling($$) {
+        let fromDateVal = '',
+            fromTimeVal = '',
+            toDateVal = '',
+            toTimeVal = ''
 
         if (this.state.pubStart) {
-            fromVal = moment(this.state.pubStart.value).format('YYYY-MM-DDTHH:mm')
+            fromDateVal = moment(this.state.pubStart.value).format('YYYY-MM-DD')
+            fromTimeVal = moment(this.state.pubStart.value).format('HH:mm')
         }
 
         if (this.state.pubStop) {
-            toVal = moment(this.state.pubStop.value).format('YYYY-MM-DDTHH:mm')
+            toDateVal = moment(this.state.pubStop.value).format('YYYY-MM-DD')
+            toTimeVal = moment(this.state.pubStop.value).format('HH:mm')
+        }
+
+        let el = $$('div')
+            .addClass('sc-np-publish-action-section')
+
+        let pubStartdateAttribs = {
+            id: 'pfc-lbl-withheld-fromdate',
+            type: 'date'
+        }
+
+        let pubStarttimeAttribs = {
+            id: 'pfc-lbl-withheld-fromtime',
+            type: 'time'
+        }
+
+        let pubStopdateAttribs = {
+            id: 'pfc-lbl-withheld-todate',
+            type: 'date'
+        }
+
+        let pubStoptimeAttribs = {
+            id: 'pfc-lbl-withheld-totime',
+            type: 'time'
+        }
+
+        if (this.state.status.qcode === 'stat:usable') {
+            pubStartdateAttribs.disabled = true
+            pubStarttimeAttribs.disabled = true
+        }
+
+        if (this.state.status.qcode === 'stat:withheld') {
+            const stateDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
+            if (typeof stateDef.actions === 'object') {
+                if (stateDef.actions.pubStart === 'required') {
+                    pubStartdateAttribs.required = true
+                    pubStarttimeAttribs.required = true
+                }
+
+                if (stateDef.actions.pubStop === 'required') {
+                    pubStopdateAttribs.required = true
+                    pubStoptimeAttribs.required = true
+                }
+            }
+        }
+
+        if (this.state.hasPublishedVersion) {
+            pubStartdateAttribs.disabled = true
+            pubStarttimeAttribs.disabled = true
+            pubStopdateAttribs.disabled = true
+            pubStoptimeAttribs.disabled = true
         }
 
         el.append(
@@ -315,117 +248,195 @@ class PublishFlowComponent extends Component {
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-from')
                         .append(
-                            this.getLabel('From')
+                            this.getLabel('Publish from')
                         ),
-                    $$('input')
-                        .attr({
-                            id: 'pfc-lbl-withheld-from',
-                            type: 'datetime-local',
-                            required: true
-                        })
-                        .addClass('form-control')
-                        .ref('pfc-lbl-withheld-from')
-                        .val(fromVal),
+                    $$('div').append([
+                        $$('input')
+                            .attr(pubStartdateAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-fromdate')
+                            .val(fromDateVal)
+                            .on('change', () => {
+                                this._setPubStart()
+                            }),
+                        $$('input')
+                            .attr(pubStarttimeAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-fromtime')
+                            .val(fromTimeVal)
+                            .on('change', () => {
+                                this._setPubStart()
+                            })
+                    ]),
                     $$('label')
                         .attr('for', 'pfc-lbl-withheld-to')
                         .append(
-                            this.getLabel('To')
+                            this.getLabel('Publish to')
                         ),
-                    $$('input')
-                        .attr({
-                            id: 'pfc-lbl-withheld-to',
-                            type: 'datetime-local'
-                        })
-                        .addClass('form-control')
-                        .ref('pfc-lbl-withheld-to')
-                        .val(toVal),
-                    $$('div')
-                        .addClass('sc-np-publish-action-section-content-actions')
-                        .append(
-                            $$('button')
-                                .addClass('sc-np-btn btn-primary')
-                                .append(
-                                    this.getLabel('Save')
-                                )
-                        )
-                        .on('click', () => {
-                            try {
-                                var fromVal = this.refs['pfc-lbl-withheld-from'].val(),
-                                    toVal = this.refs['pfc-lbl-withheld-to'].val()
-                                this._save(() => {
-                                    this.publishFlowMgr.setToWithheld(
-                                        fromVal,
-                                        toVal
-                                    )
-                                })
-                            }
-                            catch (ex) {
-                                this.refs['pfc-lbl-withheld-from'].addClass('imc-flash')
-                                window.setTimeout(() => {
-                                    this.refs['pfc-lbl-withheld-from'].removeClass('imc-flash')
-                                }, 500)
-                                return false
-                            }
-                        })
-
+                    $$('div').append([
+                        $$('input')
+                            .attr(pubStopdateAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-todate')
+                            .val(toDateVal)
+                            .on('change', () => {
+                                this._setPubStop()
+                            }),
+                        $$('input')
+                            .attr(pubStoptimeAttribs)
+                            .addClass('form-control')
+                            .ref('pfc-lbl-withheld-totime')
+                            .val(toTimeVal)
+                            .on('change', () => {
+                                this._setPubStop()
+                            })
+                    ])
                 ])
         )
 
         return el
     }
 
-    renderActionUsable($$) {
-        let el = $$('a')
+    _setPubStart() {
+        let date = this.refs['pfc-lbl-withheld-fromdate'].val(),
+            time = this.refs['pfc-lbl-withheld-fromtime'].val(),
+            dateTime = null
 
-        if (this.state.status.qcode === 'stat:usable') {
-            el.append([
-                $$('i').addClass('fa fa-retweet'),
-                $$('span').append(
-                    this.getLabel('Republish article')
-                )
-            ])
+        if (date !== "" && time !== "") {
+            dateTime = date + "T" + time
         }
-        else {
-            el.append([
-                $$('i').addClass('fa fa-send'),
-                $$('span').append(
-                    this.getLabel('Publish article')
-                )
-            ])
+        else if (date !== "" && time === "") {
+            dateTime = date + "T00:00"
         }
 
-        el.on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToUsable()
-            })
-        })
+        if (this.state.pubStart === dateTime) {
+            return
+        }
 
-        return el
+        try {
+            this.publishFlowMgr.setPubStart(dateTime)
+            this.extendState({pubStart: api.newsItem.getPubStart()})
+            this._onDocumentChanged() // Have to do this to make sure we get our own change
+        }
+        catch (ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: ex.message
+                }],
+                () => {
+                }
+            )
+        }
     }
 
-    renderActionCanceled($$) {
-        return $$('a').append([
-            $$('span').append(
-                $$('i').addClass('fa fa-ban'),
-                this.getLabel('Unpublish article')
+    _setPubStop() {
+        let date = this.refs['pfc-lbl-withheld-todate'].val(),
+            time = this.refs['pfc-lbl-withheld-totime'].val(),
+            dateTime = null
+
+        if (date !== "" && time !== "") {
+            dateTime = date + "T" + time
+        }
+        else if (date !== "" && time === "") {
+            dateTime = date + "T00:00"
+        }
+
+        if (this.state.pubStop === dateTime) {
+            return
+        }
+
+        try {
+            this.publishFlowMgr.setPubStop(dateTime)
+            this.extendState({pubStop: api.newsItem.getPubStop()})
+            this._onDocumentChanged() // Have to do this to make sure we get our own change
+        }
+        catch (ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: ex.message
+                }],
+                () => {
+                }
             )
-        ])
-        .on('click', () => {
-            this._save(() => {
-                this.publishFlowMgr.setToCanceled()
+        }
+    }
+
+    /**
+     * Render all allowed transitions for the current state
+     *
+     * @param {VirtualElement} $$
+     * @return {VirtualObject}
+     */
+    renderTransitions($$) {
+        let actionsEl = $$('div')
+            .addClass('sc-np-publish-actions')
+
+        this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .forEach(transition => {
+                actionsEl.append(this.renderTransition($$, transition))
             })
-        })
+
+        return actionsEl
+    }
+
+    /**
+     * Render transition which is defined in config file.
+     * @param {VirtualElement} $$
+     * @param {string} transition The transition, in the configuration, to render
+     * @return {VirtualObject}
+     */
+    renderTransition($$, transition) {
+        const nextState = this.publishFlowMgr.getStateDefinitionByName(transition.nextState)
+        const icon = nextState && nextState.icon ? nextState.icon : 'fa-question'
+        const color = nextState && nextState.color ? nextState.color : '#888888'
+
+        return $$('a')
+            .append([
+                $$('span').addClass('fa-stack fa-lg').append([
+                    $$('i').addClass('fa fa-circle fa-stack-2x').css('color', color),
+                    $$('i').addClass(`fa ${icon} fa-stack-1x fa-inverse`)
+                ]),
+                $$('span').append(
+                    this.getLabel(transition.title)
+                )
+            ])
+            .on('click', () => {
+                this._save(() => {
+                    try {
+                        this.publishFlowMgr.executeTransition(
+                            transition.nextState,
+                            this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
+                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+                        )
+                    }
+                    catch (ex) {
+                        api.ui.showMessageDialog(
+                            [{
+                                type: 'error',
+                                message: this.getLabel(ex.message)
+                            }],
+                            () => {
+                            }
+                        )
+
+                        return false
+                    }
+                })
+            })
     }
 
     /**
      * Default action called by default action in toolbar/popover
      */
     defaultAction() {
-
-        this._initSaveTimeout()
-        api.newsItem.save()
-        this.props.popover.disable()
-        this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+        if (!this.locked) {
+            this._initSaveTimeout()
+            api.newsItem.save()
+            this.props.popover.disable()
+            this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
+        }
     }
 
     _failTimeout() {
@@ -465,7 +476,8 @@ class PublishFlowComponent extends Component {
                     window.location.replace(url)
                 }
             )
-        } else {
+        }
+        else {
             window.location.replace(url)
         }
 
@@ -495,19 +507,19 @@ class PublishFlowComponent extends Component {
      * Execute creation of a new article copy
      */
     _createDuplicate() {
-        this.publishFlowMgr.setToDraft()
+        this.publishFlowMgr.setPubStatus('imext:draft')
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             unsavedChanges: false,
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
-            allowed: this.publishFlowMgr.getAllowedActions(status.qcode),
             previousState: null
         })
 
-        api.article.copy();
-        this._updateStatus(true, true)
+        api.article.copy(pluginId);
+        this.renderPopover()
         this.props.popover.close()
     }
 
@@ -518,7 +530,9 @@ class PublishFlowComponent extends Component {
         this._saveState()
 
         if (beforeSaveFunc) {
-            beforeSaveFunc()
+            if (false === beforeSaveFunc()) {
+                return
+            }
         }
 
         this.defaultAction()
@@ -532,7 +546,8 @@ class PublishFlowComponent extends Component {
             previousState: {
                 pubStatus: api.newsItem.getPubStatus(),
                 pubStart: api.newsItem.getPubStart(),
-                pubStop: api.newsItem.getPubStop()
+                pubStop: api.newsItem.getPubStop(),
+                hasPublishedVersion: api.newsItem.getHasPublishedVersion()
             }
         })
     }
@@ -544,15 +559,17 @@ class PublishFlowComponent extends Component {
         this._clearSaveTimeout()
         this.saveInProgress = false
 
-        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.setIcon('fa-caret-down')
         this.props.popover.enable()
 
         if (!this.state.previousState) {
-            this._updateStatus(false)
+            this.renderPopover()
             return
         }
 
         api.newsItem.setPubStatus(pluginId, this.state.previousState.pubStatus)
+
+        api.newsItem.setHasPublishedVersion(pluginId, this.state.previousState.hasPublishedVersion)
 
         if (this.state.previousState.pubStart) {
             api.newsItem.setPubStart(pluginId, this.state.previousState.pubStart)
@@ -572,22 +589,23 @@ class PublishFlowComponent extends Component {
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             previousState: null,
             unsavedChanges: true
         })
 
-        this._updateStatus(true)
+        this.renderPopover()
     }
 
     /**
      * When document is marked unsaved
      */
     _onDocumentChanged() {
-        this._updateButton(true)
-
         this.extendState({
             unsavedChanges: true
         })
+
+        this.renderPopover()
     }
 
     /**
@@ -597,58 +615,45 @@ class PublishFlowComponent extends Component {
         this._clearSaveTimeout()
         this.saveInProgress = false
 
-        this.props.popover.setIcon('fa-ellipsis-h')
+        this.props.popover.setIcon('fa-caret-down')
         this.props.popover.enable()
 
         this.extendState({
             status: api.newsItem.getPubStatus(),
             pubStart: api.newsItem.getPubStart(),
             pubStop: api.newsItem.getPubStop(),
+            hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
             unsavedChanges: false
         })
 
-        this._updateStatus(true)
+        this.renderPopover()
     }
 
     /**
      * Update UI
      */
-    _updateStatus(updateButtonSavedLabel, unsavedChanges) {
-        if (updateButtonSavedLabel) {
-            this._updateButton(unsavedChanges)
-        }
-
-        if (this.state.status.qcode === 'stat:usable') {
-            this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode) +
-                " " +
-                moment(this.state.pubStart.value).fromNow()
-            )
-        }
-        else if (this.state.status.qcode === 'stat:withheld') {
-            this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode) +
-                " " +
-                moment(this.state.pubStart.value).fromNow()
-            )
-        }
-        else {
-            this.props.popover.setStatusText(
-                this.getLabel(this.state.status.qcode)
-            )
-        }
-    }
-
-    _updateButton(unsavedChanges) {
-        let caption = (this.state.status.qcode === 'stat:usable') ? 'Update' : 'Save'
-        if (unsavedChanges) {
-            caption += ' *'
-        }
+    // TODO can we call this in render function?
+    renderPopover() {
+        const stateDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         this.props.popover.setButtonText(
-            this.getLabel(caption)
+            stateDef.saveActionLabel + (this.state.unsavedChanges ? ' *' : '')
+        )
+
+        // TODO Visualize pubStatus and hasPublishedVersion according to Joacim
+
+        let status = {title:stateDef.title}
+
+        if (this.state.hasPublishedVersion) {
+            status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
+
+        }
+
+        this.props.popover.setStatusText(
+            status
         )
     }
+
 }
 
 export default PublishFlowComponent
