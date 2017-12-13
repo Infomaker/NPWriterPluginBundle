@@ -29,7 +29,9 @@ class ContentPartComponent extends Component {
      * @private
      */
     _loadManager() {
-        this.manager = new ContentPartManager(this.props.node)
+        if (!this.manager) {
+            this.manager = new ContentPartManager(this.props.node)
+        }
     }
 
     /**
