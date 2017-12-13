@@ -72,8 +72,9 @@ class ContentPartManager {
      */
     _createFieldOnNode(field) {
         const currentValue = this.node.fields[field.id]
-        if (!this.reservedFields.includes(field.id) && currentValue === undefined) {
-            this.node.fields[field.id] = ''
+        const doc = this.node.getDocument()
+        if (doc && !this.reservedFields.includes(field.id) && currentValue === undefined) {
+            doc.set([this.node.id, 'fields', field.id], '')
         }
     }
 
