@@ -518,7 +518,7 @@ class PublishFlowComponent extends Component {
             previousState: null
         })
 
-        api.article.copy();
+        api.article.copy(pluginId);
         this.renderPopover()
         this.props.popover.close()
     }
