@@ -202,9 +202,11 @@ const ImageGalleryConverter = {
             const imageLinks = $$('links')
 
             // Add crops to data
-            if (galleryImageNode.crops) {
+            if (galleryImageNode.crops && Array.isArray(galleryImageNode.crops.crops)) {
                 const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
-                softcropTools.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
+                imageLinks.append(
+                    softcropTools.exportSoftcropLinks($$, galleryImageNode.crops.crops)
+                )
             }
             if (galleryImageNode.disableAutomaticCrop) {
                 imageData.append(

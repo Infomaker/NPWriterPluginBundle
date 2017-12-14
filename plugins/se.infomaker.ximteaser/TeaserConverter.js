@@ -323,10 +323,11 @@ export default {
 
             imageLink.append(linkData)
 
-            if (node.crops) {
-                const cropLinks = $$('links')
+            if (node.crops && Array.isArray(node.crops.crops)) {
                 const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
-                softcropTools.exportSoftcropLinks($$, cropLinks, node.crops.crops)
+                const cropLinks = $$('links').append(
+                    softcropTools.exportSoftcropLinks($$, node.crops.crops)
+                )
                 imageLink.append(cropLinks)
             }
         }
