@@ -15,9 +15,7 @@ class InserContentPartCommand extends InsertNodeCommand {
             const node = {
                 type: 'contentpart',
                 id: id,
-                title: '',
-                vignette: '',
-                contentpartUri: this.getDefaultContentPartUri(),
+                contentPartUri: this.getDefaultContentPartUri(),
                 nodes: [emptyParamNode.id]
             }
             tx.insertBlockNode(node)
@@ -51,7 +49,7 @@ class InserContentPartCommand extends InsertNodeCommand {
     getDefaultContentPartUri() {
         let defaultContentpartUri = null
 
-        api.getConfigValue('se.infomaker.contentpart', 'contentpartTypes', []).forEach((inlineText) => {
+        api.getConfigValue('se.infomaker.contentpart', 'types', []).forEach((inlineText) => {
             if (inlineText.default) {
                 defaultContentpartUri = inlineText.uri
             }
