@@ -70,9 +70,6 @@ const ImageGalleryConverter = {
 
                 if (imgData) {
                     imgData.children.forEach(child => {
-                        if (child.tagName === 'byline') {
-                            imageGalleryImage.byline = converter.annotatedText(child, [imageGalleryImage.id, 'byline'])
-                        }
                         if (child.tagName === 'text') {
                             imageGalleryImage.caption = converter.annotatedText(child, [imageGalleryImage.id, 'caption'])
                         }
@@ -91,15 +88,12 @@ const ImageGalleryConverter = {
     },
 
     convertAuthors: function(node, authorLinks) {
-        let seen = new Map()
-
         return authorLinks.children
             .filter((authorLinkEl) => authorLinkEl.getAttribute('rel') === 'author')
-            .map((authorLinkEl) => {
+            .map(function(authorLinkEl) {
                 const emailElement = authorLinkEl.find('email')
                 const uuid = authorLinkEl.getAttribute('uuid')
                 return {
-                    nodeId: node.id,
                     uuid,
                     name: authorLinkEl.getAttribute('title'),
                     email: emailElement ? emailElement.textContent : null,
@@ -107,17 +101,12 @@ const ImageGalleryConverter = {
                     isLoaded: false
                 }
             })
-            .filter((author) => {
-                if (author.isSimpleAuthor) {
-                    return true
+            .reduce((authors, author) => {
+                if (author.isSimpleAuthor || !authors.some((existing) => existing.uuid === author.uuid)) {
+                    authors.push(author)
                 }
-                if (seen.get(author.uuid) !== undefined) {
-                    return false
-                } else {
-                    seen.set(author.uuid, author)
-                    return true
-                }
-            })
+                return authors
+            }, [])
     },
 
     convertCrops: function(imageLinks) {

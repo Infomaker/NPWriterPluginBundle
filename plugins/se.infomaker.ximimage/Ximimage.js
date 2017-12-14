@@ -44,14 +44,14 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
      */
     handleDOMDocument(newsItemDOMDocument, context) {
         const newsItemDOMElement = DefaultDOMElement.parseXML(newsItemDOMDocument.documentElement.outerHTML)
-        const dom = newsItemDOMDocument.documentElement,
-            uuid = dom.getAttribute('guid'),
-            uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]'),
-            authors = newsItemDOMElement.find('itemMeta > links'),
-            text = dom.querySelector('contentMeta > metadata > object > data > text'),
-            credit = dom.querySelector('contentMeta > metadata > object > data > credit'),
-            width = dom.querySelector('contentMeta > metadata > object > data > width'),
-            height = dom.querySelector('contentMeta > metadata > object > data > height')
+        const dom = newsItemDOMDocument.documentElement
+        const uuid = dom.getAttribute('guid')
+        const uri = dom.querySelector('itemMeta > itemMetaExtProperty[type="imext:uri"]')
+        const authors = newsItemDOMElement.find('itemMeta > links')
+        const text = dom.querySelector('contentMeta > metadata > object > data > text')
+        const credit = dom.querySelector('contentMeta > metadata > object > data > credit')
+        const width = dom.querySelector('contentMeta > metadata > object > data > width')
+        const height = dom.querySelector('contentMeta > metadata > object > data > height')
 
         let convertedAuthors = []
         if (authors) {
@@ -62,22 +62,25 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
             convertedAuthors = ximimageConverter.convertAuthors(this, authors)
         }
 
-        api.editorSession.transaction((tx) => {
-            tx.set([this.id, 'uuid'], uuid ? uuid : '')
-            tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
-            if (isUnset(this.caption)) {
-                tx.set([this.id, 'caption'], text ? text.textContent : '')
-            }
-            if (isUnset(this.credit)) {
-                tx.set([this.id, 'credit'], credit ? credit.textContent : '')
-            }
-            tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
-            tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
-            if (isUnset(this.authors)) {
-                tx.set([this.id, 'authors'], convertedAuthors)
-            }
+        Promise.all(
+            convertedAuthors.map((author) => this.fetchAuthorConcept(author))
+        ).then((authors) => {
+            api.editorSession.transaction((tx) => {
+                tx.set([this.id, 'uuid'], uuid ? uuid : '')
+                tx.set([this.id, 'uri'], uri ? uri.attributes['value'].value : '')
+                if (isUnset(this.caption)) {
+                    tx.set([this.id, 'caption'], text ? text.textContent : '')
+                }
+                if (isUnset(this.credit)) {
+                    tx.set([this.id, 'credit'], credit ? credit.textContent : '')
+                }
+                tx.set([this.id, 'width'], width ? Number(width.textContent) : '')
+                tx.set([this.id, 'height'], height ? Number(height.textContent) : '')
+                if (isUnset(this.authors)) {
+                    tx.set([this.id, 'authors'], authors)
+                }
+            })
         })
-
     }
 
     /**

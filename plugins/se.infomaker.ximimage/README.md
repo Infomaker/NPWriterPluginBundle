@@ -191,14 +191,14 @@ element. The format of the `object` is:
     <links>
         <link rel="self" type="x-im/image" uri="im://image/IdJjMZVdi0afHsmQRurNl07J-00.jpeg"
             uuid="3314b6ed-ec82-5924-9de1-8b0cb2a39cc2">
-            <!--
-                OPTIONAL. Note if softcrop feature in plugin is used this block is
-                mandatory.
-            -->
             <data>
                 <text>This is an image description that will be stored on the article</text>
                 <width>800</width>
                 <height>600</height>
+                <!--
+                    OPTIONAL. Note if softcrop feature in plugin is used this block is
+                    mandatory.
+                -->
                 <crops>
 					<crop name="16:9">
 						<x>0.32875</x>
