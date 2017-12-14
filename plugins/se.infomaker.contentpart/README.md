@@ -12,6 +12,7 @@
     "mandatory": false,
     "data": {
         "disableUseOfAnnotationTools": false,
+        "enableTextTypes": false,
         "types": [
             {
                 "name": "Fakta",
@@ -62,9 +63,11 @@
 
 ### Basic Options
 
-| Property  | Type  | Required | Description                                                 |
-| --------- | :---: | :------: | ----------------------------------------------------------- |
-| **types** | Array | `true`   | Content part types. See **Types Options** for configuration |
+| Property                        | Type    | Required | Description                                                      |
+| ------------------------------- | :-----: | :------: | ---------------------------------------------------------------- |
+| **types**                       | Array   | `true`   | Content part types. See **Types Options** for configuration      |
+| **disableUseOfAnnotationTools** | Boolean | `false`  | Disables annotation for all fields.                              |
+| **enableTextTypes**             | Boolean | `false`  | Enables using text styles other than paragraph in the text field |
 
 ### Types Options
 ```javascript
@@ -79,7 +82,7 @@
 | Property    | Type    | Required | Description                                                                                         |
 | ----------- | :-----: | :------: | --------------------------------------------------------------------------------------------------- |
 | **name**    | String  | `false`  | The display name of the content part type                                                           |
-| **uri**     | String  | `true`   | A unique URI to identify the content part type. e.g., `"im:/content-part/fact"`                                                                                            |
+| **uri**     | String  | `true`   | A unique URI to identify the content part type. e.g., `"im:/content-part/fact"`                     |
 | **default** | Boolean | `false`  | If the type should be the default content part type. **At lease one type should be set as default** |
 | **fields**  | Array   | `true`   | Fields on the content part type. See **Fields Options** for configuration                           |
 
@@ -111,7 +114,7 @@
 | --------- | :----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
 | **id**    | String | `true`   | The name of the field on the node and in the XML output.                                                            |
 | **label** | String | `false`  | Placeholder for field                                                                                               |
-| **icon**  | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.               |
+| **icon**  | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.             |
 | **type**  | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
 
 ## Output
