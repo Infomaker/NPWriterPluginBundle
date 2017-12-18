@@ -19,7 +19,7 @@ class ConceptSearchItemComponent extends Component {
 
     render($$){
         const {item } = this.props
-        const broaderString = ConceptService.extractBroaderText(item, true)
+        const broaderString = this.props.enableHierarchy ? ConceptService.extractBroaderText(item, true) : ''
         const fullBroaderString = ConceptService.extractBroaderText(item)
         const conceptDefinitionShort = item.ConceptDefinitionShort ? $$('p').append(item.ConceptDefinitionShort).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })

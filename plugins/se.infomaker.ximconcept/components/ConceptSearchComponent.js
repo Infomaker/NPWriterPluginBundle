@@ -27,7 +27,7 @@ class ConceptSearchComponent extends Component {
     render($$){
         let icon, searchResultsContainer
         const { searchedTerm } = this.state
-        const { disabled, subtypes } = this.props
+        const { disabled, subtypes, enableHierarchy } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
@@ -70,6 +70,7 @@ class ConceptSearchComponent extends Component {
                 searchResult,
                 selected,
                 isPolygon,
+                enableHierarchy,
                 editable: this.props.editable,
                 itemExists: this.props.itemExists,
                 addItem: this.addItem.bind(this)

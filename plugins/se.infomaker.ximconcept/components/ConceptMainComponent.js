@@ -154,6 +154,7 @@ class ConceptMainComponent extends Component {
                 conceptTypes: types.length ? types : conceptType,
                 subtypes,
                 editable,
+                enableHierarchy,
                 disabled: (singleValue && this.state.existingItems.length) ? true : false,
                 addItem: this.addItem.bind(this),
                 itemExists: this.itemExists.bind(this)

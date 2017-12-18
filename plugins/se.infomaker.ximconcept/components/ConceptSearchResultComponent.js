@@ -15,6 +15,7 @@ class ConceptSearchResultComponent extends Component {
                 selected,
                 itemExists,
                 addItem: this.props.addItem,
+                enableHierarchy: this.props.enableHierarchy,
                 scrollIntoView: this.scrollItemIntoView.bind(this)
             }).on('mousedown', () => { this.props.addItem(item) })
         })
