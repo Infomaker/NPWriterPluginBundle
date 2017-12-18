@@ -17,6 +17,9 @@
             background: white;
             border: 1px solid #ddd;
 
+            &.invalid-uuid {
+                border: 1px solid rgba(229, 48, 15, 0.75);
+            }
             .concept-item-content {
                 margin-top: 4px;
             }
@@ -171,6 +174,10 @@
                         align-self: center;
                         .concept-name {
                             font-size: 14px;
+                        }
+                        .concept-broader {
+                            position: relative;
+                            color: #288dc0;
                         }
                         .canceled, .replaced-by {
                             text-decoration: line-through;

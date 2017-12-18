@@ -27,7 +27,8 @@ class ConceptSearchComponent extends Component {
     render($$){
         let icon, searchResultsContainer
         const { searchedTerm } = this.state
-        const disabled = this.props.disabled
+        const { disabled, subtypes } = this.props
+        const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
             name: 'concept-search',
@@ -68,6 +69,7 @@ class ConceptSearchComponent extends Component {
                 searchedTerm,
                 searchResult,
                 selected,
+                isPolygon,
                 editable: this.props.editable,
                 itemExists: this.props.itemExists,
                 addItem: this.addItem.bind(this)
@@ -84,8 +86,8 @@ class ConceptSearchComponent extends Component {
     }
 
     handleBlur() {
-        // this.refs.searchInput.val('')
-        // this.resetState()
+        this.refs.searchInput.val('')
+        this.resetState()
     }
 
     handleKeyUp() {
@@ -122,6 +124,8 @@ class ConceptSearchComponent extends Component {
 
     handleKeyDown(e) {
         const {keyCode} = e
+        let selectedItem
+
         switch (keyCode) {
             case 27: // escape
                 e.preventDefault()
@@ -142,10 +146,13 @@ class ConceptSearchComponent extends Component {
                 })
                 break
             case 13: // enter
-                e.preventDefault()
-                this.addItem(this.state.searchResult[this.state.selected])
-                this.refs.searchInput.val('')
-                this.resetState()
+                selectedItem = this.state.searchResult[this.state.selected]
+                if (selectedItem || this.props.editable) {
+                    this.addItem(selectedItem)
+                    this.refs.searchInput.val('')
+                    this.resetState()
+                }
+
                 break
             default:
                 break

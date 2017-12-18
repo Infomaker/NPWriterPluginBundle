@@ -52,10 +52,11 @@ class ConceptItemComponent extends Component {
         let image
 
         if (item) {
-            const broaderString = this.props.enableHierarchy ? ConceptService.extractBroaderText(item) : ''
+            const broaderString = ConceptService.extractBroaderText(item)
             const tooltip = $$(this.Tooltip, {
-                title: `${item.ConceptDefinitionShort || ' - '}`,
-                text: `(status: ${item.ConceptStatus})`,
+                title: `${broaderString}`,
+                text: `${this.hasValidUUid() ? item.ConceptDefinitionShort || ' - ' : this.getLabel('invalid.uuid.label')}`,
+                fixed: true,
                 parent: this,
             }).ref('tooltip')
 
@@ -82,11 +83,7 @@ class ConceptItemComponent extends Component {
                 .append(tooltip)
                 .on('click', this.editItem.bind(this))
 
-            if (broaderString.length) {
-                itemContent.append(` (${broaderString})`)
-            }
-
-            el.addClass(`concept-item-component ${item.ConceptStatus}`)
+            el.addClass(`concept-item-component ${item.ConceptStatus} ${!this.hasValidUUid() ? 'invalid-uuid' : ''}`)
                 .append(image)
                 .append(icon)
                 .append(itemContent)
@@ -99,6 +96,10 @@ class ConceptItemComponent extends Component {
         return el
     }
 
+    hasValidUUid() {
+        return (this.props.item.uuid && this.props.item.uuid !== '' && this.props.item.uuid !== '00000000-0000-0000-0000-000000000000')
+    }
+
     removeItem(e) {
         e.preventDefault()
         this.props.removeItem(this.state.item)
@@ -106,8 +107,13 @@ class ConceptItemComponent extends Component {
     }
 
     editItem() {
+        
         if (this.props.editable) {
-            this.props.editItem(this.props.item)
+            if (this.hasValidUUid()) {
+                this.props.editItem(this.props.item)
+            } else {
+                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.uuid.label'), this.getLabel('invalid.uuid.description'))
+            }
         }
     }
 

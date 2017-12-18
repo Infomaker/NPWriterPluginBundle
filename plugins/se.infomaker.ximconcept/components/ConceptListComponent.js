@@ -5,6 +5,7 @@ class ConceptListComponent extends Component {
 
     render($$) {
         const { editable } = this.props
+
         const listItems = this.props.existingItems.map(item => {
             return $$(ConceptItemComponent, {
                 item,

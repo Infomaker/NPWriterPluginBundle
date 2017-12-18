@@ -19,11 +19,11 @@ class ConceptSearchResultComponent extends Component {
             }).on('mousedown', () => { this.props.addItem(item) })
         })
 
-        if (this.props.editable && this.props.searchedTerm !== '*') {
+        if (this.props.editable && this.props.searchedTerm !== '*' && !this.props.isPolygon) {
             createConcept = $$('div').addClass('concept-create-wrapper')
                 .append($$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }))
                 .append(`${this.getLabel('create')}: ${this.props.searchedTerm}`)
-                .on('click', this.props.addItem)
+                .on('mousedown', this.props.addItem)
         }
 
         const result = $$('div')

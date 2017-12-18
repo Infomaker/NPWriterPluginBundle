@@ -13,11 +13,12 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
-        api.events.on(this.state.conceptName, event.DOCUMENT_CHANGED, async function(event) {
-            if (event.name === this.state.name) {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
+            const matchingTypes = this.state.types ? this.state.types.find(type => type.replace('-', '').replace('/', '') === event.name) : false
+            if ((event.name === this.state.name) || matchingTypes ) {
                 this.reloadArticleConcepts()
             }
-        }.bind(this))
+        })
     }
 
     dispose() {
@@ -48,13 +49,26 @@ class ConceptMainComponent extends Component {
         }
     }
 
-    updateArticleConcept(item) {
-        ConceptService.updateArticleConcept(this.state.name, item)
-    }
-
     async addConceptToArticle(item) {
         item = await (new ConceptItemModel(item, this.state.pluginConfig)).extractConceptArticleData(item)
-        ConceptService.addArticleConcept(this.state.name, item)
+
+        if (!item.errors) {
+            ConceptService.addArticleConcept(item)
+        } else {
+            api.ui.showNotification(
+                this.state.name,
+                this.getLabel('invalid.conceptItem.label'),
+                item.errors.reduce((iterator, error) => { return `${iterator}${iterator.length ? ', ' : ''}${error.error}`}, '')
+            )
+        }
+    }
+
+    updateArticleConcept(item) {
+        ConceptService.updateArticleConcept(item)
+    }
+
+    removeArticleConcept(item) {
+        ConceptService.removeArticleConceptItem(item)
     }
 
     addItem(item) {
@@ -68,12 +82,10 @@ class ConceptMainComponent extends Component {
                 api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
             }
         } else {
-            this.editItem({ ...item, ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType })
+            if (this.state.pluginConfig.editable) {
+                this.editItem({ ...item, ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType })
+            }
         }
-    }
-
-    removeItem(item) {
-        ConceptService.removeArticleConceptItem(this.state.name, item)
     }
 
     itemExists(item) {
@@ -100,7 +112,6 @@ class ConceptMainComponent extends Component {
                     title,
                     primary: false,
                     secondary: this.getLabel('cancel'),
-                    global: true
                 }
             )
         } else {
@@ -115,7 +126,6 @@ class ConceptMainComponent extends Component {
                     title,
                     primary: this.getLabel('save'),
                     secondary: this.getLabel('cancel'),
-                    global: true
                 }
             )
         }
@@ -132,7 +142,7 @@ class ConceptMainComponent extends Component {
 
         const list = $$(ConceptListComponent, {
             editItem: this.editItem.bind(this),
-            removeItem: this.removeItem.bind(this),
+            removeItem: this.removeArticleConcept.bind(this),
             existingItems: this.state.existingItems,
             enableHierarchy,
             editable,

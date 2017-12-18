@@ -1,5 +1,6 @@
 import { Component } from 'substance'
 import ConceptItemModel from '../models/ConceptItemModel'
+import ConceptMapComponent from './ConceptMapComponent'
 
 class ConceptDialogComponent extends Component {
 
@@ -79,12 +80,18 @@ class ConceptDialogComponent extends Component {
                             break
 
                         case 'string':
+                        case 'url':
                         case 'email':
+                        case 'tel':
                             group = this.generateInputFormGroup($$, field)
                             break
 
+                        case 'geo':
+                            group = this.generateMap($$, field)
+                            break
+
                         default:
-                            break;
+                            break
                     }
 
                     fields.push(group)
@@ -100,8 +107,16 @@ class ConceptDialogComponent extends Component {
         return el
     }
 
+    generateFormGroup($$) {
+        return $$('div').addClass('concept-form-group')
+    }
+
+    generateLabel($$, field) {
+        return $$('label', { for: field.label, class: 'concept-form-label' }).append(field.label)
+    }
+
     generateInputFormGroup($$, field) {
-        const input = $$('input', { id: field.label, class: 'concept-form-control', type: field.type, value: field.value ? field.value : '', placeholder: field.placeholder, pattern: field.validation }).ref(`${field.refId}`)
+        const input = $$('input', { id: field.label, class: 'concept-form-control', type: field.type, value: field.value ? field.value : '', placeholder: field.placeholder, pattern: field.validation }).ref(field.refId)
 
         if (field.required) {
             input.attr('required', true)
@@ -114,7 +129,7 @@ class ConceptDialogComponent extends Component {
 
     generateTextFormGroup($$, field) {
         const rows = (field.value && field.value.length) ? (field.value.length / 80) + 2 : 3
-        const textarea = $$('textarea', { id: field.label, class: 'concept-form-control', placeholder: field.placeholder, rows: rows }).append(field.value ? field.value : '').ref(`${field.refId}`)
+        const textarea = $$('textarea', { id: field.label, class: 'concept-form-control', placeholder: field.placeholder, rows: rows }).append(field.value ? field.value : '').ref(field.refId)
 
         return this.generateFormGroup($$)
             .addClass('textarea-group')
@@ -122,16 +137,165 @@ class ConceptDialogComponent extends Component {
             .append(textarea)
     }
 
-    generateFormGroup($$) {
-        return $$('div').addClass('concept-form-group')
+    generateMap($$, field) {
+        const mapGroupContainer = $$('div').addClass('concept-map-group')
+        const hiddenValueInput = $$('input', { type: 'text', value: field.value ? field.value : '' }).ref(field.refId)
+        let searchInput, searchSpinner, searchResultWrapper = $$('div').addClass('location-result-wrapper'), mapsWrapper = $$('div').addClass('maps-wrapper')
+        
+        if (field.editable && !this.isPolygon()) {
+            searchInput = $$('input', { type: 'text', placeholder: this.getLabel('Place or location search'), class: 'location-form-control' }).ref('locationSearch')
+
+            if (this.state.searching && !this.state.searchResult) {
+                searchSpinner = $$('i', {
+                    class: 'fa fa-spinner fa-spin location-search-icon',
+                    "aria-hidden": 'true'
+                })
+            }
+
+            if (this.state.searchResult) {
+                const resultItems = this.state.searchResult.map(hit => {
+                    return $$('div')
+                        .addClass('result-item')
+                        .append(hit.formatted_address)
+                        .on('click', () => {
+                            if (hit.geometry && hit.geometry.location) {
+                                this.refs[field.refId].val(`POINT(${hit.geometry.location.lng()} ${hit.geometry.location.lat()})`)
+                                this.refs.conceptMapComponent.setProps({
+                                    latLng: {
+                                        lat: hit.geometry.location.lat(),
+                                        lng: hit.geometry.location.lng()
+                                    }
+                                })
+                            }
+                            this.refs.locationSearch.val('')
+                            
+                            this.extendState({
+                                searchResult: false
+                            })
+                        })
+                })
+
+                searchResultWrapper.append(resultItems)
+            }
+        } else {
+            searchInput = $$('p').append(this.getLabel('No polygon edit'))
+        }
+
+        mapsWrapper
+            .append(searchInput)
+            .append(searchSpinner)
+            .append(searchResultWrapper)
+
+        if (this.props.config.googleMapAPIKey) {
+            const map = $$(ConceptMapComponent, {
+                apiKey: this.props.config.googleMapAPIKey,
+                searchedTerm: this.props.item.searchedTerm || false,
+                searchedTermPosition: (lat, lng) => {
+                    this.refs[field.refId].val(`POINT(${lng} ${lat})`)
+                    this.refs.locationSearch.val(this.props.item.searchedTerm)
+                },
+                markerPositionChanged: (lat, lng) => {
+                    this.refs[field.refId].val(`POINT(${lng} ${lat})`)
+                    console.info(`POINT(${lng} ${lat})`)
+                },
+                loaded: () => {
+                    this.refs.conceptMapComponent.setProps(this.extractItemGeometry())
+                }
+            }).ref('conceptMapComponent')
+
+            mapsWrapper.append(map)            
+            searchInput.on('keyup', () => {
+                const term = this.refs.locationSearch.val()
+
+                if (term && term.length > 1) {
+                    this.extendState({ searching: true })
+                    this.refs.conceptMapComponent.setProps({
+                        term,
+                        searchResult: (results) => {
+                            this.extendState({
+                                searchResult: results,
+                                searching: false
+                            })
+                        }
+                    })
+                } else {
+                    this.extendState({
+                        searching: false,
+                        searchResult: false
+                    })
+                }
+            })
+        }
+
+        const group = this.generateFormGroup($$)
+            .append(this.generateLabel($$, field))
+            .append(hiddenValueInput)
+            .addClass('hidden')
+
+        return mapGroupContainer
+            .append(group)
+            .append(mapsWrapper)
+
     }
 
-    generateLabel($$, field) {
-        return $$('label', { for: field.label, class: 'concept-form-label' }).append(field.label)
+    isPolygon() {
+        const { item } = this.props
+        const geometry = (item && item.data) ? item.data.geometry : ''
+        return (geometry.indexOf('POLYGON') !== -1)
+    }
+
+    extractItemGeometry() {
+        const { item } = this.props
+        const geometry = (item && item.data) ? item.data.geometry : false
+
+        if (geometry) {
+            return this.isPolygon() ?
+                this._extractPolygon(geometry) :
+                this._extractLatLng(geometry)
+        } else {
+            return {}
+        }
+    }
+
+    _extractLatLng(geometryString) {
+        const latLongString = /POINT\(([0-9\-\.\s]+)\)/.exec(geometryString || '')[1].split(' ')
+
+        return {
+            latLng: {
+                lat: latLongString[1] || 0,
+                lng: latLongString[0] || 0
+            }
+        }
+    }
+
+    _extractPolygon(geometryString) {
+        const ptsArray = []
+        geometryString = geometryString.replace(/ +(?= )/g, '')
+
+        function addPoints(data) {
+            const pointsData = data.split(",")
+
+            pointsData.forEach(point => {
+                ptsArray.push(point.trim().split(" "))
+            })
+        }
+
+        //Get ring if there's many
+        const regex = /\(([^()]+)\)/g
+        let results
+        do {
+            results = regex.exec(geometryString)
+            if (results) {
+                addPoints(results[1])
+            }
+        } while (results)
+
+        return { ptsArray }
     }
 
     async onClose(action) {
         if (action === 'save') {
+            // TODO: Validate all refs against config validation rule
             this.props.save(
                 await this.conceptItemModel.save(this.refs)
             )

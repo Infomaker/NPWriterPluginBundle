@@ -4,18 +4,15 @@ import { ConceptService } from 'writer'
 class ConceptItemModel {
 
     get nameXpath() {
-        // return this.conceptItemConfig.common.find(confObject => confObject.id === 'name').xpath
-        return '/*:conceptItem/*:concept/*:name/text()'
+        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'name').xpath
     }
 
     get providerXpath() {
-        // return this.conceptItemConfig.common.find(confObject => confObject.id === 'provider').xpath
-        return '/*:conceptItem/*:itemMeta/*:provider/@literal'
+        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'provider').xpath
     }
 
     get pubStatusXpath() {
-        // return this.conceptItemConfig.common.find(confObject => confObject.id === 'status').xpath
-        return '/*:conceptItem/*:itemMeta/*:pubStatus/@qcode'
+        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'status').xpath
     }
 
     get uiGroups() {
@@ -60,6 +57,8 @@ class ConceptItemModel {
         if (!this.errors.length) {
             this.xmlHandler = new XmlHandler(this.conceptXml)
         }
+
+        return this.uiGroups
     }
 
     async getUiGroups() {
@@ -92,16 +91,23 @@ class ConceptItemModel {
     async extractConceptArticleData(item) {
         await this.setUp()
 
-        if (this.config.appendDataToLink) {
-            if (this.conceptItemConfig.articleData) {
-                item.articleData = this.conceptItemConfig.articleData.reduce((accumulator, prop) => {
-                    accumulator[prop.name] = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(prop.xpath))
-                    return accumulator
-                }, {})
-            }
-        }
+        if (!this.errors.length) {
+            if (this.config.appendDataToLink) {
+                const instructions = this.config.instructions || this.conceptItemConfig.instructions || false
 
-        item.name = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(this.nameXpath))
+                if (instructions && instructions.articleData) {
+                    item.articleData = instructions.articleData.reduce((accumulator, prop) => {
+                        accumulator[prop.name] = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(prop.xpath))
+                        return accumulator
+                    }, {})
+                }
+            }
+
+            item.name = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(this.nameXpath))
+            item.type = item.ConceptImTypeFull
+        } else {
+            item.errors = this.errors
+        }
         
         return item
     }
@@ -118,6 +124,10 @@ class ConceptItemModel {
         this.uiGroups.forEach(group => {
             group.fields.forEach(field => {
                 this.xmlHandler.createNodes(field.xpath)
+                
+                if (!refs[field.refId]) {
+                    console.info('Missing: ', field.type)
+                }
 
                 const value = refs[field.refId].val()
                 const elementNode = this.xmlHandler.getSourceNode(field.xpath)

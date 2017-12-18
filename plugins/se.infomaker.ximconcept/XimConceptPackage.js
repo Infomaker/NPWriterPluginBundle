@@ -29,6 +29,21 @@ const XimConceptPackage = {
         configurator.addLabel('Replaced by', {
             sv: 'Ersatt av'
         })
+        configurator.addLabel('No polygon edit', {
+            sv: 'Redigering av polygoner är för närvarande inte möjlig'
+        })
+        configurator.addLabel('Place or location search', {
+            sv: 'Sök adress eller plats'
+        })
+        configurator.addLabel('invalid.conceptItem.label', {
+            sv: 'Conceptet du försöker använda verkar vara ogiltigt'
+        })
+        configurator.addLabel('invalid.uuid.label', {
+            sv: 'Ogiltigt UUID'
+        })
+        configurator.addLabel('invalid.uuid.description', {
+            sv: 'Conceptet har inget giltigt UUID'
+        })
     }
 }
 

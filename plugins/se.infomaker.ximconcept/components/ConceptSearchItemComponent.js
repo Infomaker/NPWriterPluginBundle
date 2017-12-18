@@ -1,9 +1,15 @@
 import { Component } from 'substance'
-import { ConceptService } from 'writer'
+import { ConceptService, api } from 'writer'
 import ConceptItemImageComponent from './ConceptItemImageComponent'
 import ConceptItemIcon from './ConceptItemIconComponent'
 
 class ConceptSearchItemComponent extends Component {
+
+    constructor(...args) {
+        super(...args)
+
+        this.Tooltip = api.ui.getComponent('tooltip')
+    }
 
     didMount() {
         if (this.props.selected) {
@@ -13,9 +19,16 @@ class ConceptSearchItemComponent extends Component {
 
     render($$){
         const {item } = this.props
-        const broaderString = ConceptService.extractBroaderText(item)
+        const broaderString = ConceptService.extractBroaderText(item, true)
+        const fullBroaderString = ConceptService.extractBroaderText(item)
         const conceptDefinitionShort = item.ConceptDefinitionShort ? $$('p').append(item.ConceptDefinitionShort).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })
+        const tooltip = broaderString.length ? $$(this.Tooltip, {
+            title: `${fullBroaderString}`,
+            text: '',
+            fixed: true,
+            parent: this.refs.truncatedBroader,
+        }).ref('tooltip') : null
 
         let conceptImage, conceptIcon
 
@@ -26,9 +39,16 @@ class ConceptSearchItemComponent extends Component {
                 .append($$('span').addClass('replaced-by-item').append(` ${item.ConceptReplacedByRelation.ConceptName}`)) :
             null
 
+        const broaderSpan = $$('span', { class: 'concept-broader'})
+            .on('mouseenter', () => { this.refs.tooltip.extendProps({ show: true }) })
+            .on('mouseleave', () => { this.refs.tooltip.extendProps({ show: false }) })
+            .append(broaderString.length ? ` ${broaderString}` : '')
+            .append(broaderString.length ? tooltip : '')
+            .ref('truncatedBroader')
+
         const conceptNameContent = $$('span').addClass(`concept-name ${item.ConceptStatus} ${item.ConceptReplacedByRelation ? 'replaced-by' : ''}`)
             .append(item.ConceptName)
-            .append(broaderString.length ? ` (${broaderString})` : '')
+            .append(broaderSpan)
             
         const conceptName = $$('p')
             .append(conceptNameContent)
