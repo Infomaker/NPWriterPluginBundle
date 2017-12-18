@@ -1,4 +1,5 @@
-import {api} from 'writer'
+import {DefaultDOMElement, uuid} from 'substance'
+import ContentPartManager from './ContentPartManager'
 
 /**
  * Converts between NewsML and editor nodes.
@@ -18,19 +19,21 @@ export default {
     /**
      * Import a contentpart element from NewsML.
      */
-    import: (el, node, converter) => {
+    import: function(el, node, converter) {
+        const $$ = DefaultDOMElement.createElement
+
+        // Instantiate the manager to create all fields in node.fields
+        const manager = new ContentPartManager(node)
+
         node.id = el.attr('id')
-        node.title = el.attr('title')
 
         if (el.find('subject')) {
-            node.vignette = el.find('subject').text()
+            node.subject = el.find('subject').text()
         }
 
         // Get inline-text link if any (optional)
         const link = el.find('links > link[rel="content-part"]')
-        if (link) {
-            node.contentpartUri = link.attr('uri')
-        }
+        this.importURI(node, link, manager)
 
         const text = el.find('text')
         if(text) {
@@ -38,58 +41,95 @@ export default {
                 const childNode = converter.convertElement(child)
                 node.nodes.push(childNode.id)
             })
+        } else {
+            const paragraphTextNode = $$('element').attr('type', 'body')
+            const paragraphNode = converter.convertElement(paragraphTextNode)
+            paragraphNode.id = uuid('paragraph')
+            node.nodes.push(paragraphNode.id)
+        }
+
+        // Import fields
+        const dataEl = el.find('data')
+        if (dataEl) {
+            dataEl.children.forEach((child) => {
+                this.importField(child, node, converter)
+            })
+        }
+
+        // If title was not set by data > title
+        if (!node.fields.title) {
+            node.fields.title = el.attr('title') ? el.attr('title') : ''
+        }
+    },
+
+    importURI: function(node, link, manager) {
+        const configuredURIs = manager.getContentPartTypes().map(type => type.uri)
+        if (link && configuredURIs.includes(link.attr('uri'))) {
+            node.contentPartUri = link.attr('uri')
+        } else {
+            if (link && link.attr('uri')) {
+                console.warn(`Imported content part type "${link.attr('uri')}" was not found in config. Using default type.`)
+            } else {
+                console.warn(`Imported content part type was not found in config. Using default type.`)
+            }
+            node.contentPartUri = manager.getDefaultContentPartType().uri
+        }
+    },
+
+    importField: function(field, node, converter) {
+        const tagName = field.el.tagName
+        if (tagName === 'text') { return }
+
+        if (!node.fields[tagName]) {
+            node.fields[tagName] = converter.annotatedText(field, [node.id, 'fields', tagName])
         }
     },
 
     /**
      * Export a contentpart to NewsML.
      */
-    export: (node, el, converter) => {
+    export: function(node, el, converter) {
+        const manager = new ContentPartManager(node)
         const $$ = converter.$$
-        const output = api.getConfigValue('se.infomaker.contentpart', 'output', 'idf')
 
-        // If we need to enable support for another type.
-        //const type = api.getConfigValue('se.infomaker.contentpart', 'type', 'x-im/content-part')
-        const type = 'x-im/content-part'
+        const uri = node.contentPartUri
+        const contentPart = uri ? manager.getContentPartTypeByURI(uri) : manager.getDefaultContentPartType()
 
-        const text = $$('text')
-            .attr('format', output)
-
-        let children
-        if('html' === output) {
-            console.warn('HTML output not yet implemented')
-            // converter = writer.api.configurator.createExporter('html')
-            // children = converter.convertContainer(node)
-            // text.innerHTML = $$('content').append(children).innerHTML
-        } else if('idf' === output) {
-            children = converter.convertContainer(node)
-            text.append(children)
-        } else {
-            throw new Error('Not a valid output format')
-        }
-        el.removeAttr('id')
         el.attr({
             id: node.id,
-            type: type,
-            title: node.title,
+            type: 'x-im/content-part',
         })
 
-        // Wrap contents in CDATA tags to please the XML gods.
-        // const html = '<![CDATA[' + filter.output().replace(']]>', ']]&gt;') + ']]>'
-        // const text = $$('text').append(children)
-        // text.innerHTML = html
-        text.attr('format', output)
+        // Convert fields
+        const fields = contentPart.fields.map(field => {
+            if (node.fields[field.id]) {
+                const fieldText = converter.annotatedText([node.id, 'fields', field.id])
+                if (field.id === 'title') { this.setTitleAttribute(el, node.fields[field.id]) }
+                return $$(field.id).append(fieldText)
+            } else if(field.id === 'text') {
+                return $$('text').attr('format', 'idf').append(converter.convertContainer(node))
+            } else {
+                return ''
+            }
+        })
 
-        const vignette = $$('subject').append(node.vignette)
-        el.append($$('data').append([vignette, text]))
+        el.append($$('data').append(fields))
 
         // Export inline-text link if any (optional)
-        if (node.contentpartUri) {
-            const link = $$('link').attr({
-                uri: node.contentpartUri,
-                rel: 'content-part'
-            })
-            el.append($$('links').append(link))
+        if (uri) {
+            el.append(
+                $$('links').append(
+                    $$('link').attr({
+                        uri: uri,
+                        rel: 'content-part'
+                    })
+                )
+            )
         }
+    },
+
+    setTitleAttribute: (el, text) => {
+        el.attr('title', text)
     }
+
 }

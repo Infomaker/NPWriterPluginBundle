@@ -15,6 +15,9 @@
             padding: 0;
         }
     }
+    .se-image-container img {
+        pointer-events: none;
+    }
 }
 
 .se-layout:not(.se-text-style-visible) {

@@ -47,9 +47,8 @@ class DropDownHeadline extends Component {
             }
 
         }
-        return el;
+        return el
     }
-
 
     toggleDropDown() {
         const isolatedNode = this.props.isolatedNodeComponent
@@ -57,7 +56,7 @@ class DropDownHeadline extends Component {
         this.extendState({
             showInlineTextMenu: !this.state.showInlineTextMenu
         })
-        isolatedNode.setState({
+        isolatedNode.extendState({
             mode: "focused",
             unblocked: true
         })
@@ -66,9 +65,9 @@ class DropDownHeadline extends Component {
     getSelectedContentPartName() {
         let selectedInlineTextName
         this.props.items.forEach((inlineText) => {
-            if (this.props.node.contentpartUri && this.props.node.contentpartUri === inlineText.uri) {
+            if (this.props.node.contentPartUri && this.props.node.contentPartUri === inlineText.uri) {
                 selectedInlineTextName = inlineText.name
-            } else if (!this.props.node.contentpartUri && inlineText.default) {
+            } else if (!this.props.node.contentPartUri && inlineText.default) {
                 selectedInlineTextName = inlineText.name
             }
         })

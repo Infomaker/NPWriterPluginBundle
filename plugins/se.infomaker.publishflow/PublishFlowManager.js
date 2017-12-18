@@ -194,12 +194,17 @@ class PublishFlowManager {
      * @param {string} value ISO 8601 formatted time
      */
     setPubStart(value) {
-        api.newsItem.setPubStart(
-            this.pluginId,
-            {
-                value: this.getFormattedTime(value)
-            }
-        )
+        if (value === null) {
+            api.newsItem.removePubStart()
+        }
+        else {
+            api.newsItem.setPubStart(
+                this.pluginId,
+                {
+                    value: this.getFormattedTime(value)
+                }
+            )
+        }
     }
 
     /**
@@ -207,12 +212,17 @@ class PublishFlowManager {
      * @param {string} value ISO 8601 formatted time
      */
     setPubStop(value) {
-        api.newsItem.setPubStop(
-            this.pluginId,
-            {
-                value: this.getFormattedTime(value)
-            }
-        )
+        if (value === null) {
+            api.newsItem.removePubStop()
+        }
+        else {
+            api.newsItem.setPubStop(
+                this.pluginId,
+                {
+                    value: this.getFormattedTime(value)
+                }
+            )
+        }
     }
 
     /**

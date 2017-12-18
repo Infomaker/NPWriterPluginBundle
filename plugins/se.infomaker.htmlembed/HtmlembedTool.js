@@ -12,7 +12,7 @@ class HtmlembedTool extends Tool {
     render($$) {
 
         const el = $$('button')
-            .attr('title', this.getLabel('Insert HTML embed'))
+            .attr('title', this.getLabel('htmlembed-insert'))
             .addClass('se-tool')
             .append($$('i').addClass('fa fa-code'))
             .on('click', this.insertEmbedhtml);

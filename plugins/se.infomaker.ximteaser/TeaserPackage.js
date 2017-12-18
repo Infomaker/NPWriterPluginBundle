@@ -28,9 +28,9 @@ export default {
         config.addCommand('ximteasercontainer', InsertTeaserContainerCommand, pluginConfig)
 
         if (platform.isMac) {
-            config.addKeyboardShortcut('cmd+alt+t', { command: 'ximteasercontainer' })
+            config.addKeyboardShortcut('cmd+alt+t', { command: 'ximteasercontainer' }, false, 'Insert Teaser')
         } else {
-            config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' })
+            config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' }, false, 'Insert Teaser')
         }
 
         config.addPluginModule('se.infomaker.ximteaser.teasertemplate', (type) => {
