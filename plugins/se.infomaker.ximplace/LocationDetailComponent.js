@@ -213,7 +213,7 @@ class LocationDetailComponent extends Component {
             }
         }
 
-        const latLongString = /POINT\((\-?[0-9\.\s]+)\)/.exec(geometry)[1].split(' ')
+        const latLongString = /POINT\(([0-9\-\.\s]+)\)/.exec(geometry)[1].split(' ')
         return {
             lat: latLongString[1],
             lng: latLongString[0]

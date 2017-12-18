@@ -1,64 +1,137 @@
-# Inline text plugin
-TODO: migrate to InlineText plugin...
+# Content part plugin
 
 ## Plugin configuration
 
-```json
+```javascript
 {
-  "id": "se.infomaker.contentpart",
-  "name": "contentpart",
-  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.js",
-  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.css",
-  "enabled": true,
-  "mandatory": true,
-  "data": {
-      "type": "x-im/content-part",
-      "disableUseOfAnnotationTools": true,
-      "contentpartTypes": [
-          {
-              "uri": "im://content-part/fact",
-              "name": "Faktaruta",
-              "displayTitle": false,
-              "displaySubject": false,
-          },
-          {
-              "uri": "im://content-part/factbox",
-              "name": "Faktabox",
-              "displayText": false,
-              "default": true
-          },
-          {
-              "uri": "im://content-part/stick",
-              "name": "Sticka"
-          }
-      ],
-      "placeholderText": {
-          "title": "Rubrik",
-          "vignette": "Fakta"
-      }
-  }
+    "id": "se.infomaker.contentpart",
+    "name": "contentpart",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-contentpart.css",
+    "enabled": true,
+    "mandatory": false,
+    "data": {
+        "disableUseOfAnnotationTools": false,
+        "enableTextTypes": false,
+        "types": [
+            {
+                "name": "Fakta",
+                "uri": "im:/content-part/fact",
+                "default": true,
+                "fields": [
+                    { "id": "title" },
+                    { "id": "subject" },
+                    { "id": "text" }
+                ]
+            },
+            {
+                "name": "Sammanfattning",
+                "uri": "im:/content-part/summary",
+                "fields": [
+                    { "id": "title" },
+                    { "id": "subject" }
+                ]
+            },
+            {
+                "name": "Bakgrund",
+                "uri": "im:/content-part/background",
+                "fields": [
+                    {
+                        "id": "title",
+                        "icon": "fa-custom-icon"
+                    },
+                    {
+                        "id": "subject",
+                        "label": "Custom label for background"
+                    },
+                    {
+                        "id": "customField",
+                        "label": "My Custom Field",
+                        "type": "datetime"
+                    },
+                    {
+                        "id": "customFieldTwo",
+                        "label": "My Second Custom Field"
+                    },
+                    { "id": "text" }
+                ]
+            }
+        ]
+    }
 }
 ```
 
-The `placeholderText` serves the placeholder text to be displayed in the input fields when field missing value.
- 
-At least one contentpartType should be specified.
- 
-At leaser one contentpartType should be marked as default.
+### Basic Options
+
+| Property                        | Type    | Required | Description                                                      |
+| ------------------------------- | :-----: | :------: | ---------------------------------------------------------------- |
+| **types**                       | Array   | `true`   | Content part types. See **Types Options** for configuration      |
+| **disableUseOfAnnotationTools** | Boolean | `false`  | Disables annotation for all fields.                              |
+| **enableTextTypes**             | Boolean | `false`  | Enables using text styles other than paragraph in the text field |
+
+### Types Options
+```javascript
+{
+    "name": "Faktan",
+    "uri": "im:/content-part/fact",
+    "default": true,
+    "fields": [...]
+}
+```
+
+| Property    | Type    | Required | Description                                                                                         |
+| ----------- | :-----: | :------: | --------------------------------------------------------------------------------------------------- |
+| **name**    | String  | `false`  | The display name of the content part type                                                           |
+| **uri**     | String  | `true`   | A unique URI to identify the content part type. e.g., `"im:/content-part/fact"`                     |
+| **default** | Boolean | `false`  | If the type should be the default content part type. **At lease one type should be set as default** |
+| **fields**  | Array   | `true`   | Fields on the content part type. See **Fields Options** for configuration                           |
+
+### Fields Options
+```javascript
+[
+    {
+        "id": "title",
+        "icon": "fa-custom-icon"
+    },
+    {
+        "id": "subject",
+        "label": "Custom label for background"
+    },
+    {
+        "id": "customField",
+        "label": "My Custom Field",
+        "type": "datetime"
+    },
+    {
+        "id": "customFieldTwo",
+        "label": "My Second Custom Field"
+    },
+    { "id": "text" }
+]
+```
+
+| Property  | Type   | Required | Description                                                                                                         |
+| --------- | :----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
+| **id**    | String | `true`   | The name of the field on the node and in the XML output.                                                            |
+| **label** | String | `false`  | Placeholder for field                                                                                               |
+| **icon**  | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.             |
+| **type**  | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).
 
 ```xml
-<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="Lorem ipsum">
+<object id="MTUwLDE4Miw1NCwxMjc" type="x-im/content-part" title="[Plain-text title]">
     <data>
+        <title>[Title with annotations]</title>
         <subject>Lorem ipsum dolor sit amet, consectetur adipiscing elit</subject>
-        <text format="html"><![CDATA[<p>Mauris at libero condimentum sapien malesuada efficitur non id nibh.</p>]]></text>
+        <text format="idf">
+            <element id="paragraph-273ee570c1469bdf5badeea5f0524166" type="body">Text element here</element>
+        </text>
+        <customField>2017-01-30T12:00:00+01:00</customField>
     </data>
     <links>
-        <link uri="im://content-part/fact" rel="content-part"/>
+        <link uri="im:/content-part/background" rel="content-part"/>
     </links>
 </object>
 ```
-*Note* that `object > links` is optional, i.e. if no inline-text uri:s are configured (see Plugin configuration above) 
-this element is omitted.

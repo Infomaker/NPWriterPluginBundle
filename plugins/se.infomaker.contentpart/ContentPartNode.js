@@ -7,9 +7,8 @@ ContentPartNode.isResource = false
 ContentPartNode.defineSchema({
     type: 'contentpart',
     id: { type: 'string', optional: true },
-    title: { type: 'string', optional: true },
-    vignette: { type: 'string', optional: true },
-    contentpartUri: { type: 'string', optional: true }
+    fields: { type: 'object', default: {}},
+    contentPartUri: { type: 'string', optional: true }
 })
 
 export default ContentPartNode

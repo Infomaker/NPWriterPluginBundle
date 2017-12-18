@@ -1,7 +1,7 @@
 import Headline from './validators/Headline'
 import Preamble from './validators/Preamble'
 import MainChannel from './validators/MainChannel'
-import Tags from './validators/Tags'
+// import Tags from './validators/Tags'
 import Authors from './validators/Authors'
 import Categories from './validators/Categories'
 import Review from './validators/Review'
@@ -102,7 +102,7 @@ const validationPackage = {
         config.addValidator(Headline)
         config.addValidator(Preamble)
         config.addValidator(MainChannel)
-        config.addValidator(Tags)
+        // config.addValidator(Tags)
         config.addValidator(Authors)
         config.addValidator(Categories)
         config.addValidator(Review)
