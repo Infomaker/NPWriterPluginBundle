@@ -1,5 +1,4 @@
 import {Component} from 'substance'
-import {fetchImageMeta} from 'writer'
 
 /**
  * @class ImageGalleryImageComponent
@@ -20,7 +19,6 @@ import {fetchImageMeta} from 'writer'
 class ImageGalleryImageComponent extends Component {
 
     didMount() {
-        this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
@@ -36,26 +34,7 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _onDocumentChange(change) {
-        if (change.isAffected(this.props.node.imageFile)) {
-            const imageNode = this.context.api.doc.get(this.props.node.imageFile)
-            fetchImageMeta(imageNode.uuid)
-                .then((node) => {
-                    this.context.editorSession.transaction((tx) => {
-                        if (!imageNode.caption) {
-                            tx.set([this.props.node.id, 'caption'], node.caption)
-                        }
-                        if (node.authors.length > 0) {
-                            tx.set([this.props.node.id, 'authors'], node.authors)
-                        }
-                        if (!imageNode.uri) {
-                            tx.set([imageNode.id, 'uri'], node.uri)
-                        }
-                        tx.set([this.props.node.id, 'width'], node.width)
-                        tx.set([this.props.node.id, 'height'], node.height)
-                    })
-                    this.rerender()
-                })
-        } else if (change.isAffected([this.props.node.id, 'authors'])) {
+        if (change.isAffected([this.props.node.id, 'authors'])) {
             this.rerender()
         }
     }
