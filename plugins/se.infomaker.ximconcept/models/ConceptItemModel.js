@@ -4,15 +4,15 @@ import { ConceptService } from 'writer'
 class ConceptItemModel {
 
     get nameXpath() {
-        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'name').xpath
+        return this.conceptItemConfig.common.name.xpath
     }
 
     get providerXpath() {
-        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'provider').xpath
+        return this.conceptItemConfig.common.provider.xpath
     }
 
     get pubStatusXpath() {
-        return this.conceptItemConfig.common[0].fields.find(field => field.id === 'status').xpath
+        return this.conceptItemConfig.common.status.xpath
     }
 
     get uiGroups() {
