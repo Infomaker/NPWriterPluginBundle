@@ -71,13 +71,15 @@ class ConceptMainComponent extends Component {
         ConceptService.removeArticleConceptItem(item)
     }
 
-    addItem(item) {
+    async addItem(item) {
         if (item && item.uuid) {
             if (!this.itemExists(item)) {
 
-                this.addConceptToArticle(item)
+                this.extendState({ 'working': true })
+                await this.addConceptToArticle(item)
 
                 this.reloadArticleConcepts()
+                this.extendState({ 'working': false })
             } else {
                 api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
             }
@@ -144,6 +146,7 @@ class ConceptMainComponent extends Component {
             editItem: this.editItem.bind(this),
             removeItem: this.removeArticleConcept.bind(this),
             existingItems: this.state.existingItems,
+            working: this.state.working,
             enableHierarchy,
             editable,
         }).ref('conceptListComponent')

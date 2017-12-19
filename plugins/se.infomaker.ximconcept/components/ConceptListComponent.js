@@ -4,7 +4,15 @@ import ConceptItemComponent from './ConceptItemComponent'
 class ConceptListComponent extends Component {
 
     render($$) {
-        const { editable } = this.props
+        let spinner
+        const { editable, working } = this.props
+
+        if (working) {
+            spinner = $$('i', {
+                class: 'fa fa-spinner fa-spin conceptlist-spinner',
+                "aria-hidden": 'true'
+            })
+        }
 
         const listItems = this.props.existingItems.map(item => {
             return $$(ConceptItemComponent, {
@@ -19,6 +27,7 @@ class ConceptListComponent extends Component {
         const el = $$('div')
             .addClass('concept-list-component')
             .append(listItems)
+            .append(spinner)
             .ref('conceptListComponent')
 
         return el
