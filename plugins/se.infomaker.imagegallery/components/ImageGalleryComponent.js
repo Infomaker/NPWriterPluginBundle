@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {api, idGenerator} from 'writer'
+import {api, idGenerator, fetchImageMeta} from 'writer'
 import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
@@ -34,6 +34,10 @@ class ImageGalleryComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
+        this.context.api.events.on('image-gallery', 'image-gallery:imagesAdded', (e) => {
+            const {imageNodes} = e.data
+            imageNodes.reduce((p, node) => p.then(() => this._onImageAdded(node)), Promise.resolve())
+        })
     }
 
     /**
@@ -186,7 +190,7 @@ class ImageGalleryComponent extends Component {
                 onInfoClick: () => {
                     this._openMetaData(galleryImageNode)
                 }
-            }).ref(`image-${galleryImageNode.id}`))
+            }).ref(galleryImageNode.id))
         })
 
         imageGalleryToolbox.append(toolboxContent)
@@ -356,6 +360,34 @@ class ImageGalleryComponent extends Component {
         // Tell the substance drag manager that the drag and drop is done
         this.context.dragManager.emit('drag:finished')
         this.context.dragManager.dragState = null
+    }
+
+    /**
+     * Loads image meta and adds that data to the image-node
+     *
+     * @param galleryImageNode
+     * @private
+     */
+    _onImageAdded(galleryImageNode) {
+        const imageNode = api.editorSession.getDocument().get(galleryImageNode.imageFile)
+        return fetchImageMeta(imageNode.uuid)
+            .then((node) => {
+                this.context.editorSession.transaction((tx) => {
+                    if (!galleryImageNode.caption && node.caption) {
+                        tx.set([galleryImageNode.id, 'caption'], node.caption)
+                    }
+                    if (!galleryImageNode.authors.length && node.authors) {
+                        tx.set([galleryImageNode.id, 'authors'], node.authors)
+                    }
+                    if (!imageNode.uri) {
+                        tx.set([imageNode.id, 'uri'], node.uri)
+                    }
+                    tx.set([galleryImageNode.id, 'width'], node.width)
+                    tx.set([galleryImageNode.id, 'height'], node.height)
+                })
+
+                this.rerender()
+            })
     }
 }
 
