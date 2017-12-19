@@ -43,7 +43,8 @@ class ConceptItemComponent extends Component {
 
     render($$){
         const { item, isHovered } = this.state
-        const type = (item && item.ConceptImTypeFull) ? item.ConceptImTypeFull : ''
+        const { propertyMap } = this.props
+        const type = (item && item[propertyMap.ConceptImTypeFull]) ? item[propertyMap.ConceptImTypeFull] : ''
         const editable = this.props.editable ? 'editable' : ''
         const el = $$('div')
         
@@ -55,19 +56,22 @@ class ConceptItemComponent extends Component {
             const broaderString = ConceptService.extractBroaderText(item)
             const tooltip = $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: `${this.hasValidUUid() ? item.ConceptDefinitionShort || ' - ' : this.getLabel('invalid.uuid.label')} ${item.ConceptStatus ? '(' + item.ConceptStatus + ')': ''}`,
+                text: `${this.hasValidUUid() ? item[propertyMap.ConceptDefinitionShort] || ' - ' : 
+                    this.getLabel('invalid.uuid.label')} ${item[propertyMap.ConceptStatus] ? '(' + item[propertyMap.ConceptStatus] + ')': ''}`,
                 fixed: true,
                 parent: this,
             }).ref('tooltip')
 
             if (item.image && !isHovered) {
                 image = $$(ConceptItemImageComponent, {
+                    propertyMap,
                     src: image
                 })
             } else {
                 icon = $$(ConceptItemIcon, {
                     isHovered,
                     item,
+                    propertyMap,
                     editable: this.props.editable
                 })
             }
@@ -79,10 +83,10 @@ class ConceptItemComponent extends Component {
 
             const itemContent = $$('div')
                 .addClass('concept-item-content')
-                .append(item.name || item.title || item.ConceptName)
+                .append(item.name || item.title || item[propertyMap.ConceptName])
                 .append(tooltip)
 
-            el.addClass(`concept-item-component ${item.ConceptStatus} ${!this.hasValidUUid() ? 'invalid-uuid' : ''}`)
+            el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''}`)
                 .append(image)
                 .append(icon)
                 .append(itemContent)

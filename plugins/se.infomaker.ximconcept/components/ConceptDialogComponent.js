@@ -21,7 +21,7 @@ class ConceptDialogComponent extends Component {
 
     async didMount() {
         this.send('dialog:disablePrimaryBtn')
-        this.conceptItemModel = new ConceptItemModel(this.props.item, this.props.config)
+        this.conceptItemModel = new ConceptItemModel(this.props.item, this.props.config, this.props.propertyMap)
 
         const uiGroups = await this.conceptItemModel.getUiGroups()
         const errors = uiGroups.filter(group => {

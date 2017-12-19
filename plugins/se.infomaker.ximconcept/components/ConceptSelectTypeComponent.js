@@ -11,7 +11,10 @@ class ConceptSelectTypeComponent extends Component {
             const typeObject = this.props.config.types[type]
             
             if (typeObject.editable) {
-                const icon = $$(ConceptItemIcon, { item: { ConceptImTypeFull: type } })
+                const icon = $$(ConceptItemIcon, { 
+                    propertyMap: this.props.propertyMap,
+                    item: { ConceptImTypeFull: type }
+                })
 
                 const iconWrapper = $$('div').addClass('concept-select-type-icon-wrapper')
                     .append(icon)
@@ -27,10 +30,9 @@ class ConceptSelectTypeComponent extends Component {
 
     selectType(type) {
         const { item } = this.props
-        item.ConceptImTypeFull = type
+        item[this.props.propertyMap.ConceptImTypeFull] = type
 
         this.send('dialog:close')
-        console.info(item)
 
         this.props.typeSelected(item)
     }

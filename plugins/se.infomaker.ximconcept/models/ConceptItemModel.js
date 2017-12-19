@@ -23,10 +23,11 @@ class ConceptItemModel {
         this._uiGroups = Array.isArray(uiGroups) ? uiGroups : []
     }
 
-    constructor(item, config) {
+    constructor(item, config, propertyMap) {
         this.item = item
         this.errors = []
         this.config = config
+        this.propertyMap = propertyMap
     }
 
     async setUp() {
@@ -104,7 +105,7 @@ class ConceptItemModel {
             }
 
             item.name = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(this.nameXpath))
-            item.type = item.ConceptImTypeFull
+            item.type = item[this.propertyMap.ConceptImTypeFull]
         } else {
             item.errors = this.errors
         }

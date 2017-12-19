@@ -18,10 +18,10 @@ class ConceptSearchItemComponent extends Component {
     }
 
     render($$){
-        const {item } = this.props
+        const { item, propertyMap } = this.props
         const broaderString = this.props.enableHierarchy ? ConceptService.extractBroaderText(item, true) : ''
         const fullBroaderString = ConceptService.extractBroaderText(item)
-        const conceptDefinitionShort = item.ConceptDefinitionShort ? $$('p').append(item.ConceptDefinitionShort).addClass('concept-short') : null
+        const conceptDefinitionShort = item[propertyMap.ConceptDefinitionShort] ? $$('p').append(item[propertyMap.ConceptDefinitionShort]).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })
         const tooltip = broaderString.length ? $$(this.Tooltip, {
             title: `${fullBroaderString}`,
@@ -32,11 +32,11 @@ class ConceptSearchItemComponent extends Component {
 
         let conceptImage, conceptIcon
 
-        const draftText = item.ConceptStatus.indexOf('draft') !== -1 ? $$('span').addClass('draft-text').append(' (draft)') : null
+        const draftText = item[propertyMap.ConceptStatus].indexOf('draft') !== -1 ? $$('span').addClass('draft-text').append(' (draft)') : null
 
-        const replacedBy = item.ConceptReplacedByRelation ?
+        const replacedBy = item[propertyMap.ConceptReplacedByRelation] ?
             $$('span').addClass('replaced-by-text').append(this.getLabel('Replaced by'))
-                .append($$('span').addClass('replaced-by-item').append(` ${item.ConceptReplacedByRelation.ConceptName}`)) :
+                .append($$('span').addClass('replaced-by-item').append(` ${item[propertyMap.ConceptReplacedByRelation][propertyMap.ConceptName]}`)) :
             null
 
         const broaderSpan = $$('span', { class: 'concept-broader'})
@@ -46,8 +46,8 @@ class ConceptSearchItemComponent extends Component {
             .append(broaderString.length ? tooltip : '')
             .ref('truncatedBroader')
 
-        const conceptNameContent = $$('span').addClass(`concept-name ${item.ConceptStatus} ${item.ConceptReplacedByRelation ? 'replaced-by' : ''}`)
-            .append(item.ConceptName)
+        const conceptNameContent = $$('span').addClass(`concept-name ${item[propertyMap.ConceptStatus]} ${item[propertyMap.ConceptReplacedByRelation] ? 'replaced-by' : ''}`)
+            .append(item[propertyMap.ConceptName])
             .append(broaderSpan)
             
         const conceptName = $$('p')
@@ -61,6 +61,7 @@ class ConceptSearchItemComponent extends Component {
             })
         } else {
             conceptIcon = $$(ConceptItemIcon, {
+                propertyMap,
                 item
             })
         }

@@ -31,11 +31,12 @@ class ConceptItemIconComponent extends Component {
     }
 
     getItemConceptType() {
-        if (this.props.item.ConceptImTypeFull === 'x-im/place') {
-            return this.props.item.ConceptImSubTypeFull ? this.props.item.ConceptImSubTypeFull : this.props.item.ConceptImTypeFull
+        const {propertyMap} = this.props
+        if (this.props.item[propertyMap.ConceptImTypeFull] === 'x-im/place') {
+            return this.props.item[propertyMap.ConceptImSubTypeFull] ? this.props.item[propertyMap.ConceptImSubTypeFull] : this.props.item[propertyMap.ConceptImTypeFull]
         }
 
-        return this.props.item.ConceptImTypeFull
+        return this.props.item[propertyMap.ConceptImTypeFull]
     }
 
     render($$){

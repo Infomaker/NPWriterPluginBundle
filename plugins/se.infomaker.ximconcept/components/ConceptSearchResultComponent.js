@@ -14,6 +14,7 @@ class ConceptSearchResultComponent extends Component {
                 item,
                 selected,
                 itemExists,
+                propertyMap: this.props.propertyMap,
                 addItem: this.props.addItem,
                 enableHierarchy: this.props.enableHierarchy,
                 scrollIntoView: this.scrollItemIntoView.bind(this)

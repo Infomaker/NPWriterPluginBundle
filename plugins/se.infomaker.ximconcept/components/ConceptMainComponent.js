@@ -38,6 +38,7 @@ class ConceptMainComponent extends Component {
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
         const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
+        const propertyMap = ConceptService.getPropertyMap()
 
         return {
             name,
@@ -45,12 +46,13 @@ class ConceptMainComponent extends Component {
             types,
             subtypes,
             conceptType,
-            existingItems
+            existingItems,
+            propertyMap
         }
     }
 
     async addConceptToArticle(item) {
-        item = await (new ConceptItemModel(item, this.state.pluginConfig)).extractConceptArticleData(item)
+        item = await (new ConceptItemModel(item, this.state.pluginConfig, this.state.propertyMap)).extractConceptArticleData(item)
 
         if (!item.errors) {
             ConceptService.addArticleConcept(item)
@@ -85,7 +87,10 @@ class ConceptMainComponent extends Component {
             }
         } else {
             if (this.state.pluginConfig.editable) {
-                this.editItem({ ...item, ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType })
+                this.editItem({
+                    ...item,
+                    ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType
+                })
             }
         }
     }
@@ -100,13 +105,14 @@ class ConceptMainComponent extends Component {
      * Show information about the author in AuthorInfoComponent rendered in a dialog
      */
     editItem(item) {
-        const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item.ConceptName ? item.ConceptName : ''}`
+        const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
 
-        if (this.state.pluginConfig.types && !item.ConceptImTypeFull) {
+        if (this.state.pluginConfig.types && !item[this.state.propertyMap.ConceptImTypeFull]) {
             api.ui.showDialog(
                 ConceptSelectTypeComponent,
                 {
                     item,
+                    propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
                     typeSelected: this.editItem.bind(this)
                 },
@@ -121,6 +127,7 @@ class ConceptMainComponent extends Component {
                 ConceptDialogComponent,
                 {
                     item,
+                    propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
                     save: (item && item.create) ? this.addConceptToArticle.bind(this) : this.updateArticleConcept.bind(this),
                 },
@@ -137,12 +144,14 @@ class ConceptMainComponent extends Component {
         let search
         const config = this.state.pluginConfig || {}
         const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes } = config
+        const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
             .append(`${label} (${this.state.existingItems.length})`)
             .addClass('concept-header')
 
         const list = $$(ConceptListComponent, {
+            propertyMap,
             editItem: this.editItem.bind(this),
             removeItem: this.removeArticleConcept.bind(this),
             existingItems: this.state.existingItems,
@@ -153,6 +162,7 @@ class ConceptMainComponent extends Component {
 
         if (!singleValue || !this.state.existingItems.length) {
             search = $$(ConceptSearchComponent, {
+                propertyMap,
                 placeholderText,
                 conceptTypes: types.length ? types : conceptType,
                 subtypes,
