@@ -55,7 +55,7 @@ class ConceptItemComponent extends Component {
             const broaderString = ConceptService.extractBroaderText(item)
             const tooltip = $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: `${this.hasValidUUid() ? item.ConceptDefinitionShort || ' - ' : this.getLabel('invalid.uuid.label')}`,
+                text: `${this.hasValidUUid() ? item.ConceptDefinitionShort || ' - ' : this.getLabel('invalid.uuid.label')} ${item.ConceptStatus ? '(' + item.ConceptStatus + ')': ''}`,
                 fixed: true,
                 parent: this,
             }).ref('tooltip')
@@ -69,19 +69,18 @@ class ConceptItemComponent extends Component {
                     isHovered,
                     item,
                     editable: this.props.editable
-                }).on('click', this.editItem.bind(this))
+                })
             }
 
             removeIcon = $$('i', {
                 "class": `fa ${isHovered ? 'fa-times remove' : ''} concept-remove-item-icon`,
                 "aria-hidden": "true"
-            }).on('click', this.removeItem.bind(this))
+            }).on('click', this.removeItem.bind(this), true)
 
             const itemContent = $$('div')
                 .addClass('concept-item-content')
                 .append(item.name || item.title || item.ConceptName)
                 .append(tooltip)
-                .on('click', this.editItem.bind(this))
 
             el.addClass(`concept-item-component ${item.ConceptStatus} ${!this.hasValidUUid() ? 'invalid-uuid' : ''}`)
                 .append(image)
@@ -91,6 +90,7 @@ class ConceptItemComponent extends Component {
                 .addClass(`${type} ${editable}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
+                .on('click', this.editItem.bind(this))
         }
 
         return el
@@ -102,6 +102,7 @@ class ConceptItemComponent extends Component {
 
     removeItem(e) {
         e.preventDefault()
+        e.stopPropagation()
         this.props.removeItem(this.state.item)
         return false
     }
