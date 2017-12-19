@@ -214,6 +214,7 @@ class TeaserComponent extends Component {
             const node = this.props.node
             tx.set([node.id, 'imageFile'], null)
             tx.set([node.id, 'subject'], '')
+            tx.set([node.id, 'crops'], [])
         })
     }
 

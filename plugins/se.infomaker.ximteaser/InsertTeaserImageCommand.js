@@ -112,6 +112,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         let imageFile = tx.create(imageFileNode)
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+        tx.set([teaserNode.id, 'crops'], [])
     }
 
     /**
@@ -133,6 +134,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         let imageFile = tx.create(imageFileNode)
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+        tx.set([teaserNode.id, 'crops'], [])
 
         return nodeId
     }
@@ -157,6 +159,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         })
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+        tx.set([teaserNode.id, 'crops'], [])
 
         // HACK: fileUpload will be done by CollabSession
         setTimeout(() => {
