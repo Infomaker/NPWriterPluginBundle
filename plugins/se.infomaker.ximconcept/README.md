@@ -150,6 +150,10 @@ The new concept plugin requires `writer > 3.10.1`and depends on `writer.ConceptS
 - `"relatedGeoExludeSelf": false,` If added geo concepts should be exluded from `related-geo` tag
 - `"propertyMap": { ... }` See below
 
+#### BA_PROXY
+The ba_proxy is used for Open COntent search resuests and is a temporary dependency that will be replaced by search functionality through writer backend/editorservice.
+
+#### Property map
 The property map is used to translate different kind of OC configurations into prop names ConceptService can use. The left hand side will ba used by CS, fill in the prop-names from OC on the right hand side.
 
 ```json
