@@ -14,8 +14,10 @@ class ConceptMainComponent extends Component {
 
     didMount() {
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
-            const matchingTypes = this.state.types ? this.state.types.find(type => type.replace('-', '').replace('/', '') === event.name) : false
-            if ((event.name === this.state.name) || matchingTypes ) {
+            const types = this.state.types ? this.state.types : []
+            const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => type === event.name)
+
+            if ((event.name === this.state.name) || event.name === matchingType ) {
                 this.reloadArticleConcepts()
             }
         })
