@@ -1,5 +1,5 @@
 import {DragAndDropHandler} from 'substance'
-import {idGenerator} from 'writer'
+import {idGenerator, api, fetchImageMeta} from 'writer'
 
 // Implements a file drop handler
 class DropImageUUID extends DragAndDropHandler {
@@ -51,6 +51,13 @@ class DropImageUUID extends DragAndDropHandler {
             alignment: ''
         })
 
+        setTimeout(() => {
+            api.editorSession.fileManager.sync()
+                .then(() => {
+                    const imageNode = api.editorSession.getDocument().get(nodeId)
+                    imageNode.emit('onImageUploaded')
+                })
+        }, 0)
     }
 
     getDataFromURL(url) {

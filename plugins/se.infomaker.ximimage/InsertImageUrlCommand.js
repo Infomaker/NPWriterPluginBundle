@@ -29,6 +29,10 @@ class InsertImageUrlCommand extends WriterCommand {
 
             setTimeout(() => {
                 api.editorSession.fileManager.sync()
+                    .then(() => {
+                        const imageNode = api.editorSession.getDocument().get(nodeId)
+                        imageNode.emit('onImageUploaded')
+                    })
                     .catch(() => {
                         // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
                         const document = api.editorSession.getDocument()
@@ -42,7 +46,7 @@ class InsertImageUrlCommand extends WriterCommand {
                         }
                         api.document.deleteNode('ximimage', node)
                     })
-            }, 300)
+            }, 0)
         })
     }
 

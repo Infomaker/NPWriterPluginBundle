@@ -1,14 +1,10 @@
-import insertImage from "../models/insertImage";
+import insertImage from '../models/insertImage'
 import {getExtensions} from '../models/ImageTypes'
-import {DragAndDropHandler} from "substance";
-import {api} from "writer";
+import {DragAndDropHandler} from 'substance'
+import {api} from 'writer'
 
 // Implements a file drop handler
 class DropImageUri extends DragAndDropHandler {
-
-    constructor(...args) {
-        super(...args)
-    }
 
     match(params) {
         const isImage = (filename) => getExtensions().some((extension) => filename.includes(extension))
@@ -18,14 +14,17 @@ class DropImageUri extends DragAndDropHandler {
 
     drop(tx, params) {
         const nodeId = insertImage(tx, params.uri)
-
         setTimeout(() => {
             api.editorSession.fileManager.sync()
+                .then(() => {
+                    const imageNode = api.editorSession.getDocument().get(nodeId)
+                    imageNode.emit('onImageUploaded')
+                })
                 .catch(() => {
                     // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
                     const document = api.editorSession.getDocument()
-                    const node = document.get(nodeId),
-                        imageFile = node.imageFile
+                    const node = document.get(nodeId)
+                    const imageFile = node.imageFile
 
                     if (imageFile) {
                         api.editorSession.transaction((tx) => {
@@ -34,10 +33,8 @@ class DropImageUri extends DragAndDropHandler {
                     }
                     api.document.deleteNode('ximimage', node)
                 })
-        }, 300)
-
+        }, 0)
     }
-
 }
 
 export default DropImageUri

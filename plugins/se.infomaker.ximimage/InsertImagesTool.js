@@ -1,53 +1,61 @@
 import {Tool} from 'substance'
 import {api} from 'writer'
-import * as ImageTypes from './models/ImageTypes'
-import insertImage from "./models/insertImage"
+import {getMIMETypes} from './models/ImageTypes'
+import insertImage from './models/insertImage'
 
 class XimimageTool extends Tool {
 
     render($$) {
-        var el = $$('div')
+        const el = $$('div')
         el.attr('title', this.getLabel('Upload image'))
 
         el.append(
             $$('button').addClass('se-tool').append(
                 $$('i').addClass('fa fa-image')
             ).on('click', this.triggerFileDialog)
-        );
+        )
 
         el.append(
             $$('input')
                 .attr('type', 'file')
                 .attr('multiple', 'multiple')
                 .attr('id', 'x-im-image-fileupload')
-                .attr('accept', ImageTypes.getMIMETypes().join(','))
+                .attr('accept', getMIMETypes().join(','))
                 .ref('x-im-image-fileupload')
                 .on('change', this.triggerFileUpload)
-        );
+        )
 
-        return el;
+        return el
     }
 
     triggerFileDialog() {
-        var evt = document.createEvent('MouseEvents');
-        evt.initEvent('click', true, false);
-        this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt);
+        const evt = document.createEvent('MouseEvents')
+        evt.initEvent('click', true, false)
+        this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt)
     }
 
     triggerFileUpload(ev) {
-        let nodeId
+        const nodeId = this.insertImage(ev.target.files[0])
+        api.editorSession.fileManager.sync()
+            .then(() => {
+                const imageNode = api.editorSession.getDocument().get(nodeId)
+                imageNode.emit('onImageUploaded')
+            })
+            .catch(() => {
+                return this.onUploadFailure(nodeId)
+            })
+    }
 
+    insertImage(file) {
+        let insertRes = null
         try {
             api.editorSession.transaction(tx => {
-                nodeId = insertImage(tx, ev.target.files[0])
+                insertRes = insertImage(tx, file)
             })
+            return insertRes
         } catch (err) {
-            return this.onUploadFailure(nodeId)
+            return this.onUploadFailure(insertRes)
         }
-
-        api.editorSession.fileManager.sync().catch(() => {
-            return this.onUploadFailure(nodeId)
-        })
     }
 
     onUploadFailure(nodeId) {
@@ -71,7 +79,7 @@ class XimimageTool extends Tool {
                 })
             }
         }
-        catch(err) {
+        catch (err) {
             console.error(err)
         }
     }
