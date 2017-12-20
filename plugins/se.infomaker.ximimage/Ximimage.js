@@ -8,8 +8,6 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
     onImageUploaded() {
         const imageFile = this.getImageFile()
         if (imageFile) {
-            // console.log(imageFile)
-            console.log('fetching after upload')
             return fetchImageMeta(imageFile.uuid)
                 .then((node) => {
                     api.editorSession.transaction((tx) => {
