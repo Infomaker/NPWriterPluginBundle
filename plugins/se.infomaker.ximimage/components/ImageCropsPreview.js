@@ -91,11 +91,7 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
 
     }
 
-    let result = executeTemplate(template, context)
-
-    return result
-
-
+    return executeTemplate(template, context)
 }
 
 class ImageCropsPreview extends Component {
@@ -113,34 +109,39 @@ class ImageCropsPreview extends Component {
         const crops = this.props.crops
         const cropInstructions = this.props.cropInstructions
         const node = this.props.node
+        const {fileManager} = this.context.api.editorSession
 
-        for (let key in crops) {
-            if (crops.hasOwnProperty(key)) {
-                let cropDefinedInNode
-                if (node.crops && node.crops.crops) {
-                    cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
+        // Ensure file for image has been uploaded before fetching its crop-urls
+        fileManager.sync()
+            .then(() => {
+                for (let key in crops) {
+                    if (crops.hasOwnProperty(key)) {
+                        let cropDefinedInNode
+                        if (node.crops && node.crops.crops) {
+                            cropDefinedInNode = node.crops.crops.find((e) => e.name === key)
+                        }
+
+                        const width = node.width
+                        const height = node.height
+                        const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
+
+                        if (this.props.node.uuid && this.props.node.getServiceUrl) {
+                            this.props.node.getServiceUrl(params)
+                                .then((url) => {
+                                    // console.log(url)
+                                    this.cropUrls.set(key, url)
+                                    this.updateSrc(key, url)
+                                })
+                                .catch((e) => {
+                                    const url = ""
+                                    this.cropUrls.set(key, url)
+                                    this.updateSrc(key, url)
+                                })
+                        }
+                    }
                 }
+            })
 
-                const width = node.width
-                const height = node.height
-
-                const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
-
-
-                if (this.props.node.uuid && this.props.node.getServiceUrl) {
-                    this.props.node.getServiceUrl(params)
-                    .then((url) => {
-                        this.cropUrls.set(key, url)
-                        this.updateSrc(key, url)
-                    })
-                    .catch(() => {
-                        const url = ""
-                        this.cropUrls.set(key, url)
-                        this.updateSrc(key, url)
-                    })
-                }
-            }
-        }
     }
 
     updateSrc(key, url) {
