@@ -65,7 +65,7 @@ class ConceptItemComponent extends Component {
             if (item.image && !isHovered) {
                 image = $$(ConceptItemImageComponent, {
                     propertyMap,
-                    src: image
+                    src: item
                 })
             } else {
                 icon = $$(ConceptItemIcon, {

@@ -8,10 +8,6 @@ import ConceptSelectTypeComponent from './ConceptSelectTypeComponent'
 
 class ConceptMainComponent extends Component {
 
-    constructor(...args) {
-        super(...args)
-    }
-
     didMount() {
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
             const types = this.state.types ? this.state.types : []

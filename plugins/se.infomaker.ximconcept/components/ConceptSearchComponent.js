@@ -4,10 +4,6 @@ import ConceptSearchResultComponent from './ConceptSearchResultComponent'
 
 class ConceptSearchComponent extends Component {
 
-    constructor(...args) {
-        super(...args)
-    }
-
     getInitialState() {
         return {
             selected: 0,
@@ -26,6 +22,7 @@ class ConceptSearchComponent extends Component {
 
     render($$){
         let icon, searchResultsContainer
+        const el = $$('div')
         const { searchedTerm } = this.state
         const { disabled, subtypes, enableHierarchy, propertyMap } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
@@ -78,8 +75,8 @@ class ConceptSearchComponent extends Component {
             }).ref('searchResultComponent')
         }
 
-        const el = $$('div')
-            .addClass('concept-search-component')
+        
+        el.addClass('concept-search-component')
             .append(searchInput)
             .append(icon)
             .append(searchResultsContainer)

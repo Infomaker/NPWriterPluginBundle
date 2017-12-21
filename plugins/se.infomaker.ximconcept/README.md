@@ -223,8 +223,8 @@ If a concept has been marked with "replaced by", the new concept will be added i
 If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas 
 that correlates with selected polygon. The correlating areas will be added to the article as a `related-geo link` tag.
 
-Available functions are: `"Contains"`, `"Intersects"`, `"IsWithin"`. These links are not displayed to the user but are 
-to be considered as an extension available for.
+Available functions are: `"Contains"`, `"Intersects"`, `"IsWithin"`. These links are not displayed to the user but are
+to be considered as an extension available for searching.
 
 ```xml
 <link rel="subject" title="Oxhagen" type="x-im/place" uuid="952adffb-1a8e-492c-b5b1-175df1f91874">
