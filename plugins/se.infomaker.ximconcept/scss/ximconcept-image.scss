@@ -1,0 +1,14 @@
+.concept-main-component {
+    .concept-item-imagewrapper {
+        width: 20px;
+        height: 20px;
+        border-radius: 150px;
+        overflow: hidden;
+        margin: 6px 5px;
+
+        .concept-item-image {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
