@@ -17,22 +17,18 @@
     }
     .concept-form-title {
         color: #878787;
-        text-transform: uppercase;
-        margin: 30px 0 5px 0;
-
-        &:first-of-type {
-            margin-top: 10px;
-        }
+        margin: 30px 0 10px 0;
+        font-weight: 600;
 
         h2 {
-            font-size: 12px;
+            font-size: 16px;
         }
     }
     .concept-form-group {
         display: flex;
         align-items: center;
         font-size: 14px;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
 
         .concept-form-label {
             width: 125px;
@@ -51,7 +47,7 @@
                 font-family: 'Lato';
             }
             &:focus {
-                border-bottom: 1px solid #288dc0;
+                border-bottom: 2px solid #288dc0;
                 color: #303030;
             }
             &:invalid {
@@ -69,6 +65,7 @@
                 width: 100%;
                 max-width: 100%;
                 min-width: 100%;
+                padding: 6px 0;
             }
         }
     }

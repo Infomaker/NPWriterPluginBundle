@@ -3,6 +3,7 @@ import { Component } from 'substance'
 class ConceptItemImageComponent extends Component {
 
     /**
+     * TODO: Implement functionality to display Concept images or avatars
      * 
      * @param {VirtualElement} $$ 
      */

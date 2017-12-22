@@ -214,12 +214,14 @@ specified in ConcepService Config:
 ```
 
 ### Replaced by
+
 If a concept has been marked with "replaced by", the new concept will be added if selected:
 
 ![](./doc-images/replaced-by.png)
 
 
 ### x-im/polygon
+
 If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas 
 that correlates with selected polygon. The correlating areas will be added to the article as a `related-geo link` tag.
 
