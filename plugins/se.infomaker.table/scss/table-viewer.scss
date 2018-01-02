@@ -1,0 +1,16 @@
+.table-viewer-container {
+    padding: 2px 1px;
+}
+
+
+.sc-isolated-node {
+    .table-selection {
+        display: none;
+    }
+
+    &.sm-no-blocker {
+        .table-selection {
+            display: initial;
+        }
+    }
+}

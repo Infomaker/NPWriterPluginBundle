@@ -1,0 +1,81 @@
+.table-container {
+    position: relative;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #eee;
+        caption {
+            font-style: italic;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: left;
+            margin-bottom: 0.5em;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        th, td {
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 0.5em;
+
+            &.selected, &.focused {
+                outline: 2px solid #b2d5fe;
+                outline-offset: -1px;
+                position: relative;
+            }
+
+            &.focused {
+                box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+                z-index: 1; // Pop out of selection
+            }
+        }
+
+        tfoot, thead {
+            th, td {
+                background-color: #fafafa;
+            }
+        }
+
+        thead {
+            tr {
+                border-bottom: 2px solid #ddd;
+            }
+        }
+
+        tfoot {
+            tr {
+                border-top: 2px solid #ddd;
+            }
+        }
+
+    }
+
+    .content {
+        padding: 1em;
+    }
+
+    .table-selection {
+        position: absolute;
+        background-color: rgba(163, 205, 253, 0.1);
+        border: 1px solid  rgba(163, 205, 253, 1);
+        border-radius: 0.2em;
+        pointer-events: none;
+
+        // Selection drag handle
+        // &:after {
+        //     content: '';
+        //     width: 7px;
+        //     height: 7px;
+        //     position: absolute;
+        //     bottom: -4px;
+        //     right: -4px;
+        //     background-color: rgba(163, 205, 253, 1);
+        //     cursor: nwse-resize;
+        //     pointer-events: initial;
+        // }
+    }
+}
