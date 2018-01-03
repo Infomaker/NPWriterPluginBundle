@@ -2,9 +2,15 @@ export default {
     type: 'table',
     tagName: 'table',
 
+    matchElement: function(el) {
+        console.info('Matching table element:', el.is('table'), el)
+        return el.is('table')
+    },
+
     // From newsml to node
     import: function (el, node, converter) {
-        let trs = el.findAll('tr')
+        console.info('Importing table')
+        let trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
         let colCount = 0
         let cells = []
         let rowspans = [] // we remember active rowspans here
@@ -37,6 +43,10 @@ export default {
         node.cells = cells
         node.header = Boolean(el.find('thead'))
         node.footer = Boolean(el.find('tfoot'))
+        const caption = el.find('caption')
+        if (caption) {
+            node.caption = caption.text()
+        }
     },
 
     // from node to newsml
