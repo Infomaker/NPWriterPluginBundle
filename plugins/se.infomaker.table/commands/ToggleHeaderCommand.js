@@ -18,6 +18,7 @@ class ToggleHeaderCommand extends Command {
             isDisabled = false
         }
 
+        console.info('Toggle header command disabled:', isDisabled, 'Params:', params)
         return {
             disabled: isDisabled
         }

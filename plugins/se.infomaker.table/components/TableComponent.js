@@ -135,6 +135,8 @@ class TableComponent extends Component {
         let cellComp = extractCellComponentFromEventTarget(event.target)
         if (cellComp) {
             this.setCellFocused(cellComp)
+        } else {
+            console.info('Found no cell')
         }
     }
 
@@ -265,6 +267,18 @@ class TableComponent extends Component {
         console.info('Delete pressed on cell')
         event.preventDefault()
         event.stopPropagation()
+
+        const sel = this.refs.selection
+        const area = sel.getArea()
+
+        const cells = area ? area.cells : [this.state.selectedCell]
+
+        this.context.editorSession.transaction(tx => {
+            cells.forEach(cell => {
+                console.info('\tCell:', cell)
+                tx.set([cell, 'content'], '')
+            })
+        })
     }
 
     _handleInputKey(event) {
@@ -329,6 +343,12 @@ class TableComponent extends Component {
         if (isolatedNode) {
             isolatedNode.grabFocus()
         }
+    }
+
+    resetSelection() {
+        console.info('Resetting selection on table component')
+        this.extendState(this.getInitialState())
+        this.refs.selection.clear()
     }
 }
 

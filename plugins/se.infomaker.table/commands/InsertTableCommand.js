@@ -43,21 +43,21 @@ class InsertTableCommand extends InsertNodeCommand {
                 //     cellData.id = null
                 // }
 
-                if (row === 1 && col === 3) {
-                    cellData.colspan = 2
-                }
+                // if (row === 1 && col === 3) {
+                //     cellData.colspan = 2
+                // }
 
-                if (row === 1 && col === 4) {
-                    cellData.id = null
-                }
+                // if (row === 1 && col === 4) {
+                //     cellData.id = null
+                // }
 
-                if (row === 2 && col === 2) {
-                    cellData.colspan = 2
-                }
+                // if (row === 2 && col === 2) {
+                //     cellData.colspan = 2
+                // }
 
-                if (row === 2 && col === 3) {
-                    cellData.id = null
-                }
+                // if (row === 2 && col === 3) {
+                //     cellData.id = null
+                // }
 
                 if (cellData.id) {
                     const colNode = tx.create(cellData)

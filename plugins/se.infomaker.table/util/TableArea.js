@@ -30,6 +30,7 @@ class TableArea {
         if (this.startCell && this.endCell) {
             this._perimeterSearch()
         }
+        console.info('Area:', this)
     }
 
     get cells() {

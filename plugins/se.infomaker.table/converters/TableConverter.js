@@ -1,3 +1,5 @@
+import {uuid} from 'substance'
+
 export default {
     type: 'table',
     tagName: 'table',
@@ -9,7 +11,11 @@ export default {
 
     // From newsml to node
     import: function (el, node, converter) {
-        console.info('Importing table')
+        if (!el.id) {
+            node.id = uuid(this.type)
+        }
+
+        console.info('Importing table... Node:', node.id, 'Element:', el, 'Converter:', converter)
         let trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
         let colCount = 0
         let cells = []
@@ -82,6 +88,10 @@ export default {
             }
         }
 
+        if (node.caption) {
+            const captionElem = $$('caption').append(converter.annotatedText([node.id, 'caption']))
+            el.append(captionElem)
+        }
 
         /**
          * The <thead> must appear after any <caption> or <colgroup> element, even implicitly defined,

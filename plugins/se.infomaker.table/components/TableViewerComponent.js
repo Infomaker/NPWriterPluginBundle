@@ -26,6 +26,14 @@ class TableViewerComponent extends Component {
         }, false)
     }
 
+    didUpdate() {
+        const isolatedMode = this.context.isolatedNodeComponent.getMode()
+
+        if (isolatedMode !== 'focused') {
+            this.refs.table.resetSelection()
+        }
+    }
+
     _openTableEditor() {
         const { api } = this.context
         api.editorSession.executeCommand('OpenTableEditor', {

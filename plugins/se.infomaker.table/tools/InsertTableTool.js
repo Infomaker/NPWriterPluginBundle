@@ -12,7 +12,7 @@ class InsertTableTool extends Tool {
 
     triggerInsert() {
         api.editorSession.executeCommand('InsertTable', {
-            tableSize: [10, 10]
+            tableSize: [5, 3]
         })
     }
 }

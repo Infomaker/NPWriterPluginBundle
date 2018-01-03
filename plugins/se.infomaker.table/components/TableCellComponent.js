@@ -33,11 +33,10 @@ class TableCellComponent extends Component {
             disabled: this._isDisabled(),
             multiline: false
         }).ref('editor').on('keypress', () => {
-            console.info('yo')
+            console.info('context', this.context)
         })
 
         if (this.refs.editor) {
-            // console.info('Pls check', this.refs.editor)
             this.refs.editor._handleEnterKey = this._handleEnterKey.bind(this)
             this.refs.editor._handleTabKey = this._handleTabKey.bind(this)
         }
