@@ -29,7 +29,9 @@ export default {
         config.addContentMenuTopTool('InsertTable', InsertTableTool)
 
         config.addConverter('newsml', TableConverter)
+        config.addConverter('html', TableConverter)
         config.addConverter('newsml', TableCellConverter)
+        config.addConverter('html', TableCellConverter)
 
     }
 }
