@@ -2,7 +2,7 @@ import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
-const {api, moment, event} = writer
+const {api, moment, event, UIButton} = writer
 const pluginId = 'se.infomaker.publishflow'
 const TIMEOUT = 30000
 
@@ -165,8 +165,32 @@ class PublishFlowComponent extends Component {
             ),
             $$('p').append(
                 this.getLabel(statusDef.description)
-            )
+            ),
+            this.renderMajorAction($$)
         ]
+    }
+
+    /**
+     * Render major action call to action button
+     *
+     * @param  {*} $$
+     * @return {VirtualElement}
+     */
+    renderMajorAction($$) {
+        const transition = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .find(transition => {
+                return transition.priority === 'primary'
+            })
+
+        const el = $$(UIButton, {
+            label: transition.title
+        })
+        .addClass('sc-np-wide')
+        .on('click', () => {
+
+        })
+
+        return el
     }
 
     /**
@@ -375,7 +399,9 @@ class PublishFlowComponent extends Component {
 
         this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
             .forEach(transition => {
-                actionsEl.append(this.renderTransition($$, transition))
+                if (transition.priority !== 'primary') {
+                    actionsEl.append(this.renderTransition($$, transition))
+                }
             })
 
         return actionsEl
