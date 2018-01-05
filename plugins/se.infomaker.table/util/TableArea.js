@@ -14,10 +14,10 @@ import {lodash} from 'writer'
  * - lastCell: Bottom right cell
  */
 class TableArea {
-    constructor(tableNode, startCellComponent, endCellComponent) {
-        this.node = tableNode
-        this.startCell = startCellComponent
-        this.endCell = endCellComponent
+    constructor(tableNode, startCellNode, endCellNode) {
+        this.table = tableNode
+        this.startCell = startCellNode
+        this.endCell = endCellNode
 
         this.top = null
         this.left = null
@@ -30,18 +30,17 @@ class TableArea {
         if (this.startCell && this.endCell) {
             this._perimeterSearch()
         }
-        console.info('Area:', this)
     }
 
     get cells() {
         const cells = []
         for (let row = this.top; row <= this.bottom; row++) {
             for (let col = this.left; col <= this.right; col++) {
-                const cell = this.node.cells[row][col]
+                const cell = this.table.cells[row][col]
                 if (cell) {
                     cells.push(cell)
                 } else {
-                    const ownerCell = this.node.getOwnerOfCellAt(row, col)
+                    const ownerCell = this.table.getOwnerOfCellAt(row, col)
                     console.info('\n\n\nNull cell found so trying to find owner', ownerCell)
                     if (!cells.includes(ownerCell.id)) {
                         cells.push(ownerCell.id)
@@ -53,11 +52,11 @@ class TableArea {
     }
 
     get firstCell() {
-        return this.node.getOwnerOfCellAt(this.top, this.left)
+        return this.table.getOwnerOfCellAt(this.top, this.left)
     }
 
     get lastCell() {
-        return this.node.getOwnerOfCellAt(this.bottom, this.right)
+        return this.table.getOwnerOfCellAt(this.bottom, this.right)
     }
 
     get firstCellId() {
@@ -77,7 +76,7 @@ class TableArea {
     }
 
     _extractCellCoords(cellNode) {
-        const coords = this.node.getCellCoords(cellNode.id)
+        const coords = this.table.getCellCoords(cellNode.id)
         const endRow = cellNode.rowspan > 1 ? cellNode.rowspan - 1 + coords[0] : coords[0]
         const endCol = cellNode.colspan > 1 ? cellNode.colspan - 1 + coords[1] : coords[1]
         return {
@@ -128,10 +127,8 @@ class TableArea {
 
     _perimeterSearch() {
         console.info('Perimeter search')
-        const startCellId = this.startCell.props.node.id
-        const endCellId = this.endCell.props.node.id
-        const startCellCoords = this.node.getCellCoords(startCellId)
-        const endCellCoords = this.node.getCellCoords(endCellId)
+        const startCellCoords = this.table.getCellCoords(this.startCell.id)
+        const endCellCoords = this.table.getCellCoords(this.endCell.id)
 
         // if the initial bounds are not set, use the start and end cells to figure them out
         this.top = this.top !== null ? this.top : Math.min(startCellCoords[0], endCellCoords[0])
@@ -153,7 +150,7 @@ class TableArea {
             }
 
             // Now continue the search
-            const cellNode = this.node.getCellAt(row, col)
+            const cellNode = this.table.getCellAt(row, col)
             if (cellNode) {
                 console.info(`[${row},${col}] Found cell`)
                 // If cell found, check for colspan and rowspan
@@ -162,7 +159,7 @@ class TableArea {
             } else {
                 console.info(`[${row},${col}] Found NULL, figure out which cell it belongs to`)
                 // If Null cell found, figure out what cell it belongs to
-                const owner = this.node.getOwnerOfCellAt(row, col)
+                const owner = this.table.getOwnerOfCellAt(row, col)
                 console.info('Null cell owner:', owner)
                 this._handleFoundCellNode(owner)
             }
@@ -233,7 +230,7 @@ class TableArea {
     }
 
     _handleFoundCellNode(cellNode) {
-        const cellCoords = this.node.getCellCoords(cellNode.id)
+        const cellCoords = this.table.getCellCoords(cellNode.id)
         this._markCellSearched(cellCoords[0], cellCoords[1])
 
         if (cellNode.rowspan > 1) {
