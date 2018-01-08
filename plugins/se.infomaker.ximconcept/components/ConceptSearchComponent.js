@@ -35,6 +35,7 @@ class ConceptSearchComponent extends Component {
         })
         .on('keydown', this.handleKeyDown)
         .on('keyup', this.handleKeyUp)
+        .on('focus', this.handleFocus)
         .on('blur', this.handleBlur)
         .ref('searchInput')
 
@@ -82,6 +83,14 @@ class ConceptSearchComponent extends Component {
             .append(searchResultsContainer)
 
         return el
+    }
+
+    handleFocus() {
+        this.extendState({
+            searching: true
+        })
+
+        this.search('*')
     }
 
     handleBlur() {
