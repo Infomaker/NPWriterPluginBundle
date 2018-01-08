@@ -166,7 +166,7 @@ class PublishFlowComponent extends Component {
             $$('p').append(
                 this.getLabel(statusDef.description)
             ),
-            this.renderMajorAction($$)
+            this.renderPrimaryTransition($$)
         ]
     }
 
@@ -418,7 +418,7 @@ class PublishFlowComponent extends Component {
      * @param  {*} $$
      * @return {VirtualElement}
      */
-    renderMajorAction($$) {
+    renderPrimaryTransition($$) {
         const transition = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
             .find(transition => {
                 return transition.priority === 'primary'
@@ -429,12 +429,14 @@ class PublishFlowComponent extends Component {
         }
 
         const el = $$(UIButton, {
-            label: transition.title
+            label: transition.title,
+        })
+        .on('click', () => {
+            this._save(() => {
+                return this.handleTransitionClick(transition)
+            })
         })
         .addClass('sc-np-wide')
-        .on('click', () => {
-            return this.handleTransitionClick(transition)
-        })
 
         return el
     }
