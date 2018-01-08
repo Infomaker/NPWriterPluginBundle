@@ -22,11 +22,11 @@
             background: white;
             border: 1px solid #ddd;
 
-            &.invalid-uuid {
-                border: 1px solid rgba(229, 48, 15, 0.75);
-            }
             .concept-item-content {
                 margin-top: 4px;
+            }
+            &.invalid-uuid, &.not-found {
+                border: 1px solid rgba(229, 48, 15, 0.75);
             }
             &:hover {
                 background: #ebebeb;

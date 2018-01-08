@@ -86,7 +86,7 @@ class ConceptItemComponent extends Component {
                 .append(item.name || item.title || item[propertyMap.ConceptName])
                 .append(tooltip)
 
-            el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''}`)
+            el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''} ${item.error ? 'not-found' : ''}`)
                 .append(image)
                 .append(icon)
                 .append(itemContent)
@@ -112,9 +112,10 @@ class ConceptItemComponent extends Component {
     }
 
     editItem() {
-        
-        if (this.props.editable) {
-            if (this.hasValidUUid()) {
+        if ( this.props.editable) {
+            if (this.state.item.error) {
+                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.concept.label'), this.getLabel('invalid.concept.description'))
+            } else if (this.hasValidUUid()) {
                 this.props.editItem(this.props.item)
             } else {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.uuid.label'), this.getLabel('invalid.uuid.description'))
