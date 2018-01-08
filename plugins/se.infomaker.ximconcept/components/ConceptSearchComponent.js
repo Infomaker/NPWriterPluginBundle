@@ -102,14 +102,12 @@ class ConceptSearchComponent extends Component {
         const term = this.refs.searchInput.val().trim()
         
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
-            if (!this.state.searching) {
-                this.extendState({
-                    searching: true
-                })
+            this.extendState({
+                searching: true
+            })
 
-                this.search(term)
-            }
-        } else if (!term || !term.length) {
+            this.search(term)
+        } else if (!this.state.selected && (!term || !term.length)) {
             this.resetState()
         }
     }
@@ -138,21 +136,30 @@ class ConceptSearchComponent extends Component {
         switch (keyCode) {
             case 27: // escape
                 e.preventDefault()
+                e.stopPropagation()
+
                 this.refs.searchInput.val('')
                 this.resetState()
+                
                 break
             case 38: // arrow up
                 e.preventDefault()
+                e.stopPropagation()
+
                 this.extendState({
                     selected: (this.state.selected > 0) ? this.state.selected - 1 : 0
                 })
+                
                 break
             case 9: // tab
             case 40: // arrow down
                 e.preventDefault()
+                e.stopPropagation()
+
                 this.extendState({
                     selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
                 })
+                
                 break
             case 13: // enter
                 selectedItem = this.state.searchResult[this.state.selected]
