@@ -171,29 +171,6 @@ class PublishFlowComponent extends Component {
     }
 
     /**
-     * Render major action call to action button
-     *
-     * @param  {*} $$
-     * @return {VirtualElement}
-     */
-    renderMajorAction($$) {
-        const transition = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
-            .find(transition => {
-                return transition.priority === 'primary'
-            })
-
-        const el = $$(UIButton, {
-            label: transition.title
-        })
-        .addClass('sc-np-wide')
-        .on('click', () => {
-
-        })
-
-        return el
-    }
-
-    /**
      * Render pubStart and pubStop fields
      *
      * @param {object}
@@ -430,27 +407,64 @@ class PublishFlowComponent extends Component {
             ])
             .on('click', () => {
                 this._save(() => {
-                    try {
-                        this.publishFlowMgr.executeTransition(
-                            transition.nextState,
-                            this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
-                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
-                        )
-                    }
-                    catch (ex) {
-                        api.ui.showMessageDialog(
-                            [{
-                                type: 'error',
-                                message: this.getLabel(ex.message)
-                            }],
-                            () => {
-                            }
-                        )
-
-                        return false
-                    }
+                    return this.handleTransitionClick(transition)
                 })
             })
+    }
+
+    /**
+     * Render primary transition button
+     *
+     * @param  {*} $$
+     * @return {VirtualElement}
+     */
+    renderMajorAction($$) {
+        const transition = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .find(transition => {
+                return transition.priority === 'primary'
+            })
+
+        if (!transition) {
+            return null
+        }
+
+        const el = $$(UIButton, {
+            label: transition.title
+        })
+        .addClass('sc-np-wide')
+        .on('click', () => {
+            return this.handleTransitionClick(transition)
+        })
+
+        return el
+    }
+
+    /**
+     * Execute defined state transition
+     *
+     * @param  {object} transition Transition to execute
+     * @return {boolean}
+     */
+    handleTransitionClick(transition) {
+        try {
+            this.publishFlowMgr.executeTransition(
+                transition.nextState,
+                this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
+                this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+            )
+        }
+        catch (ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: this.getLabel(ex.message)
+                }],
+                () => {
+                }
+            )
+
+            return false
+        }
     }
 
     /**
