@@ -1,5 +1,5 @@
 import {DragAndDropHandler} from 'substance'
-import {idGenerator, api} from 'writer'
+import {idGenerator, api, fetchImageMeta} from 'writer'
 
 class ArchiveSearchDropHandler extends DragAndDropHandler {
 
@@ -50,6 +50,27 @@ class ArchiveSearchDropHandler extends DragAndDropHandler {
 
         setTimeout(() => {
             api.editorSession.fileManager.sync()
+                .then(() => {
+                    const imageNode = api.editorSession.getDocument().get(nodeId)
+                    const imageFileNode = api.editorSession.getDocument().get(imageFile.id)
+                    return fetchImageMeta(imageFileNode.uuid)
+                        .then((node) => {
+                            api.editorSession.transaction((tx) => {
+                                tx.set([nodeId, 'uuid'], node.uuid)
+                                tx.set([nodeId, 'width'], node.width)
+                                tx.set([nodeId, 'height'], node.height)
+                                if(!imageNode.caption) {
+                                    tx.set([nodeId, 'caption'], node.caption)
+                                }
+                                if(!imageNode.authors.length) {
+                                    tx.set([nodeId, 'authors'], node.authors)
+                                }
+                                if(!imageNode.uri) {
+                                    tx.set([nodeId, 'uri'], node.uri)
+                                }
+                            })
+                        })
+                })
                 .catch(() => {
                     const document = api.editorSession.getDocument()
                     const node = document.get(nodeId)
