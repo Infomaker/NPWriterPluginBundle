@@ -6,11 +6,11 @@ export default {
      * Extracts type of DragEvent, and data which is needed for
      * the command 'ximteaser.insert-image'
      *
-     * @param {DragEvent} dragState
+     * @param {object} dragState
      * @returns {{type: String, file:File|nodeId:String|uri:String,uriData:Object|url:String}}
      */
     extract(dragState) {
-        return this._extractData(dragState)
+        return this._extractData(dragState, false)
     },
 
     extractMultiple(dragState) {
@@ -18,7 +18,7 @@ export default {
     },
 
     /**
-     * @param {any} dragState
+     * @param {object} dragState
      * @param {Boolean} multiple
      */
     _extractData(dragState, multiple) {

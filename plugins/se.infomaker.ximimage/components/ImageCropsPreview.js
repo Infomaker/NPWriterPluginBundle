@@ -128,7 +128,6 @@ class ImageCropsPreview extends Component {
                         if (this.props.node.uuid && this.props.node.getServiceUrl) {
                             this.props.node.getServiceUrl(params)
                                 .then((url) => {
-                                    // console.log(url)
                                     this.cropUrls.set(key, url)
                                     this.updateSrc(key, url)
                                 })

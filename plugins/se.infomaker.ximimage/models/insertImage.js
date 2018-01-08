@@ -1,4 +1,4 @@
-import {idGenerator, api} from 'writer'
+import {idGenerator} from 'writer'
 import {getExtensions} from './ImageTypes'
 
 /*

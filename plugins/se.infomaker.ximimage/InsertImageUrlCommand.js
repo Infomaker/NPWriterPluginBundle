@@ -1,9 +1,6 @@
 import insertImage from './models/insertImage'
 import {api, WriterCommand} from 'writer'
 
-/*
-
- */
 class InsertImageUrlCommand extends WriterCommand {
 
     execute(params) {

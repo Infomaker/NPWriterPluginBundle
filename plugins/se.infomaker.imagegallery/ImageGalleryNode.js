@@ -21,6 +21,8 @@ class ImageGalleryNode extends Container {
                 return fetchImageMeta(imageNode.uuid)
                     .then((node) => {
                         api.editorSession.transaction((tx) => {
+                            tx.set([galleryImageNode.id, 'width'], node.width)
+                            tx.set([galleryImageNode.id, 'height'], node.height)
                             if (!galleryImageNode.caption && node.caption) {
                                 tx.set([galleryImageNode.id, 'caption'], node.caption)
                             }
@@ -30,8 +32,6 @@ class ImageGalleryNode extends Container {
                             if (!imageNode.uri) {
                                 tx.set([imageNode.id, 'uri'], node.uri)
                             }
-                            tx.set([galleryImageNode.id, 'width'], node.width)
-                            tx.set([galleryImageNode.id, 'height'], node.height)
                         })
                     })
             })

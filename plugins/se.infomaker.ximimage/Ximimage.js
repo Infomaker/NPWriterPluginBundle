@@ -13,14 +13,14 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
                     api.editorSession.transaction((tx) => {
                         tx.set([this.id, 'uuid'], node.uuid)
                         tx.set([this.id, 'uri'], node.uri)
+                        tx.set([this.id, 'width'], node.width)
+                        tx.set([this.id, 'height'], node.height)
                         if (isUnset(this.caption)) {
                             tx.set([this.id, 'caption'], node.caption)
                         }
                         if (isUnset(this.credit)) {
                             tx.set([this.id, 'credit'], node.credit)
                         }
-                        tx.set([this.id, 'width'], node.width)
-                        tx.set([this.id, 'height'], node.height)
                         if (isUnset(this.authors)) {
                             tx.set([this.id, 'authors'], node.authors)
                         }
