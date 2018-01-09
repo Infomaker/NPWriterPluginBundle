@@ -73,7 +73,6 @@ class ConceptDialogComponent extends Component {
     }
 
     render($$) {
-        console.info('render')
         const el = $$('div').addClass('concept-dialog-component col-sm-12')
 
         if (this.state.loading) {
