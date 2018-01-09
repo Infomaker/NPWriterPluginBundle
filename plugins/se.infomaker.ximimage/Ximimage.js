@@ -1,5 +1,6 @@
 import {api, withTraits, traitBundle, fetchImageMeta} from 'writer'
 import {BlockNode} from 'substance'
+import PropertyMap from './models/PropertyMap'
 
 const {imageNodeTrait, imageCropTrait, authorNodeTrait} = traitBundle
 
@@ -8,21 +9,25 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
     onImageUploaded() {
         const imageFile = this.getImageFile()
         if (imageFile) {
+            const mappedProps = PropertyMap.getValidMap()
             return fetchImageMeta(imageFile.uuid)
-                .then((node) => {
+                .then((meta) => {
                     api.editorSession.transaction((tx) => {
-                        tx.set([this.id, 'uuid'], node.uuid)
-                        tx.set([this.id, 'uri'], node.uri)
-                        tx.set([this.id, 'width'], node.width)
-                        tx.set([this.id, 'height'], node.height)
-                        if (isUnset(this.caption)) {
-                            tx.set([this.id, 'caption'], node.caption)
+                        tx.set([this.id, 'uuid'], meta.uuid)
+                        tx.set([this.id, 'uri'], meta.uri)
+                        tx.set([this.id, 'width'], meta.width)
+                        tx.set([this.id, 'height'], meta.height)
+                        if (isUnset(this.caption) && mappedProps.caption !== false) {
+                            tx.set([this.id, 'caption'], meta[mappedProps.caption])
                         }
-                        if (isUnset(this.credit)) {
-                            tx.set([this.id, 'credit'], node.credit)
+                        if (isUnset(this.credit) && mappedProps.credit !== false) {
+                            tx.set([this.id, 'credit'], meta[mappedProps.credit])
                         }
-                        if (isUnset(this.authors)) {
-                            tx.set([this.id, 'authors'], node.authors)
+                        if (isUnset(this.authors) && mappedProps.authors !== false) {
+                            tx.set([this.id, 'authors'], meta.authors)
+                        }
+                        if (isUnset(this.alttext) && mappedProps.alttext !== false) {
+                            tx.set([this.id, 'alttext'], meta[mappedProps.alttext])
                         }
                     })
                 })
