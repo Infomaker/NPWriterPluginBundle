@@ -112,13 +112,13 @@ class ConceptItemComponent extends Component {
     }
 
     editItem() {
-        if ( this.props.editable) {
-            if (this.state.item.error) {
-                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.concept.label'), this.getLabel('invalid.concept.description'))
-            } else if (this.hasValidUUid()) {
-                this.props.editItem(this.props.item)
-            } else {
+        if (this.props.editable) {
+            if (!this.hasValidUUid()) {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.uuid.label'), this.getLabel('invalid.uuid.description'))
+            } else if (this.state.item.error) {
+                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.concept.label'), this.getLabel('invalid.concept.description'))
+            } else {
+                this.props.editItem(this.props.item)
             }
         }
     }

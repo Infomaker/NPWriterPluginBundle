@@ -50,8 +50,8 @@
                 border-bottom: 2px solid #288dc0;
                 color: #303030;
             }
-            &:invalid {
-                -background-color: pink;
+            &.invalid {
+                border-bottom: 2px solid #e5300f;
             }
         }
         &.textarea-group {

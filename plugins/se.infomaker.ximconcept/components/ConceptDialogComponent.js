@@ -6,6 +6,8 @@ class ConceptDialogComponent extends Component {
 
     constructor(...args) {
         super(...args)
+
+        this.send = this.send.bind(this)
     }
 
     getInitialState() {
@@ -17,6 +19,10 @@ class ConceptDialogComponent extends Component {
 
     dispose() {
         this.conceptItemModel = null
+        Object.keys(this.refs).forEach(ref => {
+            const input = this.refs[ref]
+            input.el.el.removeEventListener('keyup', this.validateNoEmptyName.bind(this), true)
+        })
     }
 
     async didMount() {
@@ -45,7 +51,29 @@ class ConceptDialogComponent extends Component {
         }
     }
 
+    didUpdate() {
+        Object.keys(this.refs).forEach(ref => {
+            const input = this.refs[ref]
+            input.el.el.removeEventListener('input', this.validateNoEmptyName.bind(this), true)
+            input.el.el.addEventListener('input', this.validateNoEmptyName.bind(this), true)
+        })
+    }
+
+    validateNoEmptyName(e) {
+        if (e.target.pattern && e.target.pattern !== '') {
+            const reg = new RegExp(e.target.pattern)
+            if (reg.test(e.target.value)) {
+                document.querySelector('.btn.sc-np-btn.btn-primary').disabled = false
+                e.target.classList.remove('invalid')
+            } else {
+                document.querySelector('.btn.sc-np-btn.btn-primary').disabled = true
+                e.target.classList.add('invalid')
+            }
+        }
+    }
+
     render($$) {
+        console.info('render')
         const el = $$('div').addClass('concept-dialog-component col-sm-12')
 
         if (this.state.loading) {
