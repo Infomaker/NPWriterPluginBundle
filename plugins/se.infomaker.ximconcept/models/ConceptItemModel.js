@@ -151,7 +151,7 @@ class ConceptItemModel {
         }
 
         const xmlString = new XMLSerializer().serializeToString(this.conceptXml.documentElement).trim().replace(/ xmlns=""/g, '')
-
+        
         if (item.uuid) {
             await ConceptService.updateConceptItemXml(item.uuid, xmlString)
         } else {

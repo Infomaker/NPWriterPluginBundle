@@ -144,10 +144,6 @@ class ConceptDialogComponent extends Component {
 
     generateInputFormGroup($$, field) {
         const input = $$('input', { id: field.label, class: 'concept-form-control', type: field.type, value: field.value ? field.value : '', placeholder: field.placeholder, pattern: field.validation }).ref(field.refId)
-
-        if (field.required) {
-            input.attr('required', true)
-        }
         
         return this.generateFormGroup($$)
             .append(this.generateLabel($$, field))
@@ -322,7 +318,6 @@ class ConceptDialogComponent extends Component {
 
     async onClose(action) {
         if (action === 'save') {
-            // TODO: Validate all refs against config validation rule
             this.props.save(
                 await this.conceptItemModel.save(this.refs)
             )
