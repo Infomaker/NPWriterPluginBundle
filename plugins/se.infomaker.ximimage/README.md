@@ -7,8 +7,11 @@ from disk or from URL.
 The image plugin configuration must have several things defined to work correctly.
 ```json
 {
-    "vendor": "infomaker.se",
+    "id": "se.infomaker.ximimage",
     "name": "ximimage",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximimage.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximimage.css",
+    "mandatory": false,
     "enabled": true,
     "data": {
         "imageFileExtension": [".jpg", ".jpeg", ".png", ".gif"],
@@ -16,11 +19,10 @@ The image plugin configuration must have several things defined to work correctl
         "bylinesearch": false, // Default true
         "byline": false, // Default true
         "imageinfo": false, // Default true
-        "publishedmaxwidth": 2560,
         "crops": { ... },
-        "urlMatchers": [ ... ],
         "fields": [ ... ],
-        "cropInstructions": { ... }
+        "cropInstructions": { ... },
+        "propertyMap": { ... }
     }
 }
 ```
@@ -97,25 +99,13 @@ as `{{variableName}}`. These variables currently exists:
 Example:
 ```json
 "cropInstructions": {
-          "auto": {
-            "default": "fit=crop&crop=faces,edges&w={{w}}&h={{h}}"
-          },
-          "userDefined": {
-            "default": "rect={{cx}},{{cy}},{{cw}},{{ch}}&fit=crop&w={{w}}&h={{h}}"
-          }
-        }
-```
-
-#### Url matchers
-A mandatory array of patterns which tell the image plugin what kind of file
-patterns to handle for drop etc.
-
-```json
-"urlMatchers": [
-    "^.*\\.jpg",
-    "^.*\\.gif",
-    "^.*\\.png"
-]
+    "auto": {
+        "default": "fit=crop&crop=faces,edges&w={{w}}&h={{h}}"
+    },
+    "userDefined": {
+        "default": "rect={{cx}},{{cy}},{{cw}},{{ch}}&fit=crop&w={{w}}&h={{h}}"
+    }
+}
 ```
 
 #### Fields configuration
@@ -200,24 +190,24 @@ element. The format of the `object` is:
                     mandatory.
                 -->
                 <crops>
-					<crop name="16:9">
-						<x>0.32875</x>
-						<y>0.5012406947890818</y>
-						<width>0.2875</width>
-						<height>0.3200992555831266</height>
-					</crop>
-					<crop name="4:3">
-						<x>0.31</x>
-						<y>0.5086848635235732</y>
-						<width>0.32875</width>
-						<height>0.48883374689826303</height>
-					</crop>
-					<crop name="1:1">
-						<x>0.49</x>
-						<y>0.533498759305211</y>
-						<width>0.13</width>
-						<height>0.25806451612903225</height>
-					</crop>
+                    <crop name="16:9">
+                        <x>0.32875</x>
+                        <y>0.5012406947890818</y>
+                        <width>0.2875</width>
+                        <height>0.3200992555831266</height>
+                    </crop>
+                    <crop name="4:3">
+                        <x>0.31</x>
+                        <y>0.5086848635235732</y>
+                        <width>0.32875</width>
+                        <height>0.48883374689826303</height>
+                    </crop>
+                    <crop name="1:1">
+                        <x>0.49</x>
+                        <y>0.533498759305211</y>
+                        <width>0.13</width>
+                        <height>0.25806451612903225</height>
+                    </crop>
 				</crops>
             </data>
             <!-- OPTIONAL -->
