@@ -427,7 +427,7 @@ class PublishFlowComponent extends Component {
             })
 
         if (!transitions || transitions.length < 1) {
-            return null
+            return []
         }
 
         transitions.forEach(transition => {
@@ -449,7 +449,7 @@ class PublishFlowComponent extends Component {
             )
         })
 
-        return els.length > 0 ? els : null
+        return els.length > 0 ? els : []
     }
 
     /**
