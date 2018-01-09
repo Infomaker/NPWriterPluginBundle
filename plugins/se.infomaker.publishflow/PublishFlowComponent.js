@@ -166,7 +166,7 @@ class PublishFlowComponent extends Component {
             $$('p').append(
                 this.getLabel(statusDef.description)
             ),
-            this.renderPrimaryTransition($$)
+            ...this.renderPriorityTransitions($$)
         ]
     }
 
@@ -376,7 +376,7 @@ class PublishFlowComponent extends Component {
 
         this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
             .forEach(transition => {
-                if (transition.priority !== 'primary') {
+                if (transition.priority !== 'primary' && transition.priority !== 'secondary') {
                     actionsEl.append(this.renderTransition($$, transition))
                 }
             })
@@ -413,32 +413,43 @@ class PublishFlowComponent extends Component {
     }
 
     /**
-     * Render primary transition button
+     * Render priority transition buttons
      *
      * @param  {*} $$
      * @return {VirtualElement}
      */
-    renderPrimaryTransition($$) {
-        const transition = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
-            .find(transition => {
-                return transition.priority === 'primary'
+    renderPriorityTransitions($$) {
+        const els = []
+
+        const transitions = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .filter(transition => {
+                return transition.priority === 'primary' || transition.priority === 'secondary'
             })
 
-        if (!transition) {
+        if (!transitions || transitions.length < 1) {
             return null
         }
 
-        const el = $$(UIButton, {
-            label: transition.title,
-        })
-        .on('click', () => {
-            this._save(() => {
-                return this.handleTransitionClick(transition)
-            })
-        })
-        .addClass('sc-np-wide')
+        transitions.forEach(transition => {
+            const nextState = this.publishFlowMgr.getStateDefinitionByName(transition.nextState)
+            const icon = nextState && nextState.icon ? nextState.icon : 'fa-question'
 
-        return el
+            els.push(
+                $$(UIButton, {
+                    label: transition.title,
+                    icon: icon
+                })
+                .on('click', () => {
+                    this._save(() => {
+                        return this.handleTransitionClick(transition)
+                    })
+                })
+                .addClass('sc-np-wide')
+                .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
+            )
+        })
+
+        return els.length > 0 ? els : null
     }
 
     /**

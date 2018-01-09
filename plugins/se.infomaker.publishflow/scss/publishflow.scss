@@ -35,6 +35,12 @@
             }
         }
 
+        &>button {
+            .fa {
+                padding-right: 6px;
+            }
+        }
+        
         &>.sc-np-wide {
             width: 100%;
             text-align: center;
