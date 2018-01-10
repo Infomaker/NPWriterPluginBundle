@@ -160,6 +160,58 @@ example where all the fields are enabled and configured.
 ]
 ```
 
+#### Property Map
+*Optional* When an image is added to the Writer surface, the writer will fetch that image's metadata and fill the image node's
+properties automatically.
+It is possible to configure which metadata fields from the image's newsitem maps to the ximimage node properties.
+
+Mapping of an Image Node property can be disabled by setting its mapped value to `false`.
+
+##### Standard Mapping
+If not present, these are the default mappings for an Image Node's properties.
+
+| Image Node Property | Image Meta Property |
+| ------------------: | :------------------ |
+| authors             | authors             |
+| credit              | credit              |
+| caption             | caption             |
+| alttext             | false               |
+
+##### Allowed Property Values
+If an Image Node property is mapped to `false` it will automatically be filled when
+adding a new image.
+**If the configuration is invalid, the image will use the standard
+mapping.**
+
+| Image Node Property | Allowed Properties           |
+| ------------------: | :--------------------------- |
+| authors             | `"authors", false`           |
+| credit              | `"caption", "credit", false` |
+| caption             | `"caption", "credit", false` |
+| alttext             | `"caption", "credit", false` |
+
+##### Property Mapping Examples
+
+**Map caption to alttext**
+Disable caption mapping and map caption to image node's alttext.
+```json
+"propertyMap": {
+    "caption": false,
+    "alttext": "caption"
+}
+```
+
+**Disable all metadata mapping**
+Completely disabled meta-data-mapping to added images.
+```json
+"propertyMap": {
+    "authors": false,
+    "credit": false,
+    "caption": false,
+    "alttext": false
+}
+```
+
 ## Image plugin contract between plugin and the backend
 ### Routes
 Image Plugin routes it's requests via Editor Service (aka Writer Backend). This means that if
