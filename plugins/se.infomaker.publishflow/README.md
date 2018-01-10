@@ -108,7 +108,7 @@ An array of available transitions to other states.
 |preCondition|A condition for this transition. Only `hasPublishedVersion` true/false supported right now. For example ```preCondition{ "hasPublishedVersion": true }``` will make this transition visible only if the article has a published (public) version. |
 
 ### Actions
-An array of actions to perform when first transitioning into this workflow item.
+An object of actions to perform when first transitioning into this workflow item. Surrounded by an array.
 
 All action properties are optional.
 ```json
