@@ -1,8 +1,12 @@
 # Publication flow plugin
 This plugin is the default plugin for handling the article workflow, including saving, setting article statuses and scheduling articles for publication.
 
+* This plugin has dependencies to EditorService which defines which values are available for _pubStatus_.
+
+* The itemMetaExtproperty _haspublishedversion_ flag is only applicable when using an editorial OpenContent together with a public repository. This will then enable you to keep a published version in the public repository and another version, for example draft, in the editorial OpenContent so that a reporter can continue working on a published article without publishing changes immediately.
+
 ## Plugin configuration
-A workflow consists of a number of workflow items. These are defined in the plugins configuration.
+A workflow consists of a number of workflow items (states). These are defined in the plugins configuration.
 
 ```json
 {
@@ -14,51 +18,116 @@ A workflow consists of a number of workflow items. These are defined in the plug
     "mandatory": true,
     "data": {
         "workflow": {
-            "imext:draft": {
+            "draft": {
                 ...
             },
-            "imext:done": {
+            "done": {
                 ...
             },
-            "stat:usable": {
+            "publish": {
                 ...
             }
         }
     }
 ```
 
-### Workflow item
- Each workflow item, or status, is a combination of an action, a status, allowed actions for the this status as well as possible publication start and end time manipulations.
+## Workflow item
+Each workflow item defines properties for that state, actions to perform when entering the state and all allowed transitions to other states.
 
-Below is a workflow item for the `stat:usable` status; its title and description, its values for the actual action button created
-
-The properties `actionLabel` and `icon` support both a string and an array with two strings. If two values are suppled the first is used when the current status is different than this status; the second is used when the current status is the same as this status. I.e to provide different action labels for publish or republish as in the example.
+### Example
+Below is a workflow item named "publish" for the `stat:usable` pubStatus. The name is used to reference this workflow item, _state_, from other transitions.
 
 ```json
-"stat:usable": {
-    "statusTitle": "Published",
-    "statusDescription": "The article has been published",
-    "actionName": "Republish article?",
-    "actionLabel": [
-        "Publish article",
-        "Republish article"
-    ],
-    "icon": [
-        "fa-send",
-        "fa-retweet"
-    ],
+"publish": {
+    "pubStatus": "stat:usable",
+    "title": "Artikeln är publicerad",
+    "description": "Du jobbar direkt mot den publicerade artikeln",
+    "saveActionLabel": "Uppdatera",
+    "icon": "fa-upload",
     "color": "#288dc0",
-    "allowed": [
-        "stat:usable",
-        "stat:canceled"
+    "transitions": [{
+            "nextState": "republish",
+            "title": "Ompublicera"
+        },
+        {
+            "nextState": "draft",
+            "priority": "secondary",
+            "title": "Fortsätt arbeta med utkast"
+        },
+        {
+            "nextState": "cancel",
+            "title": "Avpublicera"
+        }
     ],
-    "actions": {
-        "pubStart": "set"
-    }
+    "actions": [{
+        "pubStart": "set",
+        "pubStop": "clear",
+        "pubStatus": "stat:usable",
+        "hasPublishedVersion": true
+    }]
 }
 ```
 
+### Top level properties
+These are the top level properties for a workflow item.
+
+_The properties pubStatus, title, description, saveActionLabel can be left out when you want to have a workflow item that handles specific actions without keeping its own state. An example is "republish" that should appear in the menu and resets the pubStart value but then leaves the state to be handled by the "publish" workflow item._
+
+| Property | Description |
+|----------|-------------|
+|pubStatus|The pubStatus value for this item. |
+|title|Main title displayed to the user directly in the writer top bar
+|description|Longer description displayed in the publish flow popout dialog|
+|saveActionLabel|Specify the label for the default save button in the Writer|
+|icon|Icon displayed in menu for the menu option to move to this state, uses Font Awesome icon classes|
+|color|Icon background color, normally Infomaker standard colors|
+|transitions|An array of available transitions to other states|
+|actions|Actions to perform when entering this state|
+|||
+
+### Transitions
+An array of available transitions to other states.
+
+```json
+"transitions": [{
+        "nextState": "publish",
+        "title": "Publicera",
+        "preCondition": {
+            "hasPublishedVersion": false
+        }
+    },
+    ...
+]
+```
+
+| Property | Description |
+|----------|-------------|
+|nextState|The name of a workflow item to transition to|
+|title|The title of the menu option displayed to the user (icon from next state is used automatically)|
+|priority|Optional, can be either "primary" or "secondary", will display this as a more visible call to action button above all other transition menu items|
+|preCondition|A condition for this transition. Only `hasPublishedVersion` true/false supported right now. For example ```preCondition{ "hasPublishedVersion": true }``` will make this transition visible only if the article has a published (public) version. |
+
 ### Actions
+An array of actions to perform when first transitioning into this workflow item.
+
+All action properties are optional.
+```json
+"actions": [{
+    "pubStart": "set",
+    "pubStop": "clear",
+    "pubStatus": "stat:usable",
+    "hasPublishedVersion": true
+}]
+
+```
+| Property | Description |
+|----------|-------------|
+|pubStart|`required`, `set` or `clear`. Required requires the users to choose a valid time before this transition can be made. Set and clear sets or clears the pubStart.|
+|pubStop|`required`, `set` or `clear`. Required requires the users to choose a valid time before this transition can be made. Set and clear sets or clears the pubStop.|
+|pubStatus|The most commonly used. A string that defines the pubStatus value to set in the NewsML when first transitioning into this state.|
+|hasPublishedVersion|Set NewsML flag to either `true` or `false`|
+
+
 
 ### Output
 The plugin updates the article depending on selections made in the plugin. The status selected updates the
@@ -66,7 +135,15 @@ The plugin updates the article depending on selections made in the plugin. The s
 update corresponding dates in `newsItem > itemMeta`, e.g.
 
 ```xml
-<itemMetaExtProperty value="2017-10-12T00:00:00+02:00" type="imext:pubstart"/>
-<itemMetaExtProperty value="2017-10-11T00:00:00+02:00" type="imext:pubstop"/>
+<newsItem ...>
+    ...
+    <itemMeta>
+        <pubStatus qcode="stat:usable"/>
+        <itemMetaExtProperty value="2017-10-12T00:00:00+02:00" type="imext:pubstart"/>
+        <itemMetaExtProperty value="2017-10-11T00:00:00+02:00" type="imext:pubstop"/>
+        <itemMetaExtProperty type="imext:haspublishedversion" value="true"/>
+        ...
+    </itemMeta>
+    ...
+</newsItem>
 ```
-
