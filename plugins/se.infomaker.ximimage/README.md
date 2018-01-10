@@ -83,18 +83,20 @@ crop parameters are specified for a given ratio.
 In order to construct a URL, template variables may be used. Then are defined
 as `{{variableName}}`. These variables currently exists:
 
-||Variable name||Description||
-|w|The image width|
-|h|The image height|
-|cx|The start of crop in x direction, defined in pixels|
-|cy|The start of crop in y direction, defined in pixels|
-|cw|The width of the crop, defined in pixels|
-|ch|The height of the crop, defined in pixels|
-|cxrel|The start of crop in x direction, defined as a relative number from 0-1|
-|cyrel|The start of crop in y direction, defined as a relative number from 0-1|
-|cwrel|The width of the crop , defined as a relative number from 0-1|
-|chrel|The height of the crop , defined as a relative number from 0-1|
-|uuid|The uuid of the image metadata file|
+| Variable name | Description |
+| ------------: | :---------- |
+| w             | The image width |
+| h             | The image height |
+| cx            | The start of crop in x direction, defined in pixels |
+| cy            | The start of crop in y direction, defined in pixels |
+| cw            | The width of the crop, defined in pixels |
+| ch            | The height of the crop, defined in pixels |
+| cxrel         | The start of crop in x direction, defined as a relative number from 0-1 |
+| cyrel         | The start of crop in y direction, defined as a relative number from 0-1 |
+| cwrel         | The width of the crop , defined as a relative number from 0-1 |
+| chrel         | The height of the crop , defined as a relative number from 0-1 |
+| uuid          | The uuid of the image metadata file |
+
 
 Example:
 ```json
@@ -185,36 +187,23 @@ element. The format of the `object` is:
                 <text>This is an image description that will be stored on the article</text>
                 <width>800</width>
                 <height>600</height>
-                <!--
-                    OPTIONAL. Note if softcrop feature in plugin is used this block is
-                    mandatory.
-                -->
-                <crops>
-                    <crop name="16:9">
-                        <x>0.32875</x>
-                        <y>0.5012406947890818</y>
-                        <width>0.2875</width>
-                        <height>0.3200992555831266</height>
-                    </crop>
-                    <crop name="4:3">
-                        <x>0.31</x>
-                        <y>0.5086848635235732</y>
-                        <width>0.32875</width>
-                        <height>0.48883374689826303</height>
-                    </crop>
-                    <crop name="1:1">
-                        <x>0.49</x>
-                        <y>0.533498759305211</y>
-                        <width>0.13</width>
-                        <height>0.25806451612903225</height>
-                    </crop>
-				</crops>
+                <!-- OPTIONAL -->
+                <credit>Nyhetsbyrån</credit>
+                <alttext>Image description</alttext>
+                <alignment>left</alignment>
+                <links>
+                    <link title="16:9" rel="crop" type="x-im/crop" uri="im://crop/0.35/0/0.39/0.32755298651252407"/>
+                    <link title="8:5" rel="crop" type="x-im/crop" uri="im://crop/0/0.019267822736030827/1/0.9633911368015414"/>
+                    <link title="4:3" rel="crop" type="x-im/crop" uri="im://crop/0.0675/0/0.865/1"/>
+                    <link title="1:1" rel="crop" type="x-im/crop" uri="im://crop/0.17625/0/0.64875/1"/>
+                    <link rel="author" title="John Doe" uuid="00000000-0000-0000-0000-000000000000" type="x-im/author"/>
+                    <link rel="author" uuid="7a39b42b-1315-4711-a136-7b3a9f132110" title="Jane Doe" type="x-im/author">
+                        <data>
+                            <email>jane.doe@email.com</email>
+                        </data>
+                    </link>
+                </links>
             </data>
-            <!-- OPTIONAL -->
-            <links>
-                <link rel="author" title="John Doe" uuid="00000000-0000-0000-0000-000000000000"/>
-                <link rel="author" title="Jane Doe" uuid="00000000-0000-0000-0000-000000000000"/>
-            </links>
         </link>
     </links>
 </object>
