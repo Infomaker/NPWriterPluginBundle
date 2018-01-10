@@ -74,7 +74,7 @@ class AuthorItemComponent extends AuthorBaseComponent {
         let avatarEl
         if (links.length > 0) {
             const twitterLink = Avatar._getLinkForType(links, 'x-im/social+twitter')
-            const twitterURL = Avatar._getTwitterUrlFromAuhtorLink(twitterLink)
+            const twitterURL = Avatar._getTwitterUrlFromAuthorLink(twitterLink)
 
             if (twitterURL) {
                 const twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
