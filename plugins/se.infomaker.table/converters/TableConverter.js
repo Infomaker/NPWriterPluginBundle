@@ -14,28 +14,35 @@ export default {
             node.id = uuid(this.type)
         }
 
-        let trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
-        let colCount = 0
-        let cells = []
-        let rowspans = [] // we remember active rowspans here
+        const trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
+        const cells = []
+        const rowspans = [] // we remember active rowspans here
+
         for (let rowIndex = 0; rowIndex < trs.length; rowIndex++) {
-            let tds = trs[rowIndex].getChildren()
-            let row = []
-            colCount = Math.max(tds.length, colCount)
+            const tds = trs[rowIndex].getChildren()
+            const row = []
+
+            // colspans result in `tds` being shorter than colCount so we have to keep track of the nodes
+            // actual colIndex.
+            let nodeColIndex = 0
             for (let colIndex = 0; colIndex < tds.length; colIndex++) {
                 let td = tds[colIndex]
                 // if there is an open rowspan
-                if (rowspans[colIndex] > 1) {
+                if (rowspans[nodeColIndex] > 1) {
                     row.push(null)
-                    rowspans[colIndex] -= 1 // count down until exhausted
+                    rowspans[nodeColIndex] -= 1 // count down until exhausted
+                    nodeColIndex += 1
+                } else {
+                    rowspans[nodeColIndex] = 0
                 }
-                let tableCell = converter.convertElement(td)
+                const tableCell = converter.convertElement(td)
 
                 // Set table cell parent to table id
                 tableCell.parent = node.id
                 row.push(tableCell.id)
+
                 if (tableCell.rowspan > 1) {
-                    rowspans[colIndex] = tableCell.rowspan
+                    rowspans[nodeColIndex] = tableCell.rowspan
                 }
 
                 if (tableCell.colspan > 1) {
@@ -45,6 +52,7 @@ export default {
                     }
                     // throw new Error('Check if this really works. dont think it does, should add colspans to next row too if the previous row had both rowspan and colspan')
                 }
+                nodeColIndex += 1
             }
             cells.push(row)
         }
