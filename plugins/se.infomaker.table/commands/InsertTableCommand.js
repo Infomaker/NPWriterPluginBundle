@@ -2,6 +2,7 @@ import { uuid, InsertNodeCommand } from 'substance'
 
 class InsertTableCommand extends InsertNodeCommand {
     createNodeData(tx, params) {
+        const tableNodeId = uuid('table')
         let cols = 2
         let rows = 2
 
@@ -24,6 +25,7 @@ class InsertTableCommand extends InsertNodeCommand {
                 const cellData = {
                     id: uuid('table-cell'),
                     type: 'table-cell',
+                    parent: tableNodeId,
                     content: ''
                 }
 
@@ -72,12 +74,10 @@ class InsertTableCommand extends InsertNodeCommand {
         }
 
         return {
-            id: uuid('table'),
+            id: tableNodeId,
             type: 'table',
-            // null values mark merged cells
             cells: rowNodes
         }
-
     }
 }
 

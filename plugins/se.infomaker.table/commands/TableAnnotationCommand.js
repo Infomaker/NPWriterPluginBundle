@@ -2,11 +2,21 @@ import { Command } from 'substance'
 import { api } from 'writer'
 import selectionIsInTable from '../util/selectionIsInTable'
 
-class ToggleHeaderCommand extends Command {
+class TableAnnotationCommand extends Command {
+
+    constructor(...args) {
+        super(...args)
+        if (!this.config.nodeType) {
+            throw new Error("'nodeType' is required")
+        }
+    }
+
+    getAnnotationType() {
+        return this.config.nodeType
+    }
+
     execute(params, context) {
-        console.info('Trying ToggleHeaderCommand')
         if (params.commandState && !params.commandState.disabled) {
-            console.info('ToggleHeaderCommand params:', params, 'context', context)
             const doc = context.editorSession.getDocument()
             const nodeId = params.selection.getNodeId()
             const node = doc.get(nodeId)
@@ -21,10 +31,7 @@ class ToggleHeaderCommand extends Command {
             }
 
             if (!table) { return }
-
-            console.info('Executing header command on node', table)
-            this._executeBoldCommandOnArea(table)
-            // table.toggleHeader()
+            this._executeCommandOnTable(table)
         }
     }
 
@@ -37,7 +44,8 @@ class ToggleHeaderCommand extends Command {
         }
     }
 
-    _executeBoldCommandOnArea(table) {
+    _executeCommandOnTable(table) {
+        const commandName = `table-cell-${this.getAnnotationType()}`
         const es = api.editorSession
         const doc = es.document
         const originalSelection = es.getSelection()
@@ -54,22 +62,22 @@ class ToggleHeaderCommand extends Command {
                     })
 
                     // Both transaction and editorSession selection has to be set
+                    // to properly execute the command on the cell. Not sure why
                     tx.setSelection(selection)
                     es.setSelection(selection)
 
                     if (typeof shouldCreate === 'undefined' && cell.getLength()) {
-                        const commandMode = es.getCommandStates()['table-strong'].mode
+                        const commandMode = es.getCommandStates()[commandName].mode
                         shouldCreate = ['create', 'fuse', 'expand'].includes(commandMode)
                     }
 
-                    const selectionState = es.getSelectionState()
-                    console.info('Selection state:', selectionState)
-
-                    console.info('Cell id:', cellId)
-                    console.info('Created selection:', selection)
-                    console.info('Transaction selection path:', tx.getSelection().getPath())
-                    console.info('EditorSession selection path', es.getSelection().getPath())
-                    es.executeCommand('table-cell-strong', {
+                    // const selectionState = es.getSelectionState()
+                    // console.info('Selection state:', selectionState)
+                    // console.info('Cell id:', cellId)
+                    // console.info('Created selection:', selection)
+                    // console.info('Transaction selection path:', tx.getSelection().getPath())
+                    // console.info('EditorSession selection path', es.getSelection().getPath())
+                    es.executeCommand(commandName, {
                         transaction: tx,
                         shouldCreate: shouldCreate
                     })
@@ -81,4 +89,4 @@ class ToggleHeaderCommand extends Command {
     }
 }
 
-export default ToggleHeaderCommand
+export default TableAnnotationCommand
