@@ -14,10 +14,23 @@ class TableComponent extends Component {
         this.onSelectionEnd = this.onSelectionEnd.bind(this)
     }
 
+    didMount() {
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
+    }
+
+    _onDocumentChange(change) {
+        if (change.isAffected([this.props.node.id])) {
+            console.info('Change affected table node')
+            this.rerender()
+        }
+    }
+
     shouldRerender(newProps, newState) {
+        const headerToggled = this.props.node.header !== newProps.node.header
+        const footerToggled = this.props.node.footer !== newProps.node.footer
         const selectedCellChanged = this.state.selectedCell !== newState.selectedCell
         const focusedCellChanged = this.state.focusedCell !== newState.focusedCell
-        return selectedCellChanged || focusedCellChanged
+        return selectedCellChanged || focusedCellChanged || headerToggled || footerToggled
     }
 
     getInitialState() {
@@ -29,7 +42,6 @@ class TableComponent extends Component {
 
     render($$) {
         const node = this.props.node
-
         const rowCount = node.rowCount
         const colCount = node.colCount
 
@@ -42,7 +54,8 @@ class TableComponent extends Component {
 
         const selectionElem = $$(TableSelectionComponent, {
             container: this.refs.container,
-            node: node
+            node: node,
+            debug: true
         }).ref('selection')
 
         for (let row = 0; row < rowCount; row++) {
@@ -89,16 +102,29 @@ class TableComponent extends Component {
     onClick(event) {
         this.grabFocus()
 
+        const leftClick = event.which === 1
+        const rightClick = event.which === 3
+
         let cellComp = extractCellComponentFromEventTarget(event.target)
         if (cellComp) {
+            const sel = this.refs.selection
             const cellId = cellComp.props.node.id
             if(cellId !== this.state.focusedCell) {
                 event.stopPropagation()
                 event.preventDefault()
-                this.setCellSelected(cellComp)
-                this.onSelectionStart(event)
+                if (leftClick) {
+                    this.setCellSelected(cellComp)
+                    this.onSelectionStart(event)
+                } else if (rightClick) {
+                    if (sel.hasArea() && !sel.area.containsCellId(cellId) || !sel.hasArea()) {
+                        this.setCellSelected(cellComp)
+                        this.onSelectionStart(event)
+                    }
+                }
             }
         } else {
+            // If right click is outside not on a cell, the selection is reset
+            this.resetSelection()
             console.info('Single click, found no cell')
         }
     }
@@ -135,8 +161,6 @@ class TableComponent extends Component {
         let cellComp = extractCellComponentFromEventTarget(event.target)
         if (cellComp) {
             this.setCellFocused(cellComp)
-        } else {
-            console.info('Found no cell')
         }
     }
 
@@ -162,7 +186,12 @@ class TableComponent extends Component {
         }
     }
 
+    /**
+     * Handles arrow keys
+     * @param {KeyboardEvent} event 
+     */
     _handleMovementKeys(event) {
+        event.preventDefault()
         const node = this.props.node
         const sel = this.refs.selection
         // If shift key is pressed, area should be moved
@@ -201,7 +230,7 @@ class TableComponent extends Component {
                     }
                     sel.setEndCell(nextCell)
                 } else {
-                    sel.clear()
+                    sel.clearArea()
                     this.setCellSelected(nextCell)
                 }
             }
@@ -211,7 +240,7 @@ class TableComponent extends Component {
     /**
      * When the enter key is pressed, if the cell is focused, select the next
      * cell along the y-axis, else, set the cell as focused.
-     * @param {*} event
+     * @param {KeyboardEvent} event
      */
     _handleEnterKey(event) {
         event.preventDefault()
@@ -231,24 +260,36 @@ class TableComponent extends Component {
 
     /**
      * When the tab key is pressed, select the next cell on the x-axis.
-     * @param {*} event
+     * @param {KeyboardEvent} event
      */
     _handleTabKey(event) {
         console.info('Tab pressed on cell')
         event.preventDefault()
         event.stopPropagation()
 
+        const node = this.props.node
         const sel = this.refs.selection
         const area = sel.getArea()
         const reversed = event.shiftKey
-        const nextCell = this.props.node.getNextCell(this.state.selectedCell, true, reversed, area)
+        let nextCell = node.getNextCell(this.state.selectedCell, true, reversed, area)
+
+        // Insert row if tab is pressed on last cell
+        if (!sel.hasArea() && !reversed) {
+            const lastCell = node.getOwnerOfCellAt(node.rowCount - 1, node.colCount - 1)
+            if (this.state.selectedCell === lastCell.id) {
+                console.info('Trying to insert row')
+                node.insertRowAt(node.rowCount)
+                nextCell = node.getNextCell(this.state.selectedCell, true, reversed, area)
+            }
+        }
+
         this.setCellSelected(this.refs[nextCell.id])
     }
 
     /**
      * Escapes for a focused cell. If no cell is focused, exit from the isolated node.
      * @todo should this revert the changes?
-     * @param {*} event
+     * @param {KeyboardEvent} event
      */
     _handleEscKey(event) {
         console.info('Esc pressed on cell')
@@ -261,7 +302,7 @@ class TableComponent extends Component {
 
     /**
      * @todo Delete should delete the contents of the cell if the cell is selected
-     * @param {*} event
+     * @param {KeyboardEvent} event
      */
     _handleDeleteKey(event) {
         console.info('Delete pressed on cell')
@@ -274,15 +315,20 @@ class TableComponent extends Component {
         const cells = area ? area.cells : [this.state.selectedCell]
 
         this.context.editorSession.transaction(tx => {
-            cells.forEach(cell => {
-                console.info('\tCell:', cell)
-                tx.set([cell, 'content'], '')
+            cells.forEach(cellId => {
+                const doc = tx.getDocument()
+                doc.setText([cellId, 'content'], '', []) // This will properly delete annotations too
             })
         })
     }
 
     _handleInputKey(event) {
         if (isInputKey(event.key)) {
+            if (event.metaKey || event.ctrlKey || event.altKey) {
+                console.info('Command running')
+                return
+            }
+
             console.info('Handling input key:', event.key)
             // If we have a selected cell but no focused cell, focus on the selected cell
             // and pass down the input
@@ -302,7 +348,7 @@ class TableComponent extends Component {
                 selectedCell: cellId,
                 focusedCell: null
             })
-            this.refs.selection.setSelectedCell(cellComp)
+            this.refs.selection.selectCell(cellComp)
             cellComp.grabFocus()
         }
     }
@@ -332,21 +378,24 @@ class TableComponent extends Component {
         if (!this.state.selectedCell && !this.state.focusedCell) {
             const firstCellId = this.props.node.getCellAt(0, 0).id
             this.setCellFocused(this.refs[firstCellId])
+            this.setCellSelected(this.refs[firstCellId])
         } else {
             if (this.state.selectedCell && selectCell) {
                 console.info('Already has selected cell, selecting it again for good measure', this.state.selectedCell)
                 this.setCellFocused(this.refs[this.state.selectedCell])
+                this.setCellSelected(this.refs[this.state.selectedCell])
+            } else {
+                console.info('Maybe now?')
             }
         }
 
-        const isolatedNode = this.context.isolatedNodeComponent
-        if (isolatedNode) {
-            isolatedNode.grabFocus()
-        }
+        // const isolatedNode = this.context.isolatedNodeComponent
+        // if (isolatedNode) {
+        //     isolatedNode.grabFocus()
+        // }
     }
 
     resetSelection() {
-        console.info('Resetting selection on table component')
         this.extendState(this.getInitialState())
         this.refs.selection.clear()
     }

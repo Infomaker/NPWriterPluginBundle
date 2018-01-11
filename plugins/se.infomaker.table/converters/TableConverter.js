@@ -5,7 +5,6 @@ export default {
     tagName: 'table',
 
     matchElement: function(el) {
-        console.info('Matching table element:', el.is('table'), el)
         return el.is('table')
     },
 
@@ -15,7 +14,6 @@ export default {
             node.id = uuid(this.type)
         }
 
-        console.info('Importing table... Node:', node.id, 'Element:', el, 'Converter:', converter)
         let trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
         let colCount = 0
         let cells = []
@@ -32,15 +30,20 @@ export default {
                     rowspans[colIndex] -= 1 // count down until exhausted
                 }
                 let tableCell = converter.convertElement(td)
+
+                // Set table cell parent to table id
+                tableCell.parent = node.id
                 row.push(tableCell.id)
                 if (tableCell.rowspan > 1) {
                     rowspans[colIndex] = tableCell.rowspan
                 }
+
                 if (tableCell.colspan > 1) {
                     // Add null values for colspans
                     for (let q = 0; q < tableCell.colspan - 1; q++) {
                         row.push(null)
                     }
+                    // throw new Error('Check if this really works. dont think it does, should add colspans to next row too if the previous row had both rowspan and colspan')
                 }
             }
             cells.push(row)

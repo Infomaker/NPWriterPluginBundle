@@ -2,7 +2,8 @@
  * Modified version of substance table node
  * https://github.com/substance/substance/blob/v1.0.0-beta.6.5/packages/table/Table.js
  */
-import { BlockNode } from 'substance'
+import { BlockNode, uuid } from 'substance'
+import { api } from 'writer'
 
 class TableNode extends BlockNode {
 
@@ -16,16 +17,6 @@ class TableNode extends BlockNode {
         } else {
             return 0
         }
-    }
-
-    getRowCount() {
-        console.error('Deprecated, use node.rowCount instead')
-        return this.rowCount
-    }
-
-    getColCount() {
-        console.error('Deprecated, use node.colCount instead')
-        return this.colCount
     }
 
     /**
@@ -44,6 +35,7 @@ class TableNode extends BlockNode {
     }
 
     getCellAt(row, col) {
+        if (!Array.isArray(this.cells[row])) { return }
         let cellId = this.cells[row][col]
         if (cellId) {
             return this.document.get(cellId)
@@ -123,7 +115,7 @@ class TableNode extends BlockNode {
      * @param {*} area
      */
     getNextCellAt(row, col, horizontal=false, reverse=false, area=null) {
-        console.warn('Getting next cell at', row, col)
+        // console.warn('Getting next cell at', row, col)
         const mainAxis = horizontal ? col : row
         const secondaryAxis = horizontal ? row : col
         const mainAxisCount = horizontal ? this.colCount : this.rowCount
@@ -154,12 +146,237 @@ class TableNode extends BlockNode {
         }
     }
 
+    getArea() {
+        return this.area
+    }
+
+    createEmptyCell(tx) {
+        const emptyCell = tx.create({
+            id: uuid('table-cell'),
+            type: 'table-cell',
+            parent: this.id,
+            content: ''
+        })
+
+        return emptyCell.id
+    }
+
+    /**
+     * Insert a row at the specified index.
+     *
+     * All rows after, and including, the insertion index will be shifted one column down.
+     * If no transaction is provided it will be created.
+     * @param {number} colIndex - Index to insert the row at
+     * @param {Transaction} tx - The transaction to use for column creation
+     */
+    insertRowAt(rowIndex, tx) {
+        if (rowIndex > this.rowCount) {
+            return console.warn('rowIndex cannot be greater than rowCount')
+        }
+
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.insertRowAt(rowIndex, tx))
+        }
+
+        // Create the new row
+        const newRow = []
+        for (let col = 0; col < this.colCount; col++) {
+
+            if (rowIndex === this.rowCount) {
+                // If inserting a row at the end we can't check
+            }
+
+            let colspan
+            const adjacentRowCell = this.getCellAt(rowIndex, col)
+
+            if (adjacentRowCell) {
+                colspan = adjacentRowCell.colspan || 1
+            } else {
+                const owner = this.getOwnerOfCellAt(rowIndex, col)
+                colspan = owner.colspan || 1
+
+                // Increase rowspan of owner cell
+                const newRowspan = owner.rowspan === 0 ? 2 : owner.rowspan + 1
+                tx.set([owner.id, 'rowspan'], newRowspan)
+            }
+
+            // Create as many cells as the adjacent cells rowspan
+            for (let i = 0; i < colspan; i++) {
+                const newAddition = adjacentRowCell ? this.createEmptyCell(tx) : null
+                newRow.push(newAddition)
+            }
+
+            // Skip as many columns as created cells
+            col += colspan - 1
+        }
+
+        const cells = tx.get([this.id, 'cells']).slice()
+        cells.splice(rowIndex, 0, newRow)
+        tx.set([this.id, 'cells'], cells)
+    }
+
+    deleteRowAt(rowIndex, tx) {
+        console.info('\tDelete row at:', rowIndex)
+        if (rowIndex < 0 || rowIndex >= this.rowCount) {
+            return console.warn('Cannot delete a row that does not exist')
+        }
+
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.deleteRowAt(rowIndex, tx))
+        }
+
+        for (let col = 0; col < this.colCount; col++) {
+            let colspan, rowspan
+            const cell = this.getCellAt(rowIndex, col)
+            if (cell) {
+                rowspan = cell.rowspan || 1
+                colspan = cell.colspan || 1
+                if (rowspan > 1) {
+                    // If the cell has a rowspan it means that at least one null cell will be
+                    // left behind if we simply delete it, so we create a new cell where that
+                    // null cell would be and set its rowspan to one less than the deleted cells
+                    // rowspan.
+                    const newRowspan = rowspan === 2 ? 0 : rowspan - 1
+                    this.createCellAt(rowIndex + 1, col, newRowspan, colspan, tx)
+                }
+            } else {
+                // No cell found. Find owner and reduce rowspan by 1
+                const owner = this.getOwnerOfCellAt(rowIndex, col)
+                colspan = owner.colspan || 1
+                rowspan = owner.rowspan || 1
+                const newRowspan = rowspan === 2 ? 0 : rowspan - 1
+                tx.set([owner.id, 'rowspan'], newRowspan)
+            }
+
+            col += colspan - 1
+        }
+
+        // Slice away the row
+        const cells = tx.get([this.id, 'cells']).slice()
+        cells.splice(rowIndex, 1)
+        console.info('\t\tNew cell state:', cells, tx)
+        tx.set([this.id, 'cells'], cells)
+    }
+
+    /**
+     * Insert a column at the specified index.
+     *
+     * All columns after, and including, the insertion index will be shifted one column to the right.
+     * If no transaction is provided it will be created.
+     * @param {number} colIndex - Index to insert the column at
+     * @param {Transaction} tx - The transaction to use for column creation
+     */
+    insertColAt(colIndex, tx) {
+        if (colIndex > this.colCount) {
+            return console.warn('colIndex cannot be greater than rowCount')
+        }
+
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.insertRowAt(colIndex, tx))
+        }
+
+        // Create the new column
+        const cells = []
+        for (let row = 0; row < this.rowCount; row++) {
+            let rowspan
+            const adjacentColCell = this.getCellAt(row, colIndex)
+
+            if (adjacentColCell) {
+                rowspan = adjacentColCell.rowspan || 1
+            } else {
+                const owner = this.getOwnerOfCellAt(row, colIndex)
+                rowspan = owner.rowspan || 1
+
+                // Increase colspan of owner cell
+                const newColspan = owner.colspan === 0 ? 2 : owner.colspan + 1
+                tx.set([owner.id, 'colspan'], newColspan)
+            }
+
+            // Create as many cells as the adjacent cells rowspan
+            for (let i = 0; i < rowspan; i++) {
+                const newAddition = adjacentColCell ? this.createEmptyCell(tx) : null
+                const currentRowCells = this.cells[row + i].slice()
+                currentRowCells.splice(colIndex, 0, newAddition)
+                cells.push(currentRowCells)
+            }
+
+            // Skip as many rows as created cells
+            row += rowspan - 1
+        }
+
+        tx.set([this.id, 'cells'], cells)
+    }
+
+    deleteColAt(colIndex, tx) {
+        if (colIndex < 0 || colIndex >= this.colCount) {
+            return console.warn('Cannot delete a row that does not exist')
+        }
+
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.deleteRowAt(colIndex, tx))
+        }
+
+        const cells = []
+        for (let row = 0; row < this.rowCount; row++) {
+            let colspan, rowspan
+            const cell = this.getCellAt(row, colIndex)
+            if (cell) {
+                rowspan = cell.rowspan || 1
+                colspan = cell.colspan || 1
+                if (colspan > 1) {
+                    // If the cell has a rowspan it means that at least one null cell will be
+                    // left behind if we simply delete it, so we create a new cell where that
+                    // null cell would be and set its rowspan to one less than the deleted cells
+                    // rowspan.
+                    const newColspan = colspan === 2 ? 0 : colspan - 1
+                    this.createCellAt(row, colIndex + 1, rowspan, newColspan, tx)
+                }
+            } else {
+                // No cell found. Find owner and reduce colspan by 1
+                const owner = this.getOwnerOfCellAt(row, colIndex)
+                colspan = owner.colspan || 1
+                rowspan = owner.rowspan || 1
+                const newColspan = colspan === 2 ? 0 : colspan - 1
+                tx.set([owner.id, 'colspan'], newColspan)
+            }
+
+            for (let i = 0; i < rowspan; i++) {
+                const _cells = tx.get([this.id, 'cells'])
+                const currentRowCells = _cells[row + i].slice()
+                currentRowCells.splice(colIndex, 1)
+                cells.push(currentRowCells)
+            }
+
+            row += rowspan - 1
+        }
+
+        tx.set([this.id, 'cells'], cells)
+    }
+
+    createCellAt(row, col, rowspan=0, colspan=0, tx) {
+        const cell = tx.create({
+            id: uuid('table-cell'),
+            type: 'table-cell',
+            parent: this.id,
+            content: '',
+            rowspan: rowspan,
+            colspan: colspan
+        })
+
+        this.cells[row][col] = cell.id
+        tx.set([this.id, 'cells'], this.cells)
+    }
+
     toggleHeader() {
-        this.header = !this.header
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'header'], !this.header)
+        })
     }
 
     toggleFooter() {
-        this.footer = !this.footer
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'footer'], !this.footer)
+        })
     }
 
 }
@@ -173,7 +390,8 @@ TableNode.schema = {
         type: ['array', 'array', 'id'],
         default: [],
         owned: true
-    }
+    },
+    area: { type: 'object', optional: true }
 }
 
 export default TableNode

@@ -5,7 +5,6 @@ import TableComponent from './TableComponent'
 class TableViewerComponent extends Component {
 
     render($$) {
-        console.info('Rendering table viewer component')
         return $$('div', {class: 'im-blocknode__container im-table'}, [
             $$('div', {class: 'header'}, [
                 $$('strong', null, this.props.node.caption),
@@ -18,8 +17,8 @@ class TableViewerComponent extends Component {
                     node: this.props.node,
                     disabled: false
                 }).ref('table'),
-            ]).ref('change-me-2')
-        ]).ref('change-me-1').on('mousedown', (event) => {
+            ])
+        ]).on('mousedown', (event) => {
             event.stopPropagation()
             console.info('Clicked on isolated node')
             this.grabFocus()
@@ -55,13 +54,16 @@ class TableViewerComponent extends Component {
     grabFocus() {
         const isolatedNode = this.context.isolatedNodeComponent
         // Make sure that the node is not already focused yet
-        if (isolatedNode.state.mode !== 'focused') {
+        if (isolatedNode.state.mode === 'selected') {
             console.info('Forcing focus on isolated node')
             isolatedNode.extendState({
                 mode: 'focused',
                 unblocked: true
             })
+            this.refs.table.resetSelection()
             this.refs.table.grabFocus(true)
+        } else {
+            console.info('Already focused')
         }
     }
 }

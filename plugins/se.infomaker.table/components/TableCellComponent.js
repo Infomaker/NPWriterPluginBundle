@@ -2,6 +2,17 @@ import {Component, TextPropertyEditor} from 'substance'
 
 class TableCellComponent extends Component {
 
+    didMount() {
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
+    }
+
+    _onDocumentChange(change) {
+        if (change.isAffected([this.props.node.id])) {
+            console.info('Change affected table cell node')
+            this.rerender()
+        }
+    }
+
     shouldRerender(newProps) {
         const headerChanged = this.props.header !== newProps.header
         const selectionStateChanged = this.props.selectionState !== newProps.selectionState
@@ -67,6 +78,10 @@ class TableCellComponent extends Component {
             endOffset: node.getLength(),
             surfaceId: this.refs.editor.id
         })
+        // setTimeout(() => {
+        //     console.info('Setting native focus')
+        //     window.getSelection().collapse(this.refs.editor.getNativeElement())
+        // }, 2000)
     }
 }
 

@@ -5,11 +5,10 @@ import {lodash} from 'writer'
  *
  * Definitions:
  * - coords: Array with zero-indexed coordinates, [row, col]
- * - cell: Cell component
- * - cellNode: Table cell node
+ * - cell/cellNode: Table cell node
  * - cellId: Cell node id in the form 'table-cell-{uuid}'
- * - startCell: Where the area starts, not necessarily the first cell
- * - endCell: Where the area ends, not necessarily the last cell
+ * - startCell: Node of cell where the area starts, not necessarily the first cell
+ * - endCell: Node of cell where the area ends, not necessarily the last cell
  * - firstCell: Top left cell
  * - lastCell: Bottom right cell
  */
@@ -28,6 +27,7 @@ class TableArea {
         this._searchReset = false
 
         if (this.startCell && this.endCell) {
+            // console.info('trying to perform perimiter search', this.startCell, this.endCell)
             this._perimeterSearch()
         }
     }
@@ -41,7 +41,7 @@ class TableArea {
                     cells.push(cell)
                 } else {
                     const ownerCell = this.table.getOwnerOfCellAt(row, col)
-                    console.info('\n\n\nNull cell found so trying to find owner', ownerCell)
+                    // console.info('\n\n\nNull cell found so trying to find owner', ownerCell)
                     if (!cells.includes(ownerCell.id)) {
                         cells.push(ownerCell.id)
                     }
@@ -110,25 +110,19 @@ class TableArea {
     }
 
     /**
-     * @param {TableCellNode} cellNode
+     * @param {cellNode} cellNode
      * @returns {Boolean} true if the provided cell node is contained in the area
      */
-    containsCellNode(cellNode) {
-        throw new Error('Not implemented', cellNode)
-    }
-
-    /**
-     * @param {TableCellComponent} cellComponent
-     * @returns {Boolean} true if the provided cell component is contained in the area
-     */
-    containsCell(cellComponent) {
-        throw new Error('Not implemented', cellComponent)
+    containsCell(cellNode) {
+        return this.containsCellId(cellNode.id)
     }
 
     _perimeterSearch() {
-        console.info('Perimeter search')
+        // console.info('Perimeter search')
         const startCellCoords = this.table.getCellCoords(this.startCell.id)
         const endCellCoords = this.table.getCellCoords(this.endCell.id)
+
+        if (!startCellCoords && !endCellCoords) { return }
 
         // if the initial bounds are not set, use the start and end cells to figure them out
         this.top = this.top !== null ? this.top : Math.min(startCellCoords[0], endCellCoords[0])
@@ -145,19 +139,19 @@ class TableArea {
 
             // If cell searched, continue to the next cell
             if (this._cellAlreadySearched(row, col)) {
-                console.info(`[${row},${col}] Already searched, continue`)
+                // console.info(`[${row},${col}] Already searched, continue`)
                 continue
             }
 
             // Now continue the search
             const cellNode = this.table.getCellAt(row, col)
             if (cellNode) {
-                console.info(`[${row},${col}] Found cell`)
+                // console.info(`[${row},${col}] Found cell`)
                 // If cell found, check for colspan and rowspan
                 this._handleFoundCellNode(cellNode)
 
             } else {
-                console.info(`[${row},${col}] Found NULL, figure out which cell it belongs to`)
+                // console.info(`[${row},${col}] Found NULL, figure out which cell it belongs to`)
                 // If Null cell found, figure out what cell it belongs to
                 const owner = this.table.getOwnerOfCellAt(row, col)
                 console.info('Null cell owner:', owner)
@@ -167,11 +161,11 @@ class TableArea {
 
         // If the search was reset, restart it
         if (this._searchReset) {
-            console.info('Reset perimeter search\n\n')
+            // console.info('Reset perimeter search\n\n')
             this._searchReset = false
             return this._perimeterSearch()
         } else {
-            console.info('Reached end of perimeter search')
+            // console.info('Reached end of perimeter search')
         }
     }
 
@@ -181,31 +175,31 @@ class TableArea {
      * Creates a 2d array with all edge cells and removes all duplicates
      */
     _setSearchCoords() {
-        console.info('Generating search coordinates')
+        // console.info('Generating search coordinates')
         // reset searchCoords
         this.searchCoords = []
 
         // Set left edge
         for (let row = this.top, col = this.left; row <= this.bottom; row++) {
-            console.info(`\tLeft edge, adding [${row},${col}]`)
+            // console.info(`\tLeft edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set top edge
         for (let row = this.top, col = this.left; col <= this.right; col++) {
-            console.info(`\tTop edge, adding [${row},${col}]`)
+            // console.info(`\tTop edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set bottom edge
         for (let row = this.bottom, col = this.left; col <= this.right; col++) {
-            console.info(`\tBottom edge, adding [${row},${col}]`)
+            // console.info(`\tBottom edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set right edge
         for (let row = this.top, col = this.right; row <= this.bottom; row++) {
-            console.info(`\tRight edge, adding [${row},${col}]`)
+            // console.info(`\tRight edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 

@@ -5,14 +5,31 @@ class TableSelectionComponent extends Component {
 
     didMount() {
         document.addEventListener('selectionchange', () => {
-            this.positionSelection()
+            this._updateArea()
         })
     }
 
     didUpdate() {
-        this.area = new TableArea(this.props.node, this.state.startCell, this.state.endCell)
-        window.area = this.area
+        this._updateArea()
+    }
+
+    _updateArea() {
+        const startCellNode = this.state.startCell ? this.state.startCell.props.node : null
+        const endCellNode = this.state.endCell ? this.state.endCell.props.node : null
+        console.info('SETTING AREA: didupdate')
+        const newArea = new TableArea(this.props.node, startCellNode, endCellNode)
+        this.props.node.area = newArea
+        this.area = newArea
         this.positionSelection()
+
+        // Find a better way to do this: Set selection so command states update
+        if (startCellNode) {
+            const es = this.context.editorSession
+            es.setSelection(es.getSelection())
+        }
+
+        // this.context.editorSession._setDirty('commandStates')
+
     }
 
     getInitialState() {
@@ -37,9 +54,10 @@ class TableSelectionComponent extends Component {
     }
 
     onSelectionEnd() {
-        if (!this.hasArea()) {
-            this.clearArea()
-        }
+        console.info('Selection ended')
+        // if (!this.hasArea()) {
+        //     this.clearArea()
+        // }
     }
 
     focusOnSelectedCell() {
@@ -49,6 +67,7 @@ class TableSelectionComponent extends Component {
     }
 
     clear() {
+        // console.warn('Selection: Clearing selection')
         this.extendState({
             startCell: null,
             endCell: null,
@@ -57,17 +76,20 @@ class TableSelectionComponent extends Component {
     }
 
     clearArea() {
+        // console.warn('Selection: Clearing area')
+        let cell = this.state.startCell || null
         this.extendState({
-            startCell: null,
-            endCell: null
+            startCell: cell,
+            endCell: cell
         })
     }
 
     selectCell(cell) {
+        // console.info('Selecting cell')
         this.extendState({
             selectedCell: cell,
-            startCell: null,
-            endCell: null
+            startCell: this.state.startCell || cell,
+            endCell: this.state.endCell || cell
         })
     }
 
@@ -110,83 +132,6 @@ class TableSelectionComponent extends Component {
         })
     }
 
-    // /**
-    //  * Extracts and sets state from a substance selection
-    //  *
-    //  * Supports Property selections and custom table selections
-    //  * @param {Substance.Selection} sel
-    //  */
-    // setStateFromSelection(sel) {
-    //     let newState
-
-    //     if (!sel) { return console.warn('No selection provided') }
-
-    //     if (sel.type === 'property') {
-    //         newState = this._extractStateFromPropertySelection(sel)
-    //     }
-
-    //     if (sel.type === 'custom' && sel.customType === 'TableSelection') {
-    //         newState = this._extractStateFromTableSelection(sel)
-    //     }
-
-    //     if (newState) { this.setState(newState) }
-
-    // }
-
-    // /**
-    //  * Extract component state from substance PropertySelection
-    //  *
-    //  * @param {Substance.PropertySelection} sel
-    //  * @private
-    //  */
-    // _extractStateFromPropertySelection(sel) {
-    //     console.info(sel)
-    //     // Should check if property selection is inside a table cell
-    //     const selectedCell = "FIND ME IF YOU CAN"
-    //     return { selectedCell }
-    // }
-
-    // /**
-    //  * Extract component state from TableSelection
-    //  *
-    //  * @param {TableSelection} sel
-    //  * @private
-    //  */
-    // _extractStateFromTableSelection(sel) {
-    //     const newState = {
-    //         startCell: null,
-    //         endCell: null,
-    //         selectedCell: null
-    //     }
-
-    //     const data = sel.data
-
-    //     if (data) {
-    //         if (data.startCell) {
-    //             newState.startCell = data.startCell
-    //         }
-
-    //         // If no endCell, set it to startCell
-    //         newState.endCell = data.endCell || newState.startCell
-
-    //         if (data.selectedCell) {
-    //             newState.selectedCell = data.selectedCell
-
-    //             // If no startCell, set it to selectedCell
-    //             newState.startCell = newState.startCell || newState.selectedCell
-
-    //             // If no endCell, set it to selectedCell
-    //             newState.endCell = newState.endCell || newState.selectedCell
-
-    //         } else {
-    //             // If no selectedCell, set it to startCell
-    //             newState.selectedCell = newState.startCell
-    //         }
-    //     }
-
-    //     return newState
-    // }
-
     positionSelection() {
         if (!this.shouldRenderAreaSelection()) {
             return this.refs.selection.css({
@@ -194,6 +139,30 @@ class TableSelectionComponent extends Component {
             })
         }
         this.refs.selection.css(this.getPositioningStyle())
+        if (this.props.debug) {
+            this._positionDebugMarkers()
+        }
+    }
+
+    _positionDebugMarkers() {
+        const cbcr = this.refs.selection.getNativeElement().getBoundingClientRect()
+        const sbcr = this.parent.refs[this.state.startCell.props.node.id]
+            .getNativeElement()
+            .getBoundingClientRect()
+
+        const ebcr = this.parent.refs[this.state.endCell.props.node.id]
+            .getNativeElement()
+            .getBoundingClientRect()
+
+        this.refs.start.css({
+            top: sbcr.top - cbcr.top,
+            left: sbcr.left - cbcr.left
+        })
+
+        this.refs.end.css({
+            top: ebcr.bottom - cbcr.top - 13,
+            left: ebcr.right - cbcr.left - 13
+        })
     }
 
     shouldRenderAreaSelection() {
@@ -221,8 +190,34 @@ class TableSelectionComponent extends Component {
         return style
     }
 
+    __logCommandState() {
+        const cs = this.context.api.editorSession.getCommandStates()
+        const dr = cs['table-delete-row']
+        console.info('Delete row command state:')
+        if(!dr.disabled) {
+            console.info('\trows:', dr.rows, 'cols:', dr.cols)
+            console.info('\trow:', dr.selectedRow, 'col:', dr.selectedCol)
+        } else {
+            console.info('\tdisabled')
+        }
+    }
+
     render($$) {
-        return $$('div', { class: 'table-selection' }).ref('selection')
+        // this.__logCommandState()
+        return $$('div', { class: 'table-selection' },
+            this._renderDebugMarkers($$)
+        ).ref('selection')
+    }
+
+    _renderDebugMarkers($$) {
+        if (!this.props.debug) {
+            return []
+        }
+
+        return [
+            $$('div', {class: 'table-selection-debug-start'}).ref('start'),
+            $$('div', {class: 'table-selection-debug-end'}).ref('end'),
+        ]
     }
 }
 
