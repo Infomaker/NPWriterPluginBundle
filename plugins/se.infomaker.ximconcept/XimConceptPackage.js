@@ -5,17 +5,13 @@ import './scss/ximconcept-dialog.scss'
 import './scss/ximconcept-image.scss'
 
 const XimConceptPackage = {
-    
+
     id: 'se.infomaker.ximconcept',
     name: 'ximconcept',
     version: '{{version}}',
-    configure(configurator, config) {
-        configurator.addComponentToSidebarWithTabId(
-            config.id,
-            config.tabid || 'main',
-            ConceptMainComponent,
-            config
-        )
+    configure(configurator, pluginConfig) {
+
+        configurator.addToSidebar('main', pluginConfig, ConceptMainComponent)
 
         configurator.addLabel('create', {
             sv: 'Skapa'

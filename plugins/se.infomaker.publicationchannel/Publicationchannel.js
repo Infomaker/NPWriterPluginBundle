@@ -4,7 +4,7 @@ export default {
     id: 'se.infomaker.publicationchannel',
     name: 'publicationchannel',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(config, pluginConfig) {
 
         config.addLabel('publicationchannel-Channels', {
             en: 'Channels',
@@ -31,6 +31,6 @@ export default {
             sv: 'Vänligen välj huvudkanal innan delning med andra kanaler'
         })
 
-        config.addComponentToSidebarWithTabId('publicationchannel', 'main', PublicationChannelComponent)
+        config.addToSidebar('main', pluginConfig, PublicationChannelComponent)
     }
 }

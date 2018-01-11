@@ -6,13 +6,13 @@ export default {
     id: 'se.infomaker.gender',
     name: 'gender',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
         config.addLabel('gender-label', {
             en: 'Gender',
             sv: 'Genus'
         });
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', GenderComponent)
+        config.addToSidebar('main', pluginConfig, GenderComponent)
     }
 }

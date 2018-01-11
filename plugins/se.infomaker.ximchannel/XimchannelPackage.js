@@ -5,12 +5,8 @@ export default {
     id: 'se.infomaker.ximchannel',
     name: 'ximchannel',
     version: '{{version}}',
-    configure: function(config) {
-        config.addComponentToSidebarWithTabId(
-            this.id,
-            'main',
-            ConceptChannelMainComponent
-        )
+    configure: function(config, pluginConfig) {
+        config.addToSidebar('main', pluginConfig, ConceptChannelMainComponent)
 
         config.addLabel('Main channel', {
             sv: 'Huvudkanal'

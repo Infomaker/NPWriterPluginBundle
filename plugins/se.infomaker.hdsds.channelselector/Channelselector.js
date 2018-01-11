@@ -6,13 +6,13 @@ export default {
     id: 'se.infomaker.hdsds.channelselector',
     name: 'channelselector',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(config, pluginConfig) {
         config.addLabel('channelselector-Products', {
             en: 'Products',
             sv: 'Produkter'
         })
 
-        config.addComponentToSidebarWithTabId('channelselector', 'main', ChannelSelectorComponent)
+        config.addToSidebar('main', pluginConfig, ChannelSelectorComponent)
     }
 }
 
