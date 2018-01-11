@@ -49,13 +49,35 @@ No `data` configuration needed.
 
 ## Commands
 
-- InsertTable
-- OpenTableEditor
-- ToggleTableHeader
-- ToggleTableFooter
-- InsertRowBefore
-- InsertRowAfter
-- InsertColumnBefore
-- InsertColumnAfter
-- DeleteRow
-- DeleteColumn
+### General commands
+| Command               | Description                                  | Context        |
+| --------------------- | -------------------------------------------- | -------------- |
+| `table-insert-table`  | Inserts a new table at the current selection | In writer area |
+| `table-open-editor`   | Opens table editor                           | Table selected |
+| `table-toggle-header` | Toggles table header                         | Table selected |
+| `table-toggle-footer` | Toggles table footer                         | Table selected |
+
+### Insertion/deletion commands
+| Command                    | Description                                                            | Context                                                       |
+| -------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `table-insert-row-before`  | Inserts a single row above current row                                 | Single cell selected or selection area contains single row    |
+| `table-insert-rows-before` | Inserts as many rows as selected above current row                     | Selection area contains multiple rows                         |
+| `table-insert-row-after`   | Inserts a single row below current row                                 | Single cell selected or selection area contains single row    |
+| `table-insert-rows-after`  | Inserts as many rows as selected below current row                     | Selection area contains multiple rows                         |
+| `table-insert-col-before`  | Inserts a single column to the left of the current column              | Single cell selected or selection area contains single column |
+| `table-insert-cols-before` | Inserts as many columns as selected to the left of the current column  | Selection area contains multiple columns                      |
+| `table-insert-col-after`   | Inserts a single column to the right of the current column             | Single cell selected or selection area contains single column |
+| `table-insert-cols-after`  | Inserts as many columns as selected to the right of the current column | Selection area contains multiple columns                      |
+| `table-delete-row`         | Removes current row                                                    | Single cell selected or selection area contains single row    |
+| `table-delete-rows`        | Removes all selected rows                                              | Selection area contains multiple rows                         |
+| `table-delete-col`         | Removes current column                                                 | Single cell selected or selection area contains single column |
+| `table-delete-cols`        | Removes all selected columns                                           | Selection area contains multiple columns                      |
+
+### Annotation commands
+| Command               | Description                                                                  | Context                                |
+| --------------------- | ---------------------------------------------------------------------------- | -------------------------------------- |
+| `table-strong`        | Applies `strong` annotation to selected cell or area                         | Single cell selected or selection area |
+| `table-emphasis`      | Applies `emphasis` annotation to selected cell or area                       | Single cell selected or selection area |
+| `table-cell-strong`   | Applies `strong` annotation to single cell *(only used by `table-strong`)*   | Single cell selected or selection area |
+| `table-cell-emphasis` | Applies `strong` annotation to single cell *(only used by `table-emphasis`)* | Single cell selected or selection area |
+
