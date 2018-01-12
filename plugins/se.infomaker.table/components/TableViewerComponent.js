@@ -8,9 +8,10 @@ class TableViewerComponent extends Component {
         return $$('div', {class: 'im-blocknode__container im-table'}, [
             $$('div', {class: 'header'}, [
                 $$('strong', null, this.props.node.caption),
-                $$('span', {class:'edit-button'}, [
-                    $$('i', {class: 'fa fa-pencil'})
-                ]).on('click', this._openTableEditor.bind(this))
+                // Open table editor
+                // $$('span', {class:'edit-button'}, [
+                //     $$('i', {class: 'fa fa-pencil'})
+                // ]).on('click', this._openTableEditor.bind(this))
             ]),
             $$('div', {class: 'table-viewer-container '}, [
                 $$(TableComponent, {
