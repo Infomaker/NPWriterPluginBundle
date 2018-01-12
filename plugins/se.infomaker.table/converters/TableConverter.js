@@ -8,6 +8,18 @@ export default {
         return el.is('table')
     },
 
+    _getColspan(colspans, rowIndex, colIndex) {
+        if (!colspans[rowIndex]) { return 0 }
+        return colspans[rowIndex][colIndex]
+    },
+
+    _setColspan(colspans, rowIndex, colIndex, num) {
+        if (!colspans[rowIndex]) {
+            colspans[rowIndex] = []
+        }
+        colspans[rowIndex][colIndex] = num
+    },
+
     // From newsml to node
     import: function (el, node, converter) {
         if (!el.id) {
@@ -17,6 +29,7 @@ export default {
         const trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
         const cells = []
         const rowspans = [] // we remember active rowspans here
+        const colspans = [] // we remember active colspans here
 
         for (let rowIndex = 0; rowIndex < trs.length; rowIndex++) {
             const tds = trs[rowIndex].getChildren()
@@ -31,28 +44,45 @@ export default {
                 if (rowspans[nodeColIndex] > 1) {
                     row.push(null)
                     rowspans[nodeColIndex] -= 1 // count down until exhausted
-                    nodeColIndex += 1
-                } else {
-                    rowspans[nodeColIndex] = 0
+                    nodeColIndex += 1 // Must be increased since we added a null cell
                 }
+
                 const tableCell = converter.convertElement(td)
 
                 // Set table cell parent to table id
                 tableCell.parent = node.id
                 row.push(tableCell.id)
+                nodeColIndex += 1
+
+                // Add null cells for stored colspan
+                const colspan = this._getColspan(colspans, rowIndex, nodeColIndex)
+                if (colspan > 1) {
+                    for (let index = 0; index < colspan; index++) {
+                        row.push(null)
+                        rowspans[nodeColIndex] -= 1
+                        nodeColIndex += 1
+                    }
+                }
 
                 if (tableCell.rowspan > 1) {
-                    rowspans[nodeColIndex] = tableCell.rowspan
+                    rowspans[nodeColIndex - 1] = tableCell.rowspan
                 }
 
                 if (tableCell.colspan > 1) {
-                    // Add null values for colspans
+
+                    // Remember any colspans for the next rows
+                    if (tableCell.rowspan > 1) {
+                        for (let index = 1; index < tableCell.rowspan; index++) {
+                            this._setColspan(colspans, rowIndex + index, nodeColIndex - 1, tableCell.colspan)
+                        }
+                    }
+
+                    // Add null values for current td colspan
                     for (let q = 0; q < tableCell.colspan - 1; q++) {
                         row.push(null)
+                        nodeColIndex += 1 // Must be increased since we added a null cell
                     }
-                    // throw new Error('Check if this really works. dont think it does, should add colspans to next row too if the previous row had both rowspan and colspan')
                 }
-                nodeColIndex += 1
             }
             cells.push(row)
         }
