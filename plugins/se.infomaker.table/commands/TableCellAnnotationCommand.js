@@ -81,56 +81,6 @@ class TableAnnotationCommand extends AnnotationCommand {
             return result
         }
     }
-
-    // getCommandState(params) { // eslint-disable-line
-    //     let sel = this._getSelection(params)
-    //     // We can skip all checking if a disabled condition is met
-    //     // E.g. we don't allow toggling of property annotations when current
-    //     // selection is a container selection
-    //     if (this.isDisabled(sel)) {
-    //         return { disabled: true }
-    //     }
-    //     let annos = this._getAnnotationsForSelection(params)
-    //     let newState = {
-    //         disabled: false,
-    //         active: false,
-    //         mode: null
-    //     }
-
-    //     if (typeof params.shouldCreate === 'undefined' || params.shouldCreate) {
-    //         if (this.canCreate(annos, sel)) {
-    //             console.info('shouldCreate is true, can create')
-    //             newState.mode = 'create'
-    //             return newState
-    //         } else if (this.canFuse(annos, sel)) {
-    //             console.info('shouldCreate is true, can fuse')
-    //             newState.mode = 'fuse'
-    //             return newState
-    //         } else if (this.canExpand(annos, sel)) {
-    //             console.info('shouldCreate is true, can expand')
-    //             newState.mode = 'expand'
-    //             return newState
-    //         }
-    //     }
-
-    //     if (!params.shouldCreate) {
-    //         if (this.canTruncate(annos, sel)) {
-    //             console.info('shouldCreate is false, can truncate')
-    //             newState.active = true
-    //             newState.mode = 'truncate'
-    //         } else if (this.canDelete(annos, sel)) {
-    //             console.info('shouldCreate is false, can delete')
-    //             newState.active = true
-    //             newState.mode = 'delete'
-    //         } else {
-    //             console.info('shouldCreate is false, cant do shit')
-    //             newState.disabled = true
-    //         }
-    //     }
-    //     console.info('commandstate mode:', newState.mode)
-    //     return newState
-    // }
-
 }
 
 export default TableAnnotationCommand

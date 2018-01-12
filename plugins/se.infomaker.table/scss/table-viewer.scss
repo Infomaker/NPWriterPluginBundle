@@ -14,3 +14,22 @@
         }
     }
 }
+
+.im-blocknode__container.im-table {
+    .header {
+        font-size: 1rem;
+        text-align: center;
+
+        .fa {
+            line-height: 1.5em;
+        }
+
+        .im-field-editor {
+            margin-top: 0;
+        }
+
+        .sc-text-property-editor {
+            padding-left: 0;
+        }
+    }
+}

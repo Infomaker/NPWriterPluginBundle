@@ -7,7 +7,8 @@ class TableViewerComponent extends Component {
     render($$) {
         return $$('div', {class: 'im-blocknode__container im-table'}, [
             $$('div', {class: 'header'}, [
-                $$('strong', null, this.props.node.caption),
+                this._renderCaptionEditor($$)
+                // $$('strong', null, this.props.node.caption),
                 // Open table editor
                 // $$('span', {class:'edit-button'}, [
                 //     $$('i', {class: 'fa fa-pencil'})
@@ -34,16 +35,18 @@ class TableViewerComponent extends Component {
         }
     }
 
-    _openTableEditor() {
-        const { api } = this.context
-        api.editorSession.executeCommand('OpenTableEditor', {
-            tableNodeId: this.props.node.id
-        })
-    }
+    _renderCaptionEditor($$) {
+        const FieldEditor = this.context.api.ui.getComponent('field-editor')
+        const editorProps = {
+            node: this.props.node,
+            multiLine: false,
+            field: 'caption',
+            tagname: 'strong',
+            icon: 'fa-table',
+            placeholder: this.getLabel('table-caption')
+        }
 
-    _toggleHeader() {
-        const { api } = this.context
-        api.editorSession.executeCommand('ToggleHeader', {})
+        return $$(FieldEditor, editorProps).ref('table-caption-editor')
     }
 
     /**

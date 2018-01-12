@@ -1,7 +1,9 @@
 .table-container {
     position: relative;
+    overflow-x: auto;
 
     table {
+        font-size: 0.8em;
         width: 100%;
         border-collapse: collapse;
         border: 1px solid #eee;

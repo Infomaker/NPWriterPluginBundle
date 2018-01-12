@@ -9,11 +9,11 @@ class InsertTableCommand extends InsertNodeCommand {
         const size = params.tableSize
 
         if (size && Array.isArray(size) && size[0]) {
-            cols = parseInt(size[0], 10)
+            rows = parseInt(size[0], 10)
         }
 
         if (size && Array.isArray(size) && size[1]) {
-            rows = parseInt(size[1], 10)
+            cols = parseInt(size[1], 10)
         }
 
         console.info('Creating a table. Rows:', rows, 'Columns:', cols)

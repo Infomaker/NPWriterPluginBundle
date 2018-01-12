@@ -1,0 +1,25 @@
+.insert-table-tool {
+    position: relative;
+
+    .insert-table-tool-table {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1;
+        background-color: #fff;
+
+        .insert-table-tool-row {
+            .insert-table-tool-cell {
+                width: 20px;
+                height: 20px;
+                min-width: 20px;
+                min-height: 20px;
+                border: 1px solid #ddd;
+                &.selected {
+                    border-color: #b2d5fe;
+                    background-color: #edf5fe;
+                }
+            }
+        }
+    }
+}

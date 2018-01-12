@@ -14,6 +14,15 @@ class TableComponent extends Component {
         this.onSelectionEnd = this.onSelectionEnd.bind(this)
     }
 
+    /**
+     * Hacky way to trigger an update of command states which has to be done after setting
+     * the area selection. Find a better way to do this.
+     */
+    __retriggerCommandStates__() {
+        console.warn('Dont do this')
+        this.context.editorSession.setSelection(this.context.editorSession.getSelection())
+    }
+
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
@@ -55,7 +64,7 @@ class TableComponent extends Component {
         const selectionElem = $$(TableSelectionComponent, {
             container: this.refs.container,
             node: node,
-            debug: true
+            debug: false
         }).ref('selection')
 
         for (let row = 0; row < rowCount; row++) {
@@ -152,6 +161,7 @@ class TableComponent extends Component {
         const container = this.refs.container.getNativeElement()
         document.removeEventListener('mouseup', this.onSelectionEnd)
         container.removeEventListener('mousemove', this.onSelection)
+        this.__retriggerCommandStates__()
     }
 
     onDblClick(event) {
@@ -229,6 +239,7 @@ class TableComponent extends Component {
                         sel.setStartCell(this.refs[currentCellId])
                     }
                     sel.setEndCell(nextCell)
+                    this.__retriggerCommandStates__()
                 } else {
                     sel.clearArea()
                     this.setCellSelected(nextCell)
@@ -254,6 +265,7 @@ class TableComponent extends Component {
             const area = sel.getArea()
             const reversed = event.shiftKey
             const nextCell = this.props.node.getNextCell(this.state.selectedCell, false, reversed, area)
+            if (!sel.hasArea()) { sel.clear() }
             this.setCellSelected(this.refs[nextCell.id])
         }
     }
@@ -281,6 +293,7 @@ class TableComponent extends Component {
                 node.insertRowAt(node.rowCount)
                 nextCell = node.getNextCell(this.state.selectedCell, true, reversed, area)
             }
+            sel.clear()
         }
 
         this.setCellSelected(this.refs[nextCell.id])
@@ -344,6 +357,7 @@ class TableComponent extends Component {
     setCellSelected(cellComp) {
         const cellId = cellComp.props.node.id
         if (this.state.selectedCell !== cellId || this.state.focusedCell === cellId) {
+            console.info('Setting cell selected')
             this.extendState({
                 selectedCell: cellId,
                 focusedCell: null

@@ -235,7 +235,7 @@ export default {
         config.addConverter('newsml', TableCellConverter)
         config.addConverter('html', TableCellConverter)
 
-        config.addKeyboardShortcut('cmd+d', {command: 'insert-row-before', hej: true}, true, 'name here')
+        config.addKeyboardShortcut('cmd+d', {command: COMMANDS.INSERT_ROW_BEFORE, hej: true}, true, 'name here')
 
         if (platform.isMac) {
             config.addKeyboardShortcut('cmd+b', {command: 'table-strong'}, true, 'table-strong')

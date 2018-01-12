@@ -23,10 +23,10 @@ class TableSelectionComponent extends Component {
         this.positionSelection()
 
         // Find a better way to do this: Set selection so command states update
-        if (startCellNode) {
-            const es = this.context.editorSession
-            es.setSelection(es.getSelection())
-        }
+        // if (startCellNode) {
+        //     const es = this.context.editorSession
+        //     es.setSelection(es.getSelection())
+        // }
 
         // this.context.editorSession._setDirty('commandStates')
 

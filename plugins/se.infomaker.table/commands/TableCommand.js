@@ -30,22 +30,15 @@ class TableCommand extends Command {
 
     execute(params, context) {
         if (params.commandState && !params.commandState.disabled) {
-            const doc = context.editorSession.getDocument()
-            const nodeId = params.selection.getNodeId()
-            const node = doc.get(nodeId)
-
-            if (!node) { return }
-
-            let table = null
-            if (node.type === 'table') {
-                table = node
-            } else if (node.type === 'table-cell') {
-                table = node.table
-            }
-
-            if (!table) { return }
-            this.executeCommandOnTable(table, params)
+            const originalSelection = params.selection
+            this.executeCommandOnTable(params, context)
+            console.info('Restoring selection')
+            context.editorSession.setSelection(originalSelection)
         }
+    }
+
+    executeCommandOnTable(params, context) { // eslint-disable-line
+        throw new Error('executeCommandOnTable is abstract')
     }
 
     /**
@@ -90,19 +83,16 @@ class TableCommand extends Command {
             commandState.disabled = true
             commandState.showInContext = false
         }
-        if (!commandState.disabled && this.config.name === 'table-delete-row') {
+        if (!commandState.disabled && (this.config.name === 'table-delete-row' || this.config.name === 'table-delete-rows')) {
             console.info('GETTING COMMAND STATE')
-            console.info('\trows:', commandState.rows)
-            console.info('\trow:', commandState.selectedRow)
-            console.info('\tcols:', commandState.cols)
-            console.info('\tcol:', commandState.selectedCol)
+            // console.info('\trows:', commandState.rows)
+            // console.info('\trow:', commandState.selectedRow)
+            // console.info('\tcols:', commandState.cols)
+            // console.info('\tcol:', commandState.selectedCol)
         }
         return commandState
     }
 
-    executeCommandOnTable(table, params) { // eslint-disable-line
-        throw new Error('executeCommandOnTable is abstract')
-    }
 
     /**
      * Extracts a table node from the provided selection or null if no table in selection
@@ -140,7 +130,7 @@ class TableCommand extends Command {
         const cols = []
 
         // If area has a startCell we know that at least once cell is selected
-        if (area.startCell) {
+        if (area && area.startCell) {
             // TODO: Extract selected cell
             // For now we assume the first cell is the selected cell
 

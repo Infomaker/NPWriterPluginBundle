@@ -183,7 +183,9 @@ class TableNode extends BlockNode {
         for (let col = 0; col < this.colCount; col++) {
 
             if (rowIndex === this.rowCount) {
-                // If inserting a row at the end we can't check
+                // If inserting a row at the end we can't check the adjacent row
+                newRow.push(this.createEmptyCell(tx))
+                continue
             }
 
             let colspan
@@ -277,7 +279,18 @@ class TableNode extends BlockNode {
 
         // Create the new column
         const cells = []
+        const nodeCells = tx.get([this.id, 'cells']).slice()
         for (let row = 0; row < this.rowCount; row++) {
+
+            if (colIndex === this.colCount) {
+                // If inserting a col at the end we can't check the adjacent col
+                const newAddition = this.createEmptyCell(tx)
+                const currentRowCells = nodeCells[row].slice()
+                currentRowCells.push(newAddition)
+                cells.push(currentRowCells)
+                continue
+            }
+
             let rowspan
             const adjacentColCell = this.getCellAt(row, colIndex)
 
@@ -295,7 +308,7 @@ class TableNode extends BlockNode {
             // Create as many cells as the adjacent cells rowspan
             for (let i = 0; i < rowspan; i++) {
                 const newAddition = adjacentColCell ? this.createEmptyCell(tx) : null
-                const currentRowCells = this.cells[row + i].slice()
+                const currentRowCells = nodeCells[row + i].slice()
                 currentRowCells.splice(colIndex, 0, newAddition)
                 cells.push(currentRowCells)
             }
@@ -385,7 +398,7 @@ TableNode.schema = {
     type: 'table',
     header: { type: 'boolean', default: false },
     footer: { type: 'boolean', default: false },
-    caption: { type: 'string', default: 'No caption' },
+    caption: { type: 'string', default: '' },
     cells: {
         type: ['array', 'array', 'id'],
         default: [],

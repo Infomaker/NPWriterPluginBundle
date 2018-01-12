@@ -2,7 +2,7 @@ import TableCommand from './TableCommand'
 
 class InsertRowCommand extends TableCommand {
 
-    execute(params, context) { // eslint-disable-line
+    executeCommandOnTable(params, context) { // eslint-disable-line
         // Get commandState again to make sure we have the right selection
         // TODO: Look into why it's not updated correctly
         const commandState = this.getCommandState(params, context)
