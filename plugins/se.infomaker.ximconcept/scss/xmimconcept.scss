@@ -182,7 +182,12 @@
                         }
                         .concept-broader {
                             position: relative;
-                            color: #288dc0;
+                            color: #99a1a8;
+
+                            i {
+                                color: #757575;
+                                -webkit-text-stroke: 1px #ebebeb;
+                            }
                         }
                         .canceled, .replaced-by {
                             text-decoration: line-through;

@@ -23,12 +23,21 @@ class ConceptSearchItemComponent extends Component {
         const fullBroaderString = ConceptService.extractBroaderText(item)
         const conceptDefinitionShort = item[propertyMap.ConceptDefinitionShort] ? $$('p').append(item[propertyMap.ConceptDefinitionShort]).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })
+        
         const tooltip = broaderString.length ? $$(this.Tooltip, {
             title: `${fullBroaderString}`,
             text: '',
             fixed: true,
             parent: this.refs.truncatedBroader,
         }).ref('tooltip') : null
+
+        const broaderIcon = $$('i', { class: 'fa fa-question-circle search-item-icon', 'aria-hidden': 'true' })
+            .on('mouseenter', () => { this.refs.tooltip.extendProps({ show: true }) })
+            .on('mouseleave', () => { this.refs.tooltip.extendProps({ show: false }) })
+        
+        const broaderWrapper = $$('span')
+            .append(broaderIcon)
+            .append(tooltip)
 
         let conceptImage, conceptIcon
 
@@ -40,10 +49,8 @@ class ConceptSearchItemComponent extends Component {
             null
 
         const broaderSpan = $$('span', { class: 'concept-broader'})
-            .on('mouseenter', () => { this.refs.tooltip.extendProps({ show: true }) })
-            .on('mouseleave', () => { this.refs.tooltip.extendProps({ show: false }) })
-            .append(broaderString.length ? ` ${broaderString}` : '')
-            .append(broaderString.length ? tooltip : '')
+            .append((broaderString.length && !item[propertyMap.ConceptReplacedByRelation]) ? ` ${broaderString}` : '')
+            .append((broaderString.length && !item[propertyMap.ConceptReplacedByRelation]) ? broaderWrapper : '')
             .ref('truncatedBroader')
 
         const conceptNameContent = $$('span').addClass(`concept-name ${item[propertyMap.ConceptStatus]} ${item[propertyMap.ConceptReplacedByRelation] ? 'replaced-by' : ''}`)
