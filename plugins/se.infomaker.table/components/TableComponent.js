@@ -112,11 +112,9 @@ class TableComponent extends Component {
         this.grabFocus()
 
         const leftClick = event.which === 1
-        const rightClick = event.which === 3
 
         let cellComp = extractCellComponentFromEventTarget(event.target)
         if (cellComp) {
-            const sel = this.refs.selection
             const cellId = cellComp.props.node.id
             if(cellId !== this.state.focusedCell) {
                 event.stopPropagation()
@@ -124,17 +122,10 @@ class TableComponent extends Component {
                 if (leftClick) {
                     this.setCellSelected(cellComp)
                     this.onSelectionStart(event)
-                } else if (rightClick) {
-                    if (sel.hasArea() && !sel.area.containsCellId(cellId) || !sel.hasArea()) {
-                        this.setCellSelected(cellComp)
-                        this.onSelectionStart(event)
-                    }
                 }
             }
         } else {
-            // If right click is outside not on a cell, the selection is reset
             this.resetSelection()
-            console.info('Single click, found no cell')
         }
     }
 
