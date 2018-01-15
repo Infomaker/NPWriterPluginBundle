@@ -21,7 +21,7 @@ class ToggleHeaderCommand extends Command {
             if (!table) { return }
 
             console.info('Executing header command on node', table)
-            table.toggleHeader()
+            table.toggleFooter()
         }
     }
 

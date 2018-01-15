@@ -5,6 +5,7 @@ import TableViewerComponent from './components/TableViewerComponent'
 import InsertTableCommand from './commands/InsertTableCommand'
 import OpenTableEditorCommand from './commands/OpenTableEditorCommand'
 import ToggleHeaderCommand from './commands/ToggleHeaderCommand'
+import ToggleFooterCommand from './commands/ToggleFooterCommand'
 
 import InsertRowCommand from './commands/InsertRowCommand'
 import DeleteRowCommand from './commands/DeleteRowCommand'
@@ -21,7 +22,7 @@ import TableCellNode from './nodes/TableCellNode'
 
 import TableConverter from './converters/TableConverter'
 import TableCellConverter from './converters/TableCellConverter'
-import TableContextMenuTool from './tools/TableContextMenuTool';
+import TableContextMenuTool from './tools/TableContextMenuTool'
 
 const MAIN_TOOL_GROUP = 'context-menu-primary'
 const TABLE_COMMAND_GROUP = 'table'
@@ -73,7 +74,18 @@ export default {
         config.addContentMenuTopTool(COMMANDS.INSERT_TABLE, InsertTableTool)
 
         config.addCommand('OpenTableEditor', OpenTableEditorCommand)
-        config.addCommand('ToggleHeader', ToggleHeaderCommand)
+
+        // Toggle header
+        config.addCommand(COMMANDS.TOGGLE_HEADER, ToggleHeaderCommand)
+        config.addTool(COMMANDS.TOGGLE_HEADER, TableContextMenuTool, {
+            toolGroup: MAIN_TOOL_GROUP
+        })
+
+        // Toggle footer
+        config.addCommand(COMMANDS.TOGGLE_FOOTER, ToggleFooterCommand)
+        config.addTool(COMMANDS.TOGGLE_FOOTER, TableContextMenuTool, {
+            toolGroup: MAIN_TOOL_GROUP
+        })
 
         // Insert row before
         config.addCommand(COMMANDS.INSERT_ROW_BEFORE, InsertRowCommand, {
@@ -222,27 +234,24 @@ export default {
         config.addCommand(COMMANDS.CELL_EMPHASIS, TableCellAnnotationCommand, { nodeType: 'emphasis', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })
 
 
-
-
-
-
-
-
-
-
+        // Converters
         config.addConverter('newsml', TableConverter)
         config.addConverter('html', TableConverter)
         config.addConverter('newsml', TableCellConverter)
         config.addConverter('html', TableCellConverter)
 
-        config.addKeyboardShortcut('cmd+d', {command: COMMANDS.INSERT_ROW_BEFORE, hej: true}, true, 'name here')
 
+        // Keyboard shortcuts
         if (platform.isMac) {
-            config.addKeyboardShortcut('cmd+b', {command: 'table-strong'}, true, 'table-strong')
-            config.addKeyboardShortcut('cmd+i', {command: 'table-emphasis'}, true, 'table-emphasis')
+            config.addKeyboardShortcut('cmd+shift+h', {command: COMMANDS.TOGGLE_HEADER}, true, COMMANDS.TOGGLE_HEADER)
+            config.addKeyboardShortcut('cmd+shift+f', {command: COMMANDS.TOGGLE_FOOTER}, true, COMMANDS.TOGGLE_FOOTER)
+            config.addKeyboardShortcut('cmd+b', {command: COMMANDS.STRONG}, true, COMMANDS.STRONG)
+            config.addKeyboardShortcut('cmd+i', {command: COMMANDS.EMPHASIS}, true, COMMANDS.EMPHASIS)
         } else {
-            config.addKeyboardShortcut('ctrl+b', {command: 'table-strong'}, true, 'table-strong')
-            config.addKeyboardShortcut('ctrl+i', {command: 'table-emphasis'}, true, 'table-emphasis')
+            config.addKeyboardShortcut('cmd+shift+h', {command: COMMANDS.TOGGLE_HEADER}, true, COMMANDS.TOGGLE_HEADER)
+            config.addKeyboardShortcut('ctrl+shift+f', {command: COMMANDS.TOGGLE_FOOTER}, true, COMMANDS.TOGGLE_FOOTER)
+            config.addKeyboardShortcut('ctrl+b', {command: COMMANDS.STRONG}, true, COMMANDS.STRONG)
+            config.addKeyboardShortcut('ctrl+i', {command: COMMANDS.EMPHASIS}, true, COMMANDS.EMPHASIS)
         }
 
 
@@ -253,7 +262,14 @@ export default {
 
 
 
-
+        config.addLabel(COMMANDS.TOGGLE_HEADER, {
+            en: 'Toggle header',
+            sv: 'CHANGE ME'
+        })
+        config.addLabel(COMMANDS.TOGGLE_FOOTER, {
+            en: 'Toggle footer',
+            sv: 'CHANGE ME'
+        })
 
         config.addLabel('table-insert-row-before', {
             en: 'Insert row above',
