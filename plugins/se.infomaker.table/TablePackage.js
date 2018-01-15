@@ -76,18 +76,30 @@ export default {
         config.addCommand('OpenTableEditor', OpenTableEditorCommand)
 
         // Toggle header
+        config.addLabel(COMMANDS.TOGGLE_HEADER, {
+            en: 'Toggle header',
+            sv: 'CHANGE ME'
+        })
         config.addCommand(COMMANDS.TOGGLE_HEADER, ToggleHeaderCommand)
         config.addTool(COMMANDS.TOGGLE_HEADER, TableContextMenuTool, {
             toolGroup: MAIN_TOOL_GROUP
         })
 
         // Toggle footer
+        config.addLabel(COMMANDS.TOGGLE_FOOTER, {
+            en: 'Toggle footer',
+            sv: 'CHANGE ME'
+        })
         config.addCommand(COMMANDS.TOGGLE_FOOTER, ToggleFooterCommand)
         config.addTool(COMMANDS.TOGGLE_FOOTER, TableContextMenuTool, {
             toolGroup: MAIN_TOOL_GROUP
         })
 
         // Insert row before
+        config.addLabel(COMMANDS.INSERT_ROW_BEFORE, {
+            en: 'Insert row above',
+            sv: 'Infoga rad över'
+        })
         config.addCommand(COMMANDS.INSERT_ROW_BEFORE, InsertRowCommand, {
             insertBefore: true,
             insertMultiple: false,
@@ -100,6 +112,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_ROW_BEFORE, { 'fontawesome': 'fa-angle-up' })
 
         // Insert rows before
+        config.addLabel(COMMANDS.INSERT_ROWS_BEFORE, {
+            en: 'Insert rows above',
+            sv: 'Infoga rader över'
+        })
         config.addCommand(COMMANDS.INSERT_ROWS_BEFORE, InsertRowCommand, {
             insertBefore: true,
             insertMultiple: true,
@@ -112,6 +128,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_ROWS_BEFORE, { 'fontawesome': 'fa-angle-double-up' })
 
         // Insert row after
+        config.addLabel(COMMANDS.INSERT_ROW_AFTER, {
+            en: 'Insert row below',
+            sv: 'Infoga rad under'
+        })
         config.addCommand(COMMANDS.INSERT_ROW_AFTER, InsertRowCommand, {
             insertBefore: false,
             insertMultiple: false,
@@ -124,6 +144,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_ROW_AFTER, { 'fontawesome': 'fa-angle-down' })
 
         // Insert rows after
+        config.addLabel(COMMANDS.INSERT_ROWS_AFTER, {
+            en: 'Insert rows below',
+            sv: 'Infoga rader under'
+        })
         config.addCommand(COMMANDS.INSERT_ROWS_AFTER, InsertRowCommand, {
             insertBefore: false,
             insertMultiple: true,
@@ -136,6 +160,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_ROWS_AFTER, { 'fontawesome': 'fa-angle-double-down' })
 
         // Insert column before
+        config.addLabel(COMMANDS.INSERT_COL_BEFORE, {
+            en: 'Insert column to the left',
+            sv: 'Infoga kolumn till vänster'
+        })
         config.addCommand(COMMANDS.INSERT_COL_BEFORE, InsertColumnCommand, {
             insertBefore: true,
             insertMultiple: false,
@@ -148,6 +176,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_COL_BEFORE, { 'fontawesome': 'fa-angle-left' })
 
         // Insert columns before
+        config.addLabel(COMMANDS.INSERT_COLS_BEFORE, {
+            en: 'Insert columns to the left',
+            sv: 'Infoga kolumner till vänster'
+        })
         config.addCommand(COMMANDS.INSERT_COLS_BEFORE, InsertColumnCommand, {
             insertBefore: true,
             insertMultiple: true,
@@ -160,6 +192,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_COLS_BEFORE, { 'fontawesome': 'fa-angle-double-left' })
 
         // Insert column after
+        config.addLabel(COMMANDS.INSERT_COL_AFTER, {
+            en: 'Insert column to the right',
+            sv: 'Infoga kolumn till höger'
+        })
         config.addCommand(COMMANDS.INSERT_COL_AFTER, InsertColumnCommand, {
             insertBefore: false,
             insertMultiple: false,
@@ -172,6 +208,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_COL_AFTER, { 'fontawesome': 'fa-angle-right' })
 
         // Insert columns after
+        config.addLabel(COMMANDS.INSERT_COLS_AFTER, {
+            en: 'Insert columns to the right',
+            sv: 'Infoga kolumner till höger'
+        })
         config.addCommand(COMMANDS.INSERT_COLS_AFTER, InsertColumnCommand, {
             insertBefore: false,
             insertMultiple: true,
@@ -184,6 +224,10 @@ export default {
         config.addIcon(COMMANDS.INSERT_COLS_AFTER, { 'fontawesome': 'fa-angle-double-right' })
 
         // Delete row
+        config.addLabel(COMMANDS.DELETE_ROW, {
+            en: 'Delete row',
+            sv: 'Ta bort rad'
+        })
         config.addCommand(COMMANDS.DELETE_ROW, DeleteRowCommand, {
             deleteMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
@@ -195,6 +239,10 @@ export default {
         config.addIcon(COMMANDS.DELETE_ROW, { 'fontawesome': 'fa-remove' })
 
         // Delete rows
+        config.addLabel(COMMANDS.DELETE_ROWS, {
+            en: 'Delete rows',
+            sv: 'Ta bort rader'
+        })
         config.addCommand(COMMANDS.DELETE_ROWS, DeleteRowCommand, {
             deleteMultiple: true,
             commandGroup: TABLE_COMMAND_GROUP,
@@ -206,6 +254,10 @@ export default {
         config.addIcon(COMMANDS.DELETE_ROWS, { 'fontawesome': 'fa-remove' })
 
         // Delete column
+        config.addLabel(COMMANDS.DELETE_COLUMN, {
+            en: 'Delete column',
+            sv: 'Ta bort kolumn'
+        })
         config.addCommand(COMMANDS.DELETE_COLUMN, DeleteColumnCommand, {
             deleteMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
@@ -217,6 +269,10 @@ export default {
         config.addIcon(COMMANDS.DELETE_COLUMN, { 'fontawesome': 'fa-remove' })
 
         // Delete columns
+        config.addLabel(COMMANDS.DELETE_COLUMNS, {
+            en: 'Delete columns',
+            sv: 'Ta bort kolumner'
+        })
         config.addCommand(COMMANDS.DELETE_COLUMNS, DeleteColumnCommand, {
             deleteMultiple: true,
             commandGroup: TABLE_COMMAND_GROUP,
@@ -253,73 +309,5 @@ export default {
             config.addKeyboardShortcut('ctrl+b', {command: COMMANDS.STRONG}, true, COMMANDS.STRONG)
             config.addKeyboardShortcut('ctrl+i', {command: COMMANDS.EMPHASIS}, true, COMMANDS.EMPHASIS)
         }
-
-
-
-
-
-
-
-
-
-        config.addLabel(COMMANDS.TOGGLE_HEADER, {
-            en: 'Toggle header',
-            sv: 'CHANGE ME'
-        })
-        config.addLabel(COMMANDS.TOGGLE_FOOTER, {
-            en: 'Toggle footer',
-            sv: 'CHANGE ME'
-        })
-
-        config.addLabel('table-insert-row-before', {
-            en: 'Insert row above',
-            sv: 'Infoga rad över'
-        })
-        config.addLabel('table-insert-row-after', {
-            en: 'Insert row below',
-            sv: 'Infoga rad under'
-        })
-        config.addLabel('table-insert-rows-before', {
-            en: 'Insert rows above',
-            sv: 'Infoga rader över'
-        })
-        config.addLabel('table-insert-rows-after', {
-            en: 'Insert rows below',
-            sv: 'Infoga rader under'
-        })
-        config.addLabel('table-insert-col-before', {
-            en: 'Insert column to the left',
-            sv: 'Infoga kolumn till vänster'
-        })
-        config.addLabel('table-insert-col-after', {
-            en: 'Insert column to the right',
-            sv: 'Infoga kolumn till höger'
-        })
-        config.addLabel('table-insert-cols-before', {
-            en: 'Insert columns to the left',
-            sv: 'Infoga kolumner till vänster'
-        })
-        config.addLabel('table-insert-cols-after', {
-            en: 'Insert columns to the right',
-            sv: 'Infoga kolumner till höger'
-        })
-        config.addLabel('table-delete-row', {
-            en: 'Delete row',
-            sv: 'Ta bort rad'
-        })
-        config.addLabel('table-delete-rows', {
-            en: 'Delete rows',
-            sv: 'Ta bort rader'
-        })
-        config.addLabel('table-delete-col', {
-            en: 'Delete column',
-            sv: 'Ta bort kolumn'
-        })
-        config.addLabel('table-delete-cols', {
-            en: 'Delete columns',
-            sv: 'Ta bort kolumner'
-        })
-
-
     }
 }

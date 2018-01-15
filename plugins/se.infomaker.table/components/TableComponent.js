@@ -129,6 +129,16 @@ class TableComponent extends Component {
         }
     }
 
+    onDblClick(event) {
+        event.stopPropagation()
+        event.preventDefault()
+
+        let cellComp = extractCellComponentFromEventTarget(event.target)
+        if (cellComp) {
+            this.setCellFocused(cellComp)
+        }
+    }
+
     onSelectionStart(event) { // eslint-disable-line
         const selectedCell = this.refs[this.state.selectedCell]
 
@@ -153,16 +163,6 @@ class TableComponent extends Component {
         document.removeEventListener('mouseup', this.onSelectionEnd)
         container.removeEventListener('mousemove', this.onSelection)
         this.__retriggerCommandStates__()
-    }
-
-    onDblClick(event) {
-        event.stopPropagation()
-        event.preventDefault()
-
-        let cellComp = extractCellComponentFromEventTarget(event.target)
-        if (cellComp) {
-            this.setCellFocused(cellComp)
-        }
     }
 
     onKeyDown(event) {

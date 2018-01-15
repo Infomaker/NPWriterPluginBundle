@@ -1,6 +1,5 @@
 import { Command, Component } from 'substance'
 import selectionIsInTable from '../util/selectionIsInTable'
-// import extractCellComponentFromEventTarget from '../util/extractCellComponentFromEventTarget'
 
 /**
  * @typedef TableCommand.commandState
@@ -41,7 +40,6 @@ class TableCommand extends Command {
     }
 
     execute(params, context) {
-        console.info('Active element before execute:', document.activeElement)
         if (params.commandState && !params.commandState.disabled) {
             // Get commandState again to make sure we have the right selection
             // TODO: Look into why it's not updated correctly
@@ -53,7 +51,6 @@ class TableCommand extends Command {
             // To keep focus on the table after executing the command through the context menu
             this._refocusOnTable(commandState.tableNode)
         }
-        console.info('Active element after execute:', document.activeElement)
     }
 
     /**
@@ -65,7 +62,6 @@ class TableCommand extends Command {
      * @param {*} sel
      */
     _refocusOnTable(tableNode) {
-        console.info('Refocusing on table, node:', tableNode)
         if (!tableNode) { return console.info('No table node found') }
 
         const tableElem = document.querySelector(`[data-id=${tableNode.id}]`)
@@ -122,12 +118,11 @@ class TableCommand extends Command {
             commandState.disabled = true
             commandState.showInContext = false
         }
+
+
+        // Todo: remove when done debugging command state thing
         if (!commandState.disabled && (this.config.name === 'table-delete-row' || this.config.name === 'table-delete-rows')) {
             console.info('GETTING COMMAND STATE')
-            // console.info('\trows:', commandState.rows)
-            // console.info('\trow:', commandState.selectedRow)
-            // console.info('\tcols:', commandState.cols)
-            // console.info('\tcol:', commandState.selectedCol)
         }
         return commandState
     }
@@ -160,7 +155,6 @@ class TableCommand extends Command {
     }
 
     _extractTableData(tableNode, cellNode) {
-
         const area = tableNode.getArea()
 
         let selectedRow = null

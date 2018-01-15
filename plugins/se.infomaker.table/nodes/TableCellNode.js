@@ -1,5 +1,5 @@
 /**
- * Modified version of substance table node
+ * Modified version of substance table cell node
  * https://github.com/substance/substance/blob/v1.0.0-beta.6.5/packages/table/TableCell.js
  */
 import {TextNode} from 'substance'

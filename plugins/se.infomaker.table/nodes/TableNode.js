@@ -7,10 +7,16 @@ import { api } from 'writer'
 
 class TableNode extends BlockNode {
 
+    /**
+     * @returns {number} Number of rows in the table
+     */
     get rowCount() {
         return this.cells.length
     }
 
+    /**
+     * @returns {number} Number of columns in the table
+     */
     get colCount() {
         if (this.cells.length > 0) {
             return this.cells[0].length
@@ -20,8 +26,8 @@ class TableNode extends BlockNode {
     }
 
     /**
-     *
-     * @param {*} cellId
+     * Get the zero-indexed coordinates of a cell, or null if no cell found
+     * @param {string} cellId
      */
     getCellCoords(cellId) {
         for (let row = 0; row < this.rowCount; row++) {
@@ -115,7 +121,6 @@ class TableNode extends BlockNode {
      * @param {*} area
      */
     getNextCellAt(row, col, horizontal=false, reverse=false, area=null) {
-        // console.warn('Getting next cell at', row, col)
         const mainAxis = horizontal ? col : row
         const secondaryAxis = horizontal ? row : col
         const mainAxisCount = horizontal ? this.colCount : this.rowCount
@@ -138,6 +143,7 @@ class TableNode extends BlockNode {
                 return reverse ? this.getCellAt(maxRowIndex, maxColIndex) : this.getCellAt(0, 0)
             }
         }
+
         const cell = this.getCellAt(row, col)
         if (cell && (!area || (area && area.containsCellId(cell.id)))) {
             return cell
@@ -178,23 +184,28 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.insertRowAt(rowIndex, tx))
         }
 
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+
         // Create the new row
         const newRow = []
-        for (let col = 0; col < this.colCount; col++) {
+        for (let col = 0; col < tableNode.colCount; col++) {
 
-            if (rowIndex === this.rowCount) {
+            if (rowIndex === tableNode.rowCount) {
                 // If inserting a row at the end we can't check the adjacent row
-                newRow.push(this.createEmptyCell(tx))
+                newRow.push(tableNode.createEmptyCell(tx))
                 continue
             }
 
             let colspan
-            const adjacentRowCell = this.getCellAt(rowIndex, col)
+            const adjacentRowCell = tableNode.getCellAt(rowIndex, col)
 
             if (adjacentRowCell) {
                 colspan = adjacentRowCell.colspan || 1
             } else {
-                const owner = this.getOwnerOfCellAt(rowIndex, col)
+                const owner = tableNode.getOwnerOfCellAt(rowIndex, col)
                 colspan = owner.colspan || 1
 
                 // Increase rowspan of owner cell
@@ -204,7 +215,7 @@ class TableNode extends BlockNode {
 
             // Create as many cells as the adjacent cells rowspan
             for (let i = 0; i < colspan; i++) {
-                const newAddition = adjacentRowCell ? this.createEmptyCell(tx) : null
+                const newAddition = adjacentRowCell ? tableNode.createEmptyCell(tx) : null
                 newRow.push(newAddition)
             }
 
@@ -212,9 +223,9 @@ class TableNode extends BlockNode {
             col += colspan - 1
         }
 
-        const cells = tx.get([this.id, 'cells']).slice()
+        const cells = tableNode.cells.slice()
         cells.splice(rowIndex, 0, newRow)
-        tx.set([this.id, 'cells'], cells)
+        tx.set([tableNode.id, 'cells'], cells)
     }
 
     deleteRowAt(rowIndex, tx) {
@@ -227,9 +238,14 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.deleteRowAt(rowIndex, tx))
         }
 
-        for (let col = 0; col < this.colCount; col++) {
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+
+        for (let col = 0; col < tableNode.colCount; col++) {
             let colspan, rowspan
-            const cell = this.getCellAt(rowIndex, col)
+            const cell = tableNode.getCellAt(rowIndex, col)
             if (cell) {
                 rowspan = cell.rowspan || 1
                 colspan = cell.colspan || 1
@@ -239,11 +255,11 @@ class TableNode extends BlockNode {
                     // null cell would be and set its rowspan to one less than the deleted cells
                     // rowspan.
                     const newRowspan = rowspan === 2 ? 0 : rowspan - 1
-                    this.createCellAt(rowIndex + 1, col, newRowspan, colspan, tx)
+                    tableNode.createCellAt(rowIndex + 1, col, newRowspan, colspan, tx)
                 }
             } else {
                 // No cell found. Find owner and reduce rowspan by 1
-                const owner = this.getOwnerOfCellAt(rowIndex, col)
+                const owner = tableNode.getOwnerOfCellAt(rowIndex, col)
                 colspan = owner.colspan || 1
                 rowspan = owner.rowspan || 1
                 const newRowspan = rowspan === 2 ? 0 : rowspan - 1
@@ -254,10 +270,9 @@ class TableNode extends BlockNode {
         }
 
         // Slice away the row
-        const cells = tx.get([this.id, 'cells']).slice()
+        const cells = tableNode.slice()
         cells.splice(rowIndex, 1)
-        console.info('\t\tNew cell state:', cells, tx)
-        tx.set([this.id, 'cells'], cells)
+        tx.set([tableNode.id, 'cells'], cells)
     }
 
     /**
@@ -277,14 +292,20 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.insertRowAt(colIndex, tx))
         }
 
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+
+
         // Create the new column
         const cells = []
-        const nodeCells = tx.get([this.id, 'cells']).slice()
-        for (let row = 0; row < this.rowCount; row++) {
+        const nodeCells = tableNode.cells.slice()
+        for (let row = 0; row < tableNode.rowCount; row++) {
 
-            if (colIndex === this.colCount) {
+            if (colIndex === tableNode.colCount) {
                 // If inserting a col at the end we can't check the adjacent col
-                const newAddition = this.createEmptyCell(tx)
+                const newAddition = tableNode.createEmptyCell(tx)
                 const currentRowCells = nodeCells[row].slice()
                 currentRowCells.push(newAddition)
                 cells.push(currentRowCells)
@@ -292,12 +313,12 @@ class TableNode extends BlockNode {
             }
 
             let rowspan
-            const adjacentColCell = this.getCellAt(row, colIndex)
+            const adjacentColCell = tableNode.getCellAt(row, colIndex)
 
             if (adjacentColCell) {
                 rowspan = adjacentColCell.rowspan || 1
             } else {
-                const owner = this.getOwnerOfCellAt(row, colIndex)
+                const owner = tableNode.getOwnerOfCellAt(row, colIndex)
                 rowspan = owner.rowspan || 1
 
                 // Increase colspan of owner cell
@@ -307,7 +328,7 @@ class TableNode extends BlockNode {
 
             // Create as many cells as the adjacent cells rowspan
             for (let i = 0; i < rowspan; i++) {
-                const newAddition = adjacentColCell ? this.createEmptyCell(tx) : null
+                const newAddition = adjacentColCell ? tableNode.createEmptyCell(tx) : null
                 const currentRowCells = nodeCells[row + i].slice()
                 currentRowCells.splice(colIndex, 0, newAddition)
                 cells.push(currentRowCells)
@@ -317,10 +338,12 @@ class TableNode extends BlockNode {
             row += rowspan - 1
         }
 
-        tx.set([this.id, 'cells'], cells)
+        tx.set([tableNode.id, 'cells'], cells)
     }
 
     deleteColAt(colIndex, tx) {
+
+
         if (colIndex < 0 || colIndex >= this.colCount) {
             return console.warn('Cannot delete a row that does not exist')
         }
@@ -329,10 +352,15 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.deleteRowAt(colIndex, tx))
         }
 
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+
         const cells = []
-        for (let row = 0; row < this.rowCount; row++) {
+        for (let row = 0; row < tableNode.rowCount; row++) {
             let colspan, rowspan
-            const cell = this.getCellAt(row, colIndex)
+            const cell = tableNode.getCellAt(row, colIndex)
             if (cell) {
                 rowspan = cell.rowspan || 1
                 colspan = cell.colspan || 1
@@ -342,11 +370,11 @@ class TableNode extends BlockNode {
                     // null cell would be and set its rowspan to one less than the deleted cells
                     // rowspan.
                     const newColspan = colspan === 2 ? 0 : colspan - 1
-                    this.createCellAt(row, colIndex + 1, rowspan, newColspan, tx)
+                    tableNode.createCellAt(row, colIndex + 1, rowspan, newColspan, tx)
                 }
             } else {
                 // No cell found. Find owner and reduce colspan by 1
-                const owner = this.getOwnerOfCellAt(row, colIndex)
+                const owner = tableNode.getOwnerOfCellAt(row, colIndex)
                 colspan = owner.colspan || 1
                 rowspan = owner.rowspan || 1
                 const newColspan = colspan === 2 ? 0 : colspan - 1
@@ -354,8 +382,7 @@ class TableNode extends BlockNode {
             }
 
             for (let i = 0; i < rowspan; i++) {
-                const _cells = tx.get([this.id, 'cells'])
-                const currentRowCells = _cells[row + i].slice()
+                const currentRowCells = tableNode.cells[row + i].slice()
                 currentRowCells.splice(colIndex, 1)
                 cells.push(currentRowCells)
             }
@@ -363,7 +390,7 @@ class TableNode extends BlockNode {
             row += rowspan - 1
         }
 
-        tx.set([this.id, 'cells'], cells)
+        tx.set([tableNode.id, 'cells'], cells)
     }
 
     createCellAt(row, col, rowspan=0, colspan=0, tx) {
