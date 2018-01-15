@@ -2,10 +2,8 @@ import TableCommand from './TableCommand'
 
 class InsertColumnCommand extends TableCommand {
 
-    execute(params, context) { // eslint-disable-line
-        // Get commandState again to make sure we have the right selection
-        // TODO: Look into why it's not updated correctly
-        const commandState = this.getCommandState(params, context)
+    executeCommandOnTable(params, context) { // eslint-disable-line
+        const commandState = params.commandState
         if (commandState && !commandState.disabled) {
             if (!commandState.cols) { return false }
             let colCount = 1

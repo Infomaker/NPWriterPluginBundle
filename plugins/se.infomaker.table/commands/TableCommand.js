@@ -1,5 +1,6 @@
-import { Command } from 'substance'
+import { Command, Component } from 'substance'
 import selectionIsInTable from '../util/selectionIsInTable'
+// import extractCellComponentFromEventTarget from '../util/extractCellComponentFromEventTarget'
 
 /**
  * @typedef TableCommand.commandState
@@ -25,20 +26,58 @@ import selectionIsInTable from '../util/selectionIsInTable'
  */
 
 
-
 class TableCommand extends Command {
 
-    execute(params, context) {
-        if (params.commandState && !params.commandState.disabled) {
-            const originalSelection = params.selection
-            this.executeCommandOnTable(params, context)
-            console.info('Restoring selection')
-            context.editorSession.setSelection(originalSelection)
-        }
-    }
-
+    /**
+     * All table commands should execute their commands through this method.
+     *
+     * The normal execute method should not be overwritten in commands that extend this class
+     * as it handles a bug related to commandState and a selection bug.
+     * @param {*} params - Command params
+     * @param {*} context - Command context
+     */
     executeCommandOnTable(params, context) { // eslint-disable-line
         throw new Error('executeCommandOnTable is abstract')
+    }
+
+    execute(params, context) {
+        console.info('Active element before execute:', document.activeElement)
+        if (params.commandState && !params.commandState.disabled) {
+            // Get commandState again to make sure we have the right selection
+            // TODO: Look into why it's not updated correctly
+            const commandState = this.getCommandState(params, context)
+            params.commandState = commandState
+
+            this.executeCommandOnTable(params, context)
+
+            // To keep focus on the table after executing the command through the context menu
+            this._refocusOnTable(commandState.tableNode)
+        }
+        console.info('Active element after execute:', document.activeElement)
+    }
+
+    /**
+     * Extract a cell component from the provided table node and set focus on it's
+     * native element, effectively setting document.activeElement to the cell.
+     *
+     * This is needed to keep focus on the table after a command has been executed
+     * through the context menu. Should be removed once a solution is found.
+     * @param {*} sel
+     */
+    _refocusOnTable(tableNode) {
+        console.info('Refocusing on table, node:', tableNode)
+        if (!tableNode) { return console.info('No table node found') }
+
+        const tableElem = document.querySelector(`[data-id=${tableNode.id}]`)
+        if (!tableElem) { return console.info('No table element found') }
+
+        const tableComp = Component.unwrap(tableElem)
+        if (!tableComp) { return console.info('No table comp found') }
+
+        const cellEditor = tableComp.find('td .sc-surface.sc-text-property-editor')
+        if (!cellEditor) { return console.info('No cell editor found') }
+
+        cellEditor.getNativeElement().focus()
     }
 
     /**

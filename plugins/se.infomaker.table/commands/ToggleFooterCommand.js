@@ -1,40 +1,11 @@
-import { Command } from 'substance'
-import selectionIsInTable from '../util/selectionIsInTable'
+import TableCommand from './TableCommand'
 
-class ToggleHeaderCommand extends Command {
-    execute(params, context) {
-        if (params.commandState && !params.commandState.disabled) {
-            console.info('ToggleHeaderCommand params:', params, 'context', context)
-            const doc = context.editorSession.getDocument()
-            const nodeId = params.selection.getNodeId()
-            const node = doc.get(nodeId)
-
-            if (!node) { return }
-
-            let table = null
-            if (node.type === 'table') {
-                table = node
-            } else if (node.type === 'table-cell') {
-                table = node.table
-            }
-
-            if (!table) { return }
-
-            console.info('Executing header command on node', table)
-            table.toggleFooter()
-        }
-    }
-
-    /**
-     * Our command is enabled on table nodes and inside table cells.
-     */
-    getCommandState(params) {
-        const tableSelected = selectionIsInTable(params.selection)
-        return {
-            disabled: !tableSelected,
-            showInContext: tableSelected
-        }
+class ToggleFooterCommand extends TableCommand {
+    executeCommandOnTable(params, context) { // eslint-disable-line
+        const commandState = params.commandState
+        if (!commandState.tableNode) { return false }
+        commandState.tableNode.toggleFooter()
     }
 }
 
-export default ToggleHeaderCommand
+export default ToggleFooterCommand
