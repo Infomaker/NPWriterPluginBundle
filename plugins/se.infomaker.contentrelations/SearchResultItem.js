@@ -50,17 +50,17 @@ class SearchResultItem extends Component {
 
         if (productsType && productsType === 'icon' && products) {
             const icons = products.map(function (product) {
-                return $$('img').attr('src', product).addClass('product-icon');
-            });
+                return $$('img').attr('src', product).addClass('product-icon')
+            })
 
             icons.forEach(function (icon) {
                 result.append(icon)
-            });
+            })
         } else if (products) {
             result.append(products.join(', '))
         }
 
-        return result;
+        return result
     }
 
     _onDragStart(e) {
@@ -148,12 +148,12 @@ class SearchResultItem extends Component {
             .then(response => response.text())
 
             .catch((error) => {
-                console.error(error);
-            });
+                console.error(error)
+            })
     }
 
     _getSvg() {
-        return '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"> <g> <rect x="7.9" y="1" class="st0" width="2.8" height="22"/> <rect x="13.4" y="1" class="st0" width="2.8" height="22"/> </g> </svg>'
+        return '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24" xml:space="preserve"> <g> <rect x="7.9" y="1" class="st0" width="2.8" height="22"/> <rect x="13.4" y="1" class="st0" width="2.8" height="22"/> </g> </svg>'
     }
 
 }

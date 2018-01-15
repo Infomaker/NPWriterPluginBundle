@@ -1,167 +1,126 @@
-.content_relations {
+.content-relations {
+    .content-relations-form {
+        display: flex;
+        width: 100%;
+        border: 1px solid #d9d9d9;
+        padding: 5px;
 
-  img.product-icon {
-    margin-left: 5px;
-    opacity: 0.6;
-  }
+        .content-relations-icon {
+            width: 16px;
+            height: 16px;
+            margin: auto 10px;
+            color: #878787;
+            transition: color 0.25s ease;
+            &:hover {
+                color: #555;
+            }
+        }
+    }
+    .search-input {
+        border: none;
+        width: 100%;
+    }
+    .type-icon {
+        color: #d0d0d0;
+        font-family: FontAwesome;
+    }
+    .content-options {
+        display: flex;
+        .info-wrapper {
+            flex: 1;
+            margin: auto 5px;
+            align-items: center;
+            .result-description {
+                font-size: 14px;
+                margin-top: 18px;
+            }
+        }
+        .select-group-gmlist {
+            margin-left: 15px;
+            select.form-control {
+                height: calc(2rem + 2px);
+            }
+            h2 {
+                font-size: 9px;
+                padding: 0;
+            }
+        }
+    }
+    .list {
+        list-style: none;
+        margin: 20px 0 0 0;
+        padding: 0;
 
-  form {
-    display: flex;
-  }
-  input.search__query {
-    border-radius: 3px 0 0 3px;
-    width: 100%;
-  }
-  .btn-neutral {
-    border-radius: 0 3px 3px 0;
-    padding: 0.37rem 1.6rem;
-    border: none;
-  }
+        display: flex;
+        flex-direction: column;
 
-  .clearfix {
-    padding-bottom: 20px;
-  }
+        .box {
+            margin-bottom: 7px;
+            background: white;
+            border: 1px solid #dedede;
+            display: flex;
 
-  .type-icon {
-    color: #d0d0d0;
-    font-family: FontAwesome;
-  }
-  /* http://meyerweb.com/eric/tools/css/reset/
-     v2.0 | 20110126
-     License: none (public domain)
-  */
-
-  html, body, div, span, applet, object, iframe,
-  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-  a, abbr, acronym, address, big, cite, code,
-  del, dfn, em, img, ins, kbd, q, s, samp,
-  small, strike, strong, sub, sup, tt, var,
-  b, u, i, center,
-  dl, dt, dd, ol, ul, li,
-  fieldset, form, label, legend,
-  table, caption, tbody, tfoot, thead, tr, th, td,
-  article, aside, canvas, details, embed,
-  figure, figcaption, footer, header, hgroup,
-  menu, nav, output, ruby, section, summary,
-  time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-  }
-
-  /* HTML5 display-role reset for older browsers */
-  article, aside, details, figcaption, figure,
-  footer, header, hgroup, menu, nav, section {
-    display: block;
-  }
-
-  body {
-    line-height: 1;
-  }
-
-  ol, ul {
-    list-style: none;
-  }
-
-  blockquote, q {
-    quotes: none;
-  }
-
-  blockquote:before, blockquote:after,
-  q:before, q:after {
-    content: '';
-    content: none;
-  }
-
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    background: #e9e9e9;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .box {
-    margin-bottom: 7px;
-    background: white;
-    border: 1px solid #dedede;
-    display: flex;
-  }
-
-  .drag {
-    position: relative;
-    width: 25px;
-    min-width: 25px;
-    border-right: 1px solid #dedede;
-    cursor: move;
-  }
-
-  svg {
-    position: absolute;
-    height: 16px;
-    top: 50%;
-    bottom: 50%;
-    left: 50%;
-    right: 0px;
-    fill: #B1B1B1 !important;
-    transform: translate(-50%, -50%);
-  }
-
-  .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .header {
-    border-bottom: 1px solid #dedede;
-    height: 25px;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .header div {
-    margin: auto 5px;
-    flex: 1;
-  }
-
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    line-height: 1.1em;
-  }
-
-  .main div {
-    margin: 5px;
-  }
-  
-  .icondiv {
-    flex-grow: 0;
-  }
-
-  .namediv {
-    flex-grow: 1;
-    word-break: break-all;
-    font-size: 80%;
-    color: rgba(0, 0, 0, 0.75);
-  }
-
-  .imagediv {
-    flex-grow: 0;
-  }
+            .product-icon {
+                margin-left: 5px;
+                opacity: 0.6;
+            }
+            .content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+    .drag {
+        position: relative;
+        width: 25px;
+        min-width: 25px;
+        border-right: 1px solid #dedede;
+        cursor: move;
+    }
+    svg {
+        position: absolute;
+        height: 16px;
+        top: 50%;
+        bottom: 50%;
+        left: 50%;
+        right: 0px;
+        fill: #B1B1B1 !important;
+        transform: translate(-50%, -50%);
+    }
+    .header {
+        border-bottom: 1px solid #dedede;
+        height: 25px;
+        display: flex;
+        flex-direction: row;
+    }
+    .header div {
+        margin: auto 5px;
+        flex: 1;
+    }
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        line-height: 1.1em;
+    }
+    .main div {
+        margin: 5px;
+    }
+    .icondiv {
+        flex-grow: 0;
+    }
+    .namediv {
+        flex-grow: 1;
+        word-break: break-all;
+        font-size: 80%;
+        color: rgba(0, 0, 0, 0.75);
+    }
+    .imagediv {
+        flex-grow: 0;
+        max-height: 40px;
+        img {
+            max-height: 40px;
+        }
+    }
 }

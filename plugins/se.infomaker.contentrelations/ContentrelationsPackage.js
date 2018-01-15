@@ -8,25 +8,39 @@ export default {
     name: 'contentrelations',
     id: 'se.infomaker.contentrelations',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(configurator, config) {
 
-        config.addLabel('ContentRelations', {
+        if (!config.tabid) {
+            configurator.addSidebarTab(this.name, configurator.getLabelProvider().getLabel(this.name))
+        }
+
+        configurator.addComponentToSidebarWithTabId(
+            this.name,
+            config.tabid || this.name,
+            ContentRelationsMainComponent,
+            config
+        )
+
+        configurator.addNode(ContentRelationsNode)
+        configurator.addConverter('newsml', ContentRelationsConverter)
+        configurator.addComponent(this.name, ContentRelationsComponent)
+        configurator.addDropHandler(new ContentRelationsDropHandler())
+
+        configurator.addLabel('ContentRelations', {
             en: 'Related content',
             sv: 'Relaterat innehåll'
         })
-        config.addSidebarTab('contentrelations', config.getLabelProvider().getLabel('ContentRelations'))
-        config.addComponentToSidebarWithTabId('contentrelations', 'contentrelations', ContentRelationsMainComponent)
-        config.addDropHandler(new ContentRelationsDropHandler())
-        config.addComponent('contentrelations', ContentRelationsComponent)
-        config.addNode(ContentRelationsNode)
-        config.addConverter('newsml', ContentRelationsConverter)
-
-        config.addLabel('Enter query', {
-            sv: 'Sökfråga'
+        configurator.addLabel('Enter query', {
+            sv: 'Fritext'
         })
-
-        config.addLabel('Search', {
+        configurator.addLabel('Search', {
             sv: 'Sök'
+        })
+        configurator.addLabel('Show', {
+            sv: 'Visa'
+        })
+        configurator.addLabel('Sort', {
+            sv: 'Sortera'
         })
     }
 }
