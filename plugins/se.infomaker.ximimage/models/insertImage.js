@@ -1,4 +1,5 @@
-import {idGenerator, api} from 'writer'
+import {idGenerator} from 'writer'
+import {getExtensions} from './ImageTypes'
 
 /*
     Insert an image via file or uri.
@@ -9,13 +10,12 @@ import {idGenerator, api} from 'writer'
 
 
 export default function(tx, data) {
-    let isFile = data instanceof File,
-        nodeId = idGenerator()
+    const isFile = data instanceof File
+    const nodeId = idGenerator()
 
-    const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
+    const isImage = (filename) => getExtensions().some((extension) => filename.includes(extension))
 
-
-    if (!typeof data === 'string' && !isFile) {
+    if (typeof data !== 'string' && !isFile) {
         throw new Error('Unsupported data. Must be File or String')
     }
 

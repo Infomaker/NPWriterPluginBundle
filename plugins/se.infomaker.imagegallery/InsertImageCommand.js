@@ -40,11 +40,8 @@ class InsertImageCommand extends WriterCommand {
 
         // Wait for substance operations before syncing files
         setTimeout(() => {
-            fileManager.sync().then(() => {
-                api.events.triggerEvent(null, 'image-gallery:imagesAdded', {
-                    imageNodes: createdImageNodes
-                })
-            })
+            fileManager.sync()
+                .then(() => imageGalleryNode.emit('onImagesAdded', createdImageNodes))
         }, 0)
     }
 

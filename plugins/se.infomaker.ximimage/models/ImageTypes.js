@@ -1,23 +1,19 @@
 import {api} from 'writer'
 
-const defaultExtensions = ['.jpg', '.jpeg', '.png', '.gif']
-
 /**
  * @return {string[]} a list of accepted file extensions
  */
 export function getExtensions() {
-    return api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension', defaultExtensions)
+    return api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension', ['.jpg', '.jpeg', '.png', '.gif'])
 }
 
 /**
  * Check if the file matches the allowed extensions
  * @param {string} filename
- * @return {bool}
+ * @return {boolean}
  */
 export function containsExtension(filename) {
-    return getExtensions().some((extension) => {
-        return filename.indexOf(extension) > 0
-    })
+    return getExtensions().some((extension) => filename.includes(extension))
 }
 
 /**
