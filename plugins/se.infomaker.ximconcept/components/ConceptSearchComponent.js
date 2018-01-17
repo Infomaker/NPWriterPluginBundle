@@ -33,7 +33,7 @@ class ConceptSearchComponent extends Component {
             placeholder: this.props.placeholderText,
             autocomplete: 'off',
         })
-        .on('input', this.debounce(300, this.handleInput.bind(this)))
+        .on('input', this.debounce(400, this.handleInput.bind(this)))
         .on('keydown', this.handleKeyDown)
         .on('focus', this.handleFocus)
         .on('blur', this.handleBlur)
