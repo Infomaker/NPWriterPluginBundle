@@ -30,14 +30,20 @@ class SearchResultItem extends Component {
 
         switch (imType) {
             case 'article':
-                return "x-im-entity://x-im/article?data=" + dropData
+                return `x-im-entity://x-im/article?data=${dropData}`
             case 'image':
-                return "x-im-entity://x-im/image?data=" + dropData
+                return `x-im-entity://x-im/image?data=${dropData}`
             default:
-                return "x-im-entity://x-im/article?data=" + dropData
+                return `x-im-entity://x-im/article?data=${dropData}`
         }
     }
 
+    /**
+     * @param $$
+     * @param {object} item
+     * @returns {*}
+     * @private
+     */
     _getProducts($$, item) {
         let products = item.type,
             productsType = item.typeCatalog ? item.typeCatalog[0] : 'text'
@@ -47,23 +53,22 @@ class SearchResultItem extends Component {
 
         let n = 0
         if (productsType && productsType === 'icon' && products) {
-            const icons = products.map(function (product) {
+            const icons = products.map(function(product) {
                 n++
                 return $$('img')
                     .attr('src', product)
                     .addClass('product-icon')
                     .attr('alt', '')
-            });
+            })
 
-            icons.forEach(function (icon) {
+            icons.forEach(function(icon) {
                 result.append(icon)
-            });
-        }
-        else if (products) {
+            })
+        } else if (products) {
             result.append(products.join(', '))
         }
 
-        return n ? result : null;
+        return n ? result : null
     }
 
     _onDragStart(e) {
@@ -89,7 +94,7 @@ class SearchResultItem extends Component {
         const name = $$('div')
             .addClass('im-cr-name')
             .append(
-                item.name ? item.name[0] : "Unidentified",
+                item.name ? item.name[0] : 'Unidentified',
                 this._getProducts($$, item)
             )
 
@@ -131,9 +136,7 @@ class SearchResultItem extends Component {
 
         return $$('div')
             .addClass('im-cr-media')
-            .append(
-                image
-            )
+            .append(image)
     }
 
     _getIcon(type) {
@@ -147,18 +150,15 @@ class SearchResultItem extends Component {
      */
     _fetchImageURLForUUID(uuid) {
         return api.router.get('/api/binary/url/' + uuid + '/40?imType=x-im/image&height=40')
-
             .then(response => response.text())
-
             .catch((error) => {
-                console.error(error);
-            });
+                console.error(error)
+            })
     }
 
     _getSvg() {
         return '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"> <g> <rect x="7.9" y="1" class="st0" width="2.8" height="22"/> <rect x="13.4" y="1" class="st0" width="2.8" height="22"/> </g> </svg>'
     }
-
 }
 
 export default SearchResultItem
