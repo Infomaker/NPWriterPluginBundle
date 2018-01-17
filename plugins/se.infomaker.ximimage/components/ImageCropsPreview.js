@@ -21,6 +21,16 @@ function getTemplate(key, cropObject) {
     return cropObject["default"]
 }
 
+function ensureFloat(value) {
+    const float = parseFloat(value)
+
+    if (float === 1) {
+        return 0.999999
+    }
+
+    return float
+}
+
 function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth, imageHeight, uuid) {
     const maxSide = 800
 
@@ -33,10 +43,10 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
             template = getTemplate(key, instructions.userDefined)
         }
 
-        const relCropX = parseFloat(cropDefinedInNode.x)
-        const relCropY = parseFloat(cropDefinedInNode.y)
-        const relCropWidth = parseFloat(cropDefinedInNode.width)
-        const relCropHeight = parseFloat(cropDefinedInNode.height)
+        const relCropX = ensureFloat(cropDefinedInNode.x)
+        const relCropY = ensureFloat(cropDefinedInNode.y)
+        const relCropWidth = ensureFloat(cropDefinedInNode.width)
+        const relCropHeight = ensureFloat(cropDefinedInNode.height)
 
         let w
         let h
