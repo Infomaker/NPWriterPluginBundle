@@ -3,6 +3,12 @@ import GoogleMapsApiLoader from 'google-maps-api-loader'
 
 class ConceptMapComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.polygons = []
+    }
+
     shouldRerender() {
         return false
     }
@@ -11,6 +17,16 @@ class ConceptMapComponent extends Component {
         if (this.map) {
             this.map.unbindAll()
         }
+
+        if (this.polygons) {
+            delete this.polygons
+        }
+    }
+
+    convertPtsToGooglPts(ptsArray) {
+        return ptsArray.map(point => {
+            return new google.maps.LatLng(point[1], point[0])
+        })
     }
 
     willReceiveProps(newProps) {
@@ -28,10 +44,14 @@ class ConceptMapComponent extends Component {
                 this.setMarker(newProps.googleLatLng)
 
             } else if (newProps.ptsArray) {
-                const googlePtsArray = newProps.ptsArray.map(point => {
-                    return new google.maps.LatLng(point[1], point[0])
-                })
+                const googlePtsArray = this.convertPtsToGooglPts(newProps.ptsArray)
                 this.setPolygon(googlePtsArray)
+            } else if (newProps.multiPtsArray) {
+                newProps.multiPtsArray.forEach(ptsArray => {
+                    const googlePtsArray = this.convertPtsToGooglPts(ptsArray)
+                    this.setPolygon(googlePtsArray)
+                })
+                this._fitBounds()
             } else if (newProps.term) {
                 this.searchPlaces(newProps.term)
             }
@@ -142,14 +162,22 @@ class ConceptMapComponent extends Component {
             fillColor: '#1E90FF',
             fillOpacity: 0.35
         })
-
-        // Add to map and Fit Polygon path bounds
-        const bounds = new google.maps.LatLngBounds()
         polygon.setMap(this.map)
-        polygon.getPath().forEach(function (path) {
-            bounds.extend(path)
+        this.polygons.push(polygon)
+
+        this._fitBounds()
+    }
+
+    _fitBounds() {
+        const bounds = new google.maps.LatLngBounds()
+        
+        this.polygons.forEach(polygon => {
+            polygon.getPath().forEach(function (path) {
+                bounds.extend(path)
+            })
         })
-        this.map.fitBounds(bounds);
+        
+        this.map.fitBounds(bounds)
     }
 
     searchPlaces(query) {
