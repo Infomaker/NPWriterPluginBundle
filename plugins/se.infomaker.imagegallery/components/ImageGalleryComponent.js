@@ -36,6 +36,10 @@ class ImageGalleryComponent extends Component {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
+    dispose() {
+        this.context.editorSession.off(this)
+    }
+
     /**
      * @param change
      * @private
