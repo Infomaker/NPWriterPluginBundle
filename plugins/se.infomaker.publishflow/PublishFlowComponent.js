@@ -2,7 +2,7 @@ import PublishFlowManager from './PublishFlowManager'
 import './scss/publishflow.scss'
 
 const {Component} = substance
-const {api, moment, event} = writer
+const {api, moment, event, UIButton} = writer
 const pluginId = 'se.infomaker.publishflow'
 const TIMEOUT = 30000
 
@@ -165,7 +165,8 @@ class PublishFlowComponent extends Component {
             ),
             $$('p').append(
                 this.getLabel(statusDef.description)
-            )
+            ),
+            ...this.renderPriorityTransitions($$)
         ]
     }
 
@@ -375,7 +376,9 @@ class PublishFlowComponent extends Component {
 
         this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
             .forEach(transition => {
-                actionsEl.append(this.renderTransition($$, transition))
+                if (transition.priority !== 'primary' && transition.priority !== 'secondary') {
+                    actionsEl.append(this.renderTransition($$, transition))
+                }
             })
 
         return actionsEl
@@ -404,27 +407,77 @@ class PublishFlowComponent extends Component {
             ])
             .on('click', () => {
                 this._save(() => {
-                    try {
-                        this.publishFlowMgr.executeTransition(
-                            transition.nextState,
-                            this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
-                            this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
-                        )
-                    }
-                    catch (ex) {
-                        api.ui.showMessageDialog(
-                            [{
-                                type: 'error',
-                                message: this.getLabel(ex.message)
-                            }],
-                            () => {
-                            }
-                        )
-
-                        return false
-                    }
+                    return this.handleTransitionClick(transition)
                 })
             })
+    }
+
+    /**
+     * Render priority transition buttons
+     *
+     * @param  {*} $$
+     * @return {VirtualElement}
+     */
+    renderPriorityTransitions($$) {
+        const els = []
+
+        const transitions = this.publishFlowMgr.getTransitions(this.state.status.qcode, this.state.hasPublishedVersion)
+            .filter(transition => {
+                return transition.priority === 'primary' || transition.priority === 'secondary'
+            })
+
+        if (!transitions || transitions.length < 1) {
+            return []
+        }
+
+        transitions.forEach(transition => {
+            const nextState = this.publishFlowMgr.getStateDefinitionByName(transition.nextState)
+            const icon = nextState && nextState.icon ? nextState.icon : 'fa-question'
+
+            els.push(
+                $$(UIButton, {
+                    label: transition.title,
+                    icon: icon
+                })
+                .on('click', () => {
+                    this._save(() => {
+                        return this.handleTransitionClick(transition)
+                    })
+                })
+                .addClass('sc-np-wide')
+                .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
+            )
+        })
+
+        return els.length > 0 ? els : []
+    }
+
+    /**
+     * Execute defined state transition
+     *
+     * @param  {object} transition Transition to execute
+     * @return {boolean}
+     */
+    handleTransitionClick(transition) {
+        try {
+            this.publishFlowMgr.executeTransition(
+                transition.nextState,
+                this.refs['pfc-lbl-withheld-fromdate'].val() + 'T' + this.refs['pfc-lbl-withheld-fromtime'].val(),
+                this.refs['pfc-lbl-withheld-todate'].val() + 'T' + this.refs['pfc-lbl-withheld-totime'].val()
+            )
+        }
+        catch (ex) {
+            api.ui.showMessageDialog(
+                [{
+                    type: 'error',
+                    message: this.getLabel(ex.message)
+                }],
+                () => {
+                }
+            )
+
+            return false
+        }
     }
 
     /**
