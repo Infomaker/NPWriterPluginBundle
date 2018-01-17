@@ -19,7 +19,22 @@ npm run build
 ```
 
 ### Add plugin to Newspilot Writer
-In your Newspilot Writer open /server/config/writer.json and add your plugin  
+In your Newspilot Writer open /server/config/writer.json and add your plugin
+
+### Override plugin tab placement
+To override which tab a plugin is added to via config, add a `tab`-property to the plugin's config.
+Simplified example:
+```json
+{
+    "id": "se.infomaker.contentrelations",
+    "name": "contentrelations",
+    "enabled": true,
+    "mandatory": false,
+    "tab": "Search"
+}
+```
+Will put content relations in a tab called "Search". If the tab does not exist it will be added dynamically.
+The `tab`-property only affects plugins which are added to a tab in its `*Package.js`-file
 
 ### Release a new version
 To bump version in `package.json` and create a new commit. This should be done

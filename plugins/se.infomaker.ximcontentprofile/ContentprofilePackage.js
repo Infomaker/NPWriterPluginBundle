@@ -4,8 +4,8 @@ export default {
     id: 'se.infomaker.ximcontentprofile',
     name: 'ximcontentprofile',
     version: '{{version}}',
-    configure: function (config) {
-        config.addComponentToSidebarWithTabId(this.id, 'main', ContentprofileMainComponent)
+    configure: function (config, pluginConfig) {
+        config.addToSidebar('main', pluginConfig, ContentprofileMainComponent)
         config.addLabel('Search content profile tags', {
             sv: 'Sök Funktionstaggar'
         })

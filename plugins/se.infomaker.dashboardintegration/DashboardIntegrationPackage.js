@@ -4,8 +4,8 @@ import DashboardIntegrationComponent from './DashboardIntegrationComponent'
 export default {
     name: 'dashboardintegration',
     id: 'se.infomaker.dashboardintegration',
-    configure: config => {
-        config.addComponentToSidebarWithTabId('dashboardintegration', 'main', DashboardIntegrationComponent)
+    configure: (config, pluginConfig) => {
+        config.addToSidebar('main', pluginConfig, DashboardIntegrationComponent)
     },
 
     title: 'DW Plugin',
@@ -16,8 +16,8 @@ export default {
     tags: [],
     authors: [
         {
-            name: "Hamzah Al Hariri",
-            email: "hamzah.alhariri@infomaker.se"
+            name: 'Hamzah Al Hariri',
+            email: 'hamzah.alhariri@infomaker.se'
         }
     ]
 }

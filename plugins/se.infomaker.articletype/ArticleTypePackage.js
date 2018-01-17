@@ -6,13 +6,13 @@ export default {
     id: 'se.infomaker.articletype',
     name: 'articletype',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
         config.addLabel('articletype-label', {
             en: 'Article type',
             sv: 'Artikeltyp'
         });
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', ArticleTypeComponent)
+        config.addToSidebar('main', pluginConfig, ArticleTypeComponent)
     }
 }

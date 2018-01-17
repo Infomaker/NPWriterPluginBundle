@@ -8,14 +8,14 @@ export default {
     name: 'contentrelations',
     id: 'se.infomaker.contentrelations',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(config, pluginConfig) {
 
         config.addLabel('ContentRelations', {
             en: 'Related content',
             sv: 'Relaterat innehåll'
         })
-        config.addSidebarTab('contentrelations', config.getLabelProvider().getLabel('ContentRelations'))
-        config.addComponentToSidebarWithTabId('contentrelations', 'contentrelations', ContentRelationsMainComponent)
+
+        config.addToSidebar('ContentRelations', pluginConfig, ContentRelationsMainComponent)
         config.addDropHandler(new ContentRelationsDropHandler())
         config.addComponent('contentrelations', ContentRelationsComponent)
         config.addNode(ContentRelationsNode)

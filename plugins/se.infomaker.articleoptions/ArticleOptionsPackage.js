@@ -6,13 +6,13 @@ export default {
     id: 'se.infomaker.articleoptions',
     name: 'articleoptions',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
         config.addLabel('articleoptions-label', {
             en: 'Article options',
             sv: 'Artikelinställningar'
         })
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', ArticleOptionsComponent)
+        config.addToSidebar('main', pluginConfig, ArticleOptionsComponent)
     }
 }
