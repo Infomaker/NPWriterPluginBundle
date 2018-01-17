@@ -83,7 +83,6 @@ _The properties pubStatus, title, description, saveActionLabel can be left out w
 |color|Icon background color, normally Infomaker standard colors|
 |transitions|An array of available transitions to other states|
 |actions|Actions to perform when entering this state|
-|||
 
 ### Transitions
 An array of available transitions to other states.
@@ -126,8 +125,6 @@ All action properties are optional.
 |pubStop|`required`, `set` or `clear`. Required requires the users to choose a valid time before this transition can be made. Set and clear sets or clears the pubStop.|
 |pubStatus|The most commonly used. A string that defines the pubStatus value to set in the NewsML when first transitioning into this state.|
 |hasPublishedVersion|Set NewsML flag to either `true` or `false`|
-
-
 
 ### Output
 The plugin updates the article depending on selections made in the plugin. The status selected updates the
