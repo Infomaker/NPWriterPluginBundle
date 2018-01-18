@@ -267,12 +267,19 @@ class ConceptDialogComponent extends Component {
         return (geometry.indexOf('POLYGON') !== -1)
     }
 
+    isMultiPolygon() {
+        const { item } = this.props
+        const geometry = (item && item.data) ? item.data.geometry : ''
+        return (geometry.indexOf('MULTIPOLYGON') !== -1)
+    }
+
     extractItemGeometry() {
         const { item } = this.props
         const geometry = (item && item.data) ? item.data.geometry : false
 
         if (geometry) {
-            return this.isPolygon() ?
+            return this.isMultiPolygon(geometry) ?
+                this._extractMultiPolygon(geometry) : this.isPolygon() ?
                 this._extractPolygon(geometry) :
                 this._extractLatLng(geometry)
         } else {
@@ -288,6 +295,21 @@ class ConceptDialogComponent extends Component {
                 lat: latLongString[1] || 0,
                 lng: latLongString[0] || 0
             }
+        }
+    }
+
+    _extractMultiPolygon(geometryString) {
+        const multiPtsArray = []
+        const polygons = geometryString.match(/\(\([0-9 \,\-]+\)\)/g)
+
+        polygons.forEach(polygon => {
+            multiPtsArray.push(
+                this._extractPolygon(polygon).ptsArray
+            )
+        })
+
+        return {
+            multiPtsArray
         }
     }
 

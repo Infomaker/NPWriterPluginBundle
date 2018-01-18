@@ -54,10 +54,13 @@ class ConceptItemComponent extends Component {
 
         if (item) {
             const broaderString = ConceptService.extractBroaderText(item)
+            const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? ' - ' : 
+                item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` : 
+                item[propertyMap.ConceptDefinitionShort]
+                
             const tooltip = $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: `${this.hasValidUUid() ? item[propertyMap.ConceptDefinitionShort] || ' - ' : 
-                    this.getLabel('invalid.uuid.label')} ${item[propertyMap.ConceptStatus] ? '(' + item[propertyMap.ConceptStatus] + ')': ''}`,
+                text: `${this.hasValidUUid() ? truncatedDescription : this.getLabel('invalid.uuid.label')}`,
                 fixed: true,
                 parent: this,
             }).ref('tooltip')
