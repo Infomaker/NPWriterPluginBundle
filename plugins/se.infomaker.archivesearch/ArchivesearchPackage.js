@@ -8,23 +8,12 @@ const archivesearchPackage = {
     id: 'se.infomaker.archivesearch',
     name: 'im-archivesearch',
     version: '{{version}}',
-    configure: (config) => {
-
-
-        // TODO: Remove this, maybe use later
-        // let tabIdentifier = 'im-archivesearch'
-        // if (pluginConfig && pluginConfig.tabIdentifier) {
-        //     tabIdentifier = pluginConfig.tabIdentifier
-        // } else {
-        //     config.addSidebarTab('im-archivesearch', 'Archive image search')
-        // }
-
+    configure: (config, pluginConfig) => {
         config.addLabel('Archive Image Search', {
             sv: 'Bildsök'
         })
 
-        config.addSidebarTab('im-archivesearch', config.getLabelProvider().getLabel('Archive Image Search'))
-        config.addComponentToSidebarWithTabId('im-archivesearch-component', 'im-archivesearch', MainComponent)
+        config.addToSidebar('Archive Image Search', pluginConfig, MainComponent)
         config.addDropHandler(new ArchiveSearchDropHandler())
 
         config.addLabel('Search...', {

@@ -4,7 +4,7 @@ export default {
     id: 'se.infomaker.ximsection',
     name: 'ximsection',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
         config.addLabel('ximsection-Sections', {
             en: 'Section',
@@ -16,7 +16,7 @@ export default {
             sv: 'Välj Avdelning'
         })
 
-        config.addComponentToSidebarWithTabId('ximsection', 'main', XimsectionComponent)
+        config.addToSidebar('main', pluginConfig, XimsectionComponent)
     }
 }
 

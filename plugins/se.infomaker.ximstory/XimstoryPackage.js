@@ -6,7 +6,7 @@ export default {
     id: 'se.infomaker.ximstory',
     name: 'ximstory',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(config, pluginConfig) {
         config.addLabel('ximstory-could_not_load_uuid', {
             en: 'This item could not be loaded. UUID: ',
             sv: 'Detta objekt kunde inte laddas in. UUID: '
@@ -62,6 +62,6 @@ export default {
             sv: 'Story'
         })
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', StoryMainComponent)
+        config.addToSidebar('main', pluginConfig, StoryMainComponent)
     }
 }

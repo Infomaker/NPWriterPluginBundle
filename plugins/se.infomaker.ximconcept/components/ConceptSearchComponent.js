@@ -33,8 +33,8 @@ class ConceptSearchComponent extends Component {
             placeholder: this.props.placeholderText,
             autocomplete: 'off',
         })
+        .on('input', this.debounce(400, this.handleInput.bind(this)))
         .on('keydown', this.handleKeyDown)
-        .on('keyup', this.handleKeyUp)
         .on('focus', this.handleFocus)
         .on('blur', this.handleBlur)
         .ref('searchInput')
@@ -85,7 +85,35 @@ class ConceptSearchComponent extends Component {
         return el
     }
 
+    debounce(delay, fn) {
+        let timerId;
+        return function (...args) {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+            timerId = setTimeout(() => {
+                fn(...args);
+                timerId = null;
+            }, delay);
+        }
+    }
+
+    handleInput() {
+        const term = this.refs.searchInput.val().trim()
+
+        if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
+            this.extendState({
+                searching: true
+            })
+
+            this.search(term)
+        } else if (!this.state.selected && (!term || !term.length)) {
+            this.resetState()
+        }
+    }
+
     handleFocus() {
+        this.resetState()
         this.extendState({
             searching: true
         })

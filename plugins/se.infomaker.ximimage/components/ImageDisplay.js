@@ -7,10 +7,6 @@ import {api} from "writer";
  */
 class ImageDisplay extends Component {
 
-    constructor(...args) {
-        super(...args)
-    }
-
     _onDragStart(e) {
         e.preventDefault()
         e.stopPropagation()
@@ -129,8 +125,8 @@ class ImageDisplay extends Component {
 
     /**
      * Show image cropper in an overlay element
-     * 
-     * @param {any} $$ 
+     *
+     * @param {any} $$
      * @memberof ImageDisplay
      */
     _openCropper($$) {
@@ -199,7 +195,7 @@ class ImageDisplay extends Component {
 
     /**
      * Show image meta data in a modal dialog
-     * 
+     *
      * @memberof ImageDisplay
      */
     _openMetaData() {

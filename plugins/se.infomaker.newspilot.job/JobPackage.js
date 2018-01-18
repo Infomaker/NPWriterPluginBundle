@@ -5,15 +5,13 @@ export default {
     id: 'se.infomaker.newspilot.job',
     name: 'npjob',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
         config.addLabel('Newspilot Job', {
             sv: 'Newspilot Jobb'
         })
 
-        config.addSidebarTab('npjob', config.getLabelProvider().getLabel('Newspilot Job'))
-
-        config.addComponentToSidebarWithTabId('npjob', 'npjob', JobComponent)
+        config.addToSidebar('Newspilot Job', pluginConfig, JobComponent)
 
         config.addLabel('Images', {
             sv: 'Bilder'

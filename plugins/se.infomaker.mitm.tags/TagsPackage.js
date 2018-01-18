@@ -6,7 +6,7 @@ export default {
     name: 'mmtags',
     vendor: 'infomaker.se',
     version: '{{version}}',
-    configure: function(config) {
+    configure: function(config, pluginConfig) {
 
         config.addLabel('mmtags-could_not_load_uuid', {
             en: 'This item could not be loaded. UUID: ',
@@ -99,6 +99,6 @@ export default {
         })
 
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', TagsMainComponent)
+        config.addToSidebar('main', pluginConfig, TagsMainComponent)
     }
 }
