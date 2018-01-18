@@ -96,7 +96,8 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
 
         context = {
             w: Math.floor(w),
-            h: Math.floor(h)
+            h: Math.floor(h),
+            uuid:uuid
         }
 
     }
