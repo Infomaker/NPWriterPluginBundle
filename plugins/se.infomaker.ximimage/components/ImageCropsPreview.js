@@ -142,6 +142,7 @@ class ImageCropsPreview extends Component {
                                     this.updateSrc(key, url)
                                 })
                                 .catch((e) => {
+                                    console.warn(e)
                                     const url = ""
                                     this.cropUrls.set(key, url)
                                     this.updateSrc(key, url)

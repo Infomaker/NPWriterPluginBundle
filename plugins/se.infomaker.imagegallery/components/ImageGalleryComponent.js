@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {api, idGenerator, fetchImageMeta} from 'writer'
+import {api, idGenerator} from 'writer'
 import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
