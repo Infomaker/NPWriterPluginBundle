@@ -8,12 +8,20 @@ class InsertImageUrlCommand extends WriterCommand {
 
     execute(params) {
         if (params.isPaste) {
-            const currentNode = params.selection.getPath()
-            if(!currentNode) {
+            const nodeId = params.selection.getNodeId()
+            if(!nodeId) {
                 return false
             }
             const doc = params.editorSession.getDocument()
-            api.document.deleteNode('ximimage', doc.get(currentNode[0]))
+            api.document.deleteNode('ximimage', doc.get(nodeId))
+        }
+
+        if (params.isBreak) {
+            const nodeId = params.selection.getNodeId()
+            if(!nodeId) {
+                return false
+            }
+            api.document.deleteNode('ximimage', api.document.getPreviousNode(nodeId))
         }
 
         api.editorSession.transaction((tx) => {

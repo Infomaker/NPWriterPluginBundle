@@ -11,7 +11,7 @@ const IframelyMacro = {
         if (action !== 'paste' && action !== 'break') { return false }
 
         // Extract url from text
-        const url = /^\s*(https?:\/\/([^\s]+))\s*$/.exec(text)
+        const url = /^(https?:\/\/([^\s]+))$/.exec(text)
 
         // Break if the pasted text is not a URL
         if(!url) { return false }

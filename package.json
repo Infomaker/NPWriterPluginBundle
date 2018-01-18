@@ -1,6 +1,6 @@
 {
   "name": "npwriter-plugin-bundle",
-  "version": "6.0.1",
+  "version": "6.1.0",
   "description": "Infomaker plugin bundle for Newspilot Writer",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/Infomaker/NPWriterDevKit.git"
   },
-  "author": "Andreas Kihlberg",
+  "author": "Infomaker Scandinavia AB",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Infomaker/NPWriterPluginBundle/issues"
@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@infomaker/oc-client": "0.0.5",
+    "@infomaker/xml-handler": "0.0.17",
     "cropjs": "^1.1.0",
     "google-maps-api-loader": "^0.3.0",
     "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git#3568c3c183e6a5258462c9be21c06d1360a02d1b",
