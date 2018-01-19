@@ -49,8 +49,17 @@ class TableNode extends BlockNode {
     }
 
     getCellById(cellId) {
-        if (cellId) {
-            return this.document.get(cellId)
+        // Original implementation, gets cell wheter it's part of the table or not
+        // if (cellId) {
+        //     return this.document.get(cellId)
+        // }
+
+        for (let row = 0; row < this.rowCount; row++) {
+            for (let col = 0; col < this.colCount; col++) {
+                if (this.cells[row][col] === cellId) {
+                    return this.document.get(cellId)
+                }
+            }
         }
     }
 
@@ -79,8 +88,8 @@ class TableNode extends BlockNode {
                         // If both colspan and rowspan match we have found the owner
                         return cell
                     } else {
-                        // If either one doesnt match
-                        console.info('\tFound cell but no match, setting stopCol to', stopCol)
+                        // If either one doesnt match we know that we can stop searching past
+                        // this column as the owner can't be intersected by a non-null cell
                         stopCol = _col + colspan - 1
                     }
                 }
@@ -269,8 +278,12 @@ class TableNode extends BlockNode {
             col += colspan - 1
         }
 
-        // Slice away the row
-        const cells = tableNode.slice()
+        const cells = tableNode.cells.slice()
+
+        // Delete all cell nodes in the row
+        cells[rowIndex].forEach(cellId => tx.delete(cellId))
+
+        // Remove the row from the table
         cells.splice(rowIndex, 1)
         tx.set([tableNode.id, 'cells'], cells)
     }
@@ -296,7 +309,6 @@ class TableNode extends BlockNode {
         // `this` will refer to the table node as it is before the transaction.
         // Any changes in the transaction will not be reflected in `this`
         const tableNode = tx.get([this.id])
-
 
         // Create the new column
         const cells = []
@@ -342,8 +354,6 @@ class TableNode extends BlockNode {
     }
 
     deleteColAt(colIndex, tx) {
-
-
         if (colIndex < 0 || colIndex >= this.colCount) {
             return console.warn('Cannot delete a row that does not exist')
         }
@@ -383,6 +393,11 @@ class TableNode extends BlockNode {
 
             for (let i = 0; i < rowspan; i++) {
                 const currentRowCells = tableNode.cells[row + i].slice()
+
+                // Delete the cell node
+                tx.delete(currentRowCells[colIndex])
+
+                // Remove the cell node from the table
                 currentRowCells.splice(colIndex, 1)
                 cells.push(currentRowCells)
             }
@@ -408,17 +423,16 @@ class TableNode extends BlockNode {
     }
 
     toggleHeader() {
-        api.editorSession.transaction((tx) => {
+        api.editorSession.transaction(tx => {
             tx.set([this.id, 'header'], !this.header)
         })
     }
 
     toggleFooter() {
-        api.editorSession.transaction((tx) => {
+        api.editorSession.transaction(tx => {
             tx.set([this.id, 'footer'], !this.footer)
         })
     }
-
 }
 
 TableNode.schema = {
@@ -428,10 +442,10 @@ TableNode.schema = {
     caption: { type: 'string', default: '' },
     cells: {
         type: ['array', 'array', 'id'],
-        default: [],
+        default: [[]],
         owned: true
     },
-    area: { type: 'object', optional: true }
+    // area: { type: 'object', optional: false }
 }
 
 export default TableNode

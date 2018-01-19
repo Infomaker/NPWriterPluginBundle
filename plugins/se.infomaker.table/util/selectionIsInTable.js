@@ -20,6 +20,7 @@ function _propertySelectionIsInTable(selection) {
 
     const node = api.editorSession.document.get(nodeId)
     if (node && node.type === 'table-cell') {
+        // console.info('Table cell selected', node)
         return Boolean(node.table)
     }
 

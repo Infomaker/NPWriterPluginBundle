@@ -13,11 +13,30 @@ class TableCellNode extends TextNode {
         }
         return null
     }
+
+    /**
+     * There is a bug (or intended feature?) in substance.ParentNodeHook._onOperationApplied that causes
+     * the table cell's parent to be set to the table node instead of the table node's ID.
+     * When the table has rows with only one cell something breaks when parent is set to the actual
+     * node, so we mitigate this by checking if parent is being set to a node (val has an ID) and set
+     * parent to that ID.
+     */
+    set parent(val) {
+        console.warn('Setting parent to', val)
+        if (val && val.id) {
+            val = val.id
+        }
+        this._parent = val
+    }
+
+    get parent() {
+        return this._parent
+    }
 }
 
 TableCellNode.schema = {
     type: 'table-cell',
-    parent: { type: 'id' },
+    parent: { type: 'string', owned: false },
     rowspan: { type: 'number', default: 0 },
     colspan: { type: 'number', default: 0 }
 }

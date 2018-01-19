@@ -83,6 +83,7 @@ class TableCommand extends Command {
     getCommandState(params, context) { //eslint-disable-line
         // Command is disabled if selection is not in a table
         const inTable = selectionIsInTable(params.selection)
+        // console.info('Command in table:', inTable)
         if (!inTable) {
             return { disabled: true }
         }
@@ -90,7 +91,7 @@ class TableCommand extends Command {
         // now that we know we are in a table, extract the table node from the selection
         const doc = params.editorSession.getDocument()
         const {table, cell} = this._extractTableAndCellFromSelection(params.selection, doc)
-
+        // console.info('table:', table, 'cell:', cell)
         // Command is disabled if no table node is available
         if (!table) {
             return { disabled: true }
@@ -122,7 +123,10 @@ class TableCommand extends Command {
 
         // Todo: remove when done debugging command state thing
         if (!commandState.disabled && (this.config.name === 'table-delete-row' || this.config.name === 'table-delete-rows')) {
-            console.info('GETTING COMMAND STATE')
+            // console.info('GETTING COMMAND STATE')
+            // if (cell) {
+            //     console.info('Table cell', cell)
+            // }
         }
         return commandState
     }

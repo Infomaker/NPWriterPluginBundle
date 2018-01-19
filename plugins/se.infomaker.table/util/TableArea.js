@@ -32,8 +32,12 @@ class TableArea {
         }
     }
 
+    /**
+     * Get cells contained in the area
+     */
     get cells() {
         const cells = []
+        if (this.top === null || this.bottom === null) { return cells }
         for (let row = this.top; row <= this.bottom; row++) {
             for (let col = this.left; col <= this.right; col++) {
                 const cell = this.table.cells[row][col]

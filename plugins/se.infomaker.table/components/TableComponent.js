@@ -197,13 +197,17 @@ class TableComponent extends Component {
         const sel = this.refs.selection
         // If shift key is pressed, area should be moved
         const moveArea = event.shiftKey
-        let currentCellId = this.state.selectedCell
+        let currentCellId = this.state.selectedCell || node.getCellAt(0, 0).id
 
         if (moveArea && sel.state.endCell) {
             currentCellId = sel.state.endCell.props.node.id
         }
 
-        const coords = node.getCellCoords(currentCellId)
+        let coords = node.getCellCoords(currentCellId)
+
+        if (!coords) {
+            coords = node.getCellCoords(node.getCellAt(0, 0).id)
+        }
 
         const shouldMoveUp = event.key === keys.UP && coords[0] > 0
         const shouldMoveRight = event.key === keys.RIGHT && coords[1] < node.colCount - 1

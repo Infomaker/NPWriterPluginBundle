@@ -4,6 +4,7 @@ import TableArea from '../util/TableArea'
 class TableSelectionComponent extends Component {
 
     didMount() {
+        this.context.editorSession.onRender('document', this._onDocumentChange, this)
         document.addEventListener('selectionchange', () => {
             this._updateArea()
         })
@@ -13,23 +14,37 @@ class TableSelectionComponent extends Component {
         this._updateArea()
     }
 
+    _onDocumentChange() {
+        // this._updateArea()
+    }
+
     _updateArea() {
-        const startCellNode = this.state.startCell ? this.state.startCell.props.node : null
-        const endCellNode = this.state.endCell ? this.state.endCell.props.node : null
-        console.info('SETTING AREA: didupdate')
+        const node = this.props.node
+        let startCellNode = this.state.startCell ? this.state.startCell.props.node : null
+        let endCellNode = this.state.endCell ? this.state.endCell.props.node : null
+
+        if (startCellNode) {
+            startCellNode = node.getCellById(startCellNode.id)
+        }
+
+        if (endCellNode) {
+            endCellNode = node.getCellById(endCellNode.id)
+        }
+
+
+        if (!startCellNode) {
+            startCellNode = endCellNode = node.getCellAt(0, 0)
+        }
+
+
+        // console.info('SETTING AREA: didupdate')
+
+        // console.info('[SELECTION] startCell:', startCellNode)
+        // console.info('[SELECTION] endCell:', endCellNode)
         const newArea = new TableArea(this.props.node, startCellNode, endCellNode)
         this.props.node.area = newArea
         this.area = newArea
         this.positionSelection()
-
-        // Find a better way to do this: Set selection so command states update
-        // if (startCellNode) {
-        //     const es = this.context.editorSession
-        //     es.setSelection(es.getSelection())
-        // }
-
-        // this.context.editorSession._setDirty('commandStates')
-
     }
 
     getInitialState() {

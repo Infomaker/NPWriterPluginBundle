@@ -1,3 +1,5 @@
+import {uuid} from 'substance'
+
 export default {
     type: 'table-cell',
     tagName: 'td',
@@ -7,6 +9,9 @@ export default {
     },
 
     import: function (el, node, converter) {
+        if (!el.id) {
+            node.id = uuid(this.type)
+        }
         node.content = converter.annotatedText(el, [node.id, 'content'])
         let colspan = el.attr('colspan')
         let rowspan = el.attr('rowspan')
@@ -19,7 +24,8 @@ export default {
     },
 
     export: function (node, el, converter) {
-        el.append(converter.annotatedText([node.id, 'content']))
+        const convertedCell = converter.annotatedText([node.id, 'content'])
+        el.append(convertedCell)
         if (node.rowspan > 0) {
             el.attr('rowspan', node.rowspan)
         }

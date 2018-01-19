@@ -52,6 +52,7 @@ class TableAnnotationCommand extends Command {
         if (table.area && table.area.cells) {
             es.transaction(tx => {
                 let shouldCreate
+                console.info('Running command on:', table.area.cells)
                 table.area.cells.forEach(cellId => {
                     const cell = doc.get(cellId)
                     const selection = tx.createSelection({

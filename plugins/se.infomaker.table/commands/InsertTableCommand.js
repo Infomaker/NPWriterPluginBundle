@@ -28,51 +28,14 @@ class InsertTableCommand extends InsertNodeCommand {
                     parent: tableNodeId,
                     content: ''
                 }
+                const colNode = tx.create(cellData)
+                console.info(`Cell created at <${row}, ${col}> ID: ${colNode.id}`)
+                colNodes.push(colNode.id)
 
-                // if (row === 2 && col === 2) {
-                //     cellData.rowspan = 2
-                // }
-
-                // if (row === 3 && col === 2) {
-                //     cellData.id = null
-                // }
-
-                // if (row === 1 && col === 5) {
-                //     cellData.colspan = 2
-                // }
-
-                // if (row === 1 && col === 6) {
-                //     cellData.id = null
-                // }
-
-                // if (row === 1 && col === 3) {
-                //     cellData.colspan = 2
-                // }
-
-                // if (row === 1 && col === 4) {
-                //     cellData.id = null
-                // }
-
-                // if (row === 2 && col === 2) {
-                //     cellData.colspan = 2
-                // }
-
-                // if (row === 2 && col === 3) {
-                //     cellData.id = null
-                // }
-
-                if (cellData.id) {
-                    const colNode = tx.create(cellData)
-                    console.info(`Cell created at <${row}, ${col}> ID: ${colNode.id}`)
-                    colNodes.push(colNode.id)
-                } else {
-                    console.info(`Null cell created at <${row}, ${col}>`)
-                    colNodes.push(null)
-                }
             }
             rowNodes.push(colNodes)
         }
-
+        console.info('Created table with id:', tableNodeId, 'cells:', rowNodes)
         return {
             id: tableNodeId,
             type: 'table',
