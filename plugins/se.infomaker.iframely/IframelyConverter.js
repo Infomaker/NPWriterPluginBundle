@@ -56,10 +56,9 @@ const IframelyConverter = {
         const alternateLink = converter.$$('link')
         const linksEl = $$('links')
 
-        const title = configLabel.replace('{author_name}', oembed.author_name)
+        const title = configLabel.replace('{author_name}', oembed.author)
             .replace('{author_url}', oembed.author_url)
             .replace('{provider_name}', oembed.provider_name)
-            .replace('{provider_url}', oembed.provider_url)
             .replace('{text}', oembed.title ? oembed.title : '')
 
         alternateLink.attr({
