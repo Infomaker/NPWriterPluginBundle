@@ -17,7 +17,8 @@ Documentation of the Iframely plugin.
         "restoreAfterFailure": true,
         "omitScript": false,
         "urlWhitelist": [],
-        "urlBlacklist": []
+        "urlBlacklist": [],
+        "alternateLinkTitle": "{author_name} posted {text}"
     }
 }
 ```
@@ -56,6 +57,28 @@ Set to true to disable adding the included iframely embed.js script to all embed
 // Don't match URLs that end in '/foo' or '/bar'
 "urlBlacklist": [/\/foo$/, /\/bar$/]
 ```
+
+### `alternateLinkTitle` - Link Title Template String
+*Optional* ASets a template which renders the `title`-attribute in the `alternate`-link. The template is able to fetch properties
+from the fetched oEmbed values from the Iframely API. Default value is `"{text}"`.
+
+#### Available Template Tags
+| Tag | Description |
+| --- | ----------- |
+| `{author_name}` | Name of author/creator |
+| `{author_url}` | Url to author of content |
+| `{provider_name}` | Provider of resource, e.g YouTube, Instagram |
+| `{text}` | Title of the content |
+
+#### Example
+```js
+    "alternateLinkTitle": "{author_name} posted {text} on {provider}"
+```
+Would render
+```
+    Test Testsson posted My Cool Article on Instagram
+```
+
 
 ### 1.2 - Iframely settings
 Some settings can only be changed on the Iframely [settings page](https://iframely.com/settings/api)
