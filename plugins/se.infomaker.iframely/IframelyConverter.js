@@ -48,6 +48,55 @@ const IframelyConverter = {
 
         dataElem.append([titleElem, embedCodeElem])
         el.append(dataElem)
+
+        const api = converter.context.api
+        let configLabel = api.getConfigValue('se.infomaker.iframely', 'alternateLinkTitle', '{text}')
+
+        const oembed = node.oembed
+        const alternateLink = converter.$$('link')
+        const linksEl = $$('links')
+
+        const title = configLabel.replace('{author_name}', oembed.author_name)
+            .replace('{author_url}', oembed.author_url)
+            .replace('{provider_name}', oembed.provider_name)
+            .replace('{provider_url}', oembed.provider_url)
+            .replace('{text}', oembed.title ? oembed.title : '')
+
+        alternateLink.attr({
+            rel: 'alternate',
+            type: 'text/html',
+            url: node.url,
+            title: title
+        })
+
+        linksEl.append(alternateLink)
+
+        if(oembed.thumbnail_url) {
+            const alternateImageLink = $$('link')
+            const imageData = $$('data')
+
+            // Create the image/alternate
+            alternateImageLink.attr({
+                rel: 'alternate',
+                type: 'image/jpg',
+                url: oembed.thumbnail_url
+            })
+
+            // Check if we have width and height of thumbail
+            if(oembed.thumbnail_width) {
+                imageData.append($$('width').append(oembed.thumbnail_width))
+            }
+            if(oembed.thumbnail_height) {
+                imageData.append($$('height').append(oembed.thumbnail_height))
+            }
+            if(imageData.childNodes.length > 0) {
+                alternateImageLink.append(imageData)
+            }
+
+            linksEl.append(alternateImageLink)
+        }
+
+        el.append(linksEl)
     }
 }
 
