@@ -8,7 +8,9 @@ const IframelyConverter = {
 
     // Convert newsml to node
     import: function(el, node) {
-        if (el.attr('uuid')) { node.uuid = el.attr('uuid') }
+        if (el.attr('uuid')) {
+            node.uuid = el.attr('uuid')
+        }
 
         const titleElem = el.find('title')
         const embedCodeElem = el.find('embedCode')
@@ -32,7 +34,9 @@ const IframelyConverter = {
         const titleElem = $$('title')
         const embedCodeElem = $$('embedCode')
 
-        if (node.uuid) { el.attr('uuid', node.uuid) }
+        if (node.uuid) {
+            el.attr('uuid', node.uuid)
+        }
         el.attr('type', node.dataType)
         el.attr('url', node.url)
 

@@ -1,4 +1,4 @@
-import { api } from 'writer'
+import {api} from 'writer'
 
 /**
  * @private
@@ -8,7 +8,9 @@ import { api } from 'writer'
  */
 const _testUrlAgainstList = (url, list) => {
     for (let i = 0; i < list.length; i++) {
-        if (list[i].test(url)) { return true }
+        if (list[i].test(url)) {
+            return true
+        }
     }
     return false
 }
@@ -20,7 +22,9 @@ const _testUrlAgainstList = (url, list) => {
  */
 const urlInWhitelist = (url) => {
     const whitelist = api.getConfigValue('se.infomaker.iframely', 'urlWhitelist', [])
-    if (whitelist.length === 0) { return true }
+    if (whitelist.length === 0) {
+        return true
+    }
     return _testUrlAgainstList(url, whitelist)
 }
 
@@ -31,7 +35,9 @@ const urlInWhitelist = (url) => {
  */
 const urlInBlacklist = (url) => {
     const blacklist = api.getConfigValue('se.infomaker.iframely', 'urlBlacklist', [])
-    if (blacklist.length === 0) { return false }
+    if (blacklist.length === 0) {
+        return false
+    }
     return _testUrlAgainstList(url, blacklist)
 }
 

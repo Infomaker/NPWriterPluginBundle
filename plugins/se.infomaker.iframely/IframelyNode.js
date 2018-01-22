@@ -1,41 +1,46 @@
-import { api } from 'writer'
-import { BlockNode } from 'substance'
+import {api} from 'writer'
+import {BlockNode} from 'substance'
 import fetchOembed from './fetchOembed'
 import fetchWriterIframe from './fetchWriterIframe'
 
 class IframelyNode extends BlockNode {
 
     fetchPayload(context, callback) {
-        if (this.fetching) return callback(null, {})
+        if (this.fetching) {
+            return callback(null, {})
+        }
 
         this.fetching = true
 
-        if (this.embedCode) return this.loadFromNode(callback)
+        if (this.embedCode) {
+            return this.loadFromNode(callback)
+        }
 
         fetchOembed(this.url)
-        .then(res => {
-            if (!res.html) {
-                throw new Error('No embedCode found for link')
-            }
+            .then(res => {
+                if (!res.html) {
+                    throw new Error('No embedCode found for link')
+                }
 
-            this.fetching = false
-            callback(null, {
-                url: res.url,
-                title: res.title,
-                provider: res.provider_name,
-                embedCode: res.html,
-                iframe: res.writerIframe
+                this.fetching = false
+                return callback(null, {
+                    url: res.url,
+                    title: res.title,
+                    provider: res.provider_name,
+                    embedCode: res.html,
+                    iframe: res.writerIframe
+                })
             })
-        }).catch(err => {
-            this.fetching = false
-            callback(err)
-            this.remove()
+            .catch(err => {
+                this.fetching = false
+                callback(err)
+                this.remove()
 
-            // Restore the link if settings allow it
-            if (api.getConfigValue('se.infomaker.iframely', 'restoreAfterFailure', true)) {
-                this.restoreLink()
-            }
-        })
+                // Restore the link if settings allow it
+                if (api.getConfigValue('se.infomaker.iframely', 'restoreAfterFailure', true)) {
+                    this.restoreLink()
+                }
+            })
     }
 
     /**
@@ -75,12 +80,12 @@ class IframelyNode extends BlockNode {
 IframelyNode.isResource = true
 IframelyNode.type = 'iframely'
 IframelyNode.define({
-    embedCode: { type: 'string', optional: true },
-    iframe: { type: 'string', optional: true },
-    url: {type: 'string', optional: true },
-    dataType: { type: 'string' },
-    title: { type: 'string', optional: true },
-    errorMessage: { type: 'string', optional: true }
+    embedCode: {type: 'string', optional: true},
+    iframe: {type: 'string', optional: true},
+    url: {type: 'string', optional: true},
+    dataType: {type: 'string'},
+    title: {type: 'string', optional: true},
+    errorMessage: {type: 'string', optional: true}
 })
 
 export default IframelyNode
