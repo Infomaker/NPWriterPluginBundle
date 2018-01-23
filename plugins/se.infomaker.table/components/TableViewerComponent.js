@@ -8,11 +8,6 @@ class TableViewerComponent extends Component {
         return $$('div', {class: 'im-blocknode__container im-table'}, [
             $$('div', {class: 'header'}, [
                 this._renderCaptionEditor($$)
-                // $$('strong', null, this.props.node.caption),
-                // Open table editor
-                // $$('span', {class:'edit-button'}, [
-                //     $$('i', {class: 'fa fa-pencil'})
-                // ]).on('click', this._openTableEditor.bind(this))
             ]),
             $$('div', {class: 'table-viewer-container '}, [
                 $$(TableComponent, {
@@ -22,14 +17,12 @@ class TableViewerComponent extends Component {
             ])
         ]).on('mousedown', (event) => {
             event.stopPropagation()
-            console.info('Clicked on isolated node')
             this.grabFocus()
         }, false)
     }
 
     didUpdate() {
         const isolatedMode = this.context.isolatedNodeComponent.getMode()
-
         if (isolatedMode !== 'focused') {
             this.refs.table.resetSelection()
         }
@@ -46,28 +39,42 @@ class TableViewerComponent extends Component {
             placeholder: this.getLabel('table-caption')
         }
 
-        return $$(FieldEditor, editorProps).ref('table-caption-editor')
+        // This is needed because the TextPropertyEditorComponent captures all input and stops
+        // propagation so we hijack the _handleEnterKey and _handleTabKey methods with our own
+        // which allows us to escape from the caption editor and select a cell.
+        if (this.refs['table-caption-editor']) {
+            const textEditor = this.refs['table-caption-editor'].refs.caption
+            textEditor._handleEnterKey = this._captureFieldEditorEvents.bind(this)
+            textEditor._handleTabKey = this._captureFieldEditorEvents.bind(this)
+        }
+
+        const captionEditor = $$(FieldEditor, editorProps).ref('table-caption-editor')
+        return captionEditor
+    }
+
+    _captureFieldEditorEvents(event) {
+        event.preventDefault()
+        event.stopPropagation()
+        this.refs.table.resetSelection()
+        this.refs.table.grabFocus(true)
     }
 
     /**
      * Grabs focus on the table component
      *
      * This method is run automatically when stepping into the isolated node by pressing Tab
-     * and through
+     * and through a mousedown event handler bound to the component.
      */
     grabFocus() {
         const isolatedNode = this.context.isolatedNodeComponent
         // Make sure that the node is not already focused yet
         if (isolatedNode.state.mode === 'selected') {
-            console.info('Forcing focus on isolated node')
             isolatedNode.extendState({
                 mode: 'focused',
                 unblocked: true
             })
             this.refs.table.resetSelection()
             this.refs.table.grabFocus(true)
-        } else {
-            console.info('Already focused')
         }
     }
 }

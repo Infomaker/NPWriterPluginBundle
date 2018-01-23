@@ -1,7 +1,6 @@
 import TableCommand from './TableCommand'
 
 class DeleteRowCommand extends TableCommand {
-
     executeCommandOnTable(params, context) { // eslint-disable-line
         const commandState = params.commandState
         let rows = null
@@ -20,7 +19,6 @@ class DeleteRowCommand extends TableCommand {
                 commandState.tableNode.deleteRowAt(row, tx)
             })
         })
-
     }
 }
 

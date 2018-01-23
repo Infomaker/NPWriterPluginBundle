@@ -18,7 +18,6 @@ class TableAnnotationCommand extends AnnotationCommand {
         let commandState = params.commandState
 
         if (commandState.disabled) {
-            console.info('Running no command', 'shouldcreate:', params.shouldCreate)
             return false
         }
         switch(commandState.mode) {
@@ -26,22 +25,17 @@ class TableAnnotationCommand extends AnnotationCommand {
             case 'fuse':
             case 'expand':
                 if(!params.shouldCreate) { return false }
-                console.info('Running create command')
                 return super.execute(params)
             case 'truncate':
             case 'delete':
                 if(params.shouldCreate) { return false }
-                console.info('Running delete command')
                 return super.execute(params)
             default:
-                console.info('Running unknown command', 'shouldcreate:', params.shouldCreate)
                 return false
-                // super.execute(params)
         }
     }
 
     executeCreate(params) {
-
         let annos = this._getAnnotationsForSelection(params)
         this._checkPrecondition(params, annos, this.canCreate)
         let editorSession = this._getEditorSession(params)

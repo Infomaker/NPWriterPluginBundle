@@ -1,7 +1,6 @@
 import TableCommand from './TableCommand'
 
 class InsertColumnCommand extends TableCommand {
-
     executeCommandOnTable(params, context) { // eslint-disable-line
         const commandState = params.commandState
         if (!commandState.cols) { return false }

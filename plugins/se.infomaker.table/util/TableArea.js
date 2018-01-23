@@ -27,32 +27,45 @@ class TableArea {
         this._searchReset = false
 
         if (this.startCell && this.endCell) {
-            // console.info('trying to perform perimiter search', this.startCell, this.endCell)
             this._perimeterSearch()
         }
     }
 
     /**
      * Get cells contained in the area
+     * @returns {string[]} Array of cell IDs contained in area
      */
     get cells() {
         const cells = []
         if (this.top === null || this.bottom === null) { return cells }
         for (let row = this.top; row <= this.bottom; row++) {
             for (let col = this.left; col <= this.right; col++) {
-                const cell = this.table.cells[row][col]
-                if (cell) {
-                    cells.push(cell)
-                } else {
-                    const ownerCell = this.table.getOwnerOfCellAt(row, col)
-                    // console.info('\n\n\nNull cell found so trying to find owner', ownerCell)
-                    if (!cells.includes(ownerCell.id)) {
-                        cells.push(ownerCell.id)
-                    }
+                const ownerCell = this.table.getOwnerOfCellAt(row, col)
+                if (!cells.includes(ownerCell.id)) {
+                    cells.push(ownerCell.id)
                 }
             }
         }
         return cells
+    }
+
+    /**
+     * Get the width of the area in number of cells along the x-axis
+     * @returns {number} Width of the area
+     */
+    get width() {
+        if (this.right === null || this.left === null) { return 0 }
+        return this.right - this.left + 1
+    }
+
+    /**
+     * Get the height of the area in number of cells in the y-axis
+     * @returns {number} Height
+     *  of the area
+     */
+    get height() {
+        if (this.bottom === null || this.top === null) { return 0 }
+        return this.bottom - this.top + 1
     }
 
     get firstCell() {
@@ -64,7 +77,9 @@ class TableArea {
     }
 
     get firstCellId() {
-        return this.firstCell.id
+        if (this.firstCell) {
+            return this.firstCell.id
+        }
     }
 
     get lastCellId() {
@@ -122,7 +137,6 @@ class TableArea {
     }
 
     _perimeterSearch() {
-        // console.info('Perimeter search')
         const startCellCoords = this.table.getCellCoords(this.startCell.id)
         const endCellCoords = this.table.getCellCoords(this.endCell.id)
 
@@ -143,33 +157,26 @@ class TableArea {
 
             // If cell searched, continue to the next cell
             if (this._cellAlreadySearched(row, col)) {
-                // console.info(`[${row},${col}] Already searched, continue`)
                 continue
             }
 
             // Now continue the search
             const cellNode = this.table.getCellAt(row, col)
             if (cellNode) {
-                // console.info(`[${row},${col}] Found cell`)
                 // If cell found, check for colspan and rowspan
                 this._handleFoundCellNode(cellNode)
 
             } else {
-                // console.info(`[${row},${col}] Found NULL, figure out which cell it belongs to`)
                 // If Null cell found, figure out what cell it belongs to
                 const owner = this.table.getOwnerOfCellAt(row, col)
-                console.info('Null cell owner:', owner)
                 this._handleFoundCellNode(owner)
             }
         }
 
         // If the search was reset, restart it
         if (this._searchReset) {
-            // console.info('Reset perimeter search\n\n')
             this._searchReset = false
             return this._perimeterSearch()
-        } else {
-            // console.info('Reached end of perimeter search')
         }
     }
 
@@ -179,39 +186,42 @@ class TableArea {
      * Creates a 2d array with all edge cells and removes all duplicates
      */
     _setSearchCoords() {
-        // console.info('Generating search coordinates')
         // reset searchCoords
         this.searchCoords = []
 
         // Set left edge
         for (let row = this.top, col = this.left; row <= this.bottom; row++) {
-            // console.info(`\tLeft edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set top edge
         for (let row = this.top, col = this.left; col <= this.right; col++) {
-            // console.info(`\tTop edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set bottom edge
         for (let row = this.bottom, col = this.left; col <= this.right; col++) {
-            // console.info(`\tBottom edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
         // Set right edge
         for (let row = this.top, col = this.right; row <= this.bottom; row++) {
-            // console.info(`\tRight edge, adding [${row},${col}]`)
             this._searchCoords.push([row, col])
         }
 
+        // Remove duplicate coords to avoid having to search them twice
         this._searchCoords = lodash.uniqWith(this._searchCoords, (arr, other) => {
             return arr[0] === other[0] && arr[1] === other[1]
         })
     }
 
+    /**
+     * Helper method to check if a cell coordinate has already been searched
+     * @param {number} row
+     * @param {number} col
+     * @returns {boolean}
+     * @private
+     */
     _cellAlreadySearched(row, col) {
         if (this._searchedCells[row]) {
             return this._searchedCells[row][col]
@@ -220,6 +230,12 @@ class TableArea {
         }
     }
 
+    /**
+     * Helper method to marka cell coordinate as searched
+     * @param {number} row
+     * @param {number} col
+     * @private
+     */
     _markCellSearched(row, col) {
         if (!this._searchedCells[row]) {
             this._searchedCells[row] = []

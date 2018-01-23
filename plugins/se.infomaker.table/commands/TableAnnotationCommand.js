@@ -52,7 +52,6 @@ class TableAnnotationCommand extends Command {
         if (table.area && table.area.cells) {
             es.transaction(tx => {
                 let shouldCreate
-                console.info('Running command on:', table.area.cells)
                 table.area.cells.forEach(cellId => {
                     const cell = doc.get(cellId)
                     const selection = tx.createSelection({
@@ -71,13 +70,6 @@ class TableAnnotationCommand extends Command {
                         const commandMode = es.getCommandStates()[commandName].mode
                         shouldCreate = ['create', 'fuse', 'expand'].includes(commandMode)
                     }
-
-                    // const selectionState = es.getSelectionState()
-                    // console.info('Selection state:', selectionState)
-                    // console.info('Cell id:', cellId)
-                    // console.info('Created selection:', selection)
-                    // console.info('Transaction selection path:', tx.getSelection().getPath())
-                    // console.info('EditorSession selection path', es.getSelection().getPath())
                     es.executeCommand(commandName, {
                         transaction: tx,
                         shouldCreate: shouldCreate

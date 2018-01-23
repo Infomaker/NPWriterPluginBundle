@@ -8,7 +8,6 @@ class TableCellComponent extends Component {
 
     _onDocumentChange(change) {
         if (change.isAffected([this.props.node.id])) {
-            console.info('Change affected table cell node')
             this.rerender()
         }
     }
@@ -43,9 +42,7 @@ class TableCellComponent extends Component {
             path: node.getTextPath(),
             disabled: this._isDisabled(),
             multiline: false
-        }).ref('editor').on('keypress', () => {
-            console.info('context', this.context)
-        })
+        }).ref('editor')
 
         if (this.refs.editor) {
             this.refs.editor._handleEnterKey = this._handleEnterKey.bind(this)
@@ -57,18 +54,46 @@ class TableCellComponent extends Component {
         ]).ref('cell')
     }
 
+    /**
+     * Disabled state of the cell text property editor
+     *
+     * We want them to be disabled when they are not focused to prevent selections
+     * from getting 'stuck' in them.
+     * @private
+     */
     _isDisabled() {
         return this.props.disabled || this.props.selectionState !== 'focused'
     }
 
-    _handleEnterKey() {
+    /**
+     * Overwritten method from TextPropertyEditor
+     *
+     * If we do not overwrite it, TextPropertyEditor will not propagate the event
+     * which is later handled in TableComponent
+     * @param {KeyboardEvent} event
+     * @private
+     */
+    _handleEnterKey(event) { // eslint-disable-line
         // console.info('Capturing enter key', event)
+        // Not used right now, but leaving it here so cells can handle multiline in the future.
     }
 
-    _handleTabKey(event) {
-        console.info('Capturing tab key', event)
+    /**
+     * Overwritten method from TextPropertyEditor
+     *
+     * If we do not overwrite it, TextPropertyEditor will not propagate the event
+     * which is later handled in TableComponent
+     * @param {KeyboardEvent} event
+     * @private
+     */
+    _handleTabKey(event) { // eslint-disable-line
+        // console.info('Capturing tab key', event)
     }
 
+    /**
+     * Grab focus on a single table cell
+     * @param {boolean} selectContents - If the selection should contain all text. If false, puts the cursor at the end of the text
+     */
     grabFocus(selectContents=false) {
         let node = this.props.node
         this.context.editorSession.setSelection({
@@ -78,10 +103,6 @@ class TableCellComponent extends Component {
             endOffset: node.getLength(),
             surfaceId: this.refs.editor.id
         })
-        // setTimeout(() => {
-        //     console.info('Setting native focus')
-        //     window.getSelection().collapse(this.refs.editor.getNativeElement())
-        // }, 2000)
     }
 }
 

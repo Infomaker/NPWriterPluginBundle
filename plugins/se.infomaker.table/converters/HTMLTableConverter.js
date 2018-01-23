@@ -22,25 +22,20 @@ export default {
 
     // From newsml to node
     import: function (el, node, converter) {
-        console.info('Running HTML import, el:', el)
         if (!el.id) {
             node.id = uuid(this.type)
         }
 
         const trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
-        const cells = []
         const rowspans = [] // we remember active rowspans here
         const colspans = [] // we remember active colspans here
 
-        for (let rowIndex = 0; rowIndex < trs.length; rowIndex++) {
-            const tds = trs[rowIndex].getChildren()
+        node.cells = trs.map((tr, rowIndex) => {
             const row = []
-
             // colspans result in `tds` being shorter than colCount so we have to keep track of the nodes
             // actual colIndex.
             let nodeColIndex = 0
-            for (let colIndex = 0; colIndex < tds.length; colIndex++) {
-                let td = tds[colIndex]
+            tr.getChildren().forEach(td => {
                 // if there is an open rowspan
                 if (rowspans[nodeColIndex] > 1) {
                     row.push(null)
@@ -65,12 +60,12 @@ export default {
                     }
                 }
 
+                // Remember rowspans
                 if (tableCell.rowspan > 1) {
                     rowspans[nodeColIndex - 1] = tableCell.rowspan
                 }
 
                 if (tableCell.colspan > 1) {
-
                     // Remember any colspans for the next rows
                     if (tableCell.rowspan > 1) {
                         for (let index = 1; index < tableCell.rowspan; index++) {
@@ -84,11 +79,10 @@ export default {
                         nodeColIndex += 1 // Must be increased since we added a null cell
                     }
                 }
-            }
-            cells.push(row)
-        }
+            })
+            return row
+        })
 
-        node.cells = cells
         node.header = Boolean(el.find('thead'))
         node.footer = Boolean(el.find('tfoot'))
         const caption = el.find('caption')

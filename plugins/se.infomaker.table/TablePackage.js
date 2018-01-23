@@ -154,7 +154,6 @@ export default {
         })
 
         // Converters
-        // config.addConverter('newsml', HTMLTableConverter)
         config.addConverter('newsml', XMLTableConverter)
         config.addConverter('html', HTMLTableConverter)
         config.addConverter('newsml', TableCellConverter)

@@ -2,7 +2,7 @@ import '../scss/table.scss'
 import {Component} from 'substance'
 import TableCellComponent from './TableCellComponent'
 import TableSelectionComponent from './TableSelectionComponent'
-import extractCellComponentFromEventTarget from '../util/extractCellComponentFromEventTarget'
+import extractCellComponentFromElement from '../util/extractCellComponentFromElement'
 import {keys, isInputKey} from '../util/keys'
 
 class TableComponent extends Component {
@@ -14,12 +14,19 @@ class TableComponent extends Component {
         this.onSelectionEnd = this.onSelectionEnd.bind(this)
     }
 
+    getInitialState() {
+        return {
+            selectedCell: null,
+            focusedCell: null,
+        }
+    }
+
     /**
      * Hacky way to trigger an update of command states which has to be done after setting
      * the area selection. Find a better way to do this.
      */
     __retriggerCommandStates__() {
-        console.warn('Dont do this')
+        console.warn('Dont do this, find a better way to retrigger getting command states')
         this.context.editorSession.setSelection(this.context.editorSession.getSelection())
     }
 
@@ -29,7 +36,6 @@ class TableComponent extends Component {
 
     _onDocumentChange(change) {
         if (change.isAffected([this.props.node.id])) {
-            console.info('Change affected table node')
             this.rerender()
         }
     }
@@ -40,13 +46,6 @@ class TableComponent extends Component {
         const selectedCellChanged = this.state.selectedCell !== newState.selectedCell
         const focusedCellChanged = this.state.focusedCell !== newState.focusedCell
         return selectedCellChanged || focusedCellChanged || headerToggled || footerToggled
-    }
-
-    getInitialState() {
-        return {
-            selectedCell: null,
-            focusedCell: null,
-        }
     }
 
     render($$) {
@@ -77,7 +76,7 @@ class TableComponent extends Component {
                         node: cellNode,
                         disabled: this.props.disabled,
                         header: this.isHeaderRow(row),
-                        selectionState: this.getSelectionStateForCell(cellNode.id)
+                        selectionState: this._getSelectionStateForCell(cellNode.id)
                     }).ref(cellNode.id)
                     rowElem.append(cellElem)
                 }
@@ -94,7 +93,6 @@ class TableComponent extends Component {
 
         tableElem.on('mousedown', this.onClick.bind(this))
         tableElem.on('dblclick', this.onDblClick.bind(this))
-
         tableElem.on('keydown', this.onKeyDown.bind(this))
 
         tableElem.append([theadElem, tbodyElem, tfootElem])
@@ -102,7 +100,7 @@ class TableComponent extends Component {
         return el.append([tableElem, selectionElem])
     }
 
-    getSelectionStateForCell(cellId) {
+    _getSelectionStateForCell(cellId) {
         if (this.state.focusedCell === cellId) { return 'focused' }
         if (this.state.selectedCell === cellId) { return 'selected' }
         return null
@@ -113,7 +111,7 @@ class TableComponent extends Component {
 
         const leftClick = event.which === 1
 
-        let cellComp = extractCellComponentFromEventTarget(event.target)
+        let cellComp = extractCellComponentFromElement(event.target)
         if (cellComp) {
             const cellId = cellComp.props.node.id
             if(cellId !== this.state.focusedCell) {
@@ -133,12 +131,18 @@ class TableComponent extends Component {
         event.stopPropagation()
         event.preventDefault()
 
-        let cellComp = extractCellComponentFromEventTarget(event.target)
+        let cellComp = extractCellComponentFromElement(event.target)
         if (cellComp) {
             this.setCellFocused(cellComp)
         }
     }
 
+    /**
+     * Select the cell the mouse is over and sets it as startCell
+     *
+     * Run when clicking a cell. Adds event listeners to handle area selection.
+     * @param {MouseEvent} event
+     */
     onSelectionStart(event) { // eslint-disable-line
         const selectedCell = this.refs[this.state.selectedCell]
 
@@ -150,8 +154,15 @@ class TableComponent extends Component {
         container.addEventListener('mousemove', this.onSelection)
     }
 
-    onSelection(event) { // eslint-disable-line
-        const targetCell = extractCellComponentFromEventTarget(event.target)
+    /**
+     * Select the cell the mouse is over
+     *
+     * Run during selection on mousemove. Finds the cell the user is hovering over and
+     * sets it as endCell.
+     * @param {MouseEvent} event
+     */
+    onSelection(event) {
+        const targetCell = extractCellComponentFromElement(event.target)
         if (targetCell) {
             this.refs.selection.setEndCell(targetCell)
         }
@@ -165,6 +176,10 @@ class TableComponent extends Component {
         this.__retriggerCommandStates__()
     }
 
+    /**
+     * Delegates key events to the appropriate methods
+     * @param {KeyboardEvent} event
+     */
     onKeyDown(event) {
         switch (event.key) {
             // Cursor movements
@@ -173,7 +188,7 @@ class TableComponent extends Component {
             case keys.UP:
             case keys.DOWN:
                 return this._handleMovementKeys(event)
-            // Input (together with text-input)
+            // Input
             case keys.ENTER:
                 return this._handleEnterKey(event)
             case keys.ESCAPE:
@@ -188,8 +203,8 @@ class TableComponent extends Component {
     }
 
     /**
-     * Handles arrow keys
-     * @param {KeyboardEvent} event 
+     * Handles movement keys
+     * @param {KeyboardEvent} event
      */
     _handleMovementKeys(event) {
         event.preventDefault()
@@ -218,14 +233,12 @@ class TableComponent extends Component {
         const horizontal = shouldMoveRight || shouldMoveLeft
         const move = shouldMoveUp || shouldMoveRight || shouldMoveDown || shouldMoveLeft
 
-        if (!moveArea) {
-            // Area selection should be cleared when movement keys are used without shift
-            sel.clear()
-        }
-
+        // Area selection should be cleared when movement keys are used without shift
+        if (!moveArea) { sel.clear() }
 
         if (move) {
-            // Bug here. Next cell when null skips a row.
+            // Bug here. Next cell, when null, skips a row.
+            // This should increase the area by one, not increase it to the next cell
             const nextCellId = node.getNextCellAt(coords[0], coords[1], horizontal, reverse).id
             if (nextCellId) {
                 let nextCell = this.refs[nextCellId]
@@ -244,8 +257,15 @@ class TableComponent extends Component {
     }
 
     /**
-     * When the enter key is pressed, if the cell is focused, select the next
-     * cell along the y-axis, else, set the cell as focused.
+     * When the enter key is pressed
+     *
+     * If a single cell is selected:
+     *  - Move to the next cell on the y-axis
+     *  - Reverse if shift is pressed
+     *
+     * If multiple cells are selected:
+     *  - Move to the next cell in the area on the y-axis
+     *  - Reverse if shift is pressed
      * @param {KeyboardEvent} event
      */
     _handleEnterKey(event) {
@@ -266,11 +286,19 @@ class TableComponent extends Component {
     }
 
     /**
-     * When the tab key is pressed, select the next cell on the x-axis.
+     * When the tab key is pressed
+     *
+     * If a single cell is selected:
+     *  - Move to the next cell on the x-axis
+     *  - Reverse if shift is pressed
+     *
+     * If multiple cells are selected:
+     *  - Move to the next cell in the area on the x-axis
+     *  - Add a new row if on the last cell
+     *  - Reverse if shift is pressed
      * @param {KeyboardEvent} event
      */
     _handleTabKey(event) {
-        console.info('Tab pressed on cell')
         event.preventDefault()
         event.stopPropagation()
 
@@ -282,10 +310,11 @@ class TableComponent extends Component {
 
         // Insert row if tab is pressed on last cell
         if (!sel.hasArea() && !reversed) {
-            const lastCell = node.getOwnerOfCellAt(node.rowCount - 1, node.colCount - 1)
+            const lastRowDecrease = 1
+            // const lastRowDecrease = node.footer ? 2 : 1 // If footer enabled, add row before the footer
+            const lastCell = node.getOwnerOfCellAt(node.rowCount - lastRowDecrease, node.colCount - 1)
             if (this.state.selectedCell === lastCell.id) {
-                console.info('Trying to insert row')
-                node.insertRowAt(node.rowCount)
+                node.insertRowAt(node.rowCount - (lastRowDecrease - 1))
                 nextCell = node.getNextCell(this.state.selectedCell, true, reversed, area)
             }
             sel.clear()
@@ -296,11 +325,10 @@ class TableComponent extends Component {
 
     /**
      * Escapes for a focused cell. If no cell is focused, exit from the isolated node.
-     * @todo should this revert the changes?
+     * @todo Should this revert the changes? If so, how could that be done?
      * @param {KeyboardEvent} event
      */
     _handleEscKey(event) {
-        console.info('Esc pressed on cell')
         if (this.state.focusedCell) {
             event.preventDefault()
             event.stopPropagation()
@@ -309,11 +337,12 @@ class TableComponent extends Component {
     }
 
     /**
-     * @todo Delete should delete the contents of the cell if the cell is selected
+     * Handles delete key
+     *
+     * Pressing delete on a table will clear the content of all cells in the selected area
      * @param {KeyboardEvent} event
      */
     _handleDeleteKey(event) {
-        console.info('Delete pressed on cell')
         event.preventDefault()
         event.stopPropagation()
 
@@ -332,27 +361,25 @@ class TableComponent extends Component {
 
     _handleInputKey(event) {
         if (isInputKey(event.key)) {
-            if (event.metaKey || event.ctrlKey || event.altKey) {
-                console.info('Command running')
+            // When the meta or ctrl key is pressed we assume a command is being run
+            // We should find a better way to figure out if a key combination produces
+            // output or not. If it does not produce output, we don't want to set the
+            // cell focused.
+            if (event.metaKey || event.ctrlKey) {
                 return
             }
 
-            console.info('Handling input key:', event.key)
             // If we have a selected cell but no focused cell, focus on the selected cell
             // and pass down the input
             if (!this.state.focusedCell && this.state.selectedCell) {
-                console.info('Key input on selected cell')
                 this.setCellFocused(this.refs[this.state.selectedCell], true)
             }
-        } else {
-            console.info('Not an input key', event.key)
         }
     }
 
     setCellSelected(cellComp) {
         const cellId = cellComp.props.node.id
         if (this.state.selectedCell !== cellId || this.state.focusedCell === cellId) {
-            console.info('Setting cell selected')
             this.extendState({
                 selectedCell: cellId,
                 focusedCell: null
@@ -388,20 +415,10 @@ class TableComponent extends Component {
             const firstCellId = this.props.node.getCellAt(0, 0).id
             this.setCellFocused(this.refs[firstCellId])
             this.setCellSelected(this.refs[firstCellId])
-        } else {
-            if (this.state.selectedCell && selectCell) {
-                console.info('Already has selected cell, selecting it again for good measure', this.state.selectedCell)
-                this.setCellFocused(this.refs[this.state.selectedCell])
-                this.setCellSelected(this.refs[this.state.selectedCell])
-            } else {
-                console.info('Maybe now?')
-            }
+        } else if (this.state.selectedCell && selectCell) {
+            // this.setCellFocused(this.refs[this.state.selectedCell])
+            this.setCellSelected(this.refs[this.state.selectedCell])
         }
-
-        // const isolatedNode = this.context.isolatedNodeComponent
-        // if (isolatedNode) {
-        //     isolatedNode.grabFocus()
-        // }
     }
 
     resetSelection() {

@@ -1,7 +1,6 @@
 import TableCommand from './TableCommand'
 
 class DeleteColumnCommand extends TableCommand {
-
     executeCommandOnTable(params, context) { // eslint-disable-line
         const commandState = params.commandState
         let cols = null
@@ -17,7 +16,6 @@ class DeleteColumnCommand extends TableCommand {
         if (!cols) { return false}
         params.editorSession.transaction(tx => {
             cols.forEach(col => {
-                console.info('Deleted column', col)
                 commandState.tableNode.deleteColAt(col, tx)
             })
         })

@@ -2,6 +2,13 @@ import {Component} from 'substance'
 import TableArea from '../util/TableArea'
 
 class TableSelectionComponent extends Component {
+    getInitialState() {
+        return {
+            startCell: null,
+            endCell: null,
+            selectedCell: null,
+        }
+    }
 
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
@@ -15,7 +22,7 @@ class TableSelectionComponent extends Component {
     }
 
     _onDocumentChange() {
-        // this._updateArea()
+        this._updateArea()
     }
 
     _updateArea() {
@@ -31,34 +38,21 @@ class TableSelectionComponent extends Component {
             endCellNode = node.getCellById(endCellNode.id)
         }
 
-
         if (!startCellNode) {
             startCellNode = endCellNode = node.getCellAt(0, 0)
         }
 
-
-        // console.info('SETTING AREA: didupdate')
-
-        // console.info('[SELECTION] startCell:', startCellNode)
-        // console.info('[SELECTION] endCell:', endCellNode)
         const newArea = new TableArea(this.props.node, startCellNode, endCellNode)
         this.props.node.area = newArea
         this.area = newArea
         this.positionSelection()
     }
 
-    getInitialState() {
-        return {
-            startCell: null,
-            endCell: null,
-            selectedCell: null,
-        }
-    }
-
     hasArea() {
         const hasStartAndEndCells = this.state.startCell && this.state.endCell
         const startAndEndCellsDiffer = this.state.startCell !== this.state.endCell
-        return hasStartAndEndCells && startAndEndCellsDiffer
+        const temp = this.area.startCell && this.area.endCell // TODO: Rewrite
+        return hasStartAndEndCells && startAndEndCellsDiffer && temp
     }
 
     getArea() {
@@ -68,12 +62,10 @@ class TableSelectionComponent extends Component {
         return null
     }
 
-    onSelectionEnd() {
-        console.info('Selection ended')
-        // if (!this.hasArea()) {
-        //     this.clearArea()
-        // }
-    }
+    /**
+     * When selection event has ended on table component
+     */
+    onSelectionEnd() {}
 
     focusOnSelectedCell() {
         if (this.state.selectedCell) {
@@ -82,7 +74,6 @@ class TableSelectionComponent extends Component {
     }
 
     clear() {
-        // console.warn('Selection: Clearing selection')
         this.extendState({
             startCell: null,
             endCell: null,
@@ -91,7 +82,6 @@ class TableSelectionComponent extends Component {
     }
 
     clearArea() {
-        // console.warn('Selection: Clearing area')
         let cell = this.state.startCell || null
         this.extendState({
             startCell: cell,
@@ -100,7 +90,6 @@ class TableSelectionComponent extends Component {
     }
 
     selectCell(cell) {
-        // console.info('Selecting cell')
         this.extendState({
             selectedCell: cell,
             startCell: this.state.startCell || cell,
@@ -159,27 +148,6 @@ class TableSelectionComponent extends Component {
         }
     }
 
-    _positionDebugMarkers() {
-        const cbcr = this.refs.selection.getNativeElement().getBoundingClientRect()
-        const sbcr = this.parent.refs[this.state.startCell.props.node.id]
-            .getNativeElement()
-            .getBoundingClientRect()
-
-        const ebcr = this.parent.refs[this.state.endCell.props.node.id]
-            .getNativeElement()
-            .getBoundingClientRect()
-
-        this.refs.start.css({
-            top: sbcr.top - cbcr.top,
-            left: sbcr.left - cbcr.left
-        })
-
-        this.refs.end.css({
-            top: ebcr.bottom - cbcr.top - 13,
-            left: ebcr.right - cbcr.left - 13
-        })
-    }
-
     shouldRenderAreaSelection() {
         return this.parent && this.hasArea()
     }
@@ -205,20 +173,7 @@ class TableSelectionComponent extends Component {
         return style
     }
 
-    __logCommandState() {
-        const cs = this.context.api.editorSession.getCommandStates()
-        const dr = cs['table-delete-row']
-        console.info('Delete row command state:')
-        if(!dr.disabled) {
-            console.info('\trows:', dr.rows, 'cols:', dr.cols)
-            console.info('\trow:', dr.selectedRow, 'col:', dr.selectedCol)
-        } else {
-            console.info('\tdisabled')
-        }
-    }
-
     render($$) {
-        // this.__logCommandState()
         return $$('div', { class: 'table-selection' },
             this._renderDebugMarkers($$)
         ).ref('selection')
@@ -233,6 +188,27 @@ class TableSelectionComponent extends Component {
             $$('div', {class: 'table-selection-debug-start'}).ref('start'),
             $$('div', {class: 'table-selection-debug-end'}).ref('end'),
         ]
+    }
+
+    _positionDebugMarkers() {
+        const cbcr = this.refs.selection.getNativeElement().getBoundingClientRect()
+        const sbcr = this.parent.refs[this.state.startCell.props.node.id]
+            .getNativeElement()
+            .getBoundingClientRect()
+
+        const ebcr = this.parent.refs[this.state.endCell.props.node.id]
+            .getNativeElement()
+            .getBoundingClientRect()
+
+        this.refs.start.css({
+            top: sbcr.top - cbcr.top,
+            left: sbcr.left - cbcr.left
+        })
+
+        this.refs.end.css({
+            top: ebcr.bottom - cbcr.top - 13,
+            left: ebcr.right - cbcr.left - 13
+        })
     }
 }
 

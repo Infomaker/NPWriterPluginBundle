@@ -49,11 +49,8 @@ class TableNode extends BlockNode {
     }
 
     getCellById(cellId) {
-        // Original implementation, gets cell wheter it's part of the table or not
-        // if (cellId) {
-        //     return this.document.get(cellId)
-        // }
-
+        // We don't use document.get(cellId) directly since we only want cells
+        // that are part of the table.
         for (let row = 0; row < this.rowCount; row++) {
             for (let col = 0; col < this.colCount; col++) {
                 if (this.cells[row][col] === cellId) {
@@ -116,7 +113,6 @@ class TableNode extends BlockNode {
         if (cell) {
             return cell
         } else {
-            console.warn('Could not find next cell for cell with id', currentCellId)
             return this.getCellAt(coords[0], coords[1])
         }
     }
@@ -163,6 +159,90 @@ class TableNode extends BlockNode {
 
     getArea() {
         return this.area
+    }
+
+    /**
+     * Merge all cells in the provided area
+     *
+     * Increases the colspan and rowspan of the first cell and deleted all other
+     * cells in the area. This implementation only preserves the content of the
+     * top-leftmost cell.
+     * @param {TableArea} area
+     * @param {*} tx
+     */
+    mergeArea(area, tx) { // eslint-disable-line
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.mergeArea(area, tx))
+        }
+
+        const firstCell = area.firstCell
+        if (area.height > 1) {
+            tx.set([firstCell.id, 'rowspan'], area.height)
+        }
+
+        if (area.width > 1) {
+            tx.set([firstCell.id, 'colspan'], area.width)
+        }
+
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+        const cells = tableNode.cells.slice()
+        const areaCells = area.cells
+
+        // Set all other cells to null
+        cells.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                if (cell !== firstCell.id && areaCells.includes(cell)) {
+                    tx.delete(cell)
+                    cells[rowIndex][colIndex] = null
+                }
+            })
+        })
+        tx.set([tableNode.id, 'cells'], cells)
+    }
+
+    unmergeArea(area, tx) { // eslint-disable-line
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.unmergeArea(area, tx))
+        }
+
+        // Save a reference to the table node
+        // `this` will refer to the table node as it is before the transaction.
+        // Any changes in the transaction will not be reflected in `this`
+        const tableNode = tx.get([this.id])
+        const areaCells = area.cells
+
+        // Set all other cells to null
+        areaCells.forEach((cellId) => {
+            const cell = tableNode.getCellById(cellId)
+            if (cell.rowspan || cell.colspan) {
+                tableNode.unmergeCell(cell, tx)
+            }
+        })
+    }
+
+    unmergeCell(cell, tx) {
+        if (!tx) {
+            return api.editorSession.transaction(tx => this.unmergeCell(cell, tx))
+        }
+
+        const tableNode = tx.get([this.id])
+        const rowspan = cell.rowspan || 1
+        const colspan = cell.colspan || 1
+        tx.set([cell.id, 'rowspan'], 0)
+        tx.set([cell.id, 'colspan'], 0)
+        const [startRow, startCol] = tableNode.getCellCoords(cell.id)
+
+        for (let row = startRow; row < startRow + rowspan; row++) {
+            for (let col = startCol; col < startCol + colspan; col++) {
+                if (row === startRow && col === startCol) { continue } // Skip first cell
+                tableNode.createCellAt(row, col, 0, 0, tx)
+            }
+        }
+
+        tx.set([tableNode.id, 'cells'], tableNode.cells)
     }
 
     createEmptyCell(tx) {
@@ -238,7 +318,6 @@ class TableNode extends BlockNode {
     }
 
     deleteRowAt(rowIndex, tx) {
-        console.info('\tDelete row at:', rowIndex)
         if (rowIndex < 0 || rowIndex >= this.rowCount) {
             return console.warn('Cannot delete a row that does not exist')
         }
@@ -409,17 +488,18 @@ class TableNode extends BlockNode {
     }
 
     createCellAt(row, col, rowspan=0, colspan=0, tx) {
+        const tableNode = tx.get(this.id)
         const cell = tx.create({
             id: uuid('table-cell'),
             type: 'table-cell',
-            parent: this.id,
+            parent: tableNode.id,
             content: '',
             rowspan: rowspan,
             colspan: colspan
         })
-
-        this.cells[row][col] = cell.id
-        tx.set([this.id, 'cells'], this.cells)
+        const cells = tableNode.cells.slice()
+        cells[row][col] = cell.id
+        tx.set([tableNode.id, 'cells'], cells)
     }
 
     toggleHeader() {

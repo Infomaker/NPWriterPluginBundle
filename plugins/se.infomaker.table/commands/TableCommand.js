@@ -49,7 +49,7 @@ class TableCommand extends Command {
             this.executeCommandOnTable(params, context)
 
             // To keep focus on the table after executing the command through the context menu
-            this._refocusOnTable(commandState.tableNode)
+            this._refocusOnTable(params.commandState.tableNode)
         }
     }
 
@@ -62,16 +62,16 @@ class TableCommand extends Command {
      * @param {*} sel
      */
     _refocusOnTable(tableNode) {
-        if (!tableNode) { return console.info('No table node found') }
+        if (!tableNode) { return }
 
         const tableElem = document.querySelector(`[data-id=${tableNode.id}]`)
-        if (!tableElem) { return console.info('No table element found') }
+        if (!tableElem) { return }
 
         const tableComp = Component.unwrap(tableElem)
-        if (!tableComp) { return console.info('No table comp found') }
+        if (!tableComp) { return }
 
         const cellEditor = tableComp.find('td .sc-surface.sc-text-property-editor')
-        if (!cellEditor) { return console.info('No cell editor found') }
+        if (!cellEditor) { return }
 
         cellEditor.getNativeElement().focus()
     }
@@ -83,7 +83,6 @@ class TableCommand extends Command {
     getCommandState(params, context) { //eslint-disable-line
         // Command is disabled if selection is not in a table
         const inTable = selectionIsInTable(params.selection)
-        // console.info('Command in table:', inTable)
         if (!inTable) {
             return { disabled: true }
         }
@@ -91,7 +90,7 @@ class TableCommand extends Command {
         // now that we know we are in a table, extract the table node from the selection
         const doc = params.editorSession.getDocument()
         const {table, cell} = this._extractTableAndCellFromSelection(params.selection, doc)
-        // console.info('table:', table, 'cell:', cell)
+
         // Command is disabled if no table node is available
         if (!table) {
             return { disabled: true }
@@ -120,14 +119,6 @@ class TableCommand extends Command {
             commandState.showInContext = false
         }
 
-
-        // Todo: remove when done debugging command state thing
-        if (!commandState.disabled && (this.config.name === 'table-delete-row' || this.config.name === 'table-delete-rows')) {
-            // console.info('GETTING COMMAND STATE')
-            // if (cell) {
-            //     console.info('Table cell', cell)
-            // }
-        }
         return commandState
     }
 

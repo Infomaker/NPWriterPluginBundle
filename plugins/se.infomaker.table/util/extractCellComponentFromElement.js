@@ -1,8 +1,7 @@
 import { Component } from 'substance'
 
 export default function(target) {
-    const comp = Component.unwrap(target)
-    return findClosestCellParent(comp)
+    return findClosestCellParent(Component.unwrap(target))
 }
 
 function findClosestCellParent(comp) {

@@ -22,7 +22,6 @@ class TableCellNode extends TextNode {
      * parent to that ID.
      */
     set parent(val) {
-        console.warn('Setting parent to', val)
         if (val && val.id) {
             val = val.id
         }
@@ -36,7 +35,7 @@ class TableCellNode extends TextNode {
 
 TableCellNode.schema = {
     type: 'table-cell',
-    parent: { type: 'string', owned: false },
+    parent: { type: 'id', owned: false },
     rowspan: { type: 'number', default: 0 },
     colspan: { type: 'number', default: 0 }
 }

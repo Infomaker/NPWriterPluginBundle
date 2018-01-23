@@ -16,12 +16,10 @@ class InsertTableCommand extends InsertNodeCommand {
             cols = parseInt(size[1], 10)
         }
 
-        console.info('Creating a table. Rows:', rows, 'Columns:', cols)
         let rowNodes = []
         for (let row = 0; row < rows; row++) {
             let colNodes = []
             for (let col = 0; col < cols; col++) {
-
                 const cellData = {
                     id: uuid('table-cell'),
                     type: 'table-cell',
@@ -29,13 +27,11 @@ class InsertTableCommand extends InsertNodeCommand {
                     content: ''
                 }
                 const colNode = tx.create(cellData)
-                console.info(`Cell created at <${row}, ${col}> ID: ${colNode.id}`)
                 colNodes.push(colNode.id)
-
             }
             rowNodes.push(colNodes)
         }
-        console.info('Created table with id:', tableNodeId, 'cells:', rowNodes)
+
         return {
             id: tableNodeId,
             type: 'table',
@@ -45,8 +41,10 @@ class InsertTableCommand extends InsertNodeCommand {
 
     getCommandState(params) {
         // Disabled on node selections
+        const selectionOnBody = params.surface && params.surface.name === 'body'
+        const nodeSelection = params.surface && params.selection.isNodeSelection()
         return {
-            disabled: params.surface && params.selection.isNodeSelection()
+            disabled: nodeSelection || !selectionOnBody
         }
     }
 }
