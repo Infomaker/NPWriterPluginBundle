@@ -42,6 +42,13 @@ class InsertTableCommand extends InsertNodeCommand {
             cells: rowNodes
         }
     }
+
+    getCommandState(params) {
+        // Disabled on node selections
+        return {
+            disabled: params.surface && params.selection.isNodeSelection()
+        }
+    }
 }
 
 export default InsertTableCommand
