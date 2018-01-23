@@ -22,6 +22,7 @@ export default {
 
     // From newsml to node
     import: function (el, node, converter) {
+        console.info('Running HTML import, el:', el)
         if (!el.id) {
             node.id = uuid(this.type)
         }

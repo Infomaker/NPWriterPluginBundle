@@ -1,28 +1,29 @@
 import {platform} from 'substance'
 
+import TableNode from './nodes/TableNode'
+import TableCellNode from './nodes/TableCellNode'
+
 import TableViewerComponent from './components/TableViewerComponent'
 
 import InsertTableCommand from './commands/InsertTableCommand'
 import OpenTableEditorCommand from './commands/OpenTableEditorCommand'
 import ToggleHeaderCommand from './commands/ToggleHeaderCommand'
 import ToggleFooterCommand from './commands/ToggleFooterCommand'
-
 import InsertRowCommand from './commands/InsertRowCommand'
 import DeleteRowCommand from './commands/DeleteRowCommand'
 import InsertColumnCommand from './commands/InsertColumnCommand'
 import DeleteColumnCommand from './commands/DeleteColumnCommand'
-
+import MergeCellsCommand from './commands/MergeCellsCommand'
+import UnmergeCellsCommand from './commands/UnmergeCellsCommand'
 import TableAnnotationCommand from './commands/TableAnnotationCommand'
 import TableCellAnnotationCommand from './commands/TableCellAnnotationCommand'
 
 import InsertTableTool from './tools/InsertTableTool'
-
-import TableNode from './nodes/TableNode'
-import TableCellNode from './nodes/TableCellNode'
-
-import TableConverter from './converters/TableConverter'
-import TableCellConverter from './converters/TableCellConverter'
 import TableContextMenuTool from './tools/TableContextMenuTool'
+
+import HTMLTableConverter from './converters/HTMLTableConverter'
+import XMLTableConverter from './converters/XMLTableConverter'
+import TableCellConverter from './converters/TableCellConverter'
 
 const MAIN_TOOL_GROUP = 'context-menu-primary'
 const TABLE_COMMAND_GROUP = 'table'
@@ -50,6 +51,10 @@ const COMMANDS = {
     DELETE_COLUMN: 'table-delete-col',
     DELETE_COLUMNS: 'table-delete-cols',
 
+    // Merge/unmerge
+    MERGE_CELLS: 'table-merge-cells',
+    UNMERGE_CELLS: 'table-unmerge-cells',
+
     // Annotations
     STRONG: 'table-strong',
     EMPHASIS: 'table-emphasis',
@@ -68,53 +73,16 @@ export default {
 
         config.addComponent('table', TableViewerComponent)
 
-
         // Table commands: general
         config.addCommand(COMMANDS.INSERT_TABLE, InsertTableCommand)
-        config.addContentMenuTopTool(COMMANDS.INSERT_TABLE, InsertTableTool)
-
-        config.addCommand('OpenTableEditor', OpenTableEditorCommand)
-
-        // Toggle header
-        config.addLabel(COMMANDS.TOGGLE_HEADER, {
-            en: 'Toggle header',
-            sv: 'CHANGE ME'
-        })
+        config.addCommand(COMMANDS.OPEN_EDITOR, OpenTableEditorCommand)
         config.addCommand(COMMANDS.TOGGLE_HEADER, ToggleHeaderCommand)
-        config.addTool(COMMANDS.TOGGLE_HEADER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-
-        // Toggle footer
-        config.addLabel(COMMANDS.TOGGLE_FOOTER, {
-            en: 'Toggle footer',
-            sv: 'CHANGE ME'
-        })
         config.addCommand(COMMANDS.TOGGLE_FOOTER, ToggleFooterCommand)
-        config.addTool(COMMANDS.TOGGLE_FOOTER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-
-        // Insert row before
-        config.addLabel(COMMANDS.INSERT_ROW_BEFORE, {
-            en: 'Insert row above',
-            sv: 'Infoga rad över'
-        })
         config.addCommand(COMMANDS.INSERT_ROW_BEFORE, InsertRowCommand, {
             insertBefore: true,
             insertMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleRows: true
-        })
-        config.addTool(COMMANDS.INSERT_ROW_BEFORE, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_ROW_BEFORE, { 'fontawesome': 'fa-angle-up' })
-
-        // Insert rows before
-        config.addLabel(COMMANDS.INSERT_ROWS_BEFORE, {
-            en: 'Insert rows above',
-            sv: 'Infoga rader över'
         })
         config.addCommand(COMMANDS.INSERT_ROWS_BEFORE, InsertRowCommand, {
             insertBefore: true,
@@ -122,31 +90,11 @@ export default {
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleRows: true
         })
-        config.addTool(COMMANDS.INSERT_ROWS_BEFORE, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_ROWS_BEFORE, { 'fontawesome': 'fa-angle-double-up' })
-
-        // Insert row after
-        config.addLabel(COMMANDS.INSERT_ROW_AFTER, {
-            en: 'Insert row below',
-            sv: 'Infoga rad under'
-        })
         config.addCommand(COMMANDS.INSERT_ROW_AFTER, InsertRowCommand, {
             insertBefore: false,
             insertMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleRows: true
-        })
-        config.addTool(COMMANDS.INSERT_ROW_AFTER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_ROW_AFTER, { 'fontawesome': 'fa-angle-down' })
-
-        // Insert rows after
-        config.addLabel(COMMANDS.INSERT_ROWS_AFTER, {
-            en: 'Insert rows below',
-            sv: 'Infoga rader under'
         })
         config.addCommand(COMMANDS.INSERT_ROWS_AFTER, InsertRowCommand, {
             insertBefore: false,
@@ -154,31 +102,11 @@ export default {
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleRows: true
         })
-        config.addTool(COMMANDS.INSERT_ROWS_AFTER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_ROWS_AFTER, { 'fontawesome': 'fa-angle-double-down' })
-
-        // Insert column before
-        config.addLabel(COMMANDS.INSERT_COL_BEFORE, {
-            en: 'Insert column to the left',
-            sv: 'Infoga kolumn till vänster'
-        })
         config.addCommand(COMMANDS.INSERT_COL_BEFORE, InsertColumnCommand, {
             insertBefore: true,
             insertMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleCols: true
-        })
-        config.addTool(COMMANDS.INSERT_COL_BEFORE, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_COL_BEFORE, { 'fontawesome': 'fa-angle-left' })
-
-        // Insert columns before
-        config.addLabel(COMMANDS.INSERT_COLS_BEFORE, {
-            en: 'Insert columns to the left',
-            sv: 'Infoga kolumner till vänster'
         })
         config.addCommand(COMMANDS.INSERT_COLS_BEFORE, InsertColumnCommand, {
             insertBefore: true,
@@ -186,31 +114,11 @@ export default {
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleCols: true
         })
-        config.addTool(COMMANDS.INSERT_COLS_BEFORE, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_COLS_BEFORE, { 'fontawesome': 'fa-angle-double-left' })
-
-        // Insert column after
-        config.addLabel(COMMANDS.INSERT_COL_AFTER, {
-            en: 'Insert column to the right',
-            sv: 'Infoga kolumn till höger'
-        })
         config.addCommand(COMMANDS.INSERT_COL_AFTER, InsertColumnCommand, {
             insertBefore: false,
             insertMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleCols: true
-        })
-        config.addTool(COMMANDS.INSERT_COL_AFTER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_COL_AFTER, { 'fontawesome': 'fa-angle-right' })
-
-        // Insert columns after
-        config.addLabel(COMMANDS.INSERT_COLS_AFTER, {
-            en: 'Insert columns to the right',
-            sv: 'Infoga kolumner till höger'
         })
         config.addCommand(COMMANDS.INSERT_COLS_AFTER, InsertColumnCommand, {
             insertBefore: false,
@@ -218,70 +126,39 @@ export default {
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleCols: true
         })
-        config.addTool(COMMANDS.INSERT_COLS_AFTER, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.INSERT_COLS_AFTER, { 'fontawesome': 'fa-angle-double-right' })
-
-        // Delete row
-        config.addLabel(COMMANDS.DELETE_ROW, {
-            en: 'Delete row',
-            sv: 'Ta bort rad'
-        })
         config.addCommand(COMMANDS.DELETE_ROW, DeleteRowCommand, {
             deleteMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleRows: true
-        })
-        config.addTool(COMMANDS.DELETE_ROW, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.DELETE_ROW, { 'fontawesome': 'fa-remove' })
-
-        // Delete rows
-        config.addLabel(COMMANDS.DELETE_ROWS, {
-            en: 'Delete rows',
-            sv: 'Ta bort rader'
         })
         config.addCommand(COMMANDS.DELETE_ROWS, DeleteRowCommand, {
             deleteMultiple: true,
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleRows: true
         })
-        config.addTool(COMMANDS.DELETE_ROWS, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.DELETE_ROWS, { 'fontawesome': 'fa-remove' })
-
-        // Delete column
-        config.addLabel(COMMANDS.DELETE_COLUMN, {
-            en: 'Delete column',
-            sv: 'Ta bort kolumn'
-        })
         config.addCommand(COMMANDS.DELETE_COLUMN, DeleteColumnCommand, {
             deleteMultiple: false,
             commandGroup: TABLE_COMMAND_GROUP,
             disabledOnMultipleCols: true
-        })
-        config.addTool(COMMANDS.DELETE_COLUMN, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
-        })
-        config.addIcon(COMMANDS.DELETE_COLUMN, { 'fontawesome': 'fa-remove' })
-
-        // Delete columns
-        config.addLabel(COMMANDS.DELETE_COLUMNS, {
-            en: 'Delete columns',
-            sv: 'Ta bort kolumner'
         })
         config.addCommand(COMMANDS.DELETE_COLUMNS, DeleteColumnCommand, {
             deleteMultiple: true,
             commandGroup: TABLE_COMMAND_GROUP,
             requiresMultipleCols: true
         })
-        config.addTool(COMMANDS.DELETE_COLUMNS, TableContextMenuTool, {
-            toolGroup: MAIN_TOOL_GROUP
+        config.addCommand(COMMANDS.MERGE_CELLS, MergeCellsCommand, {
+            commandGroup: TABLE_COMMAND_GROUP
         })
-        config.addIcon(COMMANDS.DELETE_COLUMNS, { 'fontawesome': 'fa-remove' })
+        config.addCommand(COMMANDS.UNMERGE_CELLS, UnmergeCellsCommand, {
+            commandGroup: TABLE_COMMAND_GROUP
+        })
+
+        // Converters
+        // config.addConverter('newsml', HTMLTableConverter)
+        config.addConverter('newsml', XMLTableConverter)
+        config.addConverter('html', HTMLTableConverter)
+        config.addConverter('newsml', TableCellConverter)
+        config.addConverter('html', TableCellConverter)
 
         // Annotation commands
         config.addCommand(COMMANDS.STRONG, TableAnnotationCommand, { nodeType: 'strong', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })
@@ -289,13 +166,19 @@ export default {
         config.addCommand(COMMANDS.CELL_STRONG, TableCellAnnotationCommand, { nodeType: 'strong', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })
         config.addCommand(COMMANDS.CELL_EMPHASIS, TableCellAnnotationCommand, { nodeType: 'emphasis', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })
 
-
-        // Converters
-        config.addConverter('newsml', TableConverter)
-        config.addConverter('html', TableConverter)
-        config.addConverter('newsml', TableCellConverter)
-        config.addConverter('html', TableCellConverter)
-
+        // Icons
+        config.addIcon(COMMANDS.DELETE_COLUMNS, { 'fontawesome': 'fa-remove' })
+        config.addIcon(COMMANDS.DELETE_COLUMN, { 'fontawesome': 'fa-remove' })
+        config.addIcon(COMMANDS.DELETE_ROWS, { 'fontawesome': 'fa-remove' })
+        config.addIcon(COMMANDS.DELETE_ROW, { 'fontawesome': 'fa-remove' })
+        config.addIcon(COMMANDS.INSERT_COLS_AFTER, { 'fontawesome': 'fa-angle-double-right' })
+        config.addIcon(COMMANDS.INSERT_COL_AFTER, { 'fontawesome': 'fa-angle-right' })
+        config.addIcon(COMMANDS.INSERT_COLS_BEFORE, { 'fontawesome': 'fa-angle-double-left' })
+        config.addIcon(COMMANDS.INSERT_COL_BEFORE, { 'fontawesome': 'fa-angle-left' })
+        config.addIcon(COMMANDS.INSERT_ROWS_AFTER, { 'fontawesome': 'fa-angle-double-down' })
+        config.addIcon(COMMANDS.INSERT_ROW_AFTER, { 'fontawesome': 'fa-angle-down' })
+        config.addIcon(COMMANDS.INSERT_ROWS_BEFORE, { 'fontawesome': 'fa-angle-double-up' })
+        config.addIcon(COMMANDS.INSERT_ROW_BEFORE, { 'fontawesome': 'fa-angle-up' })
 
         // Keyboard shortcuts
         if (platform.isMac) {
@@ -309,5 +192,101 @@ export default {
             config.addKeyboardShortcut('ctrl+b', {command: COMMANDS.STRONG}, true, COMMANDS.STRONG)
             config.addKeyboardShortcut('ctrl+i', {command: COMMANDS.EMPHASIS}, true, COMMANDS.EMPHASIS)
         }
+
+        // Tools
+        config.addContentMenuTopTool(COMMANDS.INSERT_TABLE, InsertTableTool)
+
+        const mainToolgroupTools = [
+            COMMANDS.TOGGLE_HEADER,
+            COMMANDS.TOGGLE_FOOTER,
+            COMMANDS.INSERT_ROW_BEFORE,
+            COMMANDS.INSERT_ROWS_BEFORE,
+            COMMANDS.INSERT_ROW_AFTER,
+            COMMANDS.INSERT_ROWS_AFTER,
+            COMMANDS.INSERT_COL_BEFORE,
+            COMMANDS.INSERT_COLS_BEFORE,
+            COMMANDS.INSERT_COL_AFTER,
+            COMMANDS.INSERT_COLS_AFTER,
+            COMMANDS.DELETE_ROW,
+            COMMANDS.DELETE_ROWS,
+            COMMANDS.DELETE_COLUMN,
+            COMMANDS.DELETE_COLUMNS,
+            COMMANDS.MERGE_CELLS,
+            COMMANDS.UNMERGE_CELLS
+        ]
+
+        mainToolgroupTools.forEach(tool => {
+            config.addTool(tool, TableContextMenuTool, { toolGroup: MAIN_TOOL_GROUP })
+        })
+
+        // Labels
+        config.addLabel('table-caption', {
+            en: 'Table caption',
+            sv: 'Tabellrubrik'
+        })
+        config.addLabel(COMMANDS.TOGGLE_HEADER, {
+            en: 'Toggle header',
+            sv: 'Visa/dölj tabellhuvud'
+        })
+        config.addLabel(COMMANDS.TOGGLE_FOOTER, {
+            en: 'Toggle footer',
+            sv: 'Visa/dölj tabellfot'
+        })
+        config.addLabel(COMMANDS.INSERT_ROW_BEFORE, {
+            en: 'Insert row above',
+            sv: 'Infoga rad över'
+        })
+        config.addLabel(COMMANDS.INSERT_ROWS_BEFORE, {
+            en: 'Insert rows above',
+            sv: 'Infoga rader över'
+        })
+        config.addLabel(COMMANDS.INSERT_ROW_AFTER, {
+            en: 'Insert row below',
+            sv: 'Infoga rad under'
+        })
+        config.addLabel(COMMANDS.INSERT_ROWS_AFTER, {
+            en: 'Insert rows below',
+            sv: 'Infoga rader under'
+        })
+        config.addLabel(COMMANDS.INSERT_COL_BEFORE, {
+            en: 'Insert column to the left',
+            sv: 'Infoga kolumn till vänster'
+        })
+        config.addLabel(COMMANDS.INSERT_COLS_BEFORE, {
+            en: 'Insert columns to the left',
+            sv: 'Infoga kolumner till vänster'
+        })
+        config.addLabel(COMMANDS.INSERT_COL_AFTER, {
+            en: 'Insert column to the right',
+            sv: 'Infoga kolumn till höger'
+        })
+        config.addLabel(COMMANDS.INSERT_COLS_AFTER, {
+            en: 'Insert columns to the right',
+            sv: 'Infoga kolumner till höger'
+        })
+        config.addLabel(COMMANDS.DELETE_ROW, {
+            en: 'Delete row',
+            sv: 'Ta bort rad'
+        })
+        config.addLabel(COMMANDS.DELETE_ROWS, {
+            en: 'Delete rows',
+            sv: 'Ta bort rader'
+        })
+        config.addLabel(COMMANDS.DELETE_COLUMN, {
+            en: 'Delete column',
+            sv: 'Ta bort kolumn'
+        })
+        config.addLabel(COMMANDS.DELETE_COLUMNS, {
+            en: 'Delete columns',
+            sv: 'Ta bort kolumner'
+        })
+        config.addLabel(COMMANDS.MERGE_CELLS, {
+            en: 'Merge cells',
+            sv: 'Sammanfoga celler'
+        })
+        config.addLabel(COMMANDS.UNMERGE_CELLS, {
+            en: 'Unmerge cells',
+            sv: 'Separera celler'
+        })
     }
 }
