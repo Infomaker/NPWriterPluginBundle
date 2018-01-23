@@ -50,8 +50,20 @@ class TableCellComponent extends Component {
         }
 
         return $$(cellType, cellAttributes, [
-            editor
+            editor,
+            this._renderCellSizeInfo($$)
         ]).ref('cell')
+    }
+
+    _renderCellSizeInfo($$) {
+        const node = this.props.node
+        if (node.rowspan < 2 && node.colspan < 2) return null
+        const rowspan = node.rowspan || 1
+        const colspan = node.colspan || 1
+
+        return $$('div', {class: 'cell-size-info'}, [
+            `${colspan}x${rowspan}`
+        ])
     }
 
     /**
