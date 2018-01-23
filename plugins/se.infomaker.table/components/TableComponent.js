@@ -94,6 +94,7 @@ class TableComponent extends Component {
         tableElem.on('mousedown', this.onClick.bind(this))
         tableElem.on('dblclick', this.onDblClick.bind(this))
         tableElem.on('keydown', this.onKeyDown.bind(this))
+        tableElem.on('paste', this.onPaste.bind(this))
 
         tableElem.append([theadElem, tbodyElem, tfootElem])
 
@@ -118,7 +119,12 @@ class TableComponent extends Component {
                 event.stopPropagation()
                 event.preventDefault()
                 if (leftClick) {
+                    // Focusing on the cell temporarily enables it, allowing a selection to be set
+                    // inside it's editor
+                    this.setCellFocused(cellComp)
                     this.setCellSelected(cellComp)
+
+                    // Start area selection
                     this.onSelectionStart(event)
                 }
             }
@@ -135,6 +141,60 @@ class TableComponent extends Component {
         if (cellComp) {
             this.setCellFocused(cellComp)
         }
+    }
+
+    onPaste(event) {
+        if (event && event.clipboardData) {
+            const pastedText = event.clipboardData.getData('text')
+            let colCount = 0
+            const pastedCells = pastedText.split('\n').map(row => {
+                const rowCells = row.split('\t')
+                colCount = Math.max(colCount, rowCells.length)
+                return rowCells
+            })
+            let rowCount = pastedCells.length
+
+            if (rowCount > 1 || colCount > 1) {
+                event.preventDefault()
+                event.stopPropagation()
+                this._handlePastedContent(pastedCells)
+            }
+        }
+    }
+
+    /**
+     * Inserts pasted table data into the selected area
+     * @param {Array.<string[]>} pastedCells - The pasted content
+     */
+    _handlePastedContent(pastedCells) {
+        const node = this.props.node
+        const sel = this.refs.selection
+        const area = sel.getArea()
+
+        const selectedCoords = node.getCellCoords(this.state.selectedCell)
+
+        const startRow = area ? area.top : selectedCoords[0]
+        const startCol = area ? area.left : selectedCoords[1]
+
+        const maxRow = area ? area.bottom : node.rowCount - 1
+        const maxCol = area ? area.right : node.colCount - 1
+
+        this.context.editorSession.transaction(tx => {
+            pastedCells.forEach((row, pastedRowIndex) => {
+                const rowIndex = startRow + pastedRowIndex
+                if (rowIndex <= maxRow) {
+                    row.forEach((pastedCell, pastedColIndex) => {
+                        const colIndex = startCol + pastedColIndex
+                        if (colIndex <= maxCol) {
+                            const cellId = node.cells[rowIndex][colIndex]
+                            if (cellId) {
+                                tx.set([cellId, 'content'], String(pastedCell))
+                            }
+                        }
+                    })
+                }
+            })
+        })
     }
 
     /**
