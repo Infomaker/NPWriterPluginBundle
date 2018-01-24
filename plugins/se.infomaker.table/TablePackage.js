@@ -220,6 +220,10 @@ export default {
             en: 'Table caption',
             sv: 'Tabellrubrik'
         })
+        config.addLabel(COMMANDS.INSERT_TABLE, {
+            en: 'Insert table',
+            sv: 'Infoga tabell'
+        })
         config.addLabel(COMMANDS.TOGGLE_HEADER, {
             en: 'Toggle header',
             sv: 'Visa/dölj tabellhuvud'

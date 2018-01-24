@@ -13,7 +13,7 @@ class InsertTableTool extends Tool {
     }
 
     render($$) {
-        return $$('div', {class: 'insert-table-tool', title: this.getLabel('table-insert')}, [
+        return $$('div', {class: 'insert-table-tool', title: this.getLabel('table-insert-table')}, [
             $$('button', {class: 'se-tool'}, [
                 $$('i', {class: 'fa fa-table'}),
                 this._renderTableSizePicker($$)
