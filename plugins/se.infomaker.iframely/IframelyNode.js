@@ -1,7 +1,6 @@
 import {api} from 'writer'
 import {BlockNode} from 'substance'
 import fetchOembed from './fetchOembed'
-// import fetchWriterIframe from './fetchWriterIframe'
 
 class IframelyNode extends BlockNode {
 
@@ -12,13 +11,6 @@ class IframelyNode extends BlockNode {
 
         this.fetching = true
 
-        /**
-         * Might need to be deprecated, needs to fetch all info
-         * to be able to fill alternative-links
-         * if (this.embedCode) {
-         *   return this.loadFromNode(callback)
-         * }
-         */
         return fetchOembed(this.url)
             .then(res => {
                 if (!res.html) {
@@ -46,20 +38,6 @@ class IframelyNode extends BlockNode {
                 }
             })
     }
-
-    /**
-     * Load everything from the node and add the writer iframe
-     * TODO: might be deprecated, unless we save most of the oembed data on the node
-     * @param  {function} callback
-     */
-    // loadFromNode(callback) {
-    //     fetchWriterIframe(this.url).then(writerIframe => {
-    //         this.fetching = false
-    //         callback(null, {
-    //             iframe: writerIframe
-    //         })
-    //     })
-    // }
 
     /**
      * Restore the pasted link
