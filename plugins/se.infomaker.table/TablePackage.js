@@ -6,7 +6,6 @@ import TableCellNode from './nodes/TableCellNode'
 import TableViewerComponent from './components/TableViewerComponent'
 
 import InsertTableCommand from './commands/InsertTableCommand'
-import OpenTableEditorCommand from './commands/OpenTableEditorCommand'
 import ToggleHeaderCommand from './commands/ToggleHeaderCommand'
 import ToggleFooterCommand from './commands/ToggleFooterCommand'
 import InsertRowCommand from './commands/InsertRowCommand'
@@ -31,7 +30,6 @@ const TABLE_ANNOTATION_COMMAND_GROUP = 'table-annotation'
 const COMMANDS = {
     // General
     INSERT_TABLE: 'table-insert-table',
-    OPEN_EDITOR: 'table-open-editor',
     TOGGLE_HEADER: 'table-toggle-header',
     TOGGLE_FOOTER: 'table-toggle-footer',
 
@@ -75,7 +73,6 @@ export default {
 
         // Table commands: general
         config.addCommand(COMMANDS.INSERT_TABLE, InsertTableCommand)
-        config.addCommand(COMMANDS.OPEN_EDITOR, OpenTableEditorCommand)
         config.addCommand(COMMANDS.TOGGLE_HEADER, ToggleHeaderCommand)
         config.addCommand(COMMANDS.TOGGLE_FOOTER, ToggleFooterCommand)
         config.addCommand(COMMANDS.INSERT_ROW_BEFORE, InsertRowCommand, {
