@@ -5,6 +5,11 @@ import Package from './IframelyPackage'
 
 class IframelyComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+        api.document.triggerFetchResourceNode(this.props.node, {history: false})
+    }
+
     didMount() {
         // Rerender component when the embedCode has loaded
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
