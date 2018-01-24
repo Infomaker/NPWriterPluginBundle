@@ -77,7 +77,8 @@ class TableSelectionComponent extends Component {
     hasArea() {
         const hasStartAndEndCells = this.state.startCell && this.state.endCell
         const startAndEndCellsDiffer = this.state.startCell !== this.state.endCell
-        return hasStartAndEndCells && startAndEndCellsDiffer
+        const areaHasStartAndEndCells = this.area.startCell && this.area.endCell
+        return hasStartAndEndCells && startAndEndCellsDiffer && areaHasStartAndEndCells
     }
 
     getArea() {
