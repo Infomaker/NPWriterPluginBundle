@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {api, idGenerator} from 'writer'
+import {api, idGenerator, fetchImageMeta} from 'writer'
 import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
@@ -34,6 +34,10 @@ class ImageGalleryComponent extends Component {
 
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
+    }
+
+    dispose() {
+        this.context.editorSession.off(this)
     }
 
     /**
@@ -186,7 +190,7 @@ class ImageGalleryComponent extends Component {
                 onInfoClick: () => {
                     this._openMetaData(galleryImageNode)
                 }
-            }).ref(`image-${galleryImageNode.id}`))
+            }).ref(galleryImageNode.id))
         })
 
         imageGalleryToolbox.append(toolboxContent)

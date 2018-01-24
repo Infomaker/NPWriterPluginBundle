@@ -1,5 +1,6 @@
 import {DragAndDropHandler} from 'substance'
 import {idGenerator, api} from 'writer'
+import PropertyMap from '../se.infomaker.ximimage/models/PropertyMap'
 
 class ArchiveSearchDropHandler extends DragAndDropHandler {
 
@@ -35,21 +36,26 @@ class ArchiveSearchDropHandler extends DragAndDropHandler {
         }
 
         // Create file node for the image
-        let imageFile = tx.create(imageFileNode)
+        const imageFile = tx.create(imageFileNode)
+        const propertyMap = PropertyMap.getValidMap()
 
         // Inserts image at current cursor pos
         tx.insertBlockNode({
             id: nodeId,
             type: 'ximimage',
             imageFile: imageFile.id,
-            caption: dropData.caption.trim(),
-            alttext: '',
-            credit: dropData.credit,
-            alignment: ''
+            alignment: '',
+            caption: propertyMap.caption !== false ? dropData[propertyMap.caption] : '',
+            alttext: propertyMap.alttext !== false ? dropData[propertyMap.alttext] : '',
+            credit: propertyMap.credit !== false ? dropData[propertyMap.credit] : ''
         })
 
         setTimeout(() => {
             api.editorSession.fileManager.sync()
+                .then(() => {
+                    const imageNode = api.editorSession.getDocument().get(nodeId)
+                    imageNode.emit('onImageUploaded')
+                })
                 .catch(() => {
                     const document = api.editorSession.getDocument()
                     const node = document.get(nodeId)
@@ -62,7 +68,7 @@ class ArchiveSearchDropHandler extends DragAndDropHandler {
                     }
                     api.document.deleteNode('ximimage', node)
                 })
-        }, 300)
+        }, 0)
     }
 
     /**

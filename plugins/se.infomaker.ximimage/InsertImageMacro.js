@@ -1,5 +1,5 @@
 //http://www.examplesof.com/photography/nature/rice-terraces.jpg
-import {api} from 'writer'
+import isImageUrl from './models/isImageUrl'
 
 export default {
 
@@ -7,20 +7,19 @@ export default {
         const editorSession = context.editorSession
         const url = params.text
 
-        // only react on 'break' (as medium does)
-        if (params.action !== 'paste') {
+        // only react on 'break' and paste
+        if (params.action !== 'paste' && params.action !== 'break') {
             return
         }
         if(!url || url.length === 0) {
             return
         }
 
-        const isImage = api.getPluginModule('se.infomaker.ximimage.isImage')
-
-        if(isImage(url)) {
+        if(isImageUrl(url)) {
             editorSession.executeCommand('ximimage-insert-image-url', {
                 imageUrl: url,
-                isPaste: true
+                isPaste: params.action === 'paste',
+                isBreak: params.action === 'break'
             })
             return true
         }

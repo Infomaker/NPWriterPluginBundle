@@ -1,5 +1,5 @@
 import {documentHelpers} from 'substance'
-import {WriterCommand, idGenerator, api} from 'writer'
+import {WriterCommand, api} from 'writer'
 
 class InsertTeaserImageCommand extends WriterCommand {
 
@@ -35,13 +35,18 @@ class InsertTeaserImageCommand extends WriterCommand {
                 break
             case 'url':
                 this._insertUrlImage(tx, data.url, activeTeaserNode)
-                setTimeout(() => {
-                    api.editorSession.fileManager.sync()
-                }, 300)
                 break
             default:
                 break
         }
+
+        // timeout to wait for substance execution to finish
+        setTimeout(() => {
+            api.editorSession.fileManager.sync()
+                .then(() => {
+                    activeTeaserNode.emit('onImageUploaded')
+                })
+        }, 0)
     }
 
     /**
@@ -83,7 +88,6 @@ class InsertTeaserImageCommand extends WriterCommand {
      * @param teaserNode
      */
     _insertUriImage(tx, uriData, teaserNode) {
-        teaserNode.shouldDownloadMetadataForImageUri = true
         // Fetch the image
         const {uuid, url} = uriData
 
@@ -99,10 +103,6 @@ class InsertTeaserImageCommand extends WriterCommand {
 
         if(url) {
             imageFileNode.sourceUrl = url
-
-            setTimeout(() => {
-                api.editorSession.fileManager.sync()
-            }, 300)
         } else if(uuid) {
             imageFileNode.uuid = uuid
             imageFileNode.sourceUUID = uuid
@@ -112,6 +112,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         let imageFile = tx.create(imageFileNode)
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
+        tx.set([teaserNode.id, 'crops'], [])
     }
 
     /**
@@ -120,8 +121,6 @@ class InsertTeaserImageCommand extends WriterCommand {
      * @param teaserNode
      */
     _insertUrlImage(tx, url, teaserNode) {
-        const nodeId = idGenerator()
-
         const imageFileNode = {
             parentNodeId: teaserNode.id,
             type: 'npfile',
@@ -133,8 +132,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         let imageFile = tx.create(imageFileNode)
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
-
-        return nodeId
+        tx.set([teaserNode.id, 'crops'], [])
     }
 
     /**
@@ -146,8 +144,7 @@ class InsertTeaserImageCommand extends WriterCommand {
      * @param teaserNode
      */
     _insertFileImage(tx, file, teaserNode) {
-        // TODO: we need to get the file instance through to the
-        // real document
+        // TODO: we need to get the file instance through to the real document
         let imageFile = tx.create({
             parentNodeId: teaserNode.id,
             type: 'npfile',
@@ -157,11 +154,7 @@ class InsertTeaserImageCommand extends WriterCommand {
         })
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
-
-        // HACK: fileUpload will be done by CollabSession
-        setTimeout(() => {
-            api.editorSession.fileManager.sync()
-        }, 300)
+        tx.set([teaserNode.id, 'crops'], [])
     }
 }
 

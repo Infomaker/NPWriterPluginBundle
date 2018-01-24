@@ -31,7 +31,7 @@ class ArchiveImageComponent extends Component {
             uuid: this.props.item.uuid,
             url: this.props.item.url,
             credit: this.props.item.credit ? this.props.item.credit : '',
-            caption: this.props.item.caption ? this.props.item.caption : ''
+            caption: this.props.item.caption ? this.props.item.caption.trim() : ''
         }
 
         e.dataTransfer.setData('text/uri-list', `x-im-archive-url://x-im/image?data=${encodeURIComponent(JSON.stringify(dropData))}`)

@@ -6,7 +6,7 @@ export default {
     id: 'se.infomaker.ximauthor',
     name: 'ximauthor',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
         config.addLabel('validation-no-author', {
             en: 'No author specified',
             sv: 'Ingen författare är vald'
@@ -81,6 +81,6 @@ export default {
             sv: 'Fel vid uppdatering av författare-concept'
         })
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', AuthorMainComponent)
+        config.addToSidebar('main', pluginConfig, AuthorMainComponent)
     }
 }

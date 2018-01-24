@@ -2,9 +2,9 @@ import {documentHelpers} from 'substance'
 import {WriterCommand, api, idGenerator} from 'writer'
 
 class InsertImageCommand extends WriterCommand {
-    
+
     execute(params, context) {
-        if(params.tx) {
+        if (params.tx) {
             this.handleInsert(params.tx, params)
         } else {
             context.editorSession.transaction((tx) => this.handleInsert(tx, params))
@@ -18,23 +18,31 @@ class InsertImageCommand extends WriterCommand {
     handleInsert(tx, params) {
         const imageGalleryNode = params.context.node
         const {data} = params
+        const createdImageNodes = []
+        const fileManager = api.editorSession.fileManager
 
-        switch(data.type) {
+        switch (data.type) {
             case 'file':
-                this._insertFiles(tx, data.files, imageGalleryNode)
+                createdImageNodes.push(...this._insertFiles(tx, data.files, imageGalleryNode))
                 break
             case 'node':
-                this._insertNode(tx, data.nodeId, imageGalleryNode)
+                createdImageNodes.push(...this._insertNode(tx, data.nodeId, imageGalleryNode))
                 break
             case 'uri':
-                this._insertUri(tx, data.uriData, imageGalleryNode)
+                createdImageNodes.push(...this._insertUri(tx, data.uriData, imageGalleryNode))
                 break
             case 'url':
-                this._insertUrl(tx, data.url, imageGalleryNode)
+                createdImageNodes.push(...this._insertUrl(tx, data.url, imageGalleryNode))
                 break
             default:
                 break
         }
+
+        // Wait for substance operations before syncing files
+        setTimeout(() => {
+            fileManager.sync()
+                .then(() => imageGalleryNode.emit('onImagesAdded', createdImageNodes))
+        }, 0)
     }
 
     /**
@@ -45,9 +53,7 @@ class InsertImageCommand extends WriterCommand {
      * @private
      */
     _insertFiles(tx, files, node) {
-        const imageGalleryImages = []
-
-        files.forEach((file) => {
+        const imageGalleryImageNodes = files.map((file) => {
             const imageId = idGenerator()
             const imageGalleryImage = tx.create({
                 parentNodeId: node.id,
@@ -62,15 +68,14 @@ class InsertImageCommand extends WriterCommand {
                 sourceFile: file
             })
 
-            imageGalleryImages.push(imageGalleryImage.id)
             tx.set([imageGalleryImage.id, 'imageFile'], imageFile.id)
+
+            return imageGalleryImage
         })
 
-        tx.set([node.id, 'nodes'], [...node.nodes, ...imageGalleryImages])
+        tx.set([node.id, 'nodes'], [...node.nodes, ...imageGalleryImageNodes.map(({id}) => id)])
 
-        setTimeout(() => {
-            api.editorSession.fileManager.sync()
-        }, 300)
+        return imageGalleryImageNodes
     }
 
     /**
@@ -102,6 +107,8 @@ class InsertImageCommand extends WriterCommand {
                 })
 
                 tx.set([imageGalleryNode.id, 'nodes'], [...imageGalleryNode.nodes, galleryImageNode.id])
+
+                return [galleryImageNode]
             }
         } catch (_) {
 
@@ -129,13 +136,9 @@ class InsertImageCommand extends WriterCommand {
             imType: 'x-im/image'
         }
 
-        if(url) {
+        if (url) {
             imageFileNode.sourceUrl = url
-
-            setTimeout(() => {
-                api.editorSession.fileManager.sync()
-            }, 300)
-        } else if(uuid) {
+        } else if (uuid) {
             imageFileNode.uuid = uuid
             imageFileNode.sourceUUID = uuid
         }
@@ -150,6 +153,8 @@ class InsertImageCommand extends WriterCommand {
         })
 
         tx.set([imageGalleryNode.id, 'nodes'], [...imageGalleryNode.nodes, galleryImageNode.id])
+
+        return [galleryImageNode]
     }
 
     /**
@@ -177,9 +182,7 @@ class InsertImageCommand extends WriterCommand {
 
         tx.set([imageGalleryNode.id, 'nodes'], [...imageGalleryNode.nodes, galleryImageNode.id])
 
-        setTimeout(() => {
-            api.editorSession.fileManager.sync()
-        }, 300)
+        return [galleryImageNode]
     }
 }
 

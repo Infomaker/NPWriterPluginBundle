@@ -5,12 +5,8 @@ export default {
     id: 'se.infomaker.ximcategory',
     name: 'ximcategory',
     version: '{{version}}',
-    configure: function(config) {
-        config.addComponentToSidebarWithTabId(
-            this.id,
-            'main',
-            CategoryMainComponent
-        )
+    configure: function(config, pluginConfig) {
+        config.addToSidebar('main', pluginConfig, CategoryMainComponent)
 
         config.addLabel('Categories', {
             sv: 'Kategorier'

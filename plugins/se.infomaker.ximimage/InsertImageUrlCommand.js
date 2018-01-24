@@ -1,19 +1,24 @@
 import insertImage from './models/insertImage'
 import {api, WriterCommand} from 'writer'
 
-/*
-
- */
 class InsertImageUrlCommand extends WriterCommand {
 
     execute(params) {
         if (params.isPaste) {
-            const currentNode = params.selection.getPath()
-            if(!currentNode) {
+            const nodeId = params.selection.getNodeId()
+            if(!nodeId) {
                 return false
             }
             const doc = params.editorSession.getDocument()
-            api.document.deleteNode('ximimage', doc.get(currentNode[0]))
+            api.document.deleteNode('ximimage', doc.get(nodeId))
+        }
+
+        if (params.isBreak) {
+            const nodeId = params.selection.getNodeId()
+            if(!nodeId) {
+                return false
+            }
+            api.document.deleteNode('ximimage', api.document.getPreviousNode(nodeId))
         }
 
         api.editorSession.transaction((tx) => {
@@ -21,6 +26,10 @@ class InsertImageUrlCommand extends WriterCommand {
 
             setTimeout(() => {
                 api.editorSession.fileManager.sync()
+                    .then(() => {
+                        const imageNode = api.editorSession.getDocument().get(nodeId)
+                        imageNode.emit('onImageUploaded')
+                    })
                     .catch(() => {
                         // TODO When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
                         const document = api.editorSession.getDocument()
@@ -34,7 +43,7 @@ class InsertImageUrlCommand extends WriterCommand {
                         }
                         api.document.deleteNode('ximimage', node)
                     })
-            }, 300)
+            }, 0)
         })
     }
 

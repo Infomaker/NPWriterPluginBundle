@@ -1,6 +1,6 @@
-import {lodash, api} from "writer";
-import insertImage from "../models/insertImage";
-import {DragAndDropHandler} from "substance";
+import {lodash, api} from 'writer'
+import insertImage from '../models/insertImage'
+import {DragAndDropHandler} from 'substance'
 
 // Implements a file drop handler
 class DropImageFile extends DragAndDropHandler {
@@ -9,49 +9,27 @@ class DropImageFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        let nodeId;
+        const nodeId = this.insertImage(tx, params.file)
+        setTimeout(() => {
+            api.editorSession.fileManager.sync()
+                .then(() => {
+                    const imageNode = api.editorSession.getDocument().get(nodeId)
+                    imageNode.emit('onImageUploaded')
+                })
+                .catch((err) => {
+                    api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+                    this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
+                })
+        }, 0)
+    }
+
+    insertImage(tx, file) {
         try {
-            nodeId = insertImage(tx, params.file)
+            return insertImage(tx, file)
         } catch (err) {
             api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
             return null
         }
-
-        const maxIterations = 500
-        const doc = api.editorSession.getDocument()
-
-
-
-        let iterations = 0
-        let intervalId = setInterval(() => {
-            if (doc.get(nodeId)) {
-                clearInterval(intervalId)
-                this.sync(tx, nodeId)
-            }
-            else if (iterations++ > maxIterations) {
-                console.error('Newly inserted node still not available, BAILING OUT!')
-                clearInterval(intervalId)
-                this.showErrorNotification(tx, nodeId, 'Failed adding image due to internal transaction state not finishing')
-            }
-            else {
-                console.warn('Newly inserted node not yet availabel, waiting...')
-            }
-        }, 50)
-    }
-
-
-    sync(tx, nodeId) {
-        api.editorSession.fileManager.sync().catch((err) => {
-            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
-            this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
-        })
-    }
-
-    showErrorNotification(tx, nodeId, errorMessage) {
-        let errors = [errorMessage]
-        this.removeNodesOnUploadFailure(tx, nodeId, errors)
-
-        api.ui.showNotification('ximimage', 'Error', errors.join(' - '))
     }
 
     /**
@@ -59,19 +37,19 @@ class DropImageFile extends DragAndDropHandler {
      */
     removeNodesOnUploadFailure(tx, nodeId, errors) {
         try {
-            const document = api.editorSession.getDocument(),
-                node = document.get(nodeId)
+            const document = api.editorSession.getDocument()
+            const node = document.get(nodeId)
+            const imageFile = node.imageFile
 
             api.document.deleteNode('ximimage', node)
 
-            const imageFile = node.imageFile
             if (imageFile) {
                 api.editorSession.transaction((tx) => {
                     tx.delete(imageFile)
                 })
             }
         }
-        catch(e) {
+        catch (e) {
             errors.push(e.message)
         }
     }

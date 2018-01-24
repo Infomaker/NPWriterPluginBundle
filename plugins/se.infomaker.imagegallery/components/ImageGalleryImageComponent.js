@@ -1,5 +1,4 @@
 import {Component} from 'substance'
-import {fetchImageMeta} from 'writer'
 
 /**
  * @class ImageGalleryImageComponent
@@ -20,7 +19,6 @@ import {fetchImageMeta} from 'writer'
 class ImageGalleryImageComponent extends Component {
 
     didMount() {
-        this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
@@ -36,31 +34,13 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _onDocumentChange(change) {
-        if (change.isAffected(this.props.node.imageFile)) {
-            const imageNode = this.context.api.doc.get(this.props.node.imageFile)
-            fetchImageMeta(imageNode.uuid)
-                .then((node) => {
-                    this.context.editorSession.transaction((tx) => {
-                        if (!imageNode.caption) {
-                            tx.set([this.props.node.id, 'caption'], node.caption)
-                        }
-                        if (node.authors.length > 0) {
-                            tx.set([this.props.node.id, 'authors'], node.authors)
-                        }
-                        if (!imageNode.uri) {
-                            tx.set([imageNode.id, 'uri'], node.uri)
-                        }
-                        tx.set([this.props.node.id, 'width'], node.width)
-                        tx.set([this.props.node.id, 'height'], node.height)
-                    })
-                    this.rerender()
-                })
-        } else if (change.isAffected([this.props.node.id, 'authors'])) {
+        if (change.isAffected([this.props.node.id, 'authors'])) {
             this.rerender()
         }
     }
 
     render($$) {
+        const InlineImageComponent = this.context.api.ui.getComponent('InlineImageComponent')
         const numberDisplay = $$('div').addClass('number-display')
         const itemWrapper = $$('div').addClass('item-wrapper')
             .ref('itemWrapper')
@@ -68,8 +48,7 @@ class ImageGalleryImageComponent extends Component {
             .attr('draggable', false)
 
         const imageWrapper = $$('div').addClass('image-wrapper')
-        const imageNode = this.context.doc.get(this.props.node.imageFile)
-        const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
+        const imageEl = $$(InlineImageComponent, {nodeId: this.props.node.imageFile}).attr('draggable', false)
         const imageControls = this._renderImageControls($$)
 
         imageWrapper.append(imageEl)
@@ -133,7 +112,7 @@ class ImageGalleryImageComponent extends Component {
             ])
         }
 
-        if(this.props.imageInfoEnabled === true) {
+        if (this.props.imageInfoEnabled === true) {
             imageControls.append(
                 $$('i').addClass('image-control fa fa-info')
                     .attr('title', this.getLabel('Image archive information'))
