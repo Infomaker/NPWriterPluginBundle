@@ -1,7 +1,22 @@
 import {Component, TextPropertyEditor} from 'substance'
 
-class TableCellComponent extends Component {
+/**
+ * @typedef TableCellComponent.Props
+ * @property {TableCellNode} node - Reference to the selections TableNode
+ * @property {boolean} disabled - True if editing of the cell is disabled
+ * @property {boolean} header - True if the cell is a table head cell
+ * @property {?string} selectionState - Null, 'focused', or 'selected'
+ */
 
+/**
+ * Renders a single table cell
+ *
+ * @class TableCellComponent
+ * @extends {Component}
+ * @param {TableCellComponent.Props} props
+ * @property {TableCellComponent.Props} props
+ */
+class TableCellComponent extends Component {
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
@@ -55,6 +70,9 @@ class TableCellComponent extends Component {
         ]).ref('cell')
     }
 
+    /**
+     * Renders info about the cell size if it has a rowspan or colspan
+     */
     _renderCellSizeInfo($$) {
         const node = this.props.node
         if (node.rowspan < 2 && node.colspan < 2) return null
@@ -100,6 +118,7 @@ class TableCellComponent extends Component {
      */
     _handleTabKey(event) { // eslint-disable-line
         // console.info('Capturing tab key', event)
+        // Not used right now, but leaving it here so cells can handle it in the future.
     }
 
     /**

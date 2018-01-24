@@ -69,7 +69,7 @@ export default {
         config.addNode(TableNode)
         config.addNode(TableCellNode)
 
-        config.addComponent('table', TableViewerComponent)
+        config.addComponent(this.name, TableViewerComponent)
 
         // Table commands: general
         config.addCommand(COMMANDS.INSERT_TABLE, InsertTableCommand)

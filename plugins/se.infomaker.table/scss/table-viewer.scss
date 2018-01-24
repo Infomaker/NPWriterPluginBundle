@@ -2,12 +2,10 @@
     padding: 2px 1px;
 }
 
-
 .sc-isolated-node {
     .table-selection {
         display: none;
     }
-
     &.sm-no-blocker {
         .table-selection {
             display: initial;
@@ -19,15 +17,12 @@
     .header {
         font-size: 1rem;
         text-align: center;
-
         .fa {
             line-height: 1.5em;
         }
-
         .im-field-editor {
             margin-top: 0;
         }
-
         .sc-text-property-editor {
             padding-left: 0;
         }

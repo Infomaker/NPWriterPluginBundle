@@ -1,7 +1,7 @@
 import {lodash} from 'writer'
 
 /**
- * Helper class for working with table areas
+ * Class for working with table areas
  *
  * Definitions:
  * - coords: Array with zero-indexed coordinates, [row, col]
@@ -59,41 +59,70 @@ class TableArea {
     }
 
     /**
-     * Get the height of the area in number of cells in the y-axis
+     * Get the height of the area in number of cells along the y-axis
      * @returns {number} Height
-     *  of the area
      */
     get height() {
         if (this.bottom === null || this.top === null) { return 0 }
         return this.bottom - this.top + 1
     }
 
+    /**
+     * Gets the top-leftmost cell node of the area
+     * @returns {TableCellNode}
+     */
     get firstCell() {
         return this.table.getOwnerOfCellAt(this.top, this.left)
     }
 
+    /**
+     * Gets the bottom-rightmost cell node of the area
+     * @returns {TableCellNode}
+     */
     get lastCell() {
         return this.table.getOwnerOfCellAt(this.bottom, this.right)
     }
 
+    /**
+     * Gets the id of the top-leftmost cell of the area
+     * @returns {TableCellNode}
+     */
     get firstCellId() {
         if (this.firstCell) {
             return this.firstCell.id
         }
     }
 
+    /**
+     * Gets the id of the bottom-rightmost cell of the area
+     * @returns {TableCellNode}
+     */
     get lastCellId() {
-        return this.lastCell.id
+        if (this.lastCell) {
+            return this.lastCell.id
+        }
     }
 
+    /**
+     * Gets the coordinates of the top-leftmost cell of the area
+     */
     get firstCellCoords() {
         return this._extractCellCoords(this.firstCell)
     }
 
+    /**
+     * Gets the coordinates of the bottom-rightmost cell of the area
+     * @returns {TableCellNode}
+     */
     get lastCellCoords() {
         return this._extractCellCoords(this.lastCell)
     }
 
+    /**
+     * Extracts the coordinates of a cell node
+     * @param {TableCellNode} cellNode
+     * @private
+     */
     _extractCellCoords(cellNode) {
         const coords = this.table.getCellCoords(cellNode.id)
         const endRow = cellNode.rowspan > 1 ? cellNode.rowspan - 1 + coords[0] : coords[0]
@@ -102,22 +131,6 @@ class TableArea {
             start: coords,
             end: [endRow, endCol]
         }
-    }
-
-    get firstRow() {
-        throw new Error('Not implemented')
-    }
-
-    get lastRow() {
-        throw new Error('Not implemented')
-    }
-
-    get firstCol() {
-        throw new Error('Not implemented')
-    }
-
-    get lastCol() {
-        throw new Error('Not implemented')
     }
 
     /**
@@ -136,6 +149,10 @@ class TableArea {
         return this.containsCellId(cellNode.id)
     }
 
+    /**
+     * Calculates the edges of the table area
+     * @private
+     */
     _perimeterSearch() {
         const startCellCoords = this.table.getCellCoords(this.startCell.id)
         const endCellCoords = this.table.getCellCoords(this.endCell.id)
@@ -181,9 +198,10 @@ class TableArea {
     }
 
     /**
-     * Sets the search coordinates for all cells in the perimeter
+     * Sets the search coordinates for all cells in the table perimeter
      *
      * Creates a 2d array with all edge cells and removes all duplicates
+     * @private
      */
     _setSearchCoords() {
         // reset searchCoords
@@ -231,7 +249,7 @@ class TableArea {
     }
 
     /**
-     * Helper method to marka cell coordinate as searched
+     * Helper method to mark a cell coordinate as searched
      * @param {number} row
      * @param {number} col
      * @private
@@ -243,6 +261,13 @@ class TableArea {
         this._searchedCells[row][col] = true
     }
 
+    /**
+     * Handles cell nodes found by perimeter search
+     *
+     * Marks cells as searched and checks updates area edges
+     * @param {CellNode} cellNode
+     * @private
+     */
     _handleFoundCellNode(cellNode) {
         const cellCoords = this.table.getCellCoords(cellNode.id)
         this._markCellSearched(cellCoords[0], cellCoords[1])

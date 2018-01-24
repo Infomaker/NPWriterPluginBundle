@@ -35,14 +35,11 @@ class InsertTableTool extends Tool {
             .on('click', this.triggerInsert.bind(this))
 
         for (let row = 0; row < rows + 1; row++) {
-            console.info('row-' + row)
             let rowElem = $$('tr', { class: 'insert-table-tool-row' }).ref('row-' + row)
 
             for (let col = 0; col < cols + 1; col++) {
                 const classNames = ['insert-table-tool-cell']
-
                 if ((row < rows || rows === 20) && (col < cols || cols === 20)) { classNames.push('selected') }
-                console.info('cell-' + row + '-' + col)
                 rowElem.append($$('td', {
                     class: classNames.join(' '),
                     'data-row': row + 1,
@@ -58,7 +55,6 @@ class InsertTableTool extends Tool {
     handleTableSize(event) {
         const rows = parseInt(event.target.getAttribute('data-row'), 10) || null
         const cols = parseInt(event.target.getAttribute('data-col'), 10) || null
-        console.info('Rows:', rows, 'Cols:', cols)
 
         if(rows && cols) {
             this.setTableSize(rows, cols)

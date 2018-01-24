@@ -1,3 +1,7 @@
+/**
+ * Modified version of substance table cell converter
+ * https://github.com/substance/substance/blob/v1.0.0-beta.6.5/packages/table/TableCellHTMLConverter.js
+ */
 import {uuid} from 'substance'
 
 export default {

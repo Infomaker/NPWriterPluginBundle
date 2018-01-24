@@ -2,6 +2,20 @@ import '../scss/table-viewer.scss'
 import { Component } from 'substance'
 import TableComponent from './TableComponent'
 
+/**
+ * @typedef TableViewerComponent.Props
+ * @property {TableNode} node - Reference to the TableNode
+ */
+
+/**
+ * Renders an isolated node for the table node
+ *
+ * This is the component that is shown in the writer area
+ * @class TableViewerComponent
+ * @extends {Component}
+ * @param {TableViewerComponent.Props} props
+ * @property {TableViewerComponent.Props} props
+ */
 class TableViewerComponent extends Component {
 
     render($$) {
@@ -9,16 +23,24 @@ class TableViewerComponent extends Component {
             $$('div', {class: 'header'}, [
                 this._renderCaptionEditor($$)
             ]),
-            $$('div', {class: 'table-viewer-container '}, [
+            $$('div', {class: 'table-viewer-container'}, [
                 $$(TableComponent, {
                     node: this.props.node,
                     disabled: false
                 }).ref('table'),
             ])
-        ]).on('mousedown', (event) => {
-            event.stopPropagation()
+        ]).on('click', this.grabFocus.bind(this), false)
+    }
+
+    onClick(event) {
+        if (this.context.isolatedNodeComponent.state.mode !== 'focused') {
             this.grabFocus()
-        }, false)
+        } else {
+            if (event.target.classList.contains('im-table')) {
+                event.stopPropagation()
+                event.preventDefault()
+            }
+        }
     }
 
     didUpdate() {
@@ -48,8 +70,19 @@ class TableViewerComponent extends Component {
             textEditor._handleTabKey = this._captureFieldEditorEvents.bind(this)
         }
 
-        const captionEditor = $$(FieldEditor, editorProps).ref('table-caption-editor')
+        const captionEditor = $$(FieldEditor, editorProps)
+            .on('click', this._onCaptionEditorClick.bind(this))
+            .ref('table-caption-editor')
         return captionEditor
+    }
+
+    /**
+     * Reset the table selection to clear any selected cells
+     */
+    _onCaptionEditorClick() {
+        if (this.refs.table) {
+            this.refs.table.resetSelection()
+        }
     }
 
     _captureFieldEditorEvents(event) {

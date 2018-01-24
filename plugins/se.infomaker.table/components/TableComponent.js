@@ -5,8 +5,27 @@ import TableSelectionComponent from './TableSelectionComponent'
 import extractCellComponentFromElement from '../util/extractCellComponentFromElement'
 import {keys, isInputKey} from '../util/keys'
 
-class TableComponent extends Component {
+/**
+ * @typedef TableComponent.Props
+ * @property {TableNode} node - Reference to the TableNode
+ */
 
+ /**
+ * @typedef TableComponent.State
+ * @property {?string} selectedCell - ID of the cell that is currently selected
+ * @property {?string} focusedCell - ID of the cell that is currently focused
+ */
+
+/**
+ * Renders an editable HTML table that can be used in an isolated node or dialog
+ *
+ * @class TableComponent
+ * @extends {Component}
+ * @param {TableComponent.Props} props
+ * @property {TableComponent.Props} props
+ * @property {TableComponent.State} state
+ */
+class TableComponent extends Component {
     constructor(...args) {
         super(...args)
         this.onSelectionStart = this.onSelectionStart.bind(this)
@@ -14,6 +33,9 @@ class TableComponent extends Component {
         this.onSelectionEnd = this.onSelectionEnd.bind(this)
     }
 
+    /**
+     * @returns {TableComponent.State}
+     */
     getInitialState() {
         return {
             selectedCell: null,
@@ -26,7 +48,7 @@ class TableComponent extends Component {
      * the area selection. Find a better way to do this.
      */
     __retriggerCommandStates__() {
-        console.warn('Dont do this, find a better way to retrigger getting command states')
+        // console.warn('Dont do this, find a better way to retrigger getting command states')
         this.context.editorSession.setSelection(this.context.editorSession.getSelection())
     }
 
@@ -91,8 +113,8 @@ class TableComponent extends Component {
             }
         }
 
-        tableElem.on('mousedown', this.onClick.bind(this))
-        tableElem.on('dblclick', this.onDblClick.bind(this))
+        tableElem.on('mousedown', this.onClick.bind(this), true)
+        tableElem.on('dblclick', this.onDblClick.bind(this), false)
         tableElem.on('keydown', this.onKeyDown.bind(this))
         tableElem.on('paste', this.onPaste.bind(this))
 
@@ -121,11 +143,14 @@ class TableComponent extends Component {
                 if (leftClick) {
                     // Focusing on the cell temporarily enables it, allowing a selection to be set
                     // inside it's editor
-                    this.setCellFocused(cellComp)
+                    if(cellId !== this.state.selectedCell) {
+                        this.setCellFocused(cellComp)
+                    }
                     this.setCellSelected(cellComp)
 
                     // Start area selection
                     this.onSelectionStart(event)
+
                 }
             }
         } else {
@@ -476,7 +501,7 @@ class TableComponent extends Component {
             this.setCellFocused(this.refs[firstCellId])
             this.setCellSelected(this.refs[firstCellId])
         } else if (this.state.selectedCell && selectCell) {
-            // this.setCellFocused(this.refs[this.state.selectedCell])
+            this.setCellFocused(this.refs[this.state.selectedCell])
             this.setCellSelected(this.refs[this.state.selectedCell])
         }
     }

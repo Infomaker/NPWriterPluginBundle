@@ -1,7 +1,33 @@
 import {Component} from 'substance'
 import TableArea from '../util/TableArea'
 
+/**
+ * @typedef TableSelectionComponent.Props
+ * @property {TableNode} node - Reference to the selections TableNode
+ * @property {TableNode} debug - True if the selection should be rendered in debug mode
+ */
+
+ /**
+ * @typedef TableSelectionComponent.State
+ * @property {?TableCellComponent} startCell - Cell component where the selection started
+ * @property {?TableCellComponent} endCell - Cell component where the selection ended
+ * @property {?TableCellComponent} selectedCell - Cell component that is currently selected
+ */
+
+/**
+ * Renders a selection in the table
+ *
+ * A selection is an area that encompasses multiple cells and has one cell selected
+ * @class TableSelectionComponent
+ * @extends {Component}
+ * @param {TableSelectionComponent.Props} props
+ * @property {TableSelectionComponent.Props} props
+ * @property {TableSelectionComponent.State} state
+ */
 class TableSelectionComponent extends Component {
+    /**
+     * @returns {TableSelectionComponent.State}
+     */
     getInitialState() {
         return {
             startCell: null,
@@ -51,8 +77,7 @@ class TableSelectionComponent extends Component {
     hasArea() {
         const hasStartAndEndCells = this.state.startCell && this.state.endCell
         const startAndEndCellsDiffer = this.state.startCell !== this.state.endCell
-        const temp = this.area.startCell && this.area.endCell // TODO: Rewrite
-        return hasStartAndEndCells && startAndEndCellsDiffer && temp
+        return hasStartAndEndCells && startAndEndCellsDiffer
     }
 
     getArea() {
