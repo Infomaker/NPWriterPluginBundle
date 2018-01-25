@@ -21,6 +21,10 @@ class TableCellComponent extends Component {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
+    dispose() {
+        this.context.editorSession.off(this)
+    }
+
     _onDocumentChange(change) {
         if (change.isAffected([this.props.node.id])) {
             this.rerender()

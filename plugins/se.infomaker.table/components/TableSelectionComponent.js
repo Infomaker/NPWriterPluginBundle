@@ -25,6 +25,11 @@ import TableArea from '../util/TableArea'
  * @property {TableSelectionComponent.State} state
  */
 class TableSelectionComponent extends Component {
+
+    constructor(...args) {
+        super(...args)
+        this._updateArea = this._updateArea.bind(this)
+    }
     /**
      * @returns {TableSelectionComponent.State}
      */
@@ -37,17 +42,16 @@ class TableSelectionComponent extends Component {
     }
 
     didMount() {
-        this.context.editorSession.onRender('document', this._onDocumentChange, this)
-        document.addEventListener('selectionchange', () => {
-            this._updateArea()
-        })
+        this.context.editorSession.onRender('document', this._updateArea, this)
+        document.addEventListener('selectionchange', this._updateArea)
+    }
+
+    dispose() {
+        this.context.editorSession.off(this)
+        document.removeEventListener('selectionchange', this._updateArea)
     }
 
     didUpdate() {
-        this._updateArea()
-    }
-
-    _onDocumentChange() {
         this._updateArea()
     }
 
