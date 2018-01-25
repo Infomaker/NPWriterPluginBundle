@@ -78,17 +78,22 @@ class OptionsComponent extends Component {
             }
         }
 
-        if (this.isMultivalue(selectedList)) {
-            if (found) {
-                this.removeContentMetaLink(selectedList, selectedOption)
-            } else {
-                this.addContentMetaLink(selectedList, selectedOption)
-            }
-        } else {
+        const multivalue = this.isMultivalue(selectedList)
+
+        // If the list is not multivalue we want to clear the other
+        // meta links so that multiple options aren't selected
+        if (!multivalue) {
             this.clearContentMetaLinks(selectedList)
-            if (!found) {
-                this.addContentMetaLink(selectedList, selectedOption)
-            }
+        }
+
+        // Enables toggling a value if the list is multivalue
+        if (multivalue && found) {
+            this.removeContentMetaLink(selectedList, selectedOption)
+        }
+
+        // Add the content meta link for the provided option
+        if (!found) {
+            this.addContentMetaLink(selectedList, selectedOption)
         }
 
         this.setState({
