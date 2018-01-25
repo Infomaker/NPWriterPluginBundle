@@ -100,6 +100,11 @@ class OptionsComponent extends Component {
                 }
             }
             else {
+
+                if (selectedOption.label === true) {
+                    return
+                }
+
                 this.context.api.newsItem.addContentMetaLink(this.pluginName, {
                     '@rel': selectedOption.rel || selectedList.link.rel,
                     '@title': selectedOption.title,
@@ -109,6 +114,11 @@ class OptionsComponent extends Component {
             }
         } else {
             this.clearContentMetaLinks(selectedList)
+
+            if (selectedOption.label === true) {
+                return
+            }
+
             if (!found) {
                 this.context.api.newsItem.addContentMetaLink(this.pluginName, {
                     '@rel': selectedOption.rel || selectedList.link.rel,
@@ -128,6 +138,7 @@ class OptionsComponent extends Component {
     /**
      * Responsible for reporting whether a specific list data element is selected or not
      *
+     * @param list
      * @param data The element to check
      * @return True if selected, false otherwise
      */
