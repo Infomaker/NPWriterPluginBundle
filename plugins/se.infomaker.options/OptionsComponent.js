@@ -18,14 +18,13 @@ class OptionsComponent extends Component {
     render($$) {
         const SelectComponent = api.ui.getComponent('select')
 
-        return $$('div')
-            .append(
-                $$(SelectComponent, {
-                    list: this.state.list,
-                    onChangeList: this.onChangeList.bind(this),
-                    isSelected: this.isSelected.bind(this)
-                })
-            )
+        return $$('div').append(
+            $$(SelectComponent, {
+                list: this.state.list,
+                onChangeList: this.onChangeList.bind(this),
+                isSelected: this.isSelected.bind(this)
+            })
+        )
     }
 
 
@@ -66,7 +65,6 @@ class OptionsComponent extends Component {
      * @param selectedOption The option clicked in the list
      */
     onChangeList(selectedList, selectedOption) {
-
         const existingLinks = this.context.api.newsItem.getContentMetaLinkByType(
             this.pluginName,
             selectedOption.type || selectedList.link.type
@@ -80,42 +78,16 @@ class OptionsComponent extends Component {
             }
         }
 
-        if (selectedList.multivalue || (selectedList.multivalue === undefined && this.options.multivalue)) {
-
+        if (this.isMultivalue(selectedList)) {
             if (found) {
-                this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
-                    this.pluginName,
-                    selectedList.link.type,
-                    (link) => link.getAttribute('uri') === selectedOption.uri
-                )
-
-                if (selectedOption.list && selectedOption.list.link && selectedOption.list.link.type) {
-
-                    // Remove children for removed elements
-                    this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
-                        this.pluginName,
-                        selectedOption.list.link.type,
-                        () => true
-                    )
-                }
-            }
-            else {
-                this.context.api.newsItem.addContentMetaLink(this.pluginName, {
-                    '@rel': selectedOption.rel || selectedList.link.rel,
-                    '@title': selectedOption.title,
-                    '@type': selectedOption.type || selectedList.link.type,
-                    '@uri': selectedOption.uri
-                })
+                this.removeContentMetaLink(selectedList, selectedOption)
+            } else {
+                this.addContentMetaLink(selectedList, selectedOption)
             }
         } else {
             this.clearContentMetaLinks(selectedList)
             if (!found) {
-                this.context.api.newsItem.addContentMetaLink(this.pluginName, {
-                    '@rel': selectedOption.rel || selectedList.link.rel,
-                    '@title': selectedOption.title,
-                    '@type': selectedOption.type || selectedList.link.type,
-                    '@uri': selectedOption.uri
-                })
+                this.addContentMetaLink(selectedList, selectedOption)
             }
         }
 
@@ -125,6 +97,38 @@ class OptionsComponent extends Component {
 
     }
 
+    removeContentMetaLink(list, option) {
+        this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
+            this.pluginName,
+            list.link.type,
+            (link) => link.getAttribute('uri') === option.uri
+        )
+
+        const childList = option.list
+        if (childList && childList.link && childList.link.type) {
+            // Remove children for removed elements
+            this.context.api.newsItem.removeLinkContentMetaByTypeAndMatchingFilter(
+                this.pluginName,
+                childList.link.type,
+                () => true
+            )
+        }
+    }
+
+    addContentMetaLink(list, option) {
+        this.context.api.newsItem.addContentMetaLink(this.pluginName, {
+            '@rel': option.rel || list.link.rel,
+            '@title': option.title,
+            '@type': option.type || list.link.type,
+            '@uri': option.uri
+        })
+
+        const childList = option.list
+        if (childList && childList.type === 'dropdown' && childList.values.length) {
+            this.onChangeList(childList, childList.values[0])
+        }
+    }
+
     /**
      * Responsible for reporting whether a specific list data element is selected or not
      *
@@ -132,7 +136,6 @@ class OptionsComponent extends Component {
      * @return True if selected, false otherwise
      */
     isSelected(list, data) {
-
         const listType = (list && list.link && list.link.type) ? list.link.type : undefined
 
         const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, listType || this._getLinkType())
@@ -147,6 +150,11 @@ class OptionsComponent extends Component {
 
     _getLinkType() {
         return this.state.list.link.type
+    }
+
+    isMultivalue(list) {
+        if (list.type === 'dropdown') { return false }
+        return list.multivalue || (list.multivalue === undefined && this.options.multivalue)
     }
 }
 
