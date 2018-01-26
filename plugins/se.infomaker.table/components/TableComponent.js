@@ -137,6 +137,7 @@ class TableComponent extends Component {
         this.grabFocus()
 
         const leftClick = event.which === 1
+        const shiftClick = event.shiftKey
 
         let cellComp = extractCellComponentFromElement(event.target)
         if (cellComp) {
@@ -152,9 +153,13 @@ class TableComponent extends Component {
                     }
                     this.setCellSelected(cellComp)
 
-                    // Start area selection
-                    this.onSelectionStart(event)
-
+                    if (shiftClick) {
+                        this.onSelection(event)
+                        this.onSelectionEnd(event)
+                    } else {
+                        // Start area selection
+                        this.onSelectionStart(event)
+                    }
                 }
             }
         } else {
