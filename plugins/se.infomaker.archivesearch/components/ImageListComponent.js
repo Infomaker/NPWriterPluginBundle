@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import PaginationComponent from './PaginationComponent'
+import {UIPagination} from 'writer'
 import ArchiveImageComponent from './ArchiveImageComponent'
 import ImageMetaPopup from './ImageMetaPopup'
 
@@ -45,7 +45,7 @@ class ImageListComponent extends Component {
                             }).ref('imageMetaPopup')
                         ]
                     ),
-                    $$(PaginationComponent, {
+                    $$(UIPagination, {
                         currentPage: Math.ceil((this.props.start / this.props.limit) + 1),
                         totalPages: Math.ceil(this.props.totalHits / this.props.limit),
                         onPageChange: this.props.onPageChange

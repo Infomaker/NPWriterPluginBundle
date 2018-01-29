@@ -183,50 +183,5 @@
             }
         }
     }
-    .pagination {
-        border-top: 1px solid #ccc;
-        display: flex;
-        margin-top: 7px;
-        padding-top: 15px;
-        justify-content: center;
-        button {
-            &[disabled] {
-                color: #cacaca;
-                cursor: default;
-            }
-        }
-        i {
-            display: flex;
-            align-items: center;
-        }
-        .numbered-pages {
-            display: flex;
-            flex-grow: 2;
-            justify-content: center;
-            span {
-                display: inline-block;
-                cursor: pointer;
-                line-height: 28px;
-                padding: 0 8px;
-                text-align: center;
-                &.active-page {
-                    background: #0098C7;
-                    color: #fff;
-                }
-            }
-        }
-    }
-}
-
-@media all and (max-width: 1440px) {
-    .im-archivesearch {
-        .pagination {
-            .numbered-pages {
-                span {
-                    padding: 0 5px;
-                }
-            }
-        }
-    }
 }
 
