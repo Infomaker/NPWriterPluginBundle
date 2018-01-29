@@ -1,26 +1,34 @@
-import { api } from 'writer'
+import {api} from 'writer'
 import urlShouldBeMatched from './urlShouldBeMatched'
 import insertIframelyEmbed from './insertIframelyEmbed'
 
 const IframelyMacro = {
-    execute: function (params, context) {
+    execute: function(params, context) {
         const es = context.editorSession
-        const { selection, text, action } = params
+        const {selection, text, action} = params
 
         // Only run macro on paste and break
-        if (action !== 'paste' && action !== 'break') { return false }
+        if (action !== 'paste' && action !== 'break') {
+            return false
+        }
 
         // Extract url from text
         const url = /^(https?:\/\/([^\s]+))$/.exec(text)
 
         // Break if the pasted text is not a URL
-        if(!url) { return false }
+        if (!url) {
+            return false
+        }
 
         // Break if the URL should not be matched
-        if (!urlShouldBeMatched(url)) { return false }
+        if (!urlShouldBeMatched(url)) {
+            return false
+        }
 
         const nodeId = selection.getNodeId()
-        if (!nodeId) { return false }
+        if (!nodeId) {
+            return false
+        }
 
         const doc = es.getDocument()
 

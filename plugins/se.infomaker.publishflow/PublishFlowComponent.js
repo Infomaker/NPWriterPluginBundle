@@ -27,9 +27,16 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
-            if (!this.saveInProgress) {
+            if (!this.props.saveInProgress) {
                 this.saveInProgress = true
                 this.defaultAction()
+            }
+        })
+
+        api.events.on(pluginId, event.DOCUMENT_REPLACED, () => {
+            if (this.props.isSaving) {
+                this.props.popover.disable()
+                this.props.popover.setIcon('fa-refresh fa-spin fa-fw')
             }
         })
 
@@ -690,16 +697,13 @@ class PublishFlowComponent extends Component {
         const stateDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         this.props.popover.setButtonText(
-            stateDef.saveActionLabel + (this.state.unsavedChanges ? ' *' : '')
+            stateDef.saveActionLabel + (this.state.unsavedChanges || this.props.isSaving ? ' *' : '')
         )
-
-        // TODO Visualize pubStatus and hasPublishedVersion according to Joacim
 
         let status = {title:stateDef.title}
 
         if (this.state.hasPublishedVersion) {
             status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
-
         }
 
         this.props.popover.setStatusText(

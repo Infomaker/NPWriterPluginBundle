@@ -19,6 +19,9 @@ const archivesearchPackage = {
         config.addLabel('Search...', {
             sv: 'Sök...'
         })
+        config.addLabel('Relevance', {
+            sv: 'Relevans'
+        })
         config.addLabel('Show', {
             sv: 'Visa'
         })

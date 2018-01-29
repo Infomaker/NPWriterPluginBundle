@@ -4,11 +4,8 @@ import {api} from "writer";
 class NotifyComponent extends Component {
 
     execute() {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                this.publishArticle();
-                resolve();
-            }, 1000)
+        return new Promise((resolve, reject) => {
+            this.publishArticle(resolve, reject)
         })
     }
 
@@ -21,10 +18,10 @@ class NotifyComponent extends Component {
         this.pluginId = 'se.infomaker.newspilot.notify';
     }
 
-    publishArticle() {
+    publishArticle(resolve, reject) {
         if (this.state.updateAfterPost) {
             this.extendState({updateAfterPost: false});
-            return
+            return resolve()
         }
         let newsItemArticle = api.editorSession.saveHandler.getExportedDocument();
 
@@ -39,6 +36,10 @@ class NotifyComponent extends Component {
                     this.updateNewspilotArticle(articleId, newsItemArticle)
                 }
             }
+
+            return resolve()
+        }).catch(e => {
+            reject(e)
         })
     }
 
@@ -139,7 +140,7 @@ class NotifyComponent extends Component {
         return fetch(integrationService + url, myInit)
                 .then(res => {
                     return res;
-                });
+                })
     }
 }
 

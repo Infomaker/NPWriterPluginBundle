@@ -214,7 +214,7 @@ class SearchComponent extends Component {
      */
     get _sortingOptions() {
         return [
-            {label: 'Relevans', value: ''},
+            {label: this.getLabel('Relevance'), value: ''},
             ...this.state.sortings.map(({name: label, name: value}) => {
                 return {
                     label,

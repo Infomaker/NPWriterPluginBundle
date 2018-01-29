@@ -67,7 +67,13 @@ class UATracker extends Component {
         this.showLogin()
     }
 
-    _onDocumentChanged() {
+    _onDocumentChanged(change) {
+        // If user is not logged in, do nothing
+        if (!this.socket) {
+            console.error('Document changed before user logged in. This might indicate a problem with a plugin. Document change:', change)
+            return
+        }
+
         if (!this.state.lockedBy) {
             // Article is not locked by anyone, so we reserve it for active user
             this.reserveArticle()
