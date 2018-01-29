@@ -51,7 +51,7 @@ class ContentSearchComponent extends Component {
      * @param {string} sorting
      */
     setSorting(sorting) {
-        this.extendState({ sorting })
+        this.extendState({ sorting, start: 0 })
         this.search()
     }
 
@@ -61,7 +61,7 @@ class ContentSearchComponent extends Component {
      * @param {int} limit
      */
     setLimit(limit) {
-        this.extendState({ limit })
+        this.extendState({ limit, start: 0 })
         this.search()
     }
 
