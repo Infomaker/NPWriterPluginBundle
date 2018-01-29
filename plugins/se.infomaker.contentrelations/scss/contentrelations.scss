@@ -14,6 +14,11 @@
             &:hover {
                 color: #555;
             }
+            &.fa-search, &.fa-times-circle {
+                &:hover {
+                    cursor: pointer;
+                }
+            }
         }
     }
     .search-input {
@@ -46,7 +51,7 @@
             }
         }
     }
-    .list {
+    .search-result-list {
         list-style: none;
         margin: 20px 0 0 0;
         padding: 0;
@@ -121,6 +126,32 @@
         max-height: 40px;
         img {
             max-height: 40px;
+        }
+    }
+
+    .pagination-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .pagination-arrow {
+            padding: 0 41px;
+        }
+        .pagination-link {
+            padding: 3px 9px;
+            margin-right: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+
+            &:last-of-type {
+                margin-right: 0px;
+            }
+
+            &.active {
+                color: white;
+                background: #288dc0;
+            }
         }
     }
 }

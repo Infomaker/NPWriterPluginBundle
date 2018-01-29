@@ -49,7 +49,7 @@
     "@infomaker/oc-client": "0.0.5",
     "@infomaker/xml-handler": "0.0.17",
     "cropjs": "^1.1.0",
-    "google-maps-api-loader": "^0.3.0",
+    "google-maps-api-loader": "1.0.0",
     "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git#3568c3c183e6a5258462c9be21c06d1360a02d1b",
     "socket.io-client": "^1.7.2"
   }

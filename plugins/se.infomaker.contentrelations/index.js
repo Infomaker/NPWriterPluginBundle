@@ -1,11 +1,9 @@
-import './scss/contentrelations.scss'
-
-import ContentRelationsPckage from './ContentrelationsPackage'
+import ContentRelationsPackage from './ContentrelationsPackage'
 const { registerPlugin } = writer
 
 export default () => {
     if (registerPlugin) {
-        registerPlugin(ContentRelationsPckage)
+        registerPlugin(ContentRelationsPackage)
     } else {
         console.info("Register method not yet available");
     }

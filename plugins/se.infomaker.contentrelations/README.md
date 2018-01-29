@@ -1,23 +1,109 @@
 # Content relations plugin
-This plugin uses `Concept Backend` to search Writer OC backend for articles and images. From the search result, the
-user can drag and drop the article/image onto the article.
+
+This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for articles. From the search result, the
+user can drag and drop the related article onto the open article.
+
+## Dependency
+
+- This plugin requires `writer > 3.12.0` and depends on the `writer.UIPagination` class.
+- This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content, and needs configuration under contentHost (see below)
 
 ## Plugin configuration
-No `data` configuration needed. Note that the configuration for how to search and response fields are
-handled by `Concept Backend`.
+
+- `"npDropLinkMatcher":` On drop, If a match is found params is updated with `isNpDroplink=true`
+- `"contentHost": {... ` BA-proxy config
+- `"contenttype": "Article",` Article contentType in OC
+- `"locale": "sv",` Locale used to print dates
+- `"defaultQueries": [ ` populate the query-dropdown with queries
+- `"icons": [... ` icons to use in results list, article.product (specified in propertyMap) will look for `icon.name`
 
 ```json
 {
-  "id": "se.infomaker.contentrelations",
-  "name": "contentrelations",
-  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.js",
-  "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}im-contentrelations.css",
-  "enabled": true,
-  "mandatory": false
+    "id": "se.infomaker.contentrelations",
+    "name": "contentrelations",
+    "url": "http://localhost:5001/im-contentrelations.js",
+    "style": "http://localhost:5001/im-contentrelations.css",
+    "enabled": true,
+    "mandatory": false,
+    "tab": "main",
+    "data": {
+        "npDropLinkMatcher": "http://127.0.0.1:8080/opencontent[^\\s]+",
+        "contentHost": {
+            "protocol": "https://",
+            "hostName": "baproxy.dev.gota.infomaker.io",
+            "port": "5555",
+            "healthPath": "/health",
+            "queryPath": "/search",
+            "objectPath": "/objects",
+            "sortingsPath": "/sortings"
+        },
+        "contenttype": "Article",
+        "locale": "sv",
+        "defaultQueries": [
+            {
+                "label": "Fritext",
+                "q": ""
+            },
+            {
+                "label": "Artilkar med bilder",
+                "q": "ImageUuid:*"
+            },
+            {
+                "label": "Webartiklar",
+                "q": "ArticleType:Webbartikel"
+            }
+        ],
+        "propertyMap": {
+            ... (see documentation below)
+        },
+        "icons": [
+            {"name": "bot", "data": "data:image/svg+xml;base64,xxx"},
+            {"name": "blt", "data": "data:image/svg+xml;base64,xxx"},
+            {"name": "bt", "data": "data:image/svg+xml;base64,xxx"},
+            {"name": "kb", "data": "data:image/svg+xml;base64,xxx"},
+            {"name": "smp", "data": "data:image/svg+xml;base64,xxx"},
+            ...
+        ]
+    }
+},
+```
+
+#### Property map
+
+The property map is used to translate different kind of OC configurations into prop names that the plugin can use.
+The left hand side will be used by plugin, fill in the property-names from OC on the right hand side.
+
+```json
+"propertyMap": {
+    "uuid": "uuid",
+    "headline": "ArticleHeadline",
+    "authors": "Authors",
+    "images": "ImageUuid",
+
+    "created": "created",
+    "updated": "updated",
+    "published": "Pubdate",
+
+    "pubstatus": "PubStatus",
+    "premium": "Plus",
+    "lifetime": "Lifetime",
+    "newsvalue": "NewsPrio",
+    "products": "Services",
+    "channels": "Section",
+    "profiles": "ArticleContentType",
+
+    "hasPublishedVersion": "WriterHasPublishedVersion"
 }
 ```
 
+### Property usage
+
+Image below explains how and where the different props are displayed.
+
+![PropertyMappings](propertymap.png)
+
 ## Output
+
 In the article, the plugin will add the following xml block under `newsItem > contentSet > inlineXML > idf > group`
 (e.g. article):
 
@@ -30,6 +116,7 @@ In the article, the plugin will add the following xml block under `newsItem > co
 ```
 
 Example of related image:
+
 ```xml
 <object id="MzcsMjUyLDExMiwyNDY" type="x-im/image" uuid="1f220bbc-87fc-5b73-ab1a-c474ab71d026">
     <links>
