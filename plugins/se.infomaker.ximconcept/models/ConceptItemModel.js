@@ -109,15 +109,15 @@ class ConceptItemModel {
         } else {
             item.errors = this.errors
         }
-        
+
         return item
     }
 
     /**
-     * Will save updated/created concept to OC and decorate 
+     * Will save updated/created concept to OC and decorate
      * conceptItemObject with updated data
-     * 
-     * @param {object} refs 
+     *
+     * @param {object} refs
      */
     async save(refs) {
         let item = this.item
@@ -125,7 +125,7 @@ class ConceptItemModel {
         this.uiGroups.forEach(group => {
             group.fields.forEach(field => {
                 this.xmlHandler.createNodes(field.xpath)
-                
+
                 if (!refs[field.refId]) {
                     console.info('Missing: ', field.type)
                 }
@@ -146,12 +146,12 @@ class ConceptItemModel {
             this.xmlHandler.createNodes(this.providerXpath)
             this.xmlHandler.createNodes(this.pubStatusXpath)
 
-            this.xmlHandler.setNodeValue(this.xmlHandler.getNode(this.providerXpath), this.config.provider || 'writer') 
+            this.xmlHandler.setNodeValue(this.xmlHandler.getNode(this.providerXpath), this.config.provider || 'writer')
             this.xmlHandler.setNodeValue(this.xmlHandler.getNode(this.pubStatusXpath), this.config.pubStatus || 'imext:draft')
         }
 
         const xmlString = new XMLSerializer().serializeToString(this.conceptXml.documentElement).trim().replace(/ xmlns=""/g, '')
-        
+
         if (item.uuid) {
             await ConceptService.updateConceptItemXml(item.uuid, xmlString)
         } else {

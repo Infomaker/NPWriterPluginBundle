@@ -1,8 +1,10 @@
 # Concept plugin
+
 This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's 
 configured to handle, but is dependent on external config and templates to enable create/edit actions on concepts.
 
 ## Supported types
+
 As of now these are the supported types ([External link](https://github.com/Infomaker/writer-format/blob/master/newsml/conceptitem/im-conceptitem-spec.md))
 
 - x-im/category
@@ -17,10 +19,12 @@ As of now these are the supported types ([External link](https://github.com/Info
 
 
 ### Plugin config
+
 The plugin can be configured to handle one or many types, it can also be configured to handle one or many subtypes. 
 (e.g type x-im/place, subtypes, position, polygon).
 
 #### Example Configs
+
 Place:
 
 ```json
@@ -117,6 +121,7 @@ Tags:
 - `"subtypes": [...]` A list of subtypes that are allowed
 
 ### Writer config
+
 The new concept plugin requires `writer > 3.10.1`and depends on `writer.ConceptService` class. This class needs 
 configuration from the writer config file.
 
@@ -135,6 +140,8 @@ configuration from the writer config file.
     "broaderLimit": 3,
     "relatedGeoFunction": "Contains",
     "relatedGeoExludeSelf": false,
+    "searchLimit": 50,
+    "sortField": "ConceptNameString",
     "propertyMap": {
         ...
     }
@@ -143,16 +150,20 @@ configuration from the writer config file.
 
 - `"conceptPath": "https://...",` A remote path from where ConceptService can load concept config and templates
 - `"contenttype": "Concept",` Concepts contentType in OC
-- `"broaderLimit": 3,` "How high" ConceptService should follow Broader links
+- `"broaderLimit": 3,` How many steps ConceptService should follow Broader links
 - `"relatedGeoFunction": "Contains",` Function to use when adding related geo zones to article (Contains/Intersects/IsWithin)
 - `"relatedGeoExludeSelf": false,` If added geo concepts should be excluded from `related-geo` tag
+- `"searchLimit": 50,` Sets the search limit for concept searches
+- `"sortField": "ConceptNameString",` Which index field to sort by
 - `"propertyMap": { ... }` See below
 
 #### BA_PROXY
+
 The ba_proxy is used for Open Content search requests and is a temporary dependency that will be replaced by search 
 functionality through writer backend/editorservice.
 
 #### Property map
+
 The property map is used to translate different kind of OC configurations into prop names ConceptService can use. 
 The left hand side will be used by ConceptService, fill in the property-names from OC on the right hand side.
 
