@@ -144,3 +144,10 @@ update corresponding dates in `newsItem > itemMeta`, e.g.
     ...
 </newsItem>
 ```
+
+## Implicit rules
+
+When the article has status 'stat:usable' it is not possible to change the `pubStart` property in the UI, because when an article is published it should not
+be possible to change the publication date. An exception to this rule is the state where the action 'pubstart:set' is issued, which can be used to re-publish
+an article. 
+
