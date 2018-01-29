@@ -172,14 +172,14 @@ If not present, these are the default mappings for an Image Node's properties.
 
 | Image Node Property | Image Meta Property |
 | ------------------: | :------------------ |
-| authors             | authors             |
-| credit              | credit              |
-| caption             | caption             |
-| alttext             | false               |
+| authors             | `"authors"`             |
+| credit              | `"credit"`              |
+| caption             | `"caption"`             |
+| alttext             | `false`               |
 
 ##### Allowed Property Values
-If an Image Node property is mapped to `false` it will automatically be filled when
-adding a new image.
+If an Image Node property is mapped to `false` it will not receive any value.
+
 **If the configuration is invalid, the image will use the standard
 mapping.**
 
