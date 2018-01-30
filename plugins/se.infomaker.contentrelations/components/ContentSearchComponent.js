@@ -29,7 +29,7 @@ class ContentSearchComponent extends Component {
             sorting: this.props.sorting,
             query: "",
             results: [],
-            totalhits: 0,
+            totalHits: 0,
             searchTerm: '',
             selectedQuery: this.props.defaultQueries[0]
         }
@@ -193,7 +193,6 @@ class ContentSearchComponent extends Component {
         .setStart(start)
         .setLimit(limit)
         .setResponseProperties(responseProperties)
-        console.info('Start: ', start)
 
         if (sorting && sorting.field) {
             queryBuilder.setSorting(this.state.sorting.field, this.state.sorting.ascending)
