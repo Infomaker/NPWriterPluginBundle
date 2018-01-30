@@ -7,9 +7,12 @@ class ContentRelationsMainComponent extends Component {
 
     didMount() {
         const relevance = { name: 'Relevans', field: false, ascending: false }
+        const { contentHost, contenttype } = this.state.pluginConfig
+        contentHost.sortingsPath += `?contentType=${contenttype}`
+
         this.extendState({ sorting: relevance, sortings: [relevance] })
 
-        new OpenContentClient(this.state.pluginConfig.contentHost)
+        new OpenContentClient(contentHost)
             .getSortings()
             .then(response => api.router.checkForOKStatus(response))
             .then(response => response.json())
@@ -20,8 +23,8 @@ class ContentRelationsMainComponent extends Component {
                         ...sortings.map((sorting) => {
                             return {
                                 name: sorting.name,
-                                field: sorting.sortIndexFields[0].indexField,
-                                ascending: sorting.sortIndexFields[0].ascending
+                                field: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].indexField : false,
+                                ascending: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].ascending : false
                             }
                         })
                     ]
