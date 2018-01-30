@@ -10,6 +10,7 @@ user can drag and drop the related article onto the open article.
 
 ## Plugin configuration
 
+- `"tab": "main"` in this field, above the data section, you can specify in which tab the plugin should run, if this field is left out, it will render in a new tab
 - `"npDropLinkMatcher":` On drop, If a match is found params is updated with `isNpDroplink=true`
 - `"contentHost": {... ` BA-proxy config
 - `"contenttype": "Article",` Article contentType in OC
