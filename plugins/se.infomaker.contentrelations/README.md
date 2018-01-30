@@ -8,9 +8,24 @@ user can drag and drop the related article onto the open article.
 - This plugin requires `writer > 3.12.0` and depends on the `writer.UIPagination` class.
 - This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content, and needs configuration under contentHost (see below)
 
+## Tab placement
+The tab under which the plugin will be rendered can be specified with the:
+
+- `"tab": "xxx"` field, above the data section, you can specify in which tab the plugin should run, if this field is left out, it will render in a new tab
+
+```json
+{
+    "id": "se.infomaker.contentrelations",
+    "name": "contentrelations",
+    "url": "xx.../im-contentrelations.js",
+    "style": "xx.../im-contentrelations.css",
+    "enabled": true,
+    "mandatory": false,
+    "tab": "main", <---
+```
+
 ## Plugin configuration
 
-- `"tab": "main"` in this field, above the data section, you can specify in which tab the plugin should run, if this field is left out, it will render in a new tab
 - `"npDropLinkMatcher":` On drop, If a match is found params is updated with `isNpDroplink=true`
 - `"contentHost": {... ` BA-proxy config
 - `"contenttype": "Article",` Article contentType in OC

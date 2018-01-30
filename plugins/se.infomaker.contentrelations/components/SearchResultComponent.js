@@ -9,12 +9,9 @@ class SearchResultComponent extends Component {
                 .ref(`searchResultItem-${item.id}`)
         })
 
-        const el = $$('div')
-            .addClass('search-result-list')
-            .append(items)
-            .ref('searchResultComponent')
-
-        return el
+        return $$('div', { class: 'search-result-list'}, [
+            ...items
+        ]).ref('searchResultComponent')
     }
 }
 
