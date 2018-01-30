@@ -41,7 +41,6 @@ The tab under which the plugin will be rendered can be specified with the:
     "style": "http://localhost:5001/im-contentrelations.css",
     "enabled": true,
     "mandatory": false,
-    "tab": "main",
     "data": {
         "npDropLinkMatcher": "http://127.0.0.1:8080/opencontent[^\\s]+",
         "contentHost": {
