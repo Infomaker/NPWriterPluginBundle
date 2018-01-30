@@ -87,11 +87,14 @@ class SearchResultItem extends Component {
                     $$('div', { class: 'article-text-wrapper', title: (article.headline[0] && article.headline[0].length) ? article.headline[0] : '-'}, [
                         $$('h2', { class: `${article.images.length ? 'with-image' : ''}`}, (article.headline[0] && article.headline[0].length) ? article.headline[0] : '-'),
                         $$('div', { class: 'article-meta' }, [
-                            $$('p', { class: 'meta-data', title: propertyMap['channels'] }, article.channels.length ? article.channels.reduce((channelString, channel) => `${channelString}${channelString.length ? ', ' : ''}${channel}`, '') : ' - '),
+                            $$('p', { class: 'meta-data', title: propertyMap['channels'] },
+                                article.channels.length ? article.channels.reduce((channelString, channel) => `${channelString}${channelString.length ? ', ' : ''}${channel}`, '') : ' - '),
                             $$('p', { class: 'divider' }, ' | '),
-                            $$('p', { class: 'meta-data', title: propertyMap['profiles'] }, article.profiles.length ? article.profiles.reduce((profileString, profile) => `${profileString}${profileString.length ? ', ' : ''}${profile}`, '') : ' - '),
+                            $$('p', { class: 'meta-data', title: propertyMap['profiles'] },
+                                article.profiles.length ? article.profiles.reduce((profileString, profile) => `${profileString}${profileString.length ? ', ' : ''}${profile}`, '') : ' - '),
                             $$('p', { class: 'divider' }, ' | '),
-                            $$('p', { class: 'meta-data', title: propertyMap['authors'] }, article.authors.length ? article.authors.reduce((authorString, author) => `${authorString}${authorString.length ? ', ' : ''}${author}`, '') : ' - ')
+                            $$('p', { class: 'meta-data', title: propertyMap['authors'] },
+                                article.authors.length ? article.authors.reduce((authorString, author) => `${authorString}${authorString.length ? ', ' : ''}${author}`, '') : ' - ')
                         ])
                     ]),
                     article.images.length ? $$('div', { class: 'article-image-wrapper' }, [
