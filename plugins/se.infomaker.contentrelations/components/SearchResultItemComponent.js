@@ -53,30 +53,30 @@ class SearchResultItem extends Component {
                 const icon = icons.find(icon => icon.name.toLowerCase() === product.toLowerCase())
 
                 if (icon) {
-                    img = $$('img', { class: 'article-product-icon', src: `${icon.data}`, title: product })
+                    img = $$('img', { class: 'article-product-icon', src: `${icon.data}`, title: this.capitalize(product) })
                 }
             }
 
             return img
         })
 
-        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus[0]}`, draggable: "true" }, [
+        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus[0]}`, title: `${article.pubstatus.length ? article.pubstatus[0] : ''}`, draggable: "true" }, [
 
             $$('div', { class: `search-result-article_inner has_publiched_version_${article.hasPublishedVersion[0]}` }, [
 
                 $$('div', { class: 'article-header' }, [
                     $$('div', { class: 'article-header-meta' }, [
-                        (article.premium && article.premium.length && article.premium[0] === 'true') ? $$('p', { class: 'header-meta-item premium', title: propertyMap['premium'] }, 'P') : '',
-                        (article.lifespan && article.lifespan.length) ? $$('p', { class: 'header-meta-item lifespan', title: propertyMap['lifetime'] }, article.lifespan[0]) : '',
-                        (article.newsvalue && article.newsvalue.length) ? $$('p', { class: 'header-meta-item prio', title: propertyMap['newsvalue'] }, article.newsvalue[0]) : '',
+                        (article.premium && article.premium.length && article.premium[0] === 'true') ? $$('p', { class: 'header-meta-item premium', title: this.capitalize(propertyMap['premium']) }, 'P') : '',
+                        (article.lifespan && article.lifespan.length) ? $$('p', { class: 'header-meta-item lifespan', title: this.capitalize(propertyMap['lifetime']) }, article.lifespan[0]) : '',
+                        (article.newsvalue && article.newsvalue.length) ? $$('p', { class: 'header-meta-item prio', title: this.capitalize(propertyMap['newsvalue']) }, article.newsvalue[0]) : '',
                         ...articleProductIcons
                     ]),
                     $$('div', { class: 'article-header-dates' }, [
-                        $$('p', {class: 'article-head-date', title: 'Updated'}, [
+                        $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['updated'])}: ${moment(article.updated[0]).locale(this.props.locale).format('lll')}`}, [
                             $$('i', { class: 'fa fa-refresh'}),
                             moment(article.updated[0]).locale(this.props.locale).format('LT')
                         ]),
-                        $$('p', {class: 'article-head-date', title: 'Published'}, [
+                        $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['published'])}: ${moment(article.published[0]).locale(this.props.locale).format('lll')}` }, [
                             $$('i', {class: 'fa fa-clock-o'}),
                             moment(article.published[0]).locale(this.props.locale).format('LT')
                         ]),
@@ -87,13 +87,13 @@ class SearchResultItem extends Component {
                     $$('div', { class: 'article-text-wrapper', title: (article.headline[0] && article.headline[0].length) ? article.headline[0] : '-'}, [
                         $$('h2', { class: `${article.images.length ? 'with-image' : ''}`}, (article.headline[0] && article.headline[0].length) ? article.headline[0] : '-'),
                         $$('div', { class: 'article-meta' }, [
-                            $$('p', { class: 'meta-data', title: propertyMap['channels'] },
+                            $$('p', { class: 'meta-data', title: this.capitalize(propertyMap['channels']) },
                                 article.channels.length ? article.channels.reduce((channelString, channel) => `${channelString}${channelString.length ? ', ' : ''}${channel}`, '') : ' - '),
                             $$('p', { class: 'divider' }, ' | '),
-                            $$('p', { class: 'meta-data', title: propertyMap['profiles'] },
+                            $$('p', { class: 'meta-data', title: this.capitalize(propertyMap['profiles']) },
                                 article.profiles.length ? article.profiles.reduce((profileString, profile) => `${profileString}${profileString.length ? ', ' : ''}${profile}`, '') : ' - '),
                             $$('p', { class: 'divider' }, ' | '),
-                            $$('p', { class: 'meta-data', title: propertyMap['authors'] },
+                            $$('p', { class: 'meta-data', title: this.capitalize(propertyMap['authors']) },
                                 article.authors.length ? article.authors.reduce((authorString, author) => `${authorString}${authorString.length ? ', ' : ''}${author}`, '') : ' - ')
                         ])
                     ]),
@@ -109,6 +109,10 @@ class SearchResultItem extends Component {
         .on('dragend', () => { this.dragEndHandler(article) })
 
         return el
+    }
+
+    capitalize(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
 }
