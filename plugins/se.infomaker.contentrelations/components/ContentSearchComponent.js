@@ -97,7 +97,7 @@ class ContentSearchComponent extends Component {
             .ref('searchInput')
 
         const searchIcon = $$('i', { 'class': 'content-relations-icon fa fa-search'})
-            .on('click', this.search.bind(this))
+            .on('click', this.handleSearchSubmission.bind(this))
             .ref('searchIcon')
 
         const clearSearchIcon = $$('i', { 'class': 'content-relations-icon fa fa-times-circle', 'aria-hidden': 'true'})
@@ -116,7 +116,7 @@ class ContentSearchComponent extends Component {
                 (this.state.results.length || this.state.searchTerm) ? clearSearchIcon :
                 searchIcon
             )
-            .on('submit', this.search.bind(this))
+            .on('submit', this.handleSearchSubmission.bind(this))
             .ref('searchForm')
 
         const optionsComponent = $$(OptionsComponent, {
@@ -161,6 +161,17 @@ class ContentSearchComponent extends Component {
     }
 
     /**
+     * Handles submission of search form and search button click
+     *
+     * @param {Event} e
+     */
+    handleSearchSubmission(e) {
+        e.preventDefault()
+        this.extendState({ start: 0 })
+        this.search()
+    }
+
+    /**
      * Handle key down events
      *
      * @param {object} e Event
@@ -172,15 +183,9 @@ class ContentSearchComponent extends Component {
     }
 
     /**
-     * Do a search against Open COntent
-     *
-     * @param {object} e Event
+     * Do a search against Open Content
      */
-    async search(e) {
-        if (e) {
-            e.preventDefault()
-        }
-
+    async search() {
         const { searchTerm, selectedQuery, start, limit, sorting } = this.state
         const responseProperties = Object.keys(this.props.propertyMap).map(key => this.props.propertyMap[key])
         let q = `contenttype:${this.props.contenttype} AND ${selectedQuery.q} ${searchTerm}`.trim()
