@@ -52,21 +52,13 @@ class OptionsComponent extends Component {
     }
 
     render($$){
-        const el = $$('div').addClass('content-options').ref('contentOptions')
-        const nowShoing = $$('p')
-            .append(`Visar ${this.props.displaying} av ${this.props.totalHits}`)
-            .addClass('result-description')
-
-        const infoWrapper = $$('div')
-            .addClass('info-wrapper')
-            .append(nowShoing)
-
-        const selectSortings = this.renderSortingsDropDown($$)
-        const selectLimit = this.renderLimitDropDown($$)
-
-        return el.append(infoWrapper)
-            .append(selectSortings)
-            .append(selectLimit)
+        return $$('div', { class: 'content-options'}, [
+            $$('div', { class: 'info-wrapper'}, [
+                $$('p', { class: 'result-description'}, `Visar ${this.props.displaying} av ${this.props.totalHits}`)
+            ]),
+            this.renderSortingsDropDown($$),
+            this.renderLimitDropDown($$)
+        ]).ref('contentOptions')
     }
 
 }
