@@ -7,7 +7,8 @@ class ContentRelationsMainComponent extends Component {
 
     didMount() {
         const relevance = { name: 'Relevans', field: false, ascending: false }
-        const { contentHost, contenttype } = this.state.pluginConfig
+        let { contentHost, contenttype } = this.state.pluginConfig
+        contentHost = Object.assign({}, contentHost) // Clone contentHost to avoid overwriting sortingsPath
         contentHost.sortingsPath += `?contentType=${contenttype}`
 
         this.extendState({ sorting: relevance, sortings: [relevance] })
