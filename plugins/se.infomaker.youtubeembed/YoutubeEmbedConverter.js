@@ -64,7 +64,8 @@ export default {
 
         alternateLink.append(
             $$('data').append(
-                $$('context').append('Video')
+                $$('context').append('Video'),
+                $$('provider').append(node.oembed.provider_name)
             )
         )
 
