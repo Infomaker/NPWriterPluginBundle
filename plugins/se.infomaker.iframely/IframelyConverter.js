@@ -107,7 +107,7 @@ const IframelyConverter = {
         const {description, provider_name: providerName} = oembed
 
         const oembedExporter = new OEmbedExporter(oembed)
-        const context = this._getContextForProvider(providerName, api, oembedExporter)
+        const context = this._getContextForProvider(api, oembedExporter)
 
         const alternateLink = $$('link')
         const title = oembedExporter.getTitle(configLabel)
@@ -140,20 +140,12 @@ const IframelyConverter = {
 
     /**
      *
-     *
-     * @param providerName
      * @param api
      * @param {OEmbedExporter} oembedExporter
      * @returns string|boolean
      * @private
      */
-    _getContextForProvider(providerName, api, oembedExporter) {
-        if (!providerName) {
-            return false
-        }
-
-        providerName = providerName.toLowerCase()
-
+    _getContextForProvider(api, oembedExporter) {
         const defaultContexts = {
             'Video': ['youtube', 'vimeo'],
             'Social': ['instagram', 'twitter', 'facebook'],
