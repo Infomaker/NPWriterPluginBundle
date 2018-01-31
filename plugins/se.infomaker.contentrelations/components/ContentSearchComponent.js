@@ -36,6 +36,21 @@ class ContentSearchComponent extends Component {
     }
 
     /**
+     * Reset state
+     */
+    resetState() {
+        this.refs.searchInput.val('')
+
+        this.extendState({
+            searching: false,
+            searchTerm: '',
+            results: [],
+            totalHits: 0,
+            start: 0
+        })
+    }
+
+    /**
      * Set start
      *
      * @param {int} start
@@ -101,7 +116,7 @@ class ContentSearchComponent extends Component {
             .ref('searchIcon')
 
         const clearSearchIcon = $$('i', { 'class': 'content-relations-icon fa fa-times-circle', 'aria-hidden': 'true'})
-            .on('click', this.clear.bind(this))
+            .on('click', this.resetState.bind(this))
             .ref('clearSearchIcon')
 
         const searchingIcon = $$('i', { 'class': 'content-relations-icon fa fa-spinner fa-spin', 'aria-hidden': 'true'})
@@ -121,7 +136,7 @@ class ContentSearchComponent extends Component {
 
         const optionsComponent = $$(OptionsComponent, {
             totalHits: this.state.totalHits,
-            displaying: this.state.results.length,
+            displaying: ((this.state.start + this.state.limit <= this.state.totalHits) ? (this.state.start + this.state.limit) : this.state.totalHits),
             sortings: this.props.sortings,
             sorting: this.state.sorting || this.props.sorting,
             limit: this.state.limit,
@@ -178,7 +193,7 @@ class ContentSearchComponent extends Component {
      */
     handleKeyDown(e) {
         if (e.keyCode === 27) {
-            this.clear()
+            this.resetState()
         }
     }
 
@@ -221,18 +236,6 @@ class ContentSearchComponent extends Component {
             totalHits: jsonResult.hits.totalHits,
             searching: false,
             results: results
-        })
-    }
-
-    clear() {
-        this.refs.searchInput.val('')
-
-        this.extendState({
-            searching: false,
-            searchTerm: '',
-            results: [],
-            totalHits: 0,
-            start: 0
         })
     }
 }
