@@ -148,8 +148,7 @@ const IframelyConverter = {
     _getContextForProvider(api, oembedExporter) {
         const defaultContexts = {
             'Video': ['youtube', 'vimeo'],
-            'Social': ['instagram', 'twitter', 'facebook'],
-            'Audio': ['spotify', 'itunes', 'soundcloud']
+            'Social': ['instagram', 'twitter', 'facebook']
         }
         const configuredContexts = api.getConfigValue('se.infomaker.iframely', 'contexts', {})
 
