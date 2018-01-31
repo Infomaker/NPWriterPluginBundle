@@ -1,5 +1,4 @@
-
-import {moment} from 'writer'
+import {moment, OEmbedExporter} from 'writer'
 
 export default {
     type: 'youtubeembed',
@@ -49,22 +48,25 @@ export default {
         let configLabel = api.getConfigValue('se.infomaker.youtubeembed', 'alternateLinkTitle', 'Click link to view content')
 
         const oembed = node.oembed
-        configLabel = configLabel.replace('{author_name}', oembed.author_name)
-        configLabel = configLabel.replace('{author_url}', oembed.author_url)
-        configLabel = configLabel.replace('{provider_name}', oembed.provider_name)
-        configLabel = configLabel.replace('{provider_url}', oembed.provider_url)
-        configLabel = configLabel.replace('{text}', oembed.title ? oembed.title : '')
+        const oembedExporter = new OEmbedExporter(oembed)
 
-        const alternateLink = converter.$$('link'),
-            alternateImageLink = $$('link'),
-            imageData = $$('data')
+        const title = oembedExporter.getTitle(configLabel)
+        const alternateLink = $$('link')
+        const alternateImageLink = $$('link')
+        const imageData = $$('data')
 
         alternateLink.attr({
             rel: 'alternate',
             type: 'text/html',
             url: node.url,
-            title: configLabel
+            title
         })
+
+        alternateLink.append(
+            $$('data').append(
+                $$('context').append('Video')
+            )
+        )
 
         // Create the image/alternate
         alternateImageLink.attr({
