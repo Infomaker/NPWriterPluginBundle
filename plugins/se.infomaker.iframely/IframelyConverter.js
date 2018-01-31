@@ -1,3 +1,5 @@
+import {OEmbedExporter} from 'writer'
+
 const IframelyConverter = {
     type: 'iframely',
     tagName: 'object',
@@ -49,28 +51,23 @@ const IframelyConverter = {
         dataElem.append([titleElem, embedCodeElem])
         el.append(dataElem)
 
-        const api = converter.context.api
-        let configLabel = api.getConfigValue('se.infomaker.iframely', 'alternateLinkTitle', '{text}')
-
         const oembed = node.oembed
-        const alternateLink = converter.$$('link')
         const linksEl = $$('links')
 
-        const title = configLabel.replace('{author_name}', oembed.author)
-            .replace('{author_url}', oembed.author_url)
-            .replace('{provider_name}', oembed.provider_name)
-            .replace('{text}', oembed.title ? oembed.title : '')
+        this._appendAlternateHtml(node, linksEl, converter)
+        this._appendAlternateImage(oembed, $$, linksEl)
 
-        alternateLink.attr({
-            rel: 'alternate',
-            type: 'text/html',
-            url: node.url,
-            title: title
-        })
+        el.append(linksEl)
+    },
 
-        linksEl.append(alternateLink)
-
-        if(oembed.thumbnail_url) {
+    /**
+     * @param {object} oembed
+     * @param $$
+     * @param linksEl
+     * @private
+     */
+    _appendAlternateImage(oembed, $$, linksEl) {
+        if (oembed.thumbnail_url) {
             const alternateImageLink = $$('link')
             const imageData = $$('data')
 
@@ -82,20 +79,89 @@ const IframelyConverter = {
             })
 
             // Check if we have width and height of thumbail
-            if(oembed.thumbnail_width) {
+            if (oembed.thumbnail_width) {
                 imageData.append($$('width').append(oembed.thumbnail_width))
             }
-            if(oembed.thumbnail_height) {
+            if (oembed.thumbnail_height) {
                 imageData.append($$('height').append(oembed.thumbnail_height))
             }
-            if(imageData.childNodes.length > 0) {
+            if (imageData.childNodes.length > 0) {
                 alternateImageLink.append(imageData)
             }
 
             linksEl.append(alternateImageLink)
         }
+    },
 
-        el.append(linksEl)
+    /**
+     * @param node
+     * @param linksEl
+     * @param converter
+     * @private
+     */
+    _appendAlternateHtml(node, linksEl, converter) {
+        const api = converter.context.api
+        const configLabel = api.getConfigValue('se.infomaker.iframely', 'alternateLinkTitle', '{text}')
+        const {oembed, url} = node
+        const {$$} = converter
+        const {description, provider_name: providerName} = oembed
+
+        const oembedExporter = new OEmbedExporter(oembed)
+        const context = this._getContextForProvider(providerName, api, oembedExporter)
+
+        const alternateLink = $$('link')
+        const title = oembedExporter.getTitle(configLabel)
+
+        alternateLink.attr({
+            rel: 'alternate',
+            type: 'text/html',
+            title,
+            url
+        })
+
+        const dataEl = $$('data')
+
+        if (context) {
+            dataEl.append($$('context').append(context.context))
+        }
+        if (description) {
+            dataEl.append($$('description').append(description.trim()))
+        }
+        if (providerName) {
+            dataEl.append($$('provider').append(providerName.trim()))
+        }
+
+        if (dataEl.childNodes.length > 0) {
+            alternateLink.append(dataEl)
+        }
+
+        linksEl.append(alternateLink)
+    },
+
+    /**
+     *
+     *
+     * @param providerName
+     * @param api
+     * @param {OEmbedExporter} oembedExporter
+     * @returns string|boolean
+     * @private
+     */
+    _getContextForProvider(providerName, api, oembedExporter) {
+        if (!providerName) {
+            return false
+        }
+
+        providerName = providerName.toLowerCase()
+
+        const defaultContexts = {
+            'Video': ['youtube', 'vimeo'],
+            'Social': ['instagram', 'twitter', 'facebook'],
+            'Audio': ['spotify', 'itunes', 'soundcloud']
+        }
+        const configuredContexts = api.getConfigValue('se.infomaker.iframely', 'contexts', {})
+
+        return oembedExporter.getContext(configuredContexts, defaultContexts)
     }
 }
 
