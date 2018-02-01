@@ -1,3 +1,5 @@
+import {OEmbedExporter} from 'writer'
+
 const socialEmbedConverter = {
     type: 'socialembed',
     tagName: 'object',
@@ -16,7 +18,7 @@ const socialEmbedConverter = {
     },
 
     export: function (node, el, converter) {
-        const $$ = converter.$$;
+        const $$ = converter.$$
 
         el.attr({
             id: node.id,
@@ -25,8 +27,8 @@ const socialEmbedConverter = {
 
         el.removeAttr('data-id');
 
-        const links = $$('links'),
-            link = $$('link')
+        const links = $$('links')
+        const link = $$('link')
 
         link.attr({
             rel: 'self',
@@ -53,7 +55,7 @@ const socialEmbedConverter = {
     },
 
 
-    _createTitleForAlternateLink: (linkType, data, converter) => {
+    _createTitleForAlternateLink: (linkType, oembed, converter) => {
 
         const configKeysForLinkType = new Map()
         configKeysForLinkType.set('x-im/instagram', 'alternateInstagramTitle')
@@ -66,12 +68,9 @@ const socialEmbedConverter = {
         }
         let configLabel = converter.context.api.getConfigValue('se.infomaker.socialembed', configKey, '{author_name} posted on {provider_name}')
 
-        configLabel = configLabel.replace('{author_name}', data.author_name)
-        configLabel = configLabel.replace('{author_url}', data.author_url)
-        configLabel = configLabel.replace('{provider_name}', data.provider_name)
-        configLabel = configLabel.replace('{provider_url}', data.provider_url)
-        configLabel = configLabel.replace('{text}', data.title ? data.title : '')
-        return configLabel
+        const oembedExporter = new OEmbedExporter(oembed)
+
+        return oembedExporter.getTitle(configLabel)
     },
 
     /**
@@ -82,16 +81,24 @@ const socialEmbedConverter = {
      * @private
      */
     _createDefaultAlternateLink: (node, converter) => {
-        const alternateLink = converter.$$('link')
+        const {$$} = converter
+        const alternateLink = $$('link')
         alternateLink.attr({
             rel: 'alternate',
             type: 'text/html',
             url: node.url,
-            title:  socialEmbedConverter._createTitleForAlternateLink(node.linkType, node.oembed, converter)
+            title: socialEmbedConverter._createTitleForAlternateLink(node.linkType, node.oembed, converter)
         })
+
+        alternateLink.append(
+            $$('data').append(
+                $$('context').append('Social'),
+                $$('provider').append(node.oembed.provider_name)
+            )
+        )
+
         return alternateLink
     },
-
 
     /**
      * For Instagram we need to create two links, one for the url itself and another for the thumbnail
@@ -101,13 +108,10 @@ const socialEmbedConverter = {
      * @private
      */
     _createAlternateLinkForInstagram: (node, converter) => {
-
-
-
         const $$ = converter.$$
-        const alternateLink = $$('link'),
-            alternateImageLink = $$('link'),
-            imageData = $$('data')
+        const alternateLink = $$('link')
+        const alternateImageLink = $$('link')
+        const imageData = $$('data')
 
         // Create the text/html link
         alternateLink.attr({
@@ -116,6 +120,13 @@ const socialEmbedConverter = {
             url: node.url,
             title: socialEmbedConverter._createTitleForAlternateLink(node.linkType, node.oembed, converter)
         })
+
+        alternateLink.append(
+            $$('data').append(
+                $$('context').append('Social'),
+                $$('provider').append(node.oembed.provider_name)
+            )
+        )
 
         // Create the image/alternate
         alternateImageLink.attr({
@@ -139,7 +150,7 @@ const socialEmbedConverter = {
     },
 
     /**
-     * 
+     *
      * @param converter
      * @returns {*|string|null}
      * @private
