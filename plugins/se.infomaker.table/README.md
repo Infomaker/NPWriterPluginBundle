@@ -11,7 +11,7 @@ Enables creating and editing tables inside the writer.
     "id": "se.infomaker.table",
     "name": "table",
     "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-table.js",
-    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-table.css",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-table.css",
     "mandatory": false,
     "enabled": true
 }
@@ -116,4 +116,3 @@ A table with head, body, foot, and caption. Also shows use of colspans and rowsp
 | `table-emphasis`      | Applies `emphasis` annotation to selected cell or area                       | Single cell selected or selection area | cmd+i      |
 | `table-cell-strong`   | Applies `strong` annotation to single cell *(only used by `table-strong`)*   | Single cell selected or selection area |            |
 | `table-cell-emphasis` | Applies `emphasis` annotation to single cell *(only used by `table-emphasis`)* | Single cell selected or selection area |            |
-
