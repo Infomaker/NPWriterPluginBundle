@@ -20,19 +20,19 @@
         filter: blur(2px);
     }
 
-    &.article_status_draft{ // * Utkast: draft
+    &.article_status_draft, &.article_status_imextdraft { // * Utkast: draft
         background: #FFF; /* White */
     }
-    &.article_status_approved{ // * Godkänd: approved
+    &.article_status_approved, &.article_status_imextapproved { // * Godkänd: approved
         background: #00ab50; /* Green */
     }
-    &.article_status_done{ // * Klar: done
+    &.article_status_done, &.article_status_imextdone { // * Klar: done
         background: #ff9900; /* Orange */
     }
-    &.article_status_usable{ // * Publicera: usable
+    &.article_status_usable, &.article_status_statusable{ // * Publicera: usable
         background: #288cd0; /* Primary blue */
     }
-    &.article_status_withheld{ // * Tidspublicera: withheld
+    &.article_status_withheld, &.article_status_statwithheld{ // * Tidspublicera: withheld
         background-size: 6px 6px;
         background-image: linear-gradient(
             -45deg,
@@ -45,7 +45,7 @@
             white
         );
     }
-    &.article_status_canceled{ // * Avpublicera: canceled
+    &.article_status_canceled, &.article_status_statcanceled { // * Avpublicera: canceled
         background: #828282; /* Gray */
     }
 
@@ -82,10 +82,10 @@
                     background: #ff9900;
                     line-height: 1.6;
                 }
-                .lifespan, .prio {
+                .lifetime, .prio {
                     border: 1px solid #d9dddf;
                 }
-                .article-product-icon {
+                .article-service-icon {
                     cursor: default;
                     height: 19px;
                     width: auto;

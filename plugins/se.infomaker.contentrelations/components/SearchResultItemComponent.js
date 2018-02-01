@@ -46,30 +46,30 @@ class SearchResultItem extends Component {
     render($$){
         const {item, propertyMap, icons} = this.props
         const article = new ArticleModel(item, propertyMap)
-        const articleProductIcons = article.products.map(product => {
+        const articleServicesIcons = article.services.map(service => {
             let img = ''
 
-            if (product) {
-                const icon = icons.find(icon => icon.name.toLowerCase() === product.toLowerCase())
+            if (service) {
+                const icon = icons.find(icon => icon.name.toLowerCase() === service.toLowerCase())
 
                 if (icon) {
-                    img = $$('img', { class: 'article-product-icon', src: `${icon.data}`, title: this.capitalize(product) })
+                    img = $$('img', { class: 'article-service-icon', src: `${icon.data}`, title: this.capitalize(service) })
                 }
             }
 
             return img
         })
 
-        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus[0]}`, title: `${article.pubstatus.length ? article.pubstatus[0] : ''}`, draggable: "true" }, [
+        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus[0].replace(':', '')}`, title: `${article.pubstatus.length ? article.pubstatus[0] : ''}`, draggable: "true" }, [
 
             $$('div', { class: `search-result-article_inner has_publiched_version_${article.hasPublishedVersion[0]}` }, [
 
                 $$('div', { class: 'article-header' }, [
                     $$('div', { class: 'article-header-meta' }, [
                         (article.premium && article.premium.length && article.premium[0] === 'true') ? $$('p', { class: 'header-meta-item premium', title: this.capitalize(propertyMap['premium']) }, 'P') : '',
-                        (article.lifespan && article.lifespan.length) ? $$('p', { class: 'header-meta-item lifespan', title: this.capitalize(propertyMap['lifetime']) }, article.lifespan[0]) : '',
+                        (article.lifetime && article.lifetime.length) ? $$('p', { class: 'header-meta-item lifetime', title: this.capitalize(propertyMap['lifetime']) }, article.lifetime[0]) : '',
                         (article.newsvalue && article.newsvalue.length) ? $$('p', { class: 'header-meta-item prio', title: this.capitalize(propertyMap['newsvalue']) }, article.newsvalue[0]) : '',
-                        ...articleProductIcons
+                        ...articleServicesIcons
                     ]),
                     $$('div', { class: 'article-header-dates' }, [
                         $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['updated'])}: ${moment(article.updated[0]).locale(this.props.locale).format('lll')}`}, [
