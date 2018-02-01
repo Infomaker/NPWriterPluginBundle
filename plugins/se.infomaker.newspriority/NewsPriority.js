@@ -5,9 +5,9 @@ export default {
     name: 'newspriority',
     id: 'se.infomaker.newspriority',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
-        config.addComponentToSidebarWithTabId(this.id, 'main', NewsPriorityComponent)
+        config.addToSidebar('main', pluginConfig, NewsPriorityComponent)
 
         config.addLabel('newsvalue', {
             en: 'Newsvalue',

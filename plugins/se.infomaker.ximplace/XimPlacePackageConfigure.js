@@ -2,8 +2,8 @@ import LocationMainComponent from './LocationMainComponent'
 
 export default (pluginId) => {
 
-    return (config, pluginConfigObject) => {
-        config.addComponentToSidebarWithTabId(pluginId, 'main', LocationMainComponent, pluginConfigObject)
+    return (config, pluginConfig) => {
+        config.addToSidebar('main', pluginConfig, LocationMainComponent)
 
         config.addLabel('Locations', {
             en: 'Locations',

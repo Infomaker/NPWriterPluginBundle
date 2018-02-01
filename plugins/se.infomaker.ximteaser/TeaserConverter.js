@@ -104,11 +104,32 @@ export default {
             }
 
             // Import softcrops if exists
-            this.importSoftcrops(linkEl, node)
+            node.crops = this.importCrops(linkEl.find('links'))
 
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
             node.uuid = linkEl.attr('uuid')
+        }
+    },
+
+    importCrops: function(imageLinks) {
+        // Import softcrops
+        const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+        const crops = softcropTools.importSoftcropLinks(imageLinks)
+        if (crops.length) {
+            // Convert properties back to numbers
+            return {
+                crops: crops.map(softCrop => {
+                    Object.keys(softCrop)
+                        .filter(key => key !== 'name')
+                        .forEach((key) => {
+                            softCrop[key] = parseFloat(softCrop[key])
+                        })
+                    return softCrop
+                })
+            }
+        } else {
+            return {}
         }
     },
 
@@ -206,22 +227,6 @@ export default {
         node.customFields[tagName] = converter.annotatedText(customFieldEl, [node.id, 'customFields', tagName])
     },
 
-    /**
-     * Import the image link structure
-     */
-    importSoftcrops: function(el, node) {
-        let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-        let softcrops = imageModule.importSoftcropLinks(
-            el.find('links')
-        )
-
-        if (softcrops.length) {
-            node.crops = {
-                crops: softcrops
-            }
-        }
-    },
-
     importImageLinkData: function(el, node) {
         el.children.forEach(function(child) {
             if (child.tagName === 'width') {
@@ -250,7 +255,6 @@ export default {
             data.append(
                 $$('title').append(converter.annotatedText([node.id, 'title']))
             )
-            
             const simpleText = converter.getDocument().get([node.id, 'title'])
             el.attr('title', simpleText)
         }
@@ -297,7 +301,6 @@ export default {
      *
      * @param $$
      * @param {TeaserNode} node
-     * @param {NewsMLExporter} converter
      * @returns {VirtualElement}
      */
     exportLinks: function($$, node) {
@@ -324,10 +327,11 @@ export default {
 
             imageLink.append(linkData)
 
-            if (node.crops) {
-                let cropLinks = $$('links')
-                let imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-                imageModule.exportSoftcropLinks($$, cropLinks, node.crops.crops)
+            if (node.crops && Array.isArray(node.crops.crops)) {
+                const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+                const cropLinks = $$('links').append(
+                    softcropTools.exportSoftcropLinks($$, node.crops.crops)
+                )
                 imageLink.append(cropLinks)
             }
         }

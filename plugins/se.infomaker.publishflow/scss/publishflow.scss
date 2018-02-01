@@ -35,6 +35,17 @@
             }
         }
 
+        &>button {
+            .fa {
+                padding-right: 6px;
+            }
+        }
+        
+        &>.sc-np-wide {
+            width: 100%;
+            text-align: center;
+        }
+
         .sc-np-publish-actions {
             margin: 15px -15px 15px -15px;
             background: #ffffff;
@@ -107,7 +118,7 @@
 
         div.sc-np-publish-action-section {
             background: #fbfbfb;
-            margin: 15px -15px -15px -15px;
+            margin: 10px -15px -15px -15px;
             border-top: 1px solid #ddd;
             padding: 0 0 10px 0;
 
@@ -213,7 +224,7 @@
 .sc-np-bar-container {
 
     // Override save button style
-    .sc-np-btn-group {
+    .np-ui-btn-group {
         button:first-child {
             border-radius: 3px 0 0 3px;
         }

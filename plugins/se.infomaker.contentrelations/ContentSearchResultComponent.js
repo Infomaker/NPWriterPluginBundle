@@ -4,7 +4,7 @@ import SearchResultItem from './SearchResultItem'
 class ContentSearchResultComponent extends Component {
 
     render($$) {
-        const el = $$('ul').addClass('container');
+        const el = $$('div').addClass('im-cr-container');
 
         const items = this.props.results.map(function (item) {
             return $$(SearchResultItem, {item: item})

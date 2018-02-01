@@ -5,13 +5,8 @@ import OptionsComponent from './OptionsComponent'
 export default {
     name: 'options',
     version: '{{version}}',
-    configure: function (config, configObject) {
+    configure: function (config, pluginConfig) {
 
-        config.addComponentToSidebarWithTabId(
-            configObject.id,
-            configObject.tabid || 'main',
-            OptionsComponent,
-            configObject
-        )
+        config.addToSidebar('main', pluginConfig, OptionsComponent)
     }
 }

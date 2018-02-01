@@ -5,8 +5,8 @@ import AdmetaComponent from './AdmetaComponent'
 export default {
     name: 'admeta',
     id: 'se.infomaker.slm.admeta',
-    configure: function (config) {
-        config.addComponentToSidebarWithTabId(this.id, 'main', AdmetaComponent)
+    configure: function (config, pluginConfig) {
+        config.addToSidebar('main', pluginConfig, AdmetaComponent)
 
         config.addLabel('admeta-keywords', {
             en: 'Ad keywords',

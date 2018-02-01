@@ -5,7 +5,7 @@ import MainChannel from './validators/MainChannel'
 import Authors from './validators/Authors'
 import Categories from './validators/Categories'
 import Review from './validators/Review'
-import Fact from './validators/Fact'
+// import Fact from './validators/Fact'
 
 const {registerPlugin} = writer
 
@@ -106,7 +106,7 @@ const validationPackage = {
         config.addValidator(Authors)
         config.addValidator(Categories)
         config.addValidator(Review)
-        config.addValidator(Fact)
+        // config.addValidator(Fact)
     }
 }
 

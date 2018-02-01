@@ -70,9 +70,6 @@ const ImageGalleryConverter = {
 
                 if (imgData) {
                     imgData.children.forEach(child => {
-                        if (child.tagName === 'byline') {
-                            imageGalleryImage.byline = converter.annotatedText(child, [imageGalleryImage.id, 'byline'])
-                        }
                         if (child.tagName === 'text') {
                             imageGalleryImage.caption = converter.annotatedText(child, [imageGalleryImage.id, 'caption'])
                         }
@@ -91,15 +88,12 @@ const ImageGalleryConverter = {
     },
 
     convertAuthors: function(node, authorLinks) {
-        let seen = new Map()
-
         return authorLinks.children
             .filter((authorLinkEl) => authorLinkEl.getAttribute('rel') === 'author')
-            .map((authorLinkEl) => {
+            .map(function(authorLinkEl) {
                 const emailElement = authorLinkEl.find('email')
                 const uuid = authorLinkEl.getAttribute('uuid')
                 return {
-                    nodeId: node.id,
                     uuid,
                     name: authorLinkEl.getAttribute('title'),
                     email: emailElement ? emailElement.textContent : null,
@@ -107,23 +101,18 @@ const ImageGalleryConverter = {
                     isLoaded: false
                 }
             })
-            .filter((author) => {
-                if (author.isSimpleAuthor) {
-                    return true
+            .reduce((authors, author) => {
+                if (author.isSimpleAuthor || !authors.some((existing) => existing.uuid === author.uuid)) {
+                    authors.push(author)
                 }
-                if (seen.get(author.uuid) !== undefined) {
-                    return false
-                } else {
-                    seen.set(author.uuid, author)
-                    return true
-                }
-            })
+                return authors
+            }, [])
     },
 
     convertCrops: function(imageLinks) {
         // Import softcrops
-        const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-        const crops = imageModule.importSoftcropLinks(imageLinks)
+        const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+        const crops = softcropTools.importSoftcropLinks(imageLinks)
         if (crops.length) {
             // Convert properties back to numbers
             return {
@@ -202,9 +191,11 @@ const ImageGalleryConverter = {
             const imageLinks = $$('links')
 
             // Add crops to data
-            if (galleryImageNode.crops) {
-                const imageModule = api.getPluginModule('se.infomaker.ximimage.ximimagehandler')
-                imageModule.exportSoftcropLinks($$, imageLinks, galleryImageNode.crops.crops)
+            if (galleryImageNode.crops && Array.isArray(galleryImageNode.crops.crops)) {
+                const softcropTools = api.getPluginModule('se.infomaker.image-tools.softcrop')
+                imageLinks.append(
+                    softcropTools.exportSoftcropLinks($$, galleryImageNode.crops.crops)
+                )
             }
             if (galleryImageNode.disableAutomaticCrop) {
                 imageData.append(

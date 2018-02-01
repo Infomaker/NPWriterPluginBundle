@@ -40,6 +40,7 @@ class ImageGalleryImageComponent extends Component {
     }
 
     render($$) {
+        const InlineImageComponent = this.context.api.ui.getComponent('InlineImageComponent')
         const numberDisplay = $$('div').addClass('number-display')
         const itemWrapper = $$('div').addClass('item-wrapper')
             .ref('itemWrapper')
@@ -47,8 +48,7 @@ class ImageGalleryImageComponent extends Component {
             .attr('draggable', false)
 
         const imageWrapper = $$('div').addClass('image-wrapper')
-        const imageNode = this.context.doc.get(this.props.node.imageFile)
-        const imageEl = $$('img', {src: imageNode.getUrl()}).attr('draggable', false)
+        const imageEl = $$(InlineImageComponent, {nodeId: this.props.node.imageFile}).attr('draggable', false)
         const imageControls = this._renderImageControls($$)
 
         imageWrapper.append(imageEl)
@@ -112,7 +112,7 @@ class ImageGalleryImageComponent extends Component {
             ])
         }
 
-        if(this.props.imageInfoEnabled === true) {
+        if (this.props.imageInfoEnabled === true) {
             imageControls.append(
                 $$('i').addClass('image-control fa fa-info')
                     .attr('title', this.getLabel('Image archive information'))

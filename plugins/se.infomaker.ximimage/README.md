@@ -7,8 +7,11 @@ from disk or from URL.
 The image plugin configuration must have several things defined to work correctly.
 ```json
 {
-    "vendor": "infomaker.se",
+    "id": "se.infomaker.ximimage",
     "name": "ximimage",
+    "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximimage.js",
+    "style": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-ximimage.css",
+    "mandatory": false,
     "enabled": true,
     "data": {
         "imageFileExtension": [".jpg", ".jpeg", ".png", ".gif"],
@@ -16,11 +19,10 @@ The image plugin configuration must have several things defined to work correctl
         "bylinesearch": false, // Default true
         "byline": false, // Default true
         "imageinfo": false, // Default true
-        "publishedmaxwidth": 2560,
         "crops": { ... },
-        "urlMatchers": [ ... ],
         "fields": [ ... ],
-        "cropInstructions": { ... }
+        "cropInstructions": { ... },
+        "propertyMap": { ... }
     }
 }
 ```
@@ -81,41 +83,31 @@ crop parameters are specified for a given ratio.
 In order to construct a URL, template variables may be used. Then are defined
 as `{{variableName}}`. These variables currently exists:
 
-||Variable name||Description||
-|w|The image width|
-|h|The image height|
-|cx|The start of crop in x direction, defined in pixels|
-|cy|The start of crop in y direction, defined in pixels|
-|cw|The width of the crop, defined in pixels|
-|ch|The height of the crop, defined in pixels|
-|cxrel|The start of crop in x direction, defined as a relative number from 0-1|
-|cyrel|The start of crop in y direction, defined as a relative number from 0-1|
-|cwrel|The width of the crop , defined as a relative number from 0-1|
-|chrel|The height of the crop , defined as a relative number from 0-1|
-|uuid|The uuid of the image metadata file|
+| Variable name | Description |
+| ------------: | :---------- |
+| w             | The image width |
+| h             | The image height |
+| cx            | The start of crop in x direction, defined in pixels |
+| cy            | The start of crop in y direction, defined in pixels |
+| cw            | The width of the crop, defined in pixels |
+| ch            | The height of the crop, defined in pixels |
+| cxrel         | The start of crop in x direction, defined as a relative number from 0-1 |
+| cyrel         | The start of crop in y direction, defined as a relative number from 0-1 |
+| cwrel         | The width of the crop , defined as a relative number from 0-1 |
+| chrel         | The height of the crop , defined as a relative number from 0-1 |
+| uuid          | The uuid of the image metadata file |
+
 
 Example:
 ```json
 "cropInstructions": {
-          "auto": {
-            "default": "fit=crop&crop=faces,edges&w={{w}}&h={{h}}"
-          },
-          "userDefined": {
-            "default": "rect={{cx}},{{cy}},{{cw}},{{ch}}&fit=crop&w={{w}}&h={{h}}"
-          }
-        }
-```
-
-#### Url matchers
-A mandatory array of patterns which tell the image plugin what kind of file
-patterns to handle for drop etc.
-
-```json
-"urlMatchers": [
-    "^.*\\.jpg",
-    "^.*\\.gif",
-    "^.*\\.png"
-]
+    "auto": {
+        "default": "fit=crop&crop=faces,edges&w={{w}}&h={{h}}"
+    },
+    "userDefined": {
+        "default": "rect={{cx}},{{cy}},{{cw}},{{ch}}&fit=crop&w={{w}}&h={{h}}"
+    }
+}
 ```
 
 #### Fields configuration
@@ -168,6 +160,58 @@ example where all the fields are enabled and configured.
 ]
 ```
 
+#### Property Map
+*Optional* When an image is added to the Writer surface, the writer will fetch that image's metadata and fill the image node's
+properties automatically.
+It is possible to configure which metadata fields from the image's newsitem maps to the ximimage node properties.
+
+Mapping of an Image Node property can be disabled by setting its mapped value to `false`.
+
+##### Standard Mapping
+If not present, these are the default mappings for an Image Node's properties.
+
+| Image Node Property | Image Meta Property |
+| ------------------: | :------------------ |
+| authors             | authors             |
+| credit              | credit              |
+| caption             | caption             |
+| alttext             | false               |
+
+##### Allowed Property Values
+If an Image Node property is mapped to `false` it will automatically be filled when
+adding a new image.
+**If the configuration is invalid, the image will use the standard
+mapping.**
+
+| Image Node Property | Allowed Properties           |
+| ------------------: | :--------------------------- |
+| authors             | `"authors", false`           |
+| credit              | `"caption", "credit", false` |
+| caption             | `"caption", "credit", false` |
+| alttext             | `"caption", "credit", false` |
+
+##### Property Mapping Examples
+
+**Map caption to alttext**
+Disable caption mapping and map caption to image node's alttext.
+```json
+"propertyMap": {
+    "caption": false,
+    "alttext": "caption"
+}
+```
+
+**Disable all metadata mapping**
+Completely disabled meta-data-mapping to added images.
+```json
+"propertyMap": {
+    "authors": false,
+    "credit": false,
+    "caption": false,
+    "alttext": false
+}
+```
+
 ## Image plugin contract between plugin and the backend
 ### Routes
 Image Plugin routes it's requests via Editor Service (aka Writer Backend). This means that if
@@ -191,40 +235,27 @@ element. The format of the `object` is:
     <links>
         <link rel="self" type="x-im/image" uri="im://image/IdJjMZVdi0afHsmQRurNl07J-00.jpeg"
             uuid="3314b6ed-ec82-5924-9de1-8b0cb2a39cc2">
-            <!--
-                OPTIONAL. Note if softcrop feature in plugin is used this block is
-                mandatory.
-            -->
             <data>
                 <text>This is an image description that will be stored on the article</text>
                 <width>800</width>
                 <height>600</height>
-                <crops>
-					<crop name="16:9">
-						<x>0.32875</x>
-						<y>0.5012406947890818</y>
-						<width>0.2875</width>
-						<height>0.3200992555831266</height>
-					</crop>
-					<crop name="4:3">
-						<x>0.31</x>
-						<y>0.5086848635235732</y>
-						<width>0.32875</width>
-						<height>0.48883374689826303</height>
-					</crop>
-					<crop name="1:1">
-						<x>0.49</x>
-						<y>0.533498759305211</y>
-						<width>0.13</width>
-						<height>0.25806451612903225</height>
-					</crop>
-				</crops>
+                <!-- OPTIONAL -->
+                <credit>Nyhetsbyrån</credit>
+                <alttext>Image description</alttext>
+                <alignment>left</alignment>
+                <links>
+                    <link title="16:9" rel="crop" type="x-im/crop" uri="im://crop/0.35/0/0.39/0.32755298651252407"/>
+                    <link title="8:5" rel="crop" type="x-im/crop" uri="im://crop/0/0.019267822736030827/1/0.9633911368015414"/>
+                    <link title="4:3" rel="crop" type="x-im/crop" uri="im://crop/0.0675/0/0.865/1"/>
+                    <link title="1:1" rel="crop" type="x-im/crop" uri="im://crop/0.17625/0/0.64875/1"/>
+                    <link rel="author" title="John Doe" uuid="00000000-0000-0000-0000-000000000000" type="x-im/author"/>
+                    <link rel="author" uuid="7a39b42b-1315-4711-a136-7b3a9f132110" title="Jane Doe" type="x-im/author">
+                        <data>
+                            <email>jane.doe@email.com</email>
+                        </data>
+                    </link>
+                </links>
             </data>
-            <!-- OPTIONAL -->
-            <links>
-                <link rel="author" title="John Doe" uuid="00000000-0000-0000-0000-000000000000"/>
-                <link rel="author" title="Jane Doe" uuid="00000000-0000-0000-0000-000000000000"/>
-            </links>
         </link>
     </links>
 </object>
