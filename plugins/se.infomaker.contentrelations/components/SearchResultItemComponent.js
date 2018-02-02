@@ -60,7 +60,7 @@ class SearchResultItem extends Component {
             return img
         })
 
-        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus[0].replace(':', '')}`, title: `${article.pubstatus.length ? article.pubstatus[0] : ''}`, draggable: "true" }, [
+        const el = $$('div', { class: `search-result-article article_status_${article.pubstatus.length ? article.pubstatus[0].replace(':', '') : ''}`, title: `${article.pubstatus.length ? article.pubstatus[0] : ''}`, draggable: "true" }, [
 
             $$('div', { class: `search-result-article_inner has_publiched_version_${article.hasPublishedVersion[0]}` }, [
 
