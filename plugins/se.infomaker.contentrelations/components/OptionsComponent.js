@@ -24,10 +24,12 @@ class OptionsComponent extends Component {
     renderSortingsDropDown($$) {
         return $$(this.dropdownComponent, {
             header: this.getLabel('Sort'),
-            options: this.props.sortings.map(sorting => ({ label: sorting.name, value: sorting.field })),
-            isSelected: (options, item) => item.value === this.props.sorting.field,
+            options: this.props.sortings.map(sorting => ({ label: sorting.name, value: `${sorting.name}:${sorting.field}`, data: {} })),
+            isSelected: (options, item) => {
+                return (item.label === this.props.sorting.name && item.value === `${this.props.sorting.name}:${this.props.sorting.field}`)
+            },
             onChangeList: (selected) => {
-                const selectedSorting = this.props.sortings.find(sorting => sorting.field === selected)
+                const selectedSorting = this.props.sortings.find(sorting => `${sorting.name}:${sorting.field}` === selected)
                 this.props.setSorting(selectedSorting)
             },
             disabled: this.props.sortings.length <= 1
