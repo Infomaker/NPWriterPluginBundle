@@ -84,6 +84,7 @@
                 }
                 .lifetime, .prio {
                     border: 1px solid #d9dddf;
+                    background: white;
                 }
                 .article-service-icon {
                     cursor: default;
@@ -150,7 +151,7 @@
             .article-image-wrapper {
                 position: relative;
                 height: 40px;
-                width: 70px;
+                width: 65px;
                 img {
                     position: absolute;
                     right: 0;

@@ -119,6 +119,10 @@ Image below explains how and where the different props are displayed.
 
 ![PropertyMappings](propertymap.png)
 
+Article with `WriterHasPublishedVersion=true` will be displayed with a blue background color
+
+![WriterHasPublishedVersion](haspublishedversion.png)
+
 ## Output
 
 In the article, the plugin will add the following xml block under `newsItem > contentSet > inlineXML > idf > group`
