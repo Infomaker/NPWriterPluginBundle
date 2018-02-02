@@ -91,24 +91,26 @@ The left hand side will be used by plugin, fill in the property-names from OC on
 ```json
 "propertyMap": {
     "uuid": "uuid",
-    "headline": "ArticleHeadline",
-    "authors": "Authors",
-    "images": "ImageUuid",
+    "headline": "WriterHeadlines",
+    "authors": "WriterAuthors",
+
+    "images": "ArticleMetaImageUuids",
 
     "created": "created",
     "updated": "updated",
     "published": "Pubdate",
-
     "pubstatus": "PubStatus",
-    "premium": "Plus",
-    "lifetime": "Lifetime",
-    "newsvalue": "NewsPrio",
-    "products": "Services",
-    "channels": "Section",
-    "profiles": "ArticleContentType",
+
+    "premium": "ArticleMetaPremium",
+    "lifetime": "ArticleMetaLifeTime",
+    "newsvalue": "ArticleMetaNewsValue",
+
+    "services": "ArticleMetaServices",
+    "channels": "ArticleMetaChannels",
+    "profiles": "ArticleMetaProfile",
 
     "hasPublishedVersion": "WriterHasPublishedVersion"
-}
+},
 ```
 
 ### Property usage
