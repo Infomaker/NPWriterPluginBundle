@@ -1,6 +1,6 @@
 {
   "name": "npwriter-plugin-bundle",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "description": "Infomaker plugin bundle for Newspilot Writer",
   "main": "index.js",
   "scripts": {
