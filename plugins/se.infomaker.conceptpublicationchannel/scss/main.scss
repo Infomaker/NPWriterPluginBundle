@@ -1,0 +1,19 @@
+.publication-main-component {
+    .channels-component {
+        display: flex;
+        .channel-component {
+            padding: 2px 5px;
+            border: 1px solid #e6e6e6;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+
+            &.selected {
+                color: green;
+            }
+            &:last-of-type {
+                margin-right: 0;
+            }
+        }
+    }
+}
