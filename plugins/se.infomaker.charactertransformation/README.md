@@ -6,7 +6,7 @@ This plugin can be configured to replace certain characters for others. For exam
 {
   "id": "se.infomaker.charactertransformation",
   "name": "charactertransformation",
-  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/index.js",
+  "url": "https://plugins.writer.infomaker.io/releases/{PLUGIN_VERSION}/im-charactertransformation.js",
   "enabled": true,
   "mandatory": false,
   "data": {
