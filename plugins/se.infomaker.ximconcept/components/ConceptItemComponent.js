@@ -47,20 +47,21 @@ class ConceptItemComponent extends Component {
         const type = (item && item[propertyMap.ConceptImTypeFull]) ? item[propertyMap.ConceptImTypeFull] : ''
         const editable = this.props.editable ? 'editable' : ''
         const el = $$('div')
-        
+
         let icon
         let removeIcon
         let image
 
         if (item) {
+            const isDuplicate = this.props.isDuplicate(item)
             const broaderString = ConceptService.extractBroaderText(item)
             const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? ' - ' : 
                 item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` : 
                 item[propertyMap.ConceptDefinitionShort]
-                
+
             const tooltip = $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: `${this.hasValidUUid() ? truncatedDescription : this.getLabel('invalid.uuid.label')}`,
+                text: !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription,
                 fixed: true,
                 parent: this,
             }).ref('tooltip')
@@ -90,6 +91,7 @@ class ConceptItemComponent extends Component {
                 .append(tooltip)
 
             el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''} ${item.error ? 'not-found' : ''}`)
+                .addClass(isDuplicate ? 'duplicate' : '')
                 .append(image)
                 .append(icon)
                 .append(itemContent)
