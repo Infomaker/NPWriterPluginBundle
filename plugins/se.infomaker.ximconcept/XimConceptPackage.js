@@ -43,6 +43,9 @@ const XimConceptPackage = {
         configurator.addLabel('invalid.uuid.label', {
             sv: 'Ogiltigt UUID'
         })
+        configurator.addLabel('duplicate.uuid.label', {
+            sv: 'Dubblett'
+        })
         configurator.addLabel('invalid.uuid.description', {
             sv: 'Conceptet har inget giltigt UUID'
         })

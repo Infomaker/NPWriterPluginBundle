@@ -25,7 +25,7 @@
             .concept-item-content {
                 margin-top: 4px;
             }
-            &.invalid-uuid, &.not-found {
+            &.invalid-uuid, &.not-found, &.duplicate {
                 border: 1px solid rgba(229, 48, 15, 0.75);
             }
             &:hover {
@@ -165,7 +165,7 @@
                 max-height: 150px;
                 overflow-y: scroll;
                 border: 1px solid #d9dddf;
-                
+
                 .concept-search-item {
                     display: flex;
                     border-bottom: 1px solid #f2f4f5;

@@ -3,6 +3,12 @@ import ConceptItemComponent from './ConceptItemComponent'
 
 class ConceptListComponent extends Component {
 
+    isDuplicate(item) {
+        const match = this.props.existingItems.filter(existingItem => existingItem.uuid === item.uuid)
+
+        return (match.length > 1)
+    }
+
     render($$) {
         let spinner
         const { editable, working, propertyMap } = this.props
@@ -14,7 +20,7 @@ class ConceptListComponent extends Component {
             })
         }
 
-        const listItems = this.props.existingItems.map(item => {
+        const listItems = this.props.existingItems.map((item, index) => {
             return $$(ConceptItemComponent, {
                 item,
                 editable,
@@ -22,8 +28,9 @@ class ConceptListComponent extends Component {
                 enableHierarchy: this.props.enableHierarchy,
                 editItem: this.props.editItem,
                 removeItem: this.props.removeItem,
-                key: item.uuid
-            }).ref(`conceptItem-${item.uuid}`)
+                key: item.uuid,
+                isDuplicate: this.isDuplicate.bind(this)
+            }).ref(`conceptItem-${item.uuid}-${index}`)
         })
         const el = $$('div')
             .addClass('concept-list-component')
