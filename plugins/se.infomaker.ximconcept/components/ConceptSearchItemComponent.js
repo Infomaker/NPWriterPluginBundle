@@ -23,14 +23,14 @@ class ConceptSearchItemComponent extends Component {
         const fullBroaderString = ConceptService.extractBroaderText(item)
         const conceptDefinitionShort = item[propertyMap.ConceptDefinitionShort] ? $$('p').append(item[propertyMap.ConceptDefinitionShort]).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })
-        
+
         const tooltip = broaderString.length ? $$(this.Tooltip, {
             title: `${fullBroaderString}`,
             text: '',
             fixed: true,
             parent: this.refs.truncatedBroader,
         }).ref('tooltip') : null
-        
+
         const broaderWrapper = $$('span')
 
         if (item[propertyMap.ConceptBroaderRelation] && item[propertyMap.ConceptBroaderRelation][propertyMap.ConceptBroaderRelation]) {
@@ -60,7 +60,7 @@ class ConceptSearchItemComponent extends Component {
             .append(item[propertyMap.ConceptName])
             .append(draftText)
             .append(broaderSpan)
-            
+
         const conceptName = $$('p')
             .append(conceptNameContent)
             .append(replacedBy)

@@ -24,7 +24,7 @@ class ConceptItemComponent extends Component {
     }
 
     onMouseEnter() {
-        if (!this.state.isHovered) {
+        if (!this.state.isHovered && this.refs.tooltip) {
             this.refs.tooltip.extendProps({
                 show: true
             })
@@ -33,12 +33,20 @@ class ConceptItemComponent extends Component {
     }
 
     onMouseLeave() {
-        if (this.state.isHovered) {
+        if (this.state.isHovered && this.refs.tooltip) {
             this.refs.tooltip.extendProps({
                 show: false
             })
             this.extendState({ isHovered: false })
         }
+    }
+
+    getTooltipString(item, propertyMap, isDuplicate) {
+        const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? '' :
+            item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` :
+                item[propertyMap.ConceptDefinitionShort]
+
+        return !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription
     }
 
     render($$){
@@ -55,16 +63,14 @@ class ConceptItemComponent extends Component {
         if (item) {
             const isDuplicate = this.props.isDuplicate(item)
             const broaderString = ConceptService.extractBroaderText(item)
-            const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? ' - ' : 
-                item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` : 
-                item[propertyMap.ConceptDefinitionShort]
+            const tootltipString = this.getTooltipString(item, propertyMap, isDuplicate)
 
-            const tooltip = $$(this.Tooltip, {
+            const tooltip = tootltipString.length ? $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription,
+                text: tootltipString,
                 fixed: true,
                 parent: this,
-            }).ref('tooltip')
+            }).ref('tooltip') : ''
 
             if (item.image && !isHovered) {
                 image = $$(ConceptItemImageComponent, {
