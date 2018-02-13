@@ -53,13 +53,13 @@ class ConceptPublicationMainComponent extends Component {
 
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
-            $$('h2', {}, this.getLabel('publication-channel-title')),
+            $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
             $$(ChannelsComponent, {
                 ...this.state,
                 addChannelToArticle: this.addChannelToArticle.bind(this),
                 removeChannelFromArticle: this.removeChannelFromArticle.bind(this)
-            })
-        ])
+            }).ref('channelsComponent')
+        ]).ref('conceptPublicationMainComponent')
     }
 
 }
