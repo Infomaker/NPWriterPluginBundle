@@ -28,8 +28,8 @@ class ConceptItemComponent extends Component {
             this.refs.tooltip.extendProps({
                 show: true
             })
-            this.extendState({ isHovered: true })
         }
+        this.extendState({ isHovered: true })
     }
 
     onMouseLeave() {
@@ -37,8 +37,8 @@ class ConceptItemComponent extends Component {
             this.refs.tooltip.extendProps({
                 show: false
             })
-            this.extendState({ isHovered: false })
         }
+        this.extendState({ isHovered: false })
     }
 
     getTooltipString(item, propertyMap, isDuplicate) {
