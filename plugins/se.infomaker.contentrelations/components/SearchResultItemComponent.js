@@ -46,14 +46,14 @@ class SearchResultItem extends Component {
     render($$){
         const {item, propertyMap, icons} = this.props
         const article = new ArticleModel(item, propertyMap)
-        const articleServicesIcons = article.services.map(service => {
+        const articleChannelIcons = article.channels.map(channel => {
             let img = ''
 
-            if (service) {
-                const icon = icons.find(icon => icon.name.toLowerCase() === service.toLowerCase())
+            if (channel) {
+                const icon = icons.find(icon => icon.name.toLowerCase() === channel.toLowerCase())
 
                 if (icon) {
-                    img = $$('img', { class: 'article-service-icon', src: `${icon.data}`, title: this.capitalize(service) })
+                    img = $$('img', { class: 'article-channel-icon', src: `${icon.data}`, title: this.capitalize(channel) })
                 }
             }
 
@@ -69,7 +69,7 @@ class SearchResultItem extends Component {
                         (article.premium && article.premium.length && article.premium[0] === 'true') ? $$('p', { class: 'header-meta-item premium', title: this.capitalize(propertyMap['premium']) }, 'P') : '',
                         (article.lifetime && article.lifetime.length) ? $$('p', { class: 'header-meta-item lifetime', title: this.capitalize(propertyMap['lifetime']) }, article.lifetime[0]) : '',
                         (article.newsvalue && article.newsvalue.length) ? $$('p', { class: 'header-meta-item prio', title: this.capitalize(propertyMap['newsvalue']) }, article.newsvalue[0]) : '',
-                        ...articleServicesIcons
+                        ...articleChannelIcons
                     ]),
                     $$('div', { class: 'article-header-dates' }, [
                         $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['updated'])}: ${moment(article.updated[0]).locale(this.props.locale).format('lll')}`}, [
@@ -88,7 +88,7 @@ class SearchResultItem extends Component {
                         $$('h2', { class: `${article.images.length ? 'with-image' : ''}`}, (article.headline[0] && article.headline[0].length) ? article.headline[0] : '-'),
                         $$('div', { class: 'article-meta' }, [
                             $$('p', { class: 'meta-data', title: this.capitalize(propertyMap['channels']) },
-                                article.channels.length ? article.channels.reduce((channelString, channel) => `${channelString}${channelString.length ? ', ' : ''}${channel}`, '') : ' - '),
+                                article.sections.length ? article.sections.reduce((sectionString, section) => `${sectionString}${sectionString.length ? ', ' : ''}${section}`, '') : ' - '),
                             $$('p', { class: 'divider' }, ' | '),
                             $$('p', { class: 'meta-data', title: this.capitalize(propertyMap['profiles']) },
                                 article.profiles.length ? article.profiles.reduce((profileString, profile) => `${profileString}${profileString.length ? ', ' : ''}${profile}`, '') : ' - '),
