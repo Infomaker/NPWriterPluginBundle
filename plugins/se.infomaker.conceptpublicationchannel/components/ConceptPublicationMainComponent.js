@@ -10,7 +10,6 @@ class ConceptPublicationMainComponent extends Component {
             const conceptType = this.state.conceptType.replace('-', '').replace('/', '')
 
             if (eventName === conceptType) {
-                console.info('Yeay!')
                 this.loadArticleConcepts()
             }
         })

@@ -43,7 +43,16 @@
                 }
             }
             .channel-icon {
+                justify-content: center;
+                align-items: center;
+                display: flex;
+
+                width: 20px;
+                height: 20px;
                 margin-left: 7px;
+                font-size: 15px;
+                color: #757575;
+                padding-top: 2px;
             }
         }
     }

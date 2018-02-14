@@ -18,26 +18,39 @@ class ChannelComponent extends Component {
         }
     }
 
+    shouldRerender(newProps) {
+        const isSelected = this.isSelected(newProps.articleChannels, newProps.channel)
+        const shouldRerender = (isSelected !== this.state.selected)
+        console.info('shouldRerender: ', shouldRerender)
+        return shouldRerender
+    }
+
+    isSelected(articleChannels, channel) {
+        return articleChannels.find(articleChannel => {
+            return articleChannel.uuid === channel.uuid
+        })
+    }
+
     getInitialState() {
+        const { channel, propertyMap, articleChannels } = this.props
+        const selected = this.isSelected(articleChannels, channel)
+
         return {
-            channel: this.props.channel,
-            articleChannels: this.props.articleChannels,
-            propertyMap: this.props.propertyMap
+            channel,
+            articleChannels,
+            propertyMap,
+            selected
         }
     }
 
     render($$){
-        const { channel, propertyMap, articleChannels } = this.state
-        const selected = articleChannels.find( articleChannel => {
-            return articleChannel.uuid === channel.uuid
-        })
+        const { channel, propertyMap, selected } = this.state
 
         return $$('div',{ class: `channel-component ${selected ? 'selected' : ''}` }, [
             $$(ChannelIconComponent, { ...this.props }).ref(`channelIconComponent-${channel.uuid}`),
             $$('div', { class: 'channel-text-wrapper' }, channel[propertyMap.ConceptName]),
-            $$('i', { class: `channel-icon fa ${selected ? 'fa-checked-square-o' : 'fa-square-o'}` })
+            $$('i', { class: `channel-icon fa ${selected ? 'fa-check-square-o' : 'fa-square-o'}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
         ])
-        .ref(`channelComponent-instance-${channel.uuid}`)
         .on('click', () => {
             return selected ?
                 this.props.removeChannelFromArticle(channel) :
