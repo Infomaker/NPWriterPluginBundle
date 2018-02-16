@@ -4,12 +4,6 @@
         transition: all 1s;
         overflow: hidden;
 
-        &.drag-started .item-wrapper {
-            & > div, i, em, strong {
-                pointer-events: none;
-            }
-        }
-
         &.show {
             position: absolute;
             left: 0;

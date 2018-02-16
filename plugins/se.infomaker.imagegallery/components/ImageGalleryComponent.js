@@ -159,11 +159,13 @@ class ImageGalleryComponent extends Component {
      * @private
      */
     _renderToolbox($$) {
-        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox').ref('toolBox')
-        imageGalleryToolbox.append(this._renderHeader($$))
+        const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
+            .append(this._renderHeader($$))
+            .ref('toolBox')
+            .on('dragover', (ev) => ev.preventDefault())
             .on('drop', this._onDrop)
 
-        const toolboxContent = $$('div').addClass('toolboox-content')
+        const toolboxContent = $$('div').addClass('toolboox-content').ref('toolboxContent')
         this.props.node.nodes.forEach((galleryImageNodeId, index) => {
             const galleryImageNode = this.context.doc.get(galleryImageNodeId)
             toolboxContent.append($$(ImageGalleryImageComponent, {
@@ -175,14 +177,6 @@ class ImageGalleryComponent extends Component {
                 configuredCrops: this._configuredCrops,
                 remove: () => {
                     this._removeImage(galleryImageNodeId)
-                },
-                dragStart: () => {
-                    // Add class which prevents interaction with toolbox input fields when dragging image components
-                    this.refs.toolBox.addClass('drag-started')
-                },
-                dragEnd: () => {
-                    // Remove class which prevents interaction with toolbox input fields when dragging image components
-                    this.refs.toolBox.removeClass('drag-started')
                 },
                 onCropClick: () => {
                     this._openCropper($$, galleryImageNode)
