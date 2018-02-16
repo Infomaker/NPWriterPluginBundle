@@ -5,24 +5,18 @@ import ChannelIconComponent from './ChannelIconComponent'
 class ChannelComponent extends Component {
 
     async willReceiveProps(newProps) {
-        let { channel, propertyMap } = newProps
+        let { channel, propertyMap, articleChannels } = newProps
 
         if (channel) {
             channel = await ConceptService.fetchConceptItemProperties(channel)
+            const selected = this.isSelected(articleChannels, channel)
 
             // TODO: Fix this in ConceptService which is now dependant on the exiatance of name, type, rel
             channel.name = channel[propertyMap.ConceptName]
             channel.type = channel[propertyMap.ConceptImTypeFull]
 
-            this.extendState({ channel })
+            this.extendState({ channel, selected })
         }
-    }
-
-    shouldRerender(newProps) {
-        const isSelected = this.isSelected(newProps.articleChannels, newProps.channel)
-        const shouldRerender = (isSelected !== this.state.selected)
-        console.info('shouldRerender: ', shouldRerender)
-        return shouldRerender
     }
 
     isSelected(articleChannels, channel) {
@@ -43,19 +37,48 @@ class ChannelComponent extends Component {
         }
     }
 
+    mouseEnter() {
+        this.extendState({ isHovered: true })
+    }
+
+    mouseLeave() {
+        this.extendState({ isHovered: false })
+    }
+
+    getIcon() {
+        const { selected, isHovered } = this.state
+        let icon = 'fa-circle-o'
+
+        if (selected && isHovered) {
+            icon = 'fa-times-circle'
+        }
+
+        if (selected && !isHovered) {
+            icon = 'fa-check-circle-o'
+        }
+
+        if (!selected && isHovered) {
+            icon = 'fa-plus'
+        }
+
+        return icon
+    }
+
     render($$){
-        const { channel, propertyMap, selected } = this.state
+        const { channel, selected } = this.state
 
         return $$('div',{ class: `channel-component ${selected ? 'selected' : ''}` }, [
             $$(ChannelIconComponent, { ...this.props }).ref(`channelIconComponent-${channel.uuid}`),
-            $$('div', { class: 'channel-text-wrapper' }, channel[propertyMap.ConceptName]),
-            $$('i', { class: `channel-icon fa ${selected ? 'fa-check-square-o' : 'fa-square-o'}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
+            // $$('div', { class: 'channel-text-wrapper' }, channel[propertyMap.ConceptName].slice(0, 3)),
+            $$('i', { class: `channel-icon fa ${this.getIcon()}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
         ])
         .on('click', () => {
             return selected ?
                 this.props.removeChannelFromArticle(channel) :
                 this.props.addChannelToArticle(channel)
         })
+        .on('mouseenter', this.mouseEnter.bind(this))
+        .on('mouseleave', this.mouseLeave.bind(this))
     }
 
 }

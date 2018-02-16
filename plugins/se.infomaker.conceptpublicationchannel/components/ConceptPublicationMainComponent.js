@@ -1,5 +1,6 @@
 import { Component } from 'substance'
 import { api, event, ConceptService } from 'writer'
+import MainChannelComponent from './MainChannelComponent'
 import ChannelsComponent from './ChannelsComponent'
 
 class ConceptPublicationMainComponent extends Component {
@@ -53,6 +54,7 @@ class ConceptPublicationMainComponent extends Component {
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
             $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
+            $$(MainChannelComponent, { ...this.state }),
             $$(ChannelsComponent, {
                 ...this.state,
                 addChannelToArticle: this.addChannelToArticle.bind(this),

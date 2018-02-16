@@ -17,7 +17,7 @@ class ChannelIconComponent extends Component {
             avatarUuid.length ? $$('img', {
                 src: `https://baproxy.dev.writer.infomaker.io:5555/objects/${avatarUuid}/files/thumb`,
                 class: 'channel-avatar-image'
-            }).ref(`channelIconComponent-${avatarUuid}-image`) : ''
+            }) : ''
         ]).ref(`channelIconComponent-${avatarUuid}`)
     }
 
