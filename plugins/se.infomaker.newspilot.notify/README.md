@@ -18,11 +18,22 @@ Install this plugin in the writer environment by adding the settings below to yo
   "mandatory": true,
   "data": {
     "integrationService": "https://jreu0y7org.execute-api.eu-west-1.amazonaws.com/dev",
-    "integrationService-apikey": "xxxxx"
+    "integrationService-apikey": "xxxxx", 
+    "filter": {
+      "query":"/wr:newsItem/wr:itemMeta/wr:itemMetaExtProperty[@type='imext:originalUrl']/@value",                  
+      "type":"EXISTS",
+      "value":"noje-kultur/arvingarna-husband-i-breaking-news-65875"
+    }
   }
 }
 ```
+
 `integrationService` corresponds to Newspilot Integration Service.
+### Filtrering
+`filter` is used to filter documents to be sent to the Newspilot Integration Service.
+* `query` is an xpath telling what in the newsItem to filter on.The xpath HAS to have a namspace prefix for the default namespace (like `wr` above) and use the ils prefix for http://www.infomaker.se/lookupservice.
+* `type` is the kind of comparison to filter with. The possible values are `EXISTS`, `NOT_EXISTS`, `EQUALS`, `NOT_EQUALS`.
+* `value`is the value to compare the value with if `EQUALS` or `NOT_EQUALS` is used. 
 
 ## Output
 None.
