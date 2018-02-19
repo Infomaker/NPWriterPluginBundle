@@ -12,8 +12,6 @@ import {Component} from 'substance'
  * @property {string}   props.isolatedNodeState
  * @property {boolean}  props.cropsEnabled
  * @property {function} props.remove
- * @property {function} props.dragStart
- * @property {function} props.dragEnd
  * @property {function} props.onCropClick
  */
 class ImageGalleryImageComponent extends Component {
@@ -53,7 +51,7 @@ class ImageGalleryImageComponent extends Component {
         .on('dragenter', this._dragEnter.bind(this))
         .on('dragleave', this._dragLeave.bind(this))
         .on('dragover', this._dragOver.bind(this))
-        .ref(`itemWrapper-${nodeId}`)
+        .ref('itemWrapper')
 
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageEl = $$(InlineImageComponent, {nodeId: this.props.node.imageFile}).attr('draggable', false)
@@ -67,8 +65,8 @@ class ImageGalleryImageComponent extends Component {
         const dragAnchor = $$('div')
             .html(this._getSvg())
             .addClass('drag-me')
-            .on('mousedown', () => this.refs[`itemWrapper-${nodeId}`].attr('draggable', true))
-            .on('mouseup', () => this.refs[`itemWrapper-${nodeId}`].attr('draggable', false))
+            .on('mousedown', () => this.refs.itemWrapper.attr('draggable', true))
+            .on('mouseup', () => this.refs.itemWrapper.attr('draggable', false))
 
         return itemWrapper
             .append(dragAnchor)
@@ -133,14 +131,14 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _dragEnter() {
-        this.refs[`itemWrapper-${this.props.node.id}`].addClass('drag-over')
+        this.refs.itemWrapper.addClass('drag-over')
     }
 
     /**
      * @private
      */
     _dragLeave() {
-        this.refs[`itemWrapper-${this.props.node.id}`].removeClass('drag-over')
+        this.refs.itemWrapper.removeClass('drag-over')
             .removeClass('add-above')
             .removeClass('add-below')
     }
@@ -153,10 +151,8 @@ class ImageGalleryImageComponent extends Component {
         ev.preventDefault()
         ev.stopPropagation()
 
-        ev.dataTransfer.dropEffect = ev.target.getAttribute('data-drop-effect')
-
-        const aboveOrBelow = ev.offsetY / ev.target.offsetHeight
-        const itemWrap = this.refs[`itemWrapper-${this.props.node.id}`]
+        const itemWrap = this.refs.itemWrapper
+        const aboveOrBelow = ev.offsetY / itemWrap.el.el.offsetHeight
         if (itemWrap.hasClass('add-below') && aboveOrBelow < 0.5) {
             itemWrap.removeClass('add-below').addClass('add-above')
         } else if (itemWrap.hasClass('add-above') && aboveOrBelow > 0.5) {
@@ -171,15 +167,13 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _dragStart(ev) {
-        const target = this.refs[`itemWrapper-${this.props.node.id}`]
+        const target = this.refs.itemWrapper
 
         ev.stopPropagation()
 
-        //TODO: Fix calulations, this uses an image of the acctuall element for dragging, but this seams to mess with offset calculations
-        // ev.dataTransfer.setDragImage(target.el.el, target.el.el.offsetLeft, target.el.el.offsetTop)
-        ev.dataTransfer.setDragImage(target.el.el, ev.offsetX, ev.offsetY)
+        ev.dataTransfer.setDragImage(target.el.el, ev.offsetX, target.el.el.offsetHeight / 2)
         ev.dataTransfer.setData('text/plain', this.props.node.id)
-        ev.dataTransfer.dropEffect = "move"
+        ev.dataTransfer.dropEffect = 'move'
 
         // Preserve style of dragged element, but style of element still in DOM
         setTimeout(() => {
@@ -195,8 +189,7 @@ class ImageGalleryImageComponent extends Component {
         ev.preventDefault()
         ev.stopPropagation()
 
-        // this.props.dragEnd(ev)
-        this.refs[`itemWrapper-${this.props.node.id}`].removeClass('dragging')
+        this.refs.itemWrapper.removeClass('dragging')
     }
 
     /**
@@ -229,7 +222,7 @@ class ImageGalleryImageComponent extends Component {
     }
 
     showDropSucceeded() {
-        const wrapper = this.refs[`itemWrapper-${this.props.node.id}`].el
+        const wrapper = this.refs.itemWrapper.el
         wrapper.el.scrollIntoViewIfNeeded()
         wrapper.addClass('drop-succeeded')
         setTimeout(() => wrapper.removeClass('drop-succeeded'), 700)

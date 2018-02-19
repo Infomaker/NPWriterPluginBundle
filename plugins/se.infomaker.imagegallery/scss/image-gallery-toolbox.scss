@@ -49,10 +49,13 @@
                 border: 1px solid #ddd;
                 position: relative;
                 margin: auto;
-                transition: max-height 0.3s ease, background-color 0.5s ease-in;
+                transition: max-height 0.3s ease, opacity 0.3s ease, background-color 0.5s ease-in;
                 max-height: 200px;
 
                 &.drag-over {
+                    > * {
+                        pointer-events: none;
+                    }
                     &.add-above {
                         border-top: 5px solid #1795CD;
                     }
