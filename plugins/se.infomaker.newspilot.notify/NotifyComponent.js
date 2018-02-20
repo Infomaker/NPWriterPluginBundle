@@ -85,7 +85,8 @@ class NotifyComponent extends Component {
             }else if (filterType === "DATE_OLDER_THAN" || filterType === "DATE_YOUNGER_THAN") {                                
                 const value = result.value
                 const queryDate = new Date(value);
-                if (!queryDate.isNullOrUndefined) {
+                               
+                if (this.dateIsValid(queryDate)) {
                     let targetDate = new Date()
                     targetDate.setDate(targetDate.getDate()-filterValue)                    
                     return filterType === "DATE_OLDER_THAN" ? queryDate.getTime() < targetDate.getTime() : queryDate.getTime() > targetDate.getTime()
@@ -95,6 +96,10 @@ class NotifyComponent extends Component {
             return true
         }
         return false
+    }
+
+    dateIsValid(date) {
+        return !date.isNullOrUndefined && date.getTime() === date.getTime()
     }
 
     createNewspilotArticle(newsItemArticle) {
