@@ -4,12 +4,6 @@
         transition: all 1s;
         overflow: hidden;
 
-        &.drag-started .item-wrapper {
-            & > div, i, em, strong {
-                pointer-events: none;
-            }
-        }
-
         &.show {
             position: absolute;
             left: 0;
@@ -28,13 +22,14 @@
             border-bottom: 1px solid #ddd;
             height: 6%;
         }
+
         .toolboox-content {
             overflow-y: scroll;
             height: 94%;
             padding-bottom: 10px;
 
             .drag-me {
-                margin: auto 5px auto -10px;
+                margin: auto 0;
                 border: 1px solid #ddd;
                 background: #e9e9e9;
                 border-radius: 0 5px 5px 0;
@@ -50,15 +45,22 @@
 
             .item-wrapper {
                 width: 100%;
-                display: flex;
-                padding: 10px;
+                display: grid;
+                grid-template-columns: 20px 15px 75px auto 93px;
+                grid-column-gap: 10px;
+                justify-items: start;
+                align-items: center;
+                padding: 10px 10px 10px 0;
                 border: 1px solid #ddd;
                 position: relative;
                 margin: auto;
-                transition: max-height 0.3s ease, background-color 0.5s ease-in;
+                transition: max-height 0.3s ease, opacity 0.3s ease, background-color 0.5s ease-in;
                 max-height: 200px;
 
                 &.drag-over {
+                    > * {
+                        pointer-events: none;
+                    }
                     &.add-above {
                         border-top: 5px solid #1795CD;
                     }
@@ -83,29 +85,41 @@
 
                 .number-display {
                     margin: auto;
-                    padding-right: 10px;
                     color: #b1b1b1;
                 }
+
                 .image-wrapper {
                     background: rgb(236, 236, 236);
                     border: 1px solid #ddd;
-                    height: 60px;
-                    width: 60px;
+                    height: 75px;
+                    width: 75px;
                     display: flex;
+
                     img {
+                        align-self: center;
                         max-height: 100%;
                         max-width: 100%;
                         margin: auto;
                     }
                 }
+
                 .image-meta {
-                    flex-grow: 1;
-                    min-width: 300px;
-                    margin: auto;
-                    padding: 0 10px 10px 10px;
+                    justify-self: stretch;
+                    display: grid;
+                    grid-template-rows: auto auto;
+                    grid-row-gap: 10px;
+
                     .im-field-editor {
-                        margin-top: 5px;
+                        margin-top: 0;
                     }
+
+                    .x-im-image-authors {
+                        padding: 0;
+                        &:before {
+                            padding: 7px 0 0;
+                        }
+                    }
+
                     .author-element {
                         .avatar {
                             pointer-events: none;
@@ -115,19 +129,24 @@
                         }
                     }
                 }
+
                 .image-controls {
                     display: flex;
                     height: 25px;
                     align-items: center;
+                    align-self: start;
+
                     .image-control {
                         display: inline-block;
                         margin: 0 0 0 10px;
                         color: #ccc;
                         cursor: pointer;
                         transition: color 0.2s ease-out;
+
                         &:hover {
                             color: #777;
                         }
+
                         &.crop-badge {
                             height: 20px;
                             line-height: 20px;

@@ -5,7 +5,7 @@ user can drag and drop the related article onto the open article.
 
 ## Dependency
 
-- This plugin requires `writer > 3.12.0` and depends on the `writer.UIPagination` class.
+- This plugin requires `writer > 3.13.0` and depends on the `writer.UIPagination` class.
 - This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content, and needs configuration under contentHost (see below)
 
 ## Tab placement
@@ -88,6 +88,8 @@ The tab under which the plugin will be rendered can be specified with the:
 The property map is used to translate different kind of OC configurations into prop names that the plugin can use.
 The left hand side will be used by plugin, fill in the property-names from OC on the right hand side.
 
+- All properties on the left side needs to be defined, the right hand side can how ever be set to an empty string (`""`) if the property is not in use.
+
 ```json
 "propertyMap": {
     "uuid": "uuid",
@@ -105,8 +107,8 @@ The left hand side will be used by plugin, fill in the property-names from OC on
     "lifetime": "ArticleMetaLifeTime",
     "newsvalue": "ArticleMetaNewsValue",
 
-    "services": "ArticleMetaServices",
     "channels": "ArticleMetaChannels",
+    "sections": "ArticleMetaServices",
     "profiles": "ArticleMetaProfile",
 
     "hasPublishedVersion": "WriterHasPublishedVersion"
