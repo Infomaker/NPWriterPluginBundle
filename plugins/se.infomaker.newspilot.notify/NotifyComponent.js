@@ -1,5 +1,6 @@
 import {Component} from "substance";
 import {api} from "writer";
+import { isNullOrUndefined } from "util";
 
 class NotifyComponent extends Component {
 
@@ -50,7 +51,6 @@ class NotifyComponent extends Component {
 
     articlePassesFilter(filter) {        
         if (filter === undefined) {
-            console.log("No filter defined. Returning true")
             return true
         }
         
@@ -68,31 +68,30 @@ class NotifyComponent extends Component {
             },
             XPathResult.ANY_TYPE,null);
         
-        console.log("filter query:", filterQuery)            
-         //f8972cf4-f762-400e-a40d-e85880ae87aa , http://opencontent.dev.writer.infomaker.io/, http://xlibris.dev.oc.writer.infomaker.io/client/
-        
         const result = queryResult.iterateNext() 
         if (result !== null) {
-            if (filterType === undefined || filterType === "EXISTS"){
-                console.log("FilterType=EXISTS. Found item from query. Ie. it passes the filter")
+            if (filterType === undefined || filterType === "EXISTS"){                
                 return true
-            }else if (filterType === "EQUALS") {                
-                console.log("FilterType=EQUALS.")                
+            }else if (filterType === "EQUALS") {                                
                 const value = result.value
-                if (value.trim() === filterValue) {
-                    console.log("Query equals filter. Article passes filter.")
+                if (value.trim() === filterValue) {                    
                     return true
                 }            
-            }else if (filterType === "NOT_EQUALS") {                
-                console.log("FilterType=NOT_EQUALS.")                
+            }else if (filterType === "NOT_EQUALS") {                            
                 const value = result.value
-                if (value.trim() !== filterValue) {
-                    console.log("Query NOT_EQUALS filter. Article passes filter.")
+                if (value.trim() !== filterValue) {                
                     return true
                 }
+            }else if (filterType === "DATE_OLDER_THAN" || filterType === "DATE_YOUNGER_THAN") {                                
+                const value = result.value
+                const queryDate = new Date(value);
+                if (!queryDate.isNullOrUndefined) {
+                    let targetDate = new Date()
+                    targetDate.setDate(targetDate.getDate()-filterValue)                    
+                    return filterType === "DATE_OLDER_THAN" ? queryDate.getTime() < targetDate.getTime() : queryDate.getTime() > targetDate.getTime()
+                }                
             }
         }else if (filterType === "NOT_EQUALS" || filterType === "NOT_EXISTS") {
-            console.log("FilterType=NOT_EQUALS or NOT_EXISTS. Key from xpath not found returning true")
             return true
         }
         return false
