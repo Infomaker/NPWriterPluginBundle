@@ -1,6 +1,6 @@
 import LocationMainComponent from './LocationMainComponent'
 
-export default (pluginId) => {
+export default () => {
 
     return (config, pluginConfig) => {
         config.addToSidebar('main', pluginConfig, LocationMainComponent)
@@ -46,6 +46,4 @@ export default (pluginId) => {
             sv: 'Redigering av polygoner är för närvarande inte möjlig'
         });
     }
-
-
 }

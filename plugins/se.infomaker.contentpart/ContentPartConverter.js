@@ -1,4 +1,5 @@
 import {DefaultDOMElement, uuid} from 'substance'
+import {api} from 'writer'
 import ContentPartManager from './ContentPartManager'
 
 /**
@@ -36,7 +37,7 @@ export default {
         this.importURI(node, link, manager)
 
         const text = el.find('text')
-        if(text) {
+        if (text) {
             text.children.forEach((child) => {
                 const childNode = converter.convertElement(child)
                 node.nodes.push(childNode.id)
@@ -78,7 +79,9 @@ export default {
 
     importField: function(field, node, converter) {
         const tagName = field.el.tagName
-        if (tagName === 'text') { return }
+        if (tagName === 'text') {
+            return
+        }
 
         if (!node.fields[tagName]) {
             node.fields[tagName] = converter.annotatedText(field, [node.id, 'fields', tagName])
@@ -97,16 +100,18 @@ export default {
 
         el.attr({
             id: node.id,
-            type: 'x-im/content-part',
+            type: 'x-im/content-part'
         })
 
         // Convert fields
         const fields = contentPart.fields.map(field => {
             if (node.fields[field.id]) {
                 const fieldText = converter.annotatedText([node.id, 'fields', field.id])
-                if (field.id === 'title') { this.setTitleAttribute(el, node.fields[field.id]) }
+                if (field.id === 'title' && this.titleAttributeDisabled === false) {
+                    this.setTitleAttribute(el, node.fields[field.id])
+                }
                 return $$(field.id).append(fieldText)
-            } else if(field.id === 'text') {
+            } else if (field.id === 'text') {
                 return $$('text').attr('format', 'idf').append(converter.convertContainer(node))
             } else {
                 return ''
@@ -126,6 +131,10 @@ export default {
                 )
             )
         }
+    },
+
+    get titleAttributeDisabled() {
+        return api.getConfigValue('se.infomaker.contentpart', 'disableTitleAttribute', false)
     },
 
     setTitleAttribute: (el, text) => {

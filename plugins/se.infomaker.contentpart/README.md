@@ -2,7 +2,7 @@
 
 ## Plugin configuration
 
-```javascript
+```json
 {
     "id": "se.infomaker.contentpart",
     "name": "contentpart",
@@ -12,6 +12,7 @@
     "mandatory": false,
     "data": {
         "disableUseOfAnnotationTools": false,
+        "disableTitleAttribute": false,
         "enableTextTypes": false,
         "types": [
             {
@@ -63,14 +64,15 @@
 
 ### Basic Options
 
-| Property                        | Type    | Required | Description                                                      |
-| ------------------------------- | :-----: | :------: | ---------------------------------------------------------------- |
-| **types**                       | Array   | `true`   | Content part types. See **Types Options** for configuration      |
-| **disableUseOfAnnotationTools** | Boolean | `false`  | Disables annotation for all fields.                              |
-| **enableTextTypes**             | Boolean | `false`  | Enables using text styles other than paragraph in the text field |
+| Property                        | Type    | Required | Description                                                                |
+| ------------------------------- | :-----: | :------: | -------------------------------------------------------------------------- |
+| **types**                       | Array   | `true`   | Content part types. See **Types Options** for configuration                |
+| **disableTitleAttribute**       | Boolean | `false`  | Disables rendering of the title-attribute to the NewsML. Default `false`.  |
+| **disableUseOfAnnotationTools** | Boolean | `false`  | Disables annotation for all fields.                                        |
+| **enableTextTypes**             | Boolean | `false`  | Enables using text styles other than paragraph in the text field           |
 
 ### Types Options
-```javascript
+```json
 {
     "name": "Faktan",
     "uri": "im:/content-part/fact",
@@ -135,3 +137,5 @@ The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf >
     </links>
 </object>
 ```
+
+* If the config value `"disableTitleAttribute"` is set to `true`, the `object/@title` will not be part of the output.

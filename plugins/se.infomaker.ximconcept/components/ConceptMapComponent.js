@@ -67,6 +67,7 @@ class ConceptMapComponent extends Component {
             scrollwheel: false,
 
             zoomControl: true,
+            gestureHandling: 'cooperative',
             mapTypeControl: false,
             scaleControl: false,
             streetViewControl: false,
@@ -93,9 +94,10 @@ class ConceptMapComponent extends Component {
             }
 
             if (!this.map) {
+                const defaultMapOptions = this.getDefaultMapOptions()
                 this.map = new google.maps.Map(
                     this.refs.mapContainer.el.el,
-                    await this.getDefaultMapOptions()
+                    defaultMapOptions
                 )
             }
 

@@ -76,7 +76,7 @@ class ConceptSearchComponent extends Component {
             }).ref('searchResultComponent')
         }
 
-        
+
         el.addClass('concept-search-component')
             .append(searchInput)
             .append(icon)
@@ -128,7 +128,7 @@ class ConceptSearchComponent extends Component {
 
     handleKeyUp() {
         const term = this.refs.searchInput.val().trim()
-        
+
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             this.extendState({
                 searching: true
@@ -141,9 +141,10 @@ class ConceptSearchComponent extends Component {
     }
 
     async search(term) {
+        const result = await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.subtypes)
         this.extendState({
             searching: false,
-            searchResult: await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.subtypes),
+            searchResult: this.state.searching ? result : [],
             selected: 0,
             searchedTerm: term,
         })
@@ -168,7 +169,7 @@ class ConceptSearchComponent extends Component {
 
                 this.refs.searchInput.val('')
                 this.resetState()
-                
+
                 break
             case 38: // arrow up
                 e.preventDefault()
@@ -177,7 +178,7 @@ class ConceptSearchComponent extends Component {
                 this.extendState({
                     selected: (this.state.selected > 0) ? this.state.selected - 1 : 0
                 })
-                
+
                 break
             case 9: // tab
             case 40: // arrow down
@@ -187,7 +188,7 @@ class ConceptSearchComponent extends Component {
                 this.extendState({
                     selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
                 })
-                
+
                 break
             case 13: // enter
                 selectedItem = this.state.searchResult[this.state.selected]

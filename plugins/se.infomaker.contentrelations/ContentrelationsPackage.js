@@ -1,32 +1,44 @@
 import ContentRelationsNode from './ContentRelationsNode'
-import ContentRelationsComponent from './ContentRelationsComponent'
 import ContentRelationsConverter from './ContentRelationsConverter'
-import ContentRelationsMainComponent from './ContentRelationsMainComponent'
 import ContentRelationsDropHandler from './ContentRelationsDropHandler'
+
+import ContentRelationsComponent from './components/ContentRelationsComponent'
+import ContentRelationsMainComponent from './components/ContentRelationsMainComponent'
+
+import './scss/contentrelations.scss'
+import './scss/searchresultitem.scss'
 
 export default {
     name: 'contentrelations',
     id: 'se.infomaker.contentrelations',
     version: '{{version}}',
-    configure: function(config, pluginConfig) {
+    configure: function(configurator, config) {
 
-        config.addLabel('ContentRelations', {
-            en: 'Related content',
-            sv: 'Relaterat innehåll'
+        configurator.addLabel('ContentRelations', {
+            en: 'Related articles',
+            sv: 'Relaterade artiklar'
         })
-
-        config.addToSidebar('ContentRelations', pluginConfig, ContentRelationsMainComponent)
-        config.addDropHandler(new ContentRelationsDropHandler())
-        config.addComponent('contentrelations', ContentRelationsComponent)
-        config.addNode(ContentRelationsNode)
-        config.addConverter('newsml', ContentRelationsConverter)
-
-        config.addLabel('Enter query', {
-            sv: 'Sökfråga'
+        configurator.addLabel('Enter query', {
+            sv: 'Fritext'
         })
-
-        config.addLabel('Search', {
+        configurator.addLabel('Search', {
             sv: 'Sök'
         })
+        configurator.addLabel('Show', {
+            sv: 'Visa'
+        })
+        configurator.addLabel('Sort', {
+            sv: 'Sortera'
+        })
+
+        configurator.addNode(ContentRelationsNode)
+        configurator.addConverter('newsml', ContentRelationsConverter)
+        configurator.addComponent(this.name, ContentRelationsComponent)
+        configurator.addDropHandler(new ContentRelationsDropHandler())
+        configurator.addToSidebar(
+            'ContentRelations',
+            config,
+            ContentRelationsMainComponent
+        )
     }
 }
