@@ -1,5 +1,5 @@
-import {Component} from "substance";
-import {api} from "writer";
+import { Component } from "substance";
+import { api } from "writer";
 import { isNullOrUndefined } from "util";
 
 class NotifyComponent extends Component {
@@ -22,7 +22,7 @@ class NotifyComponent extends Component {
 
     publishArticle(resolve, reject) {
         if (this.state.updateAfterPost) {
-            this.extendState({updateAfterPost: false});
+            this.extendState({ updateAfterPost: false });
             return resolve()
         }
         let newsItemArticle = api.editorSession.saveHandler.getExportedDocument();
@@ -49,57 +49,57 @@ class NotifyComponent extends Component {
         })
     }
 
-    articlePassesFilter(filter) {        
+    articlePassesFilter(filter) {
         if (filter === undefined) {
             return true
         }
-        
+
         const filterQuery = filter.query
         const filterType = filter.type
         const filterValue = filter.value
 
-        const queryResult = api.newsItemArticle.evaluate(filterQuery, api.newsItemArticle, 
-            function(prefix) { 
-                if (prefix === 'ils') { 
-                    return 'http://www.infomaker.se/lookupservice'; 
+        const queryResult = api.newsItemArticle.evaluate(filterQuery, api.newsItemArticle,
+            function (prefix) {
+                if (prefix === 'ils') {
+                    return 'http://www.infomaker.se/lookupservice';
                 } else {
-                    return "http://iptc.org/std/nar/2006-10-01/"; 
+                    return "http://iptc.org/std/nar/2006-10-01/";
                 }
             },
-            XPathResult.ANY_TYPE,null);
-        
-        const result = queryResult.iterateNext() 
+            XPathResult.ANY_TYPE, null);
+
+        const result = queryResult.iterateNext()
         if (result !== null) {
-            if (filterType === undefined || filterType === "EXISTS"){                
+            if (filterType === undefined || filterType === "EXISTS") {
                 return true
-            }else if (filterType === "EQUALS") {                                
+            } else if (filterType === "EQUALS") {
                 const value = result.value
-                if (value.trim() === filterValue) {                    
-                    return true
-                }            
-            }else if (filterType === "NOT_EQUALS") {                            
-                const value = result.value
-                if (value.trim() !== filterValue) {                
+                if (value.trim() === filterValue) {
                     return true
                 }
-            }else if (filterType === "DATE_OLDER_THAN" || filterType === "DATE_YOUNGER_THAN") {                                
+            } else if (filterType === "NOT_EQUALS") {
+                const value = result.value
+                if (value.trim() !== filterValue) {
+                    return true
+                }
+            } else if (filterType === "DATE_OLDER_THAN" || filterType === "DATE_YOUNGER_THAN") {
                 const value = result.value
                 const queryDate = new Date(value);
-                               
+
                 if (this.dateIsValid(queryDate)) {
                     let targetDate = new Date()
-                    targetDate.setDate(targetDate.getDate()-filterValue)                    
+                    targetDate.setDate(targetDate.getDate() - filterValue)
                     return filterType === "DATE_OLDER_THAN" ? queryDate.getTime() < targetDate.getTime() : queryDate.getTime() > targetDate.getTime()
-                }                
+                }
             }
-        }else if (filterType === "NOT_EQUALS" || filterType === "NOT_EXISTS") {
+        } else if (filterType === "NOT_EQUALS" || filterType === "NOT_EXISTS") {
             return true
         }
         return false
     }
 
     dateIsValid(date) {
-        return !date.isNullOrUndefined && date.getTime() === date.getTime()
+        return !isNullOrUndefined(date) && date.getTime() === date.getTime()
     }
 
     createNewspilotArticle(newsItemArticle) {
@@ -107,34 +107,34 @@ class NotifyComponent extends Component {
             .then(response => {
                 if (!response.ok) {
                     api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_create'), 'Status:' + response.status);
-                    this.extendState({errorMessage: 'Got error http code:' + response.status});
+                    this.extendState({ errorMessage: 'Got error http code:' + response.status });
                     return
                 }
-                this.extendState({errorMessage: null});
-                this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
-                this.extendState({updateAfterPost: true});
+                this.extendState({ errorMessage: null });
+                this.extendState({ eventSent: NotifyComponent.formatDate(new Date()) });
+                this.extendState({ updateAfterPost: true });
             }).catch((e) => {
                 let error = 'Could not update article ' + e;
                 console.error(error);
-                this.extendState({errorMessage: error});
+                this.extendState({ errorMessage: error });
                 api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
             });
     }
 
-    updateNewspilotArticle(articleId, newsItemArticle){
+    updateNewspilotArticle(articleId, newsItemArticle) {
         this.makeRequest("PUT", '/articles/exchanges/' + articleId, newsItemArticle, "json")
             .then(response => {
                 if (response.status < 200 || response.status > 299) {
                     api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Status:' + response.status);
-                    this.extendState({errorMessage: 'Got error http code:' + response.status});
+                    this.extendState({ errorMessage: 'Got error http code:' + response.status });
                     return
                 }
-                this.extendState({errorMessage: null});
-                this.extendState({eventSent: NotifyComponent.formatDate(new Date())});
+                this.extendState({ errorMessage: null });
+                this.extendState({ eventSent: NotifyComponent.formatDate(new Date()) });
             }).catch((e) => {
                 let error = 'Could not update article ' + e;
                 console.error(error);
-                this.extendState({errorMessage: error});
+                this.extendState({ errorMessage: error });
                 api.ui.showNotification('se.infomaker.newspilot.notify', api.getLabel('failed_to_update'), 'Info:' + e);
             })
     }
@@ -189,8 +189,7 @@ class NotifyComponent extends Component {
                 cache: 'default',
                 body: body
             };
-        }
-        else {
+        } else {
             myInit = {
                 method: method,
                 headers: headers,
@@ -201,9 +200,9 @@ class NotifyComponent extends Component {
         let integrationService = this.getIntegrationService();
 
         return fetch(integrationService + url, myInit)
-                .then(res => {
-                    return res;
-                })
+            .then(res => {
+                return res;
+            })
     }
 }
 
