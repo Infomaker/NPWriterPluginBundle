@@ -38,27 +38,27 @@ Set to true to reinsert the pasted link in case Iframely can not fetch the embed
 Set to true to disable adding the included iframely embed.js script to all embed codes. See [Omit script](https://iframely.com/docs/omit-script) in the Iframely docs for more information.
 
 #### `urlWhitelist` - URL whitelist
-*Optional* An array of regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
+*Optional* An array of strings that can be converted into regular expressions the Iframely plugin will match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist.
 
 ##### Example
 ```js
 // Only match URLs that contain 'foo'
-"urlWhitelist": [/foo/]
+"urlWhitelist": ["foo"]
 
 // Only match URLs that end in '/foo' or '/bar'
-"urlWhitelist": [/\/foo$/, /\/bar$/]
+"urlWhitelist": ["/foo$", "/bar$"]
 ```
 
 #### `urlBlacklist` - URL blacklist
-*Optional* An array of regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
+*Optional* An array of strings that can be converted into regular expressions the Iframely plugin will not match against. If empty, the plugin will match against all URLs. The URL will be matched against the whitelist before the blacklist
 
 ##### Example
 ```js
 // Don't match URLs that contain 'foo'
-"urlBlacklist": [/foo/]
+"urlBlacklist": ["foo"]
 
 // Don't match URLs that end in '/foo' or '/bar'
-"urlBlacklist": [/\/foo$/, /\/bar$/]
+"urlBlacklist": ["/foo$", "/bar$"]
 ```
 
 ### `alternateLinkTitle` - Link Title Template String
