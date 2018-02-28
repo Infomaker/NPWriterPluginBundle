@@ -117,6 +117,7 @@ class ConceptMainComponent extends Component {
                 },
                 {
                     title,
+                    cssClass: 'hide-overflow',
                     primary: false,
                     secondary: this.getLabel('cancel'),
                 }
@@ -132,6 +133,7 @@ class ConceptMainComponent extends Component {
                 },
                 {
                     title,
+                    cssClass: 'hide-overflow',
                     primary: this.getLabel('save'),
                     secondary: this.getLabel('cancel'),
                 }
