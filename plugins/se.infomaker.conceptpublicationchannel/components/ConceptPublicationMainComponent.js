@@ -16,15 +16,18 @@ class ConceptPublicationMainComponent extends Component {
         })
 
         this.loadArticleConcepts()
-        this.extendState({ channels: await ConceptService.getRemoteConceptsByType(this.state.conceptType) })
     }
 
     dispose() {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
-    loadArticleConcepts() {
-        this.extendState({ articleChannels: ConceptService.getArticleConceptsByType(this.state.conceptType) })
+    async loadArticleConcepts() {
+        const channels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
+        this.extendState({
+            channels,
+            articleChannels: ConceptService.getArticleConceptsByType(this.state.conceptType)
+        })
     }
 
     getInitialState() {
@@ -42,19 +45,31 @@ class ConceptPublicationMainComponent extends Component {
     }
 
     addChannelToArticle(channel) {
-        console.info('MainComponent::addChannelToArticle')
+        console.info('ConceptPublication::addChannelToArticle', channel)
         ConceptService.addArticleConcept(channel)
     }
 
+    updateArticleChannelRel(channel) {
+        console.info('ConceptPublication::updateArticleChannelRel')
+        ConceptService.updateArticleChannelRel(channel)
+    }
+
     removeChannelFromArticle(channel) {
-        console.info('MainComponent::removeChannelFromArticle')
+        console.info('ConceptPublication::removeChannelFromArticle')
         ConceptService.removeArticleConceptItem(channel)
     }
 
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
             $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
-            $$(MainChannelComponent, { ...this.state }),
+
+            $$(MainChannelComponent, {
+                ...this.state,
+                addChannelToArticle: this.addChannelToArticle.bind(this),
+                updateArticleChannelRel: this.updateArticleChannelRel.bind(this),
+                removeChannelFromArticle: this.removeChannelFromArticle.bind(this)
+            }).ref('mainChannelComponent'),
+
             $$(ChannelsComponent, {
                 ...this.state,
                 addChannelToArticle: this.addChannelToArticle.bind(this),

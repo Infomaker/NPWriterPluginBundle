@@ -16,6 +16,9 @@ const XimConceptPackage = {
         configurator.addLabel('publication-main-channel', {
             sv: 'Huvudkanal'
         })
+        configurator.addLabel('publication-main-channel-label', {
+            sv: 'Välj huvudkanal'
+        })
         configurator.addLabel('publication-secondary-channels', {
             sv: 'Delas med'
         })

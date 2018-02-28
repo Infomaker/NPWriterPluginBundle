@@ -5,35 +5,16 @@ import ChannelIconComponent from './ChannelIconComponent'
 class ChannelComponent extends Component {
 
     async willReceiveProps(newProps) {
-        let { channel, propertyMap, articleChannels } = newProps
+        let { channel, propertyMap } = newProps
 
         if (channel) {
             channel = await ConceptService.fetchConceptItemProperties(channel)
-            const selected = this.isSelected(articleChannels, channel)
 
-            // TODO: Fix this in ConceptService which is now dependant on the exiatance of name, type, rel
+            // TODO: Fix this in ConceptService which is now dependant on the exiatance of name, type
             channel.name = channel[propertyMap.ConceptName]
             channel.type = channel[propertyMap.ConceptImTypeFull]
 
-            this.extendState({ channel, selected })
-        }
-    }
-
-    isSelected(articleChannels, channel) {
-        return articleChannels.find(articleChannel => {
-            return articleChannel.uuid === channel.uuid
-        })
-    }
-
-    getInitialState() {
-        const { channel, propertyMap, articleChannels } = this.props
-        const selected = this.isSelected(articleChannels, channel)
-
-        return {
-            channel,
-            articleChannels,
-            propertyMap,
-            selected
+            this.extendState({ channel })
         }
     }
 
@@ -46,36 +27,43 @@ class ChannelComponent extends Component {
     }
 
     getIcon() {
-        const { selected, isHovered } = this.state
-        let icon = 'fa-circle-o'
+        const { isSelected, isMainChannel } = this.props
+        const { isHovered } = this.state
 
-        if (selected && isHovered) {
-            icon = 'fa-times-circle'
-        }
+        let icon = 'fa-share-alt'
 
-        if (selected && !isHovered) {
-            icon = 'fa-check-circle-o'
-        }
+        if (isMainChannel) {
+            icon = 'fa-sitemap'
+        } else {
+            if (isSelected && isHovered) {
+                icon = 'fa-times-circle'
+            }
 
-        if (!selected && isHovered) {
-            icon = 'fa-plus'
+            if (isSelected && !isHovered) {
+                icon = 'fa-check'
+            }
+
+            if (!isSelected && isHovered) {
+                icon = 'fa-plus'
+            }
         }
 
         return icon
     }
 
     render($$){
-        const { channel, selected } = this.state
+        const { channel, isSelected, isMainChannel } = this.props
 
-        return $$('div',{ class: `channel-component ${selected ? 'selected' : ''}` }, [
+        return $$('div', { class: `channel-component ${isSelected ? 'selected' : ''} ${isMainChannel ? 'mainchannel' : ''}` }, [
             $$(ChannelIconComponent, { ...this.props }).ref(`channelIconComponent-${channel.uuid}`),
-            // $$('div', { class: 'channel-text-wrapper' }, channel[propertyMap.ConceptName].slice(0, 3)),
             $$('i', { class: `channel-icon fa ${this.getIcon()}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
         ])
         .on('click', () => {
-            return selected ?
-                this.props.removeChannelFromArticle(channel) :
-                this.props.addChannelToArticle(channel)
+            if (!isMainChannel) {
+                return isSelected ?
+                    this.props.removeChannelFromArticle(channel) :
+                    this.props.addChannelToArticle(channel)
+            }
         })
         .on('mouseenter', this.mouseEnter.bind(this))
         .on('mouseleave', this.mouseLeave.bind(this))

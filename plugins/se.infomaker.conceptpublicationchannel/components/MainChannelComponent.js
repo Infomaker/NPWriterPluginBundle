@@ -15,24 +15,51 @@ class MainChannelComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderChannelsDropDown($$) {
+        const mainChannel = this.props.articleChannels.find(articleChannel => articleChannel.rel === 'mainchannel')
+        const options = [
+            { label: this.getLabel('publication-main-channel-label'), value: '' },
+            ...this.props.channels.map(channel => ({ label: channel[this.props.propertyMap.ConceptName], value: channel.uuid }))
+        ]
+
         return $$(this.dropdownComponent, {
             header: this.getLabel('publication-main-channel'),
-            options: this.props.channels.map(sorting => ({ label: sorting.name, value: `${sorting.name}:${sorting.field}`, data: {} })),
-            isSelected: (options, item) => {
-                return (item.label === this.props.sorting.name && item.value === `${this.props.sorting.name}:${this.props.sorting.field}`)
+            options: options,
+            isSelected: (options, channel) => {
+                return (mainChannel !== undefined && mainChannel.uuid === channel.value)
             },
             onChangeList: (selected) => {
-                const selectedSorting = this.props.sortings.find(sorting => `${sorting.name}:${sorting.field}` === selected)
-                this.props.setSorting(selectedSorting)
+                const selectedChannel = this.props.channels.find(channel => channel.uuid === selected)
+
+                if (selectedChannel) {
+                    if (!mainChannel || (selectedChannel.uuid !== mainChannel.uuid)) {
+                        const existingArticleChannel = this.props.articleChannels.find(channel => channel.uuid === selectedChannel.uuid)
+
+                        this.props.articleChannels.forEach(articleChannel => {
+                            if (articleChannel.uuid !== selectedChannel.uuid) {
+                                articleChannel.rel = 'channel'
+                                this.props.updateArticleChannelRel(articleChannel)
+                            }
+                        })
+
+                        selectedChannel.rel = 'mainchannel'
+                        if (existingArticleChannel) {
+                            this.props.updateArticleChannelRel(selectedChannel)
+                        } else {
+                            this.props.addChannelToArticle(selectedChannel)
+                        }
+                    }
+                } else {
+                    if (mainChannel) {
+                        this.props.removeChannelFromArticle(mainChannel)
+                    }
+                }
             },
-            disabled: this.props.sortings.length <= 1
+            disabled: this.props.channels.length <= 1
         }).ref('sortingsDropDown')
     }
 
     render($$){
-        return $$('div', { class: 'main-channel-component' }, [
-            $$('p', { class: 'main-channel-title' }, this.getLabel('publication-main-channel'))
-        ])
+        return $$('div', { class: 'main-channel-component' }, this.renderChannelsDropDown($$))
     }
 
 }

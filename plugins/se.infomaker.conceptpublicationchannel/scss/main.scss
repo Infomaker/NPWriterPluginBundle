@@ -1,7 +1,7 @@
 .publication-main-component {
     .main-channel-component {
-        .main-channel-title {
-            font-size: 13px;
+        .h2 {
+            padding: 0px;
         }
     }
 
@@ -13,6 +13,11 @@
             width: 100%;
             flex-grow: 1;
             font-size: 13px;
+            margin: 8px 0 0;
+        }
+
+        .loading-channel-info {
+            margin: auto 6px auto 0;
         }
 
         .channel-component {
@@ -22,11 +27,11 @@
             color: #757575;
             margin-right: 5px;
             margin-top: 5px;
-            cursor: pointer;
             font-size: 14px;
             border-radius: 20px;
 
-            &:hover {
+            &:hover:not(.mainchannel) {
+                cursor: pointer;
                 border-color: #d9d9d9;
                 color: #757575;
                 background: #ebebeb;
@@ -36,6 +41,9 @@
             }
             &.selected {
                 font-weight: bold;
+                border-color: #b3b3b3;
+            }
+            &.mainchannel {
                 background: #ebebeb;
             }
             &:last-of-type {

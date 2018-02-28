@@ -3,9 +3,28 @@ import ChannelComponent from './ChannelComponent'
 
 class ChannelsComponent extends Component {
 
+    isSelected(channel) {
+        return this.props.articleChannels.find(articleChannel => {
+            return articleChannel.uuid === channel.uuid
+        })
+    }
+
+    isMainChannel(channel) {
+        const match = this.props.articleChannels.find(articleChannel => {
+            return articleChannel.uuid === channel.uuid
+        })
+
+        return (match && match.rel === 'mainchannel') ? true : false
+    }
+
     render($$){
         const channels = this.props.channels.map(channel => {
-            return $$(ChannelComponent, { channel, ...this.props }).ref(`channelComponent-${channel.uuid}`)
+            return $$(ChannelComponent, {
+                channel,
+                isSelected: this.isSelected(channel),
+                isMainChannel: this.isMainChannel(channel),
+                ...this.props
+            }).ref(`channelComponent-${channel.uuid}`)
         })
 
         return $$('div', { class: 'channels-component' },

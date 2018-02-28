@@ -4,8 +4,8 @@ This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for conce
 
 ## Dependency
 
-- This plugin requires `writer > 3.14.0` and depends on the `writer.ConceptService.getRemoteConceptsByType(conceptType)` method to exist.
-- This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content, 
+- This plugin requires `writer > 4.2.0` and depends on the `writer.ConceptService.getRemoteConceptsByType(conceptType)` method to exist.
+- This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content,
 
 ## Plugin config
 
