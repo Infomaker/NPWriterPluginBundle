@@ -45,7 +45,7 @@ class ConceptItemIconComponent extends Component {
             "class": `fa ${this.getIconString()} concept-item-icon ${this.getItemConceptType()}`,
             "aria-hidden": "true"
         })
-        
+
         return el.append(icon)
     }
 

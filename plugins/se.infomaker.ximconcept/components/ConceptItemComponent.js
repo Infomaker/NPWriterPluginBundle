@@ -5,6 +5,15 @@ import ConceptItemIcon from './ConceptItemIconComponent'
 
 class ConceptItemComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.onMouseEnter = this.onMouseEnter.bind(this)
+        this.onMouseLeave = this.onMouseLeave.bind(this)
+        this.editItem = this.editItem.bind(this)
+        this.removeItem = this.removeItem.bind(this)
+    }
+
     getInitialState() {
         return { isHovered: false }
     }
@@ -12,11 +21,9 @@ class ConceptItemComponent extends Component {
     async willReceiveProps(newProps) {
         let { item } = newProps
 
-        if (item) {
-            this.setState({
-                item: await ConceptService.fetchConceptItemProperties(item)
-            })
-        }
+        this.setState({
+            item: await ConceptService.fetchConceptItemProperties(item)
+        })
     }
 
     didMount() {
@@ -89,7 +96,7 @@ class ConceptItemComponent extends Component {
             removeIcon = $$('i', {
                 "class": `fa ${isHovered ? 'fa-times remove' : ''} concept-remove-item-icon`,
                 "aria-hidden": "true"
-            }).on('click', this.removeItem.bind(this), true)
+            }).on('click', this.removeItem)
 
             const itemContent = $$('div')
                 .addClass('concept-item-content')
@@ -105,7 +112,7 @@ class ConceptItemComponent extends Component {
                 .addClass(`${type} ${editable}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
-                .on('click', this.editItem.bind(this))
+                .on('click', this.editItem)
         }
 
         return el
@@ -119,7 +126,6 @@ class ConceptItemComponent extends Component {
         e.preventDefault()
         e.stopPropagation()
         this.props.removeItem(this.state.item)
-        return false
     }
 
     editItem() {

@@ -8,6 +8,15 @@ import ConceptSelectTypeComponent from './ConceptSelectTypeComponent'
 
 class ConceptMainComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.editItem = this.editItem.bind(this)
+        this.removeArticleConcept = this.removeArticleConcept.bind(this)
+        this.addItem = this.addItem.bind(this)
+        this.itemExists = this.itemExists.bind(this)
+    }
+
     didMount() {
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
             const types = this.state.types ? this.state.types : []
@@ -22,7 +31,7 @@ class ConceptMainComponent extends Component {
     }
 
     dispose() {
-        api.events.off(this.state.name, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
     reloadArticleConcepts() {
@@ -154,13 +163,13 @@ class ConceptMainComponent extends Component {
 
         const list = $$(ConceptListComponent, {
             propertyMap,
-            editItem: this.editItem.bind(this),
-            removeItem: this.removeArticleConcept.bind(this),
+            editItem: this.editItem,
+            removeItem: this.removeArticleConcept,
             existingItems: this.state.existingItems,
             working: this.state.working,
             enableHierarchy,
             editable,
-        }).ref('conceptListComponent')
+        }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
             search = $$(ConceptSearchComponent, {
@@ -171,9 +180,9 @@ class ConceptMainComponent extends Component {
                 editable,
                 enableHierarchy,
                 disabled: (singleValue && this.state.existingItems.length) ? true : false,
-                addItem: this.addItem.bind(this),
-                itemExists: this.itemExists.bind(this)
-            }).ref('conceptSearchComponent')
+                addItem: this.addItem,
+                itemExists: this.itemExists
+            }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
         const el = $$('div')
@@ -181,7 +190,7 @@ class ConceptMainComponent extends Component {
             .append(header)
             .append(list)
             .append(search)
-            .ref('conceptMainComponent')
+            .ref(`conceptMainComponent-${this.state.name}`)
 
         return el
     }
