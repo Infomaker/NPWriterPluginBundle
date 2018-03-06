@@ -90,7 +90,7 @@ function getWriterProxyUrl(url) {
 }
 
 function getUrl(item) {
-    if (getSafeItemIntegerValue(item.data.storelocation_id) > 0) {
+    if (getSafeItemIntegerValue(item.data.storelocation_id) > 0 && getSafeItemStringValue(item.data.storepath) !== '') {
         return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
     } else {
         // last query parameter is a dummy in order for the image plugin to pick the drop up
