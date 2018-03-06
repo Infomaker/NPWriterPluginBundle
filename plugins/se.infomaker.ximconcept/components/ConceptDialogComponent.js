@@ -300,7 +300,7 @@ class ConceptDialogComponent extends Component {
 
     _extractMultiPolygon(geometryString) {
         const multiPtsArray = []
-        const polygons = geometryString.match(/\(\([0-9 \,\-]+\)\)/g)
+        const polygons = geometryString.match(/\(\([0-9 \.\,\-]+\)\)/g)
 
         polygons.forEach(polygon => {
             multiPtsArray.push(

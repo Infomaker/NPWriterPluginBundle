@@ -8,7 +8,8 @@ import {api} from 'writer'
  */
 const _testUrlAgainstList = (url, list) => {
     for (let i = 0; i < list.length; i++) {
-        if (list[i].test(url)) {
+        const rule = new RegExp(list[i])
+        if (rule.test(url)) {
             return true
         }
     }

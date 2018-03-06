@@ -15,10 +15,7 @@ class EditLinkCommand extends EditAnnotationCommand {
         return newState
     }
 
-    execute(params) {
-        console.log("Execute pa", params);
-
-    } // eslint-disable-line
+    execute(params) { console.info("Execute pa", params) }
 
     _getAnnotationsForSelection(params) {
         return params.selectionState.getAnnotationsForType(this.config.nodeType)

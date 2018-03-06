@@ -5,6 +5,15 @@ import ConceptItemIcon from './ConceptItemIconComponent'
 
 class ConceptItemComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.onMouseEnter = this.onMouseEnter.bind(this)
+        this.onMouseLeave = this.onMouseLeave.bind(this)
+        this.editItem = this.editItem.bind(this)
+        this.removeItem = this.removeItem.bind(this)
+    }
+
     getInitialState() {
         return { isHovered: false }
     }
@@ -12,11 +21,9 @@ class ConceptItemComponent extends Component {
     async willReceiveProps(newProps) {
         let { item } = newProps
 
-        if (item) {
-            this.setState({
-                item: await ConceptService.fetchConceptItemProperties(item)
-            })
-        }
+        this.setState({
+            item: await ConceptService.fetchConceptItemProperties(item)
+        })
     }
 
     didMount() {
@@ -24,21 +31,29 @@ class ConceptItemComponent extends Component {
     }
 
     onMouseEnter() {
-        if (!this.state.isHovered) {
+        if (!this.state.isHovered && this.refs.tooltip) {
             this.refs.tooltip.extendProps({
                 show: true
             })
-            this.extendState({ isHovered: true })
         }
+        this.extendState({ isHovered: true })
     }
 
     onMouseLeave() {
-        if (this.state.isHovered) {
+        if (this.state.isHovered && this.refs.tooltip) {
             this.refs.tooltip.extendProps({
                 show: false
             })
-            this.extendState({ isHovered: false })
         }
+        this.extendState({ isHovered: false })
+    }
+
+    getTooltipString(item, propertyMap, isDuplicate) {
+        const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? '' :
+            item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` :
+                item[propertyMap.ConceptDefinitionShort]
+
+        return !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription
     }
 
     render($$){
@@ -55,16 +70,14 @@ class ConceptItemComponent extends Component {
         if (item) {
             const isDuplicate = this.props.isDuplicate(item)
             const broaderString = ConceptService.extractBroaderText(item)
-            const truncatedDescription = !item[propertyMap.ConceptDefinitionShort] ? ' - ' : 
-                item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` : 
-                item[propertyMap.ConceptDefinitionShort]
+            const tootltipString = this.getTooltipString(item, propertyMap, isDuplicate)
 
-            const tooltip = $$(this.Tooltip, {
+            const tooltip = tootltipString.length ? $$(this.Tooltip, {
                 title: `${broaderString}`,
-                text: !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription,
+                text: tootltipString,
                 fixed: true,
                 parent: this,
-            }).ref('tooltip')
+            }).ref('tooltip') : ''
 
             if (item.image && !isHovered) {
                 image = $$(ConceptItemImageComponent, {
@@ -83,7 +96,7 @@ class ConceptItemComponent extends Component {
             removeIcon = $$('i', {
                 "class": `fa ${isHovered ? 'fa-times remove' : ''} concept-remove-item-icon`,
                 "aria-hidden": "true"
-            }).on('click', this.removeItem.bind(this), true)
+            }).on('click', this.removeItem)
 
             const itemContent = $$('div')
                 .addClass('concept-item-content')
@@ -99,7 +112,7 @@ class ConceptItemComponent extends Component {
                 .addClass(`${type} ${editable}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
-                .on('click', this.editItem.bind(this))
+                .on('click', this.editItem)
         }
 
         return el
@@ -113,7 +126,6 @@ class ConceptItemComponent extends Component {
         e.preventDefault()
         e.stopPropagation()
         this.props.removeItem(this.state.item)
-        return false
     }
 
     editItem() {
