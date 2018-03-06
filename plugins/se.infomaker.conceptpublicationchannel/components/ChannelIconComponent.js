@@ -1,4 +1,5 @@
 import { Component } from 'substance'
+import { ConceptService } from 'writer'
 
 class ChannelIconComponent extends Component {
 
@@ -15,9 +16,9 @@ class ChannelIconComponent extends Component {
 
         return $$('div', { class: 'channel-avatar-wrapper' }, [
             avatarUuid.length ? $$('img', {
-                src: `https://baproxy.dev.writer.infomaker.io:5555/objects/${avatarUuid}/files/thumb`,
+                src: `${ConceptService.getRemoteObjectsPath()}/${avatarUuid}/files/thumb`,
                 class: 'channel-avatar-image'
-            }) : ''
+            }) : $$('i', { class: 'fa fa-picture-o' })
         ]).ref(`channelIconComponent-${avatarUuid}`)
     }
 

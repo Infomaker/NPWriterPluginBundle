@@ -4,6 +4,13 @@ import ChannelIconComponent from './ChannelIconComponent'
 
 class ChannelComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.mouseEnter = this.mouseEnter.bind(this)
+        this.mouseLeave = this.mouseLeave.bind(this)
+    }
+
     async willReceiveProps(newProps) {
         let { channel, propertyMap } = newProps
 
@@ -65,8 +72,8 @@ class ChannelComponent extends Component {
                     this.props.addChannelToArticle(channel)
             }
         })
-        .on('mouseenter', this.mouseEnter.bind(this))
-        .on('mouseleave', this.mouseLeave.bind(this))
+        .on('mouseenter', this.mouseEnter)
+        .on('mouseleave', this.mouseLeave)
     }
 
 }

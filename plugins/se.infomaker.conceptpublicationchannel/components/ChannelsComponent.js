@@ -28,7 +28,7 @@ class ChannelsComponent extends Component {
         })
 
         return $$('div', { class: 'channels-component' },
-            $$('p', { class: 'secondary-channels-title' }, this.getLabel('publication-secondary-channels')),
+            this.props.pluginConfig.disableMainChannel ? '' : $$('p', { class: 'secondary-channels-title' }, this.getLabel('publication-secondary-channels')),
             ...channels
         ).ref('channelsComponentInstance')
     }
