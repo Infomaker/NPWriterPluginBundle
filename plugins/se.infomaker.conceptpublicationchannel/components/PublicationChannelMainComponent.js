@@ -3,7 +3,15 @@ import { api, event, ConceptService } from 'writer'
 import MainChannelComponent from './MainChannelComponent'
 import ChannelsComponent from './ChannelsComponent'
 
-class ConceptPublicationMainComponent extends Component {
+class PublicationChannelMainComponent extends Component {
+
+    constructor(...args) {
+        super(...args)
+
+        this.addChannelToArticle = this.addChannelToArticle.bind(this)
+        this.updateArticleChannelRel = this.updateArticleChannelRel.bind(this)
+        this.removeChannelFromArticle = this.removeChannelFromArticle.bind(this)
+    }
 
     async didMount() {
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, event => {
@@ -23,9 +31,8 @@ class ConceptPublicationMainComponent extends Component {
     }
 
     async loadArticleConcepts() {
-        const channels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
         this.extendState({
-            channels,
+            channels: await ConceptService.getRemoteConceptsByType(this.state.conceptType),
             articleChannels: ConceptService.getArticleConceptsByType(this.state.conceptType)
         })
     }
@@ -45,17 +52,14 @@ class ConceptPublicationMainComponent extends Component {
     }
 
     addChannelToArticle(channel) {
-        console.info('ConceptPublication::addChannelToArticle', channel)
         ConceptService.addArticleConcept(channel)
     }
 
     updateArticleChannelRel(channel) {
-        console.info('ConceptPublication::updateArticleChannelRel')
         ConceptService.updateArticleChannelRel(channel)
     }
 
     removeChannelFromArticle(channel) {
-        console.info('ConceptPublication::removeChannelFromArticle')
         ConceptService.removeArticleConceptItem(channel)
     }
 
@@ -63,21 +67,21 @@ class ConceptPublicationMainComponent extends Component {
         return $$('div', { class: 'publication-main-component' }, [
             $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
 
-            $$(MainChannelComponent, {
+            this.state.pluginConfig.disableMainChannel ? '' : $$(MainChannelComponent, {
                 ...this.state,
-                addChannelToArticle: this.addChannelToArticle.bind(this),
-                updateArticleChannelRel: this.updateArticleChannelRel.bind(this),
-                removeChannelFromArticle: this.removeChannelFromArticle.bind(this)
+                addChannelToArticle: this.addChannelToArticle,
+                updateArticleChannelRel: this.updateArticleChannelRel,
+                removeChannelFromArticle: this.removeChannelFromArticle
             }).ref('mainChannelComponent'),
 
             $$(ChannelsComponent, {
                 ...this.state,
-                addChannelToArticle: this.addChannelToArticle.bind(this),
-                removeChannelFromArticle: this.removeChannelFromArticle.bind(this)
+                addChannelToArticle: this.addChannelToArticle,
+                removeChannelFromArticle: this.removeChannelFromArticle
             }).ref('channelsComponent')
-        ]).ref('conceptPublicationMainComponent')
+        ]).ref('publicationChannelMainComponent')
     }
 
 }
 
-export default ConceptPublicationMainComponent
+export default PublicationChannelMainComponent
