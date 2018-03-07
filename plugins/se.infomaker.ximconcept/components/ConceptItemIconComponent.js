@@ -21,6 +21,7 @@ class ConceptItemIconComponent extends Component {
 
             'x-im/channel': 'fa-random',
             'x-im/topic': 'fa-tag',
+            'x-im/section': 'fa-pie-chart'
         }
 
         return conceptTypeIcons[type] || ''
