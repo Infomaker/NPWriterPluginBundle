@@ -18,17 +18,22 @@ class ContentRelationsMainComponent extends Component {
             .then(response => api.router.checkForOKStatus(response))
             .then(response => response.json())
             .then(({ sortings }) => {
+                const sortingObjects = sortings.map((sorting) => {
+                    return {
+                        name: sorting.name,
+                        field: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].indexField : false,
+                        ascending: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].ascending : false
+                    }
+                })
+                const defaultSorting = (this.state.pluginConfig.defaultSorting && sortingObjects.length) ?
+                    sortingObjects.find(sort => sort.name === this.state.pluginConfig.defaultSorting) : false
+
                 this.extendState({
                     sortings: [
-                        relevance,
-                        ...sortings.map((sorting) => {
-                            return {
-                                name: sorting.name,
-                                field: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].indexField : false,
-                                ascending: sorting.sortIndexFields.length ? sorting.sortIndexFields[0].ascending : false
-                            }
-                        })
-                    ]
+                        ...sortingObjects,
+                        relevance
+                    ],
+                    sorting: defaultSorting || sortingObjects[0] || relevance
                 })
             })
             .catch((err) => {
