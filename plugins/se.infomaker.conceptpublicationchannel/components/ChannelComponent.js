@@ -59,9 +59,9 @@ class ChannelComponent extends Component {
     }
 
     render($$){
-        const { channel, isSelected, isMainChannel } = this.props
+        const { channel, isSelected, isMainChannel, propertyMap } = this.props
 
-        return $$('div', { class: `channel-component ${isSelected ? 'selected' : ''} ${isMainChannel ? 'mainchannel' : ''}` }, [
+        return $$('div', { class: `channel-component ${isSelected ? 'selected' : ''} ${isMainChannel ? 'mainchannel' : ''}`, title: `${channel[propertyMap.ConceptName]}` }, [
             $$(ChannelIconComponent, { ...this.props }).ref(`channelIconComponent-${channel.uuid}`),
             $$('i', { class: `channel-icon fa ${this.getIcon()}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
         ])
