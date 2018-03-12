@@ -128,7 +128,7 @@ class SearchComponent extends Component {
         return defaultSorting ?
             defaultSorting.name :
             sortingObjects.length ?
-                sortingObjects[0].name : ''
+            sortingObjects[0].name : ''
     }
 
     /**
