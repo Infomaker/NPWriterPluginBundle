@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-nvm install
+# Load NVM script and use version
+. ~/.bashrc
+nvm use lts/carbon
 
 OLD_DIR=`pwd`
 
