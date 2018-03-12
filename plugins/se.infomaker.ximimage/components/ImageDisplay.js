@@ -214,7 +214,7 @@ class ImageDisplay extends Component {
                         global: true,
                         primary: this.getLabel('Save'),
                         secondary: this.getLabel('Cancel'),
-                        cssClass: 'np-image-dialog'
+                        cssClass: 'np-image-dialog hide-overflow'
                     }
                 )
             })

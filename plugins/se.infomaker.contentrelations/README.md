@@ -26,6 +26,7 @@ The tab under which the plugin will be rendered can be specified with the:
 
 ## Plugin configuration
 
+- `"defaultSorting": "Updated"` name of the OC sorting to be used as default sorting
 - `"npDropLinkMatcher":` On drop, If a match is found params is updated with `isNpDroplink=true`
 - `"contentHost": {... ` BA-proxy config
 - `"contenttype": "Article",` Article contentType in OC
@@ -42,6 +43,7 @@ The tab under which the plugin will be rendered can be specified with the:
     "enabled": true,
     "mandatory": false,
     "data": {
+        "defaultSorting": "Updated",
         "npDropLinkMatcher": "http://127.0.0.1:8080/opencontent[^\\s]+",
         "contentHost": {
             "protocol": "https://",

@@ -56,7 +56,7 @@ class HistoryItemComponent extends Component {
                             global: true,
                             primary: this.getLabel('history-popover-Replace current article'),
                             secondary: this.getLabel('cancel'),
-                            cssClass: 'np-teaser-dialog'
+                            cssClass: 'np-teaser-dialog hide-overflow'
                         })
                 } else {
 
@@ -98,7 +98,7 @@ class HistoryItemComponent extends Component {
                                         global: true,
                                         primary: this.getLabel('history-popover-Replace current article'),
                                         secondary: this.getLabel('cancel'),
-                                        cssClass: 'np-teaser-dialog'
+                                        cssClass: 'np-teaser-dialog hide-overflow'
                                     })
                             }
                         })

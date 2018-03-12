@@ -7,7 +7,7 @@ export default (props) => {
         props,
         {
             title: "Embed HTML",
-            cssClass: 'im-htmlembed-modal'
+            cssClass: 'im-htmlembed-modal hide-overflow'
         }
     );
 }

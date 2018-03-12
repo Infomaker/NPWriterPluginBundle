@@ -70,7 +70,8 @@ class JobImageItem extends Component {
         }, {
             secondary: false,
             title: this.getLabel('Image information'),
-            global: true
+            global: true,
+            cssClass: 'hide-overflow'
         })
     }
 

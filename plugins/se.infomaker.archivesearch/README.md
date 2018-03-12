@@ -12,6 +12,7 @@ The archive search plugin is a great way of searching for images in archive repo
   "mandatory": false,
   "enabled": true,
   "data": {
+    "defaultSorting": "Updated",
     "archiveHosts": [
       {
         "name": "Internal OC-Archive",
@@ -49,6 +50,7 @@ The archive search plugin is a great way of searching for images in archive repo
 
 | Property          | Type      | Required  | Description   |
 | --------          | :--:      | :------:  | -----------   |
+| **defaultSorting** | String   | `false`   | Name of the OC sorting to be used as default sorting |
 | **archiveHosts**  | Array     | `true`    | Array containing query, and host configuration for OpenContent hosts. |
 
 ### Archive Hosts Options
