@@ -97,14 +97,19 @@ class SearchComponent extends Component {
             .then(response => this.context.api.router.checkForOKStatus(response))
             .then(response => response.json())
             .then(({sortings}) => {
+                const sortingObjects = sortings.map((sorting) => {
+                    return {
+                        name: sorting.name,
+                        field: sorting.sortIndexFields[0].indexField,
+                        ascending: sorting.sortIndexFields[0].ascending
+                    }
+                })
+                const defaultSorting = (this._defaultSorting && sortingObjects.length) ?
+                    sortingObjects.find(sort => sort.name === this._defaultSorting) : false
+
                 this.extendState({
-                    sortings: sortings.map((sorting) => {
-                        return {
-                            name: sorting.name,
-                            field: sorting.sortIndexFields[0].indexField,
-                            ascending: sorting.sortIndexFields[0].ascending
-                        }
-                    })
+                    sortings: sortingObjects,
+                    sort: defaultSorting.name || sortingObjects.length ? sortingObjects : this.state.sort
                 })
             })
             .catch((err) => {
@@ -127,10 +132,20 @@ class SearchComponent extends Component {
 
     /**
      * @returns {Array}
+     * @readonly
      * @private
      */
     get _configuredEndpoints() {
         return this.context.api.getConfigValue('se.infomaker.archivesearch', 'archiveHosts', [])
+    }
+
+    /**
+     * @returns {string | false}
+     * @readonly
+     * @private
+     */
+    get _defaultSorting() {
+        return this.context.api.getConfigValue('se.infomaker.archivesearch', 'defaultSorting', false)
     }
 
     /**
@@ -214,13 +229,14 @@ class SearchComponent extends Component {
      */
     get _sortingOptions() {
         return [
-            {label: this.getLabel('Relevance'), value: ''},
             ...this.state.sortings.map(({name: label, name: value}) => {
                 return {
                     label,
                     value
                 }
-            })]
+            }),
+            { label: this.getLabel('Relevance'), value: '' }
+        ]
     }
 
     /**
