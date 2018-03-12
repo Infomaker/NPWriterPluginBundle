@@ -244,7 +244,7 @@ class TeaserComponent extends Component {
                 global: true,
                 primary: this.getLabel('Save'),
                 secondary: this.getLabel('Cancel'),
-                cssClass: 'np-teaser-dialog'
+                cssClass: 'np-teaser-dialog hide-overflow'
             }
         )
     }
