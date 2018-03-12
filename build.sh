@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+nvm install
+
 OLD_DIR=`pwd`
 
 if [[ -z $1 ]]; then
