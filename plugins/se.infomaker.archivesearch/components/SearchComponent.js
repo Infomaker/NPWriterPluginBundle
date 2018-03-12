@@ -104,17 +104,31 @@ class SearchComponent extends Component {
                         ascending: sorting.sortIndexFields[0].ascending
                     }
                 })
-                const defaultSorting = (this._defaultSorting && sortingObjects.length) ?
-                    sortingObjects.find(sort => sort.name === this._defaultSorting) : false
 
                 this.extendState({
                     sortings: sortingObjects,
-                    sort: defaultSorting.name || sortingObjects.length ? sortingObjects : this.state.sort
+                    sort: this._getDefaultSort(sortingObjects)
                 })
             })
             .catch((err) => {
                 console.error(err)
             })
+    }
+
+    /**
+     * Get name of default sorting
+     *
+     * @param {object} sortingObjects
+     * @returns {string} sortName
+     */
+    _getDefaultSort(sortingObjects) {
+        const defaultSorting = (this._defaultSorting && sortingObjects.length) ?
+            sortingObjects.find(sort => sort.name === this._defaultSorting) : false
+
+        return defaultSorting ?
+            defaultSorting.name :
+            sortingObjects.length ?
+                sortingObjects[0].name : ''
     }
 
     /**
