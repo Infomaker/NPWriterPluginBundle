@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Load NVM script and use version
+. ~/.bashrc
+nvm use lts/carbon
+
 OLD_DIR=`pwd`
 
 if [[ -z $1 ]]; then
