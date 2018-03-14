@@ -11,16 +11,36 @@ const XimConceptPackage = {
         configurator.addToSidebar('main', pluginConfig, PublicationChannelMainComponent)
 
         configurator.addLabel('publication-channel-title', {
-            sv: 'Publiceringskanaler'
+            sv: 'Publiceringskanaler',
+            en: 'Publication channels'
+        })
+        configurator.addLabel('publication-no-channels-found', {
+            sv: 'Hittade inga kanaler',
+            en: 'No channels found'
         })
         configurator.addLabel('publication-main-channel', {
-            sv: 'Huvudkanal'
+            sv: 'Publiceringskanaler',
+            en: 'Main channel'
         })
         configurator.addLabel('publication-main-channel-label', {
-            sv: 'Välj huvudkanal'
+            sv: 'Välj huvudkanal',
+            en: 'Set main channel'
         })
         configurator.addLabel('publication-secondary-channels', {
-            sv: 'Delas med'
+            sv: 'Delas med',
+            en: 'Shared with'
+        })
+        configurator.addLabel('publication-set-main-channel', {
+            sv: 'Du måste välja en huvudkanal',
+            en: 'You have to set a main channel'
+        })
+        configurator.addLabel('publication-select-all', {
+            sv: 'Välj alla',
+            en: 'Select all'
+        })
+        configurator.addLabel('publication-remove-all', {
+            sv: 'Rensa',
+            en: 'Clear all'
         })
     }
 }

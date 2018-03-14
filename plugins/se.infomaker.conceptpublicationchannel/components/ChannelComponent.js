@@ -6,9 +6,6 @@ class ChannelComponent extends Component {
 
     constructor(...args) {
         super(...args)
-
-        this.mouseEnter = this.mouseEnter.bind(this)
-        this.mouseLeave = this.mouseLeave.bind(this)
     }
 
     async willReceiveProps(newProps) {
@@ -25,45 +22,13 @@ class ChannelComponent extends Component {
         }
     }
 
-    mouseEnter() {
-        this.extendState({ isHovered: true })
-    }
-
-    mouseLeave() {
-        this.extendState({ isHovered: false })
-    }
-
-    getIcon() {
-        const { isSelected, isMainChannel } = this.props
-        const { isHovered } = this.state
-
-        let icon = 'fa-share-alt'
-
-        if (isMainChannel) {
-            icon = 'fa-sitemap'
-        } else {
-            if (isSelected && isHovered) {
-                icon = 'fa-times-circle'
-            }
-
-            if (isSelected && !isHovered) {
-                icon = 'fa-check'
-            }
-
-            if (!isSelected && isHovered) {
-                icon = 'fa-plus'
-            }
-        }
-
-        return icon
-    }
-
     render($$){
         const { channel, isSelected, isMainChannel, propertyMap } = this.props
 
         return $$('div', { class: `channel-component ${isSelected ? 'selected' : ''} ${isMainChannel ? 'mainchannel' : ''}`, title: `${channel[propertyMap.ConceptName]}` }, [
             $$(ChannelIconComponent, { ...this.props }).ref(`channelIconComponent-${channel.uuid}`),
-            $$('i', { class: `channel-icon fa ${this.getIcon()}` }).ref(`channelIconComponent-${channel.uuid}-icon`)
+            $$('p', { class: `channel-name` }, channel[propertyMap.ConceptName]),
+            isMainChannel ? $$('p', { class: 'channel-name mainchannel' }, ' (Huvudkanal)') : ''
         ])
         .on('click', () => {
             if (!isMainChannel) {
@@ -72,8 +37,6 @@ class ChannelComponent extends Component {
                     this.props.addChannelToArticle(channel)
             }
         })
-        .on('mouseenter', this.mouseEnter)
-        .on('mouseleave', this.mouseLeave)
     }
 
 }

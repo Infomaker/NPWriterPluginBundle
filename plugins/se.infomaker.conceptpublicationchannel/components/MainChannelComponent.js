@@ -22,7 +22,7 @@ class MainChannelComponent extends Component {
         ]
 
         return $$(this.dropdownComponent, {
-            header: this.getLabel('publication-main-channel'),
+            header: '', //this.getLabel('publication-main-channel'),
             options: options,
             isSelected: (options, channel) => {
                 return (mainChannel !== undefined && mainChannel.uuid === channel.value)

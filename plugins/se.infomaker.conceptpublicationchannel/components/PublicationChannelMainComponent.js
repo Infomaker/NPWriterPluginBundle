@@ -11,6 +11,8 @@ class PublicationChannelMainComponent extends Component {
         this.addChannelToArticle = this.addChannelToArticle.bind(this)
         this.updateArticleChannelRel = this.updateArticleChannelRel.bind(this)
         this.removeChannelFromArticle = this.removeChannelFromArticle.bind(this)
+        this.selectAll = this.selectAll.bind(this)
+        this.removeAll = this.removeAll.bind(this)
     }
 
     async didMount() {
@@ -31,15 +33,21 @@ class PublicationChannelMainComponent extends Component {
     }
 
     async loadArticleConcepts() {
+        const channels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
+        const articleChannels = ConceptService.getArticleConceptsByType(this.state.conceptType)
+        const articleMainChannel = articleChannels.find(articleChannel => articleChannel.rel === 'mainchannel')
+        const mainChannel = articleMainChannel ? channels.find(channel => channel.uuid === articleMainChannel.uuid) : null
+
         this.extendState({
-            channels: await ConceptService.getRemoteConceptsByType(this.state.conceptType),
-            articleChannels: ConceptService.getArticleConceptsByType(this.state.conceptType)
+            mainChannel,
+            channels,
+            articleChannels
         })
     }
 
     getInitialState() {
         const pluginConfig = this.props.pluginConfigObject.pluginConfigObject.data
-        const conceptType = pluginConfig.conceptType || 'x-im/channel'
+        const conceptType = 'x-im/channel'
         const propertyMap = ConceptService.getPropertyMap()
 
         return {
@@ -63,6 +71,23 @@ class PublicationChannelMainComponent extends Component {
         ConceptService.removeArticleConceptItem(channel)
     }
 
+    selectAll() {
+        this.state.channels.forEach(channel => {
+            const match = this.state.articleChannels.find(articleChannel => articleChannel.uuid === channel.uuid)
+            if (!match) {
+                this.addChannelToArticle(channel)
+            }
+        })
+    }
+
+    removeAll() {
+        this.state.articleChannels.forEach(articleChannel => {
+            if (articleChannel.rel !== 'mainchannel') {
+                this.removeChannelFromArticle(articleChannel)
+            }
+        })
+    }
+
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
             $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
@@ -76,8 +101,11 @@ class PublicationChannelMainComponent extends Component {
 
             $$(ChannelsComponent, {
                 ...this.state,
+                disableMainChannel: this.state.pluginConfig.disableMainChannel,
                 addChannelToArticle: this.addChannelToArticle,
-                removeChannelFromArticle: this.removeChannelFromArticle
+                removeChannelFromArticle: this.removeChannelFromArticle,
+                selectAll: this.selectAll,
+                removeAll: this.removeAll
             }).ref('channelsComponent')
         ]).ref('publicationChannelMainComponent')
     }

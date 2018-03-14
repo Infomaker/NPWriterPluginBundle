@@ -10,16 +10,58 @@
     .channels-component {
         display: flex;
         flex-wrap: wrap;
+        padding-top: 3px;
 
+        &.enforce-main-channel {
+            pointer-events: none;
+            opacity: 0.6;
+
+            .channels-message {
+                width: 100%;
+                margin-left: 5px;
+                margin-top: 5px;
+                margin-bottom: 3px;
+                font-size: 12px;
+                font-style: italic;
+            }
+        }
         .secondary-channels-title {
             width: 100%;
             flex-grow: 1;
             font-size: 13px;
             margin: 8px 0 0;
         }
-
         .loading-channel-info {
             margin: auto 6px auto 0;
+        }
+        .main-channel-divider {
+            width: 1px;
+            background: #c8c8c8;
+            margin: 6px 10px 0px 5px;
+            height: 30px;
+        }
+        .channels-component-links {
+            display: flex;
+            align-items: center;
+            color: #626262;
+            cursor: pointer;
+            font-style: italic;
+
+            &:hover {
+                color: #2f3842;
+            }
+
+            .inactive {
+                color: #d9d9d9;
+                cursor: default;
+            }
+
+            p {
+                font-size: 14px;
+                padding: 4px 5px;
+                margin-right: 5px;
+                margin-top: 5px;
+            }
         }
 
         .channel-component {
@@ -31,28 +73,41 @@
             margin-top: 5px;
             font-size: 14px;
             border-radius: 20px;
+            align-items: center;
 
             &:hover:not(.mainchannel) {
                 cursor: pointer;
                 border-color: #d9d9d9;
                 color: #757575;
-                background: #ebebeb;
+                background: #e2e2e2;
             }
             &:active {
                 border-color: #b3b3b3;
             }
             &.selected {
-                font-weight: bold;
-                border-color: #b3b3b3;
-                background: #bbf9d8;
-            }
-            &.mainchannel {
-                border-color: #585858;
+                border-color: #288dc0;
+                background: #288dc0;
+                color: white;
+                &:hover:not(.mainchannel) {
+                    color: white;
+                    border-color: #2c9ed6;
+                    background: #2c9ed6;
+                    .channel-icon {
+                        color: #757575;
+                    }
+                }
             }
             &:last-of-type {
                 margin-right: 0;
             }
-
+            .channel-name {
+                margin: 1px 8px 0 3px;
+                font-size: 13px;
+                &.mainchannel {
+                    margin-left: -4px;
+                    font-style: italic;
+                }
+            }
             .channel-avatar-wrapper {
                 width: 24px;
                 height: 24px;
