@@ -1,6 +1,6 @@
 # Concept Publication Channel plugin
 
-This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for concepts. `ConceptService` configuration needed in `writer-config.json`
+This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for concepts of type `x-im/channel`. `ConceptService` configuration needed in `writer-config.json`
 
 ## Dependency
 
@@ -8,6 +8,8 @@ This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for conce
 - This plugin requires a contentHost (editorial ba-proxy) which is used for Open Content search requests towards the editorial Open Content,
 
 ## Plugin config
+
+- `"disableMainChannel": true` An optional property to disable usage of "mainchannel" and only render normal channel pills
 
 ```json
 {
@@ -18,14 +20,14 @@ This plugin uses a `Editorial Ba-proxy` to search Editorial OC backend for conce
     "mandatory": false,
     "enabled": true,
     "data": {
-        "conceptType": "x-im/channel"
+        "disableMainChannel": true
     }
 }
 ```
 
 ### Writer config
 
-Configuration for the writer config file. This plugin uses the same ConceptService-class as the ximconcepts-plugin, therefor this configuration only needs to be entered once.
+Configuration for the writer config file. This plugin uses the same ConceptService-class and config as the ximconcepts-plugin, therefor this configuration only needs to be entered once.
 
 ```json
 "conceptServiceConfig": {
