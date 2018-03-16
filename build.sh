@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Load NVM script and use version
-. ~/.bashrc
-nvm use lts/carbon
+# Use node version in .nvmrc if it exists
+if [[ -f .nvmrc ]]; then
+  nvm use
+fi
 
 OLD_DIR=`pwd`
 
