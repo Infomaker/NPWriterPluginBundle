@@ -2,6 +2,10 @@
 
 # Use node version in .nvmrc if it exists
 if [[ -f .nvmrc ]]; then
+  if [[ -f ~/.bashrc ]]; then
+    echo "Initiating nvm"
+    . ~/.bashrc
+  fi
   nvm use
 fi
 
