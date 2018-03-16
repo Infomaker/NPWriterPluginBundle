@@ -6,7 +6,7 @@ if [[ -f .nvmrc ]]; then
     echo "Initiating nvm"
     . ~/.bashrc
   fi
-  nvm use
+  nvm install
 fi
 
 OLD_DIR=`pwd`
