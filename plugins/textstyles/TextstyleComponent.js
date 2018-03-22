@@ -2,11 +2,6 @@ import {Component, TextPropertyComponent} from 'substance'
 import './scss/textstyles.scss'
 
 class TextstyleComponent extends Component {
-    // getInitialState() {
-    //     return {
-    //         seq: 0
-    //     }
-    // }
 
     didMount() {
         this.context.api.events.on(`textstyle-${this.props.node.id}`, 'document:changed', (event) => {
@@ -20,12 +15,13 @@ class TextstyleComponent extends Component {
             for (const id in updatedNodes) {
                 if (id === nodeId) {
                     return this.rerender()
-                    // this.setState({
-                    //     seq: this.state.seq + 1
-                    // })
                 }
             }
         })
+    }
+
+    dispose() {
+        this.context.api.events.off(`textstyle-${this.props.node.id}`, 'document:changed')
     }
 
     render($$, options) {
