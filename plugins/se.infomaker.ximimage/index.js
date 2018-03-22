@@ -1,5 +1,6 @@
 import './scss/image-display.scss'
 import './scss/ximimage.scss'
+import './scss/display-modes.scss'
 import { registerPlugin } from 'writer'
 
 import XimimagePackage from './XimimagePackage'

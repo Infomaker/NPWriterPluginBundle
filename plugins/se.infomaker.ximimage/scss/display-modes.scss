@@ -1,0 +1,19 @@
+.sc-isolated-node:not(.sm-selected):not(.sm-focused) {
+  .sc-ximimage {
+    &.display-mode-minimal, &.display-mode-minimized {
+      // Crops and meta are both hidden in minimal and minimized mode
+      .image-crops-container, .meta-wrapper {
+        display: none;
+      }
+    }
+    // Minimized mode: show only image thumbnail
+    &.display-mode-minimized {
+      .sc-image-display {
+        // Limit image height to 90px in minimized mode
+        & >.se-image-container > img {
+          max-height: 90px;
+        }
+      }
+    }
+  }
+}
