@@ -31,7 +31,7 @@ class ConceptSearchComponent extends Component {
             name: 'concept-search',
             class: `concept-search-input ${this.state.searchResult && this.state.searchResult.length ? 'results' : '   '}`,
             placeholder: this.props.placeholderText,
-            autocomplete: 'off',
+            autocomplete: 'off'
         })
         .on('input', this.debounce(400, this.handleInput.bind(this)))
         .on('keydown', this.handleKeyDown)
@@ -141,7 +141,13 @@ class ConceptSearchComponent extends Component {
     }
 
     async search(term) {
-        const result = await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.subtypes)
+        const result = await ConceptService.searchForConceptSuggestions({
+            conceptTypes: this.props.conceptTypes,
+            term,
+            subtypes: this.props.subtypes,
+            associatedWith: this.props.associatedWith
+        })
+
         this.extendState({
             searching: false,
             searchResult: this.state.searching ? result : [],
@@ -152,7 +158,7 @@ class ConceptSearchComponent extends Component {
 
     addItem(item) {
         const { propertyMap } = this.props
-        item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] : 
+        item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] :
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
 
         this.props.addItem(item)
