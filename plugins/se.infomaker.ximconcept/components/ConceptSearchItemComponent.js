@@ -19,6 +19,7 @@ class ConceptSearchItemComponent extends Component {
 
     render($$){
         const { item, propertyMap } = this.props
+        const avatarUuid = item[propertyMap.ConceptAvatarUuid]
         const broaderString = (this.props.enableHierarchy && item[propertyMap.ConceptBroaderRelation]) ? `(${ConceptService.extractBroaderText(item, true)})` : ''
         const fullBroaderString = ConceptService.extractBroaderText(item)
         const conceptDefinitionShort = item[propertyMap.ConceptDefinitionShort] ? $$('p').append(item[propertyMap.ConceptDefinitionShort]).addClass('concept-short') : null
@@ -31,6 +32,18 @@ class ConceptSearchItemComponent extends Component {
             parent: this.refs.truncatedBroader,
         }).ref('tooltip') : null
 
+
+        const conceptImage = avatarUuid ? $$(ConceptItemImageComponent, {
+            propertyMap,
+            src: item,
+            avatarUuid: avatarUuid,
+        }).ref(`searchResult-conceptItemImageComponent-${item.uuid}`) : ''
+
+        const conceptIcon = !avatarUuid ? $$(ConceptItemIcon, {
+            propertyMap,
+            item
+        }) : ''
+
         const broaderWrapper = $$('span')
 
         if (item[propertyMap.ConceptBroaderRelation] && item[propertyMap.ConceptBroaderRelation][propertyMap.ConceptBroaderRelation]) {
@@ -41,8 +54,6 @@ class ConceptSearchItemComponent extends Component {
                 .on('mouseenter', () => { this.refs.tooltip.extendProps({ show: true }) })
                 .on('mouseleave', () => { this.refs.tooltip.extendProps({ show: false }) })
         }
-
-        let conceptImage, conceptIcon
 
         const draftText = item[propertyMap.ConceptStatus].indexOf('draft') !== -1 ? $$('span').addClass('draft-text').append(' (draft)') : null
 
@@ -64,17 +75,6 @@ class ConceptSearchItemComponent extends Component {
         const conceptName = $$('p')
             .append(conceptNameContent)
             .append(replacedBy)
-
-        if (item.image) {
-            conceptImage = $$(ConceptItemImageComponent, {
-                src: item.image
-            })
-        } else {
-            conceptIcon = $$(ConceptItemIcon, {
-                propertyMap,
-                item
-            })
-        }
 
         const itemContent = $$('div').addClass('item-content')
             .append(conceptName)
