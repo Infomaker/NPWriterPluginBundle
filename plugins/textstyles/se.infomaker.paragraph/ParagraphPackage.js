@@ -12,7 +12,7 @@ const paragraphPackage = {
     version: '{{version}}',
     configure: function (config, pluginConfig) {
         const command = 'switch-to-paragraph';
-        config.addCommand(command, TextstyleCommand, {textType: paragraphPackage.name})
+        config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Paragraph)
         config.addComponent(Paragraph.type, ParagraphComponent)
         config.addConverter('newsml', ParagraphConverter)
@@ -22,7 +22,7 @@ const paragraphPackage = {
             command: command
         })
 
-        config.addLabel('paragraph', {
+        config.addLabel(this.name, {
             en: 'Paragraph',
             de: 'Paragraph'
         })
@@ -39,7 +39,7 @@ const paragraphPackage = {
 
         const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+0' : 'ctrl+alt+0'
 
-        config.addKeyboardShortcut(shortcut, { command: command }, false, config.getLabelProvider().getLabel('paragraph'))
+        config.addKeyboardShortcut(shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
 
     }
 };

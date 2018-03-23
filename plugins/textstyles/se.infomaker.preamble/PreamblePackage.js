@@ -13,7 +13,7 @@ export default {
         PreambleNode.type = this.name
         PreambleConverter.type = PreambleNode.type
         PreambleConverter.element = PreambleNode.type
-        config.addCommand('switch-to-preamble', TextstyleCommand, {textType: PreambleNode.type})
+        config.addCommand('switch-to-preamble', TextstyleCommand, {textType: this.name})
 
 
         config.addNode(PreambleNode)
@@ -27,7 +27,7 @@ export default {
             command: 'switch-to-preamble'
         })
 
-        config.addLabel('preamble', {
+        config.addLabel(this.name, {
             en: 'Preamble',
             sv: 'Ingress'
         })
@@ -43,9 +43,9 @@ export default {
             sv: 'Ing'
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+2' : 'ctrl+alt+2'
+        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+3' : 'ctrl+alt+3'
 
-        config.addKeyboardShortcut(shortcut, { command: 'switch-to-preamble' }, false, config.getLabelProvider().getLabel("preamble"))
+        config.addKeyboardShortcut(shortcut, { command: 'switch-to-preamble' }, false, config.getLabelProvider().getLabel(this.name))
 
 
     }

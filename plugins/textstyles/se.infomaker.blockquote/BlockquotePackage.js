@@ -11,7 +11,7 @@ const blockquotePackage = {
     version: '{{version}}',
     configure: function (config, pluginConfig) {
         const commandName = 'switch-to-blockquote';
-        config.addCommand(commandName, TextstyleCommand, {textType: blockquotePackage.name})
+        config.addCommand(commandName, TextstyleCommand, {textType: this.name})
 
         config.addNode(Blockquote)
         config.addComponent(Blockquote.type, BlockquoteComponent)
@@ -19,11 +19,11 @@ const blockquotePackage = {
 
         config.addTextType({
             name: 'blockquote',
-            data: {type: 'blockquote'},
+            data: {type: this.name},
             command: commandName
         })
 
-        config.addLabel('blockquote', {
+        config.addLabel(this.name, {
             en: 'Blockquote',
             de: 'Blockequote',
             sv: 'Citat'
@@ -41,9 +41,9 @@ const blockquotePackage = {
             sv: "CIT"
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+3' : 'ctrl+alt+3'
+        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+4' : 'ctrl+alt+4'
 
-        config.addKeyboardShortcut(shortcut, { command: commandName }, false, config.getLabelProvider().getLabel('blockquote'))
+        config.addKeyboardShortcut(shortcut, { command: commandName }, false, config.getLabelProvider().getLabel(this.name))
 
     }
 };
