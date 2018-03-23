@@ -5,6 +5,9 @@
         border-radius: 150px;
         overflow: hidden;
         margin: 6px 5px;
+        &.hide {
+            display: none;
+        }
 
         .concept-item-image {
             width: 100%;
