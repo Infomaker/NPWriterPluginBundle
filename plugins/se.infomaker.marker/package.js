@@ -1,49 +1,79 @@
-import { AnnotationTool, platform } from 'substance';
-import { NPWriterAnnotationCommand } from 'writer';
-import { pluginName, pluginId, commands, types, keyboardShortcut } from './config';
-import Node from './node';
-import MainAnnotationComponent from './components/annotation-component';
-import XMLConverter from './xml-converter';
-import labels from './labels';
+import { AnnotationTool, platform } from 'substance'
+import { NPWriterAnnotationCommand } from 'writer'
+import MarkerNode from './MarkerNode'
+import MarkerComponent from './MarkerComponent'
+import MarkerConverter from './MarkerConverter'
 
-import './styles/style.scss';
+export default {
+    name: 'marker',
 
-export default {id: pluginId,
-    name: pluginName,
     configure(config, pluginConfig) {
-        config.addNode(Node);
-        config.addComponent(types.NODE, MainAnnotationComponent);
-        config.addConverter('newsml', XMLConverter);
+        let nodeType = 'mark'
+        let commandName = 'highlighted text'
+        let tagName = 'mark'
+        let color = null
 
-        config.addCommand(commands.NODE, NPWriterAnnotationCommand, {
-            nodeType: types.NODE,
+        // Override node name if configured to do so
+        if (pluginConfig.data && pluginConfig.data.type) {
+            nodeType = pluginConfig.data.type
+        }
+
+        // Override component getTagName() if needed
+        if (pluginConfig.data && pluginConfig.data.tagName) {
+            tagName = pluginConfig.data.tagName
+        }
+
+        // Override command name if configured
+        if (pluginConfig.data && pluginConfig.data.commandName) {
+            commandName = pluginConfig.data.commandName
+        }
+
+        // Override background color for the marker
+        if (pluginConfig.data && pluginConfig.data.color) {
+            color = pluginConfig.data.color
+        }
+
+        const node = MarkerNode(nodeType)
+        const component = MarkerComponent(tagName, color)
+        const converter = MarkerConverter(nodeType, tagName)
+
+        config.addNode(node)
+        config.addComponent(nodeType, component)
+        config.addConverter('newsml', converter)
+
+        config.addCommand(commandName, NPWriterAnnotationCommand, {
+            nodeType: nodeType,
             commandGroup: 'annotations',
-        });
+        })
 
-        config.addTool(commands.NODE, AnnotationTool, {
+        config.addTool(commandName, AnnotationTool, {
             toolGroup: 'overlay'
-        });
+        })
 
-
-        const icon = (pluginConfig.data && pluginConfig.data.icon) ? pluginConfig.data.icon : 'fa-paint-brush';
-        config.addIcon(commands.NODE, {
+        const icon = (pluginConfig.data && pluginConfig.data.icon) ? pluginConfig.data.icon : 'fa-paint-brush'
+        config.addIcon(commandName, {
             fontawesome: icon
-        });
+        })
 
-        labels.forEach((label) => {
-            config.addLabel(
-                label.original,
-                label.translations,
-            );
-        });
+        config.addLabel('highlighted text', {
+            sv: 'markerad text'
+        })
 
+        let shortcut = 'ctrl+shift+x'
         if (platform.isMac) {
-            // e.g. 'cmd+g'
-            config.addKeyboardShortcut(keyboardShortcut.MAC, { command: commands.NODE });
+            shortcut = 'cmd+shift+x'
+            if (pluginConfig.shortcut && pluginConfig.shortcut.mac) {
+                shortcut = pluginConfig.shortcut.mac
+            }
+
+            config.addKeyboardShortcut(shortcut, { command: commandName })
         }
         else {
-            // e.g. 'ctrl+g'
-            config.addKeyboardShortcut(keyboardShortcut.MAIN, { command: commands.NODE });
+            if (pluginConfig.shortcut && pluginConfig.shortcut.default) {
+                shortcut = pluginConfig.shortcut.mac
+            }
+
+            config.addKeyboardShortcut(shortcut, { command: commandName });
         }
     },
-};
+}
