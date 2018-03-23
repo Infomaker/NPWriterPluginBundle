@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Use node version in .nvmrc if it exists
+if [[ -f .nvmrc ]]; then
+  if [[ -f ~/.bashrc ]]; then
+    echo "Initiating nvm"
+    . ~/.bashrc
+  fi
+  nvm install
+fi
+
 OLD_DIR=`pwd`
 
 if [[ -z $1 ]]; then

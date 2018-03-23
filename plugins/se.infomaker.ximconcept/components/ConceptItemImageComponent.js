@@ -1,20 +1,17 @@
 import { Component } from 'substance'
+import { ConceptService } from "writer"
 
 class ConceptItemImageComponent extends Component {
 
-    /**
-     * TODO: Implement functionality to display Concept images or avatars
-     * 
-     * @param {VirtualElement} $$ 
-     */
-    render($$){
-        const el = $$('div').addClass('concept-item-imagewrapper')
-        const img = $$('img', {
-            src: this.props.item.src,
-            class: 'concept-item-image'
-        })
+    render($$) {
+        const { avatarUuid, extraClass } = this.props
 
-        return el.append(img)
+        return $$('div', { class: `concept-item-imagewrapper ${extraClass}` }, [
+            avatarUuid.length ? $$('img', {
+                src: `${ConceptService.getRemoteObjectsPath()}/${avatarUuid}/files/thumb`,
+                class: 'concept-item-image'
+            }).ref(`conceptItemImageComponent-${avatarUuid}-image`) : $$('i', { class: 'fa fa-picture-o' })
+        ]).ref(`conceptItemImageComponent-${avatarUuid}`)
     }
 
 }

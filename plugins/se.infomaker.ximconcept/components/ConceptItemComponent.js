@@ -68,6 +68,7 @@ class ConceptItemComponent extends Component {
         let image
 
         if (item) {
+            const avatarUuid = item[propertyMap.ConceptAvatarUuid]
             const isDuplicate = this.props.isDuplicate(item)
             const broaderString = ConceptService.extractBroaderText(item)
             const tootltipString = this.getTooltipString(item, propertyMap, isDuplicate)
@@ -79,12 +80,16 @@ class ConceptItemComponent extends Component {
                 parent: this,
             }).ref('tooltip') : ''
 
-            if (item.image && !isHovered) {
+            if (avatarUuid) {
                 image = $$(ConceptItemImageComponent, {
                     propertyMap,
-                    src: item
-                })
-            } else {
+                    src: item,
+                    avatarUuid: avatarUuid,
+                    extraClass: isHovered ? 'hide' : ''
+                }).ref(`conceptItemImageComponent-${item.uuid}`)
+            }
+
+            if (!avatarUuid || isHovered) {
                 icon = $$(ConceptItemIcon, {
                     isHovered,
                     item,

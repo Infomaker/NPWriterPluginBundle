@@ -1,12 +1,14 @@
 import DropheadComponent from './DropheadComponent'
 import DropheadConverter from './DropheadConverter'
 import DropheadNode from './DropheadNode'
+import TextstyleCommand from '../TextstyleCommand'
 
 export default {
     name: 'drophead',
     id: 'se.infomaker.drophead',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
+        const command = 'switch-to-drophead';
 
         DropheadNode.type = this.name
         DropheadConverter.type = DropheadNode.type
@@ -17,10 +19,18 @@ export default {
 
         config.addConverter('newsml', DropheadConverter)
 
-        config.addTextType({
+        const textType = {
             name: this.name,
             data: {type: DropheadNode.type}
-        })
+        };
+
+        if (pluginConfig.shortcut) {
+            config.addCommand(command, TextstyleCommand, {textType: this.name})
+            config.addKeyboardShortcut(pluginConfig.shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+            textType.command = command
+        }
+
+        config.addTextType(textType)
 
         config.addLabel('drophead', {
             en: 'Drophead',

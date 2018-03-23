@@ -1,12 +1,14 @@
 import PreleadinComponent from './PreleadinComponent'
 import PreleadinConverter from './PreleadinConverter'
 import PreleadinNode from './PreleadinNode'
+import TextstyleCommand from '../TextstyleCommand'
 
 export default {
     name: 'preleadin',
     id: 'se.infomaker.preleadin',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
+        const command = 'switch-to-preleadin';
 
         PreleadinNode.type = this.name
         PreleadinConverter.type = PreleadinNode.type
@@ -17,10 +19,18 @@ export default {
 
         config.addConverter('newsml', PreleadinConverter)
 
-        config.addTextType({
+        const textType = {
             name: this.name,
             data: {type: PreleadinNode.type}
-        })
+        }
+
+        if (pluginConfig.shortcut) {
+            config.addCommand(command, TextstyleCommand, {textType: this.name})
+            config.addKeyboardShortcut(pluginConfig.shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+            textType.command = command
+        }
+
+        config.addTextType(textType)
 
         config.addLabel('preleadin', {
             en: 'Preleadin',

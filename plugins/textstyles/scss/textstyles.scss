@@ -1,0 +1,8 @@
+.im-placeholder {
+    &::before {
+        content: attr(data-placeholder);
+        color: #ccc;
+        z-index: -1;
+        position: absolute;
+    }
+}
