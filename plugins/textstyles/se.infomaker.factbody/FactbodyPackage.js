@@ -27,7 +27,7 @@ export default {
 
         if (pluginConfig.shortcut) {
             config.addCommand(command, TextstyleCommand, {textType: this.name})
-            config.addKeyboardShortcut(pluginConfig.shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+            config.addKeyboardShortcut({override: pluginConfig.shortcut}, {command: command}, false, config.getLabelProvider().getLabel(this.name))
             textType.command = command
         }
 

@@ -1,4 +1,3 @@
-import {platform} from 'substance'
 import {registerPlugin} from 'writer'
 import Headline from './Headline'
 import HeadlineComponent from './HeadlineComponent'
@@ -37,9 +36,15 @@ const headlinePackage = {
             sv: 'RUB'
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+1' : 'ctrl+alt+1'
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+1',
+                "mac": 'cmd+alt+1'
+            }
+        }
 
-        config.addKeyboardShortcut(shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+        config.addKeyboardShortcut(combos, {command: command}, false, config.getLabelProvider().getLabel(this.name))
 
     }
 };

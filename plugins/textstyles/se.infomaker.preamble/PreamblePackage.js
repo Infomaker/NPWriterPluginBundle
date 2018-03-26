@@ -1,4 +1,3 @@
-import {platform} from 'substance'
 import PreambleComponent from './PreambleComponent'
 import PreambleConverter from './PreambleConverter'
 import PreambleNode from './PreambleNode'
@@ -43,9 +42,15 @@ export default {
             sv: 'Ing'
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+3' : 'ctrl+alt+3'
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+3',
+                "mac": 'cmd+alt+3'
+            }
+        }
 
-        config.addKeyboardShortcut(shortcut, { command: 'switch-to-preamble' }, false, config.getLabelProvider().getLabel(this.name))
+        config.addKeyboardShortcut(combos, {command: 'switch-to-preamble'}, false, config.getLabelProvider().getLabel(this.name))
 
 
     }

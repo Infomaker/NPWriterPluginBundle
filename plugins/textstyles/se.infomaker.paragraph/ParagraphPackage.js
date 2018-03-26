@@ -1,4 +1,3 @@
-import {platform} from 'substance'
 import {registerPlugin} from 'writer'
 import TextstyleCommand from '../TextstyleCommand'
 
@@ -37,9 +36,15 @@ const paragraphPackage = {
             sv: '¶'
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+0' : 'ctrl+alt+0'
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+0',
+                "mac": 'cmd+alt+0'
+            }
+        }
 
-        config.addKeyboardShortcut(shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+        config.addKeyboardShortcut(combos, {command: command}, false, config.getLabelProvider().getLabel(this.name))
 
     }
 };

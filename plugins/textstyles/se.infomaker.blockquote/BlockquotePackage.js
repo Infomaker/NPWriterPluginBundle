@@ -1,4 +1,3 @@
-import {platform} from 'substance'
 import {registerPlugin} from 'writer'
 import Blockquote from './Blockquote'
 import BlockquoteComponent from './BlockquoteComponent'
@@ -41,9 +40,14 @@ const blockquotePackage = {
             sv: "CIT"
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+4' : 'ctrl+alt+4'
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+4',
+                "mac": 'cmd+alt+4'}
+        }
 
-        config.addKeyboardShortcut(shortcut, { command: commandName }, false, config.getLabelProvider().getLabel(this.name))
+        config.addKeyboardShortcut(combos, {command: commandName}, false, config.getLabelProvider().getLabel(this.name))
 
     }
 };

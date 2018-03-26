@@ -1,4 +1,3 @@
-import {platform} from 'substance'
 import {registerPlugin} from 'writer'
 import Subheadline from './Subheadline'
 import SubheadlineComponent from './SubheadlineComponent'
@@ -9,7 +8,7 @@ const subheadlinePackage = {
     id: 'se.infomaker.subheadline',
     name: 'subheadline',
     version: '{{version}}',
-    configure: function(config, pluginConfig) {
+    configure: function (config, pluginConfig) {
         const command = 'switch-to-subheadline'
         config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Subheadline)
@@ -39,9 +38,15 @@ const subheadlinePackage = {
             sv: 'UR'
         })
 
-        const shortcut = pluginConfig.shortcut ? pluginConfig.shortcut : platform.isMac ? 'cmd+alt+2' : 'ctrl+alt+2'
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+2',
+                "mac": 'cmd+alt+2'
+            }
+        }
 
-        config.addKeyboardShortcut(shortcut, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+        config.addKeyboardShortcut(combos, {command: command}, false, config.getLabelProvider().getLabel(this.name))
 
     }
 }
