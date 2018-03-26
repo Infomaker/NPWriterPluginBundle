@@ -49,6 +49,14 @@ const XimConceptPackage = {
         configurator.addLabel('invalid.uuid.description', {
             sv: 'Conceptet har inget giltigt UUID'
         })
+
+        configurator.addLabel('no.concept.plugin.configured.for.type.label', {
+            sv: 'Okänd koncepttyp'
+        })
+
+        configurator.addLabel('no.concept.plugin.configured.for.type.description', {
+            sv: 'Det finns inget plugin konfigurerat som hanterar den här koncepttypen'
+        })
     }
 }
 
