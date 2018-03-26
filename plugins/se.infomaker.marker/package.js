@@ -59,21 +59,14 @@ export default {
             sv: 'markerad text'
         })
 
-        let shortcut = 'ctrl+shift+x'
-        if (platform.isMac) {
-            shortcut = 'cmd+shift+x'
-            if (pluginConfig.shortcut && pluginConfig.shortcut.mac) {
-                shortcut = pluginConfig.shortcut.mac
+        config.addKeyboardShortcut(
+            {
+                standard: null,
+                override: pluginConfig.shortcut
+            },
+            {
+                command: commandName
             }
-
-            config.addKeyboardShortcut(shortcut, { command: commandName })
-        }
-        else {
-            if (pluginConfig.shortcut && pluginConfig.shortcut.default) {
-                shortcut = pluginConfig.shortcut.mac
-            }
-
-            config.addKeyboardShortcut(shortcut, { command: commandName });
-        }
+        )
     },
 }
