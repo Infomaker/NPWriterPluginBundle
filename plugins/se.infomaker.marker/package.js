@@ -11,7 +11,7 @@ export default {
         let nodeType = 'mark'
         let commandName = 'highlighted text'
         let tagName = 'mark'
-        let color = null
+        let style = null
 
         // Override node name if configured to do so
         if (pluginConfig.data && pluginConfig.data.type) {
@@ -29,12 +29,12 @@ export default {
         }
 
         // Override background color for the marker
-        if (pluginConfig.data && pluginConfig.data.color) {
-            color = pluginConfig.data.color
+        if (pluginConfig.data && pluginConfig.data.style) {
+            style = pluginConfig.data.style
         }
 
         const node = MarkerNode(nodeType)
-        const component = MarkerComponent(tagName, color)
+        const component = MarkerComponent(tagName, style)
         const converter = MarkerConverter(nodeType, tagName)
 
         config.addNode(node)

@@ -1,6 +1,6 @@
 import { AnnotationComponent } from 'substance'
 
-export default (tagName, color) => {
+export default (tagName, style) => {
     class MarkerComponent extends AnnotationComponent {
 
         getTagName() {
@@ -12,8 +12,8 @@ export default (tagName, color) => {
                 .attr("data-id", this.props.node.id)
                 .addClass(this.getClassNames())
 
-            if (color) {
-                el.attr('style', `background-color: ${color}`)
+            if (style) {
+                el.css(style)
             }
 
             if (this.props.node.highlighted) {
