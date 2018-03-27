@@ -24,6 +24,18 @@ class ConceptMainComponent extends Component {
             this.addItem
         )
 
+        if (this.state.types) {
+            this.state.types.forEach(type => {
+                if (!ConceptService.hasHandlerForOperation(type, ConceptService.operations.ADD)) {
+                    ConceptService.registerOperationHandler(
+                        type,
+                        ConceptService.operations.ADD,
+                        this.addItem
+                    )
+                }
+            })
+        }
+
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
             const types = this.state.types ? this.state.types : []
             const eventName = event.name || ''
