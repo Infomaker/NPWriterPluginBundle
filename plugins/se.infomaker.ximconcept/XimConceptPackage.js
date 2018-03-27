@@ -40,6 +40,12 @@ const XimConceptPackage = {
         configurator.addLabel('invalid.concept.description', {
             sv: 'Konceptet kunde inte hämtas'
         })
+        configurator.addLabel('conceptitem.exists.label', {
+            sv: 'Konceptet är redan kopplat'
+        })
+        configurator.addLabel('conceptitem.exists.description', {
+            sv: 'Konceptet du försöker använda finns redan med i listan'
+        })
         configurator.addLabel('invalid.uuid.label', {
             sv: 'Ogiltigt UUID'
         })

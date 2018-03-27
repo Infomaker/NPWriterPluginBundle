@@ -115,7 +115,10 @@ class ConceptMainComponent extends Component {
                 this.reloadArticleConcepts()
                 this.extendState({ 'working': false })
             } else {
-                api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
+                api.ui.showNotification(
+                    this.state.name,
+                    this.getLabel('conceptitem.exists.label'),
+                    this.getLabel('conceptitem.exists.description'))
             }
         } else {
             if (this.state.pluginConfig.editable) {
