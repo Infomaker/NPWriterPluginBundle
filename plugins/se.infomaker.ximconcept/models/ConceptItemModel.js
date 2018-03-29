@@ -114,6 +114,28 @@ class ConceptItemModel {
     }
 
     /**
+     * Will set provider and pubstatus to configured value
+     * If not present in xml nodes will be created
+     */
+    addProviderAndPubstatus() {
+        let providerNode = this.xmlHandler.getNode(this.providerXpath)
+        let pubStatusNode = this.xmlHandler.getNode(this.pubStatusXpath)
+
+        if (!providerNode || !providerNode.singleNodeValue) {
+            this.xmlHandler.createNodes(this.providerXpath)
+            providerNode = this.xmlHandler.getNode(this.providerXpath)
+        }
+
+        if (!pubStatusNode || !pubStatusNode.singleNodeValue) {
+            this.xmlHandler.createNodes(this.pubStatusXpath)
+            pubStatusNode = this.xmlHandler.getNode(this.pubStatusXpath)
+        }
+
+        this.xmlHandler.setNodeValue(providerNode, this.config.provider || 'writer')
+        this.xmlHandler.setNodeValue(pubStatusNode, this.config.pubStatus || 'imext:draft')
+    }
+
+    /**
      * Will save updated/created concept to OC and decorate
      * conceptItemObject with updated data
      *
@@ -121,6 +143,10 @@ class ConceptItemModel {
      */
     async save(refs) {
         let item = this.item
+
+        if (!item.uuid) {
+            this.addProviderAndPubstatus()
+        }
 
         this.uiGroups.forEach(group => {
             group.fields.forEach(field => {
@@ -145,14 +171,6 @@ class ConceptItemModel {
                 }
             })
         })
-
-        if (!item.uuid) {
-            this.xmlHandler.createNodes(this.providerXpath)
-            this.xmlHandler.createNodes(this.pubStatusXpath)
-
-            this.xmlHandler.setNodeValue(this.xmlHandler.getNode(this.providerXpath), this.config.provider || 'writer')
-            this.xmlHandler.setNodeValue(this.xmlHandler.getNode(this.pubStatusXpath), this.config.pubStatus || 'imext:draft')
-        }
 
         const xmlString = new XMLSerializer().serializeToString(this.conceptXml.documentElement).trim().replace(/ xmlns=""/g, '')
 
