@@ -112,7 +112,7 @@ function getUrl(item, storeLocationConfig) {
     if (getSafeItemIntegerValue(item.data.storelocation_id) > 0 && getSafeItemStringValue(item.data.storepath) !== '') {
 
         // Handle case where store location is configured as editorial open content
-        if (storeLocationConfig && storeLocationConfig[item.data.storelocation_id]) {
+        if (storeLocationConfig && storeLocationConfig[String(item.data.storelocation_id)]) {
             let config = storeLocationConfig[item.data.storelocation_id]
             if (config.type === 'editorial-opencontent') {
                 return getDroplinkForItem(item.data)
