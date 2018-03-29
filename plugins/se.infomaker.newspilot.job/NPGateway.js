@@ -27,7 +27,7 @@ export default class NPGateway {
             switch (event.eventType) {
                 case "CREATE":
                 case "CHANGE":
-                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer))
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer, this.storeLocationConfig))
                     break
                 case "REMOVE":
                     this.nodeMap.delete(event.id)
@@ -49,18 +49,18 @@ export default class NPGateway {
 
 }
 
-function getNode(currentValues, imageProxyServer) {
+function getNode(currentValues, imageProxyServer, storeLocationConfig) {
     return getTemplate({
         data: currentValues,
         config: {urlEndpoint: imageProxyServer}
-    })
+    }, storeLocationConfig)
 }
 
 
-function getTemplate(item) {
+function getTemplate(item, storeLocationConfig) {
     return {
         name: item.data.name,
-        url: getUrl(item),
+        url: getUrl(item, storeLocationConfig),
         thumbUrl: getThumb(item),
         previewUrl: getPreview(item),
         created: getSafeItemStringValue(item.data.created_date),
@@ -107,13 +107,13 @@ function getDroplinkForItem(image) {
 }
 
 
-function getUrl(item) {
+function getUrl(item, storeLocationConfig) {
 
     if (getSafeItemIntegerValue(item.data.storelocation_id) > 0 && getSafeItemStringValue(item.data.storepath) !== '') {
 
         // Handle case where store location is configured as editorial open content
-        if (this.storeLocationConfig && this.storeLocationConfig[item.data.storelocation_id]) {
-            let config = this.storeLocationConfig[item.data.storelocation_id]
+        if (storeLocationConfig && storeLocationConfig[item.data.storelocation_id]) {
+            let config = storeLocationConfig[item.data.storelocation_id]
             if (config.type === 'editorial-opencontent') {
                 return getDroplinkForItem(item.data)
             }
