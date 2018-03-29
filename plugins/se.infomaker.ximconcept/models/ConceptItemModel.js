@@ -124,19 +124,23 @@ class ConceptItemModel {
 
         this.uiGroups.forEach(group => {
             group.fields.forEach(field => {
-                this.xmlHandler.createNodes(field.xpath)
 
                 if (!refs[field.refId]) {
                     console.info('Missing: ', field.type)
                 }
 
                 const value = refs[field.refId].val()
+
+                if (value && value !== '') {
+                    this.xmlHandler.createNodes(field.xpath)
+                }
+
                 const elementNode = this.xmlHandler.getSourceNode(field.xpath)
                 const valueNode = this.xmlHandler.getNode(field.xpath)
 
                 if (valueNode.singleNodeValue) {
                     this.xmlHandler.setNodeValue(valueNode, value)
-                } else {
+                } else if(elementNode.singleNodeValue){
                     this.xmlHandler.setNodeValue(elementNode, value)
                 }
             })
