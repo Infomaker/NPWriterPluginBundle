@@ -3,21 +3,47 @@ import {Component} from 'substance'
 class ArchiveImageComponent extends Component {
 
     render($$) {
-        return $$('div').addClass('image-thumb')
-            .append(
-                $$('div').addClass('thumb-wrapper').append(
-                    $$('img', {
-                        src: this.props.item.thumbnail
-                    }).attr('alt', this.props.item.caption)
-                )
+
+        const {thumbnail, caption, uuid} = this.props.item
+
+        if (!thumbnail) {
+            return this._renderMissingImage($$)
+        }
+
+        return $$('div').addClass('image-thumb').append(
+            $$('div').addClass('thumb-wrapper').append(
+                $$('img', {
+                    src: thumbnail || null
+                }).attr('alt', caption)
             )
+        )
             .attr({
                 'draggable': true,
-                'id': `archive-img-${this.props.item.uuid}`
+                'id': `archive-img-${uuid}`
             })
             .ref('imageThumb')
             .on('dragstart', this._onDragStart)
             .on('click', this._onClick)
+    }
+
+    /**
+     * Preview image is missing, render a generic
+     * image placeholder instead
+     *
+     * @param $$
+     * @private
+     */
+    _renderMissingImage($$) {
+        return $$('div').addClass('image-thumb').append(
+            $$('div').addClass('thumb-wrapper broken-image')
+        )
+            .attr({
+                'draggable': false,
+                'id': `archive-img-${this.props.item.uuid}`,
+                'title': this.getLabel('Missing image')
+            })
+            .on('click', this._onClick)
+            .ref('imageThumb')
     }
 
     /**
