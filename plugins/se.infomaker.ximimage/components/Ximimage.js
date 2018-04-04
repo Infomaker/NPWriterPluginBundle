@@ -39,7 +39,9 @@ class XimimageComponent extends Component {
 
     render($$) {
         let node = this.props.node
-        let el = $$('div').addClass('sc-ximimage im-blocknode__container')
+        const imageDisplayMode = api.settings.get('se.infomaker.ximimage.settings', 'imageDisplayMode') || 'full'
+        let el = $$('div').addClass(`sc-ximimage im-blocknode__container display-mode-${imageDisplayMode}`).ref('isolatedNodeContainer')
+
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
         let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
         let cropsEnabled = api.getConfigValue('se.infomaker.ximimage', 'softcrop')

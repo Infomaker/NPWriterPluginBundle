@@ -38,7 +38,7 @@ class Review extends Validator {
     validateReviewGrade(review) {
         const reviewGradeText = review.getAttribute('title')
         const reviewGrade = parseInt(reviewGradeText, 10)
-        const reviewGradeEmpty = reviewGradeText === ''
+        const reviewGradeEmpty = (reviewGradeText === '' || reviewGradeText === null)
 
         if (!reviewGradeEmpty) {
             if (isNaN(reviewGrade) || reviewGrade < 0 || reviewGrade > 5) {

@@ -1,12 +1,14 @@
 import DatelineComponent from './DatelineComponent'
 import DatelineConverter from './DatelineConverter'
 import DatelineNode from './DatelineNode'
+import TextstyleCommand from '../TextstyleCommand'
 
 export default {
     name: 'dateline',
     id: 'se.infomaker.dateline',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
+        const command = 'switch-to-dateline';
 
         DatelineNode.type = this.name
         DatelineConverter.type = DatelineNode.type
@@ -17,10 +19,19 @@ export default {
 
         config.addConverter('newsml', DatelineConverter)
 
-        config.addTextType({
+        const textType = {
             name: this.name,
             data: {type: DatelineNode.type}
-        })
+        };
+
+
+        if (pluginConfig.shortcut) {
+            config.addCommand(command, TextstyleCommand, {textType: this.name})
+            config.addKeyboardShortcut({override: pluginConfig.shortcut}, {command: command}, false, config.getLabelProvider().getLabel(this.name))
+            textType.command = command
+        }
+
+        config.addTextType(textType)
 
         config.addLabel('dateline', {
             en: 'Dateline',
@@ -36,5 +47,6 @@ export default {
             en: 'DT',
             sv: 'DAT'
         })
+
     }
 }

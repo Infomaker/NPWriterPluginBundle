@@ -3,6 +3,11 @@
 This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's 
 configured to handle, but is dependent on external config and templates to enable create/edit actions on concepts.
 
+## Dependencies
+
+requires `writer > 3.10.1`
+requires `open content > 2.0.1`
+
 ## Supported types
 
 As of now these are the supported types ([External link](https://github.com/Infomaker/writer-format/blob/master/newsml/conceptitem/im-conceptitem-spec.md))
@@ -122,7 +127,7 @@ Tags:
 
 ### Writer config
 
-The new concept plugin requires `writer > 3.10.1`and depends on `writer.ConceptService` class. This class needs 
+The new concept plugin requires `writer > 3.10.1` and depends on `writer.ConceptService` class. This class needs 
 configuration from the writer config file.
 
 ```json
@@ -159,12 +164,12 @@ configuration from the writer config file.
 
 #### BA_PROXY
 
-The ba_proxy is used for Open Content search requests and is a temporary dependency that will be replaced by search 
+The ba_proxy is used for Open Content search requests and is a temporary dependency that will be replaced by search
 functionality through writer backend/editorservice.
 
 #### Property map
 
-The property map is used to translate different kind of OC configurations into prop names ConceptService can use. 
+The property map is used to translate different kind of OC configurations into prop names ConceptService can use.
 The left hand side will be used by ConceptService, fill in the property-names from OC on the right hand side.
 
 ```json
@@ -177,6 +182,7 @@ The left hand side will be used by ConceptService, fill in the property-names fr
     "ConceptImTypeFull": "ConceptImTypeFull",
     "ConceptImSubTypeFull": "ConceptImSubTypeFull",
     "ConceptGeometry": "ConceptGeometry",
+    "ConceptAvatarUuid": "ConceptAvatarUuid",
     "ConceptBroaderRelation": "ConceptBroaderRelation",
     "ConceptReplacedByRelation": "ConceptReplacedByRelation"
 }
