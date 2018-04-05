@@ -98,8 +98,8 @@ function getWriterProxyUrl(url) {
 function getDroplinkForItem(image) {
     const data = {
         imType: 'image',
-        uuid: image.guid[0],
-        name: image.name[0]
+        uuid: image.guid,
+        name: image.name
     }
     const dropData = encodeURIComponent(JSON.stringify(data))
 
