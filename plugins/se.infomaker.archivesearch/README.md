@@ -75,6 +75,9 @@ Archive Host Configuration Example:
 | **resultsMapping**  | Object    | `true`    | Object used for mapping OC Properties to properties used by the plugin. See [Results Mapping Options](#results-mapping-options) |
 | **type**            | String    | `false`   | Set to `editorial-opencontent` when searching for images in the Writer editorial repository |
 
+Note: When type is editorial-opencontent, the images need to have thumbnail representations in Open Content
+in order for them to be visible in the search result. This is a configuration option in Editor Service.
+
 ### Host Options
 Host configuration used by the BA-proxy service.
 
