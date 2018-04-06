@@ -73,12 +73,13 @@ class JobComponent extends Component {
 
         const newspilotHostName = this.getNewspilotHostName()
         const externalSystemId = this.getExternalSystemId()
+        const storeLocationConfig = this.getStoreLocationConfig()
 
         NPFetcher.getArticle(newspilotHostName, this.state.articleId, externalSystemId)
             .then((article) => {
                 let {user, password} = Auth.getCredentials()
                 this.gateway = new NPGateway(
-                    newspilotHostName, user, password, article.jobId, this.updateModel.bind(this)
+                    newspilotHostName, user, password, article.jobId, this.updateModel.bind(this), storeLocationConfig
                 )
                 this.extendState({error: undefined})
             })
@@ -107,6 +108,10 @@ class JobComponent extends Component {
 
     getExternalSystemId() {
         return api.getConfigValue('se.infomaker.newspilot.job', 'externalSystemId')
+    }
+
+    getStoreLocationConfig() {
+        return api.getConfigValue('se.infomaker.newspilot.job', 'storeLocationConfig')
     }
 
     render($$) {
