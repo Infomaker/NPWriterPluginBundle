@@ -54,6 +54,10 @@ class ConceptMainComponent extends Component {
             ConceptService.operations.ADD
         )
 
+        if (this.state.types) {
+            this.state.types.forEach(type => ConceptService.removeOperationHandler(type, ConceptService.operations.ADD))
+        }
+
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
