@@ -5,7 +5,7 @@ configured to handle, but is dependent on external config and templates to enabl
 
 ## Dependencies
 
-requires `writer => 4.3.0`
+requires `writer => 4.4.0`
 requires `open content > 2.0.1`
 
 ## Supported types
