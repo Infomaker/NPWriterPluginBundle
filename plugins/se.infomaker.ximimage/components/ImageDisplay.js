@@ -78,8 +78,6 @@ class ImageDisplay extends Component {
             )
         }
 
-
-        // Enable download functionality
         if (!this.hasLoadingErrors && imageFile.uuid && this.props.node.uri && this.props.node.getOriginalUrl) {
             const fileName = this._extractFileName(this.props.node.uri)
             actionsEl.append(
@@ -91,36 +89,7 @@ class ImageDisplay extends Component {
                     .attr('title', this.getLabel('download-image-button-title'))
                     .on('click', (evt) => {
                         evt.preventDefault()
-
-                        // Disable warning of "unsaved changes" in writer while
-                        // downloading image
-                        api.events.triggerEvent(null, event.DISABLE_UNLOAD_WARNING, {})
-
-                        // Get download (signed) url to original image
-                        // (no parameters needed).
-                        this.props.node.getOriginalUrl(null)
-                            .then((rawUrl) => {
-                                // Encode url to be able to use it as a query param
-                                const queryUrl = encodeURIComponent(rawUrl)
-
-                                // Trigger download using image proxy
-                                // and extracted file name
-                                window.location = `/api/imageproxy?url=${queryUrl}&filename=${fileName}`
-
-                                // Enable warning of "unsaved changes" in writer
-                                // after download has been initialized
-                                setTimeout(() => {
-                                    api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
-                                }, 1)
-
-                            })
-                            .catch((e) => {
-                                console.warn(e)
-
-                                // Enable warning of "unsaved changes" in writer
-                                // after download has been initialized
-                                api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
-                            })
+                        this._downloadOriginalImage(fileName)
                     })
             )
         }
@@ -170,6 +139,42 @@ class ImageDisplay extends Component {
         el.append(imgContainer)
 
         return el
+    }
+
+    /**
+     * Download copy of original image
+     * @param {string} fileName
+     */
+    _downloadOriginalImage(fileName) {
+        // Disable warning of "unsaved changes" in writer while
+        // downloading image
+        api.events.triggerEvent(null, event.DISABLE_UNLOAD_WARNING, {})
+
+        // Get download (signed) url to original image
+        // (no parameters needed).
+        this.props.node.getOriginalUrl(null)
+            .then((rawUrl) => {
+                // Encode url to be able to use it as a query param
+                const queryUrl = encodeURIComponent(rawUrl)
+
+                // Trigger download using image proxy
+                // and extracted file name
+                window.location = `/api/imageproxy?url=${queryUrl}&filename=${fileName}`
+
+                // Enable warning of "unsaved changes" in writer
+                // after download has been initialized
+                setTimeout(() => {
+                    api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
+                }, 1)
+
+            })
+            .catch((e) => {
+                console.warn(e)
+
+                // Enable warning of "unsaved changes" in writer
+                // after download has been initialized
+                api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
+            })
     }
 
     /**
