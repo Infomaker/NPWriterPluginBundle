@@ -25,15 +25,7 @@ class ConceptMainComponent extends Component {
         )
 
         if (this.state.types) {
-            this.state.types.forEach(type => {
-                if (!ConceptService.hasHandlerForOperation(type, ConceptService.operations.ADD)) {
-                    ConceptService.registerOperationHandler(
-                        type,
-                        ConceptService.operations.ADD,
-                        this.addItem
-                    )
-                }
-            })
+            this.state.types.forEach(type => ConceptService.registerOperationHandler(type, ConceptService.operations.ADD, this.addItem))
         }
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
@@ -49,13 +41,10 @@ class ConceptMainComponent extends Component {
     }
 
     dispose() {
-        ConceptService.removeOperationHandler(
-            this.state.conceptType,
-            ConceptService.operations.ADD
-        )
+        ConceptService.removeOperationHandler(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.removeOperationHandler(type, ConceptService.operations.ADD))
+            this.state.types.forEach(type => ConceptService.removeOperationHandler(type, ConceptService.operations.ADD, this.addItem))
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
