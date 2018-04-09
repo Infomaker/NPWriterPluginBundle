@@ -14,12 +14,13 @@ class MainComponent extends Component {
     render($$) {
         return $$('div').addClass('im-archivesearch').append(
             $$(SearchComponent, {
-                onResult: ({items, totalHits, limit, start}) => {
+                onResult: ({items, totalHits, limit, start, type}) => {
                     this.refs.imageList.extendProps({
                         items,
                         totalHits,
                         limit,
-                        start
+                        start,
+                        type
                     })
                 },
                 clearResult: () => {

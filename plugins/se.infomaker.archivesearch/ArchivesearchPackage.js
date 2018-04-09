@@ -55,6 +55,9 @@ const archivesearchPackage = {
         config.addLabel('Name', {
             sv: 'Objektnamn'
         })
+        config.addLabel('Missing image', {
+            sv: 'Bild saknas'
+        })
     }
 }
 
