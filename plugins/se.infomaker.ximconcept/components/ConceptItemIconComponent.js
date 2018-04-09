@@ -21,9 +21,14 @@ class ConceptItemIconComponent extends Component {
 
             'x-im/channel': 'fa-random',
             'x-im/topic': 'fa-tag',
+
+            // TODO: Refactor this to use external config-file
+            'x-cu/industry': 'industry',
+            'x-cu/responsibilities': 'calendar-check-o',
+            'x-cu/project': 'balance-scale'
         }
 
-        return conceptTypeIcons[type] || ''
+        return conceptTypeIcons[type] || 'fa-question-circle-o'
     }
 
     getIconString() {
