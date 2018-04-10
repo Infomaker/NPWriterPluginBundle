@@ -50,7 +50,7 @@ class ConceptDialogComponent extends Component {
             })
         }
 
-        // Bind validation listeners and trigger first  validation
+        // Bind validation listeners and trigger first validation
         Object.keys(this.refs).forEach(ref => {
             const input = this.refs[ref]
             input.el.el.removeEventListener('input', this.validateInput.bind(this), true)
@@ -168,7 +168,7 @@ class ConceptDialogComponent extends Component {
         if (field.editable && !this.isPolygon()) {
             searchInput = $$('input', { type: 'text', placeholder: this.getLabel('Place or location search'), class: 'location-form-control' }).ref('locationSearch')
 
-            if (this.state.searching && !this.state.searchResult) {
+            if (this.state.searching) {
                 searchSpinner = $$('i', {
                     class: 'fa fa-spinner fa-spin location-search-icon',
                     "aria-hidden": 'true'
@@ -177,25 +177,26 @@ class ConceptDialogComponent extends Component {
 
             if (this.state.searchResult) {
                 const resultItems = this.state.searchResult.map(hit => {
-                    return $$('div')
-                        .addClass('result-item')
-                        .append(hit.formatted_address)
-                        .on('click', () => {
-                            if (hit.geometry && hit.geometry.location) {
-                                this.refs[field.refId].val(`POINT(${hit.geometry.location.lng()} ${hit.geometry.location.lat()})`)
-                                this.refs.conceptMapComponent.setProps({
-                                    latLng: {
-                                        lat: hit.geometry.location.lat(),
-                                        lng: hit.geometry.location.lng()
-                                    }
-                                })
-                            }
-                            this.refs.locationSearch.val('')
-
-                            this.extendState({
-                                searchResult: false
+                    return $$('div', { class: 'result-item' }, [
+                        $$('strong', {}, `${hit.name}: `),
+                        hit.formatted_address
+                    ])
+                    .on('click', () => {
+                        if (hit.geometry && hit.geometry.location) {
+                            this.refs[field.refId].val(`POINT(${hit.geometry.location.lng()} ${hit.geometry.location.lat()})`)
+                            this.refs.conceptMapComponent.setProps({
+                                latLng: {
+                                    lat: hit.geometry.location.lat(),
+                                    lng: hit.geometry.location.lng()
+                                }
                             })
+                        }
+                        this.refs.locationSearch.val('')
+
+                        this.extendState({
+                            searchResult: false
                         })
+                    })
                 })
 
                 searchResultWrapper.append(resultItems)
@@ -221,6 +222,12 @@ class ConceptDialogComponent extends Component {
                     this.refs[field.refId].val(`POINT(${lng} ${lat})`)
                     console.info(`POINT(${lng} ${lat})`)
                 },
+                searchResult: (results) => {
+                    this.extendState({
+                        searchResult: results,
+                        searching: false
+                    })
+                },
                 loaded: () => {
                     this.refs.conceptMapComponent.setProps(this.extractItemGeometry())
                 }
@@ -230,22 +237,16 @@ class ConceptDialogComponent extends Component {
             searchInput.on('keyup', () => {
                 const term = this.refs.locationSearch.val()
 
-                if (term && term.length > 1) {
-                    this.extendState({ searching: true })
-                    this.refs.conceptMapComponent.setProps({
-                        term,
-                        searchResult: (results) => {
-                            this.extendState({
-                                searchResult: results,
-                                searching: false
-                            })
-                        }
-                    })
-                } else {
-                    this.extendState({
-                        searching: false,
-                        searchResult: false
-                    })
+                if (term !== this.state.term) {
+                    if (term && term.length > 1) {
+                        this.extendState({ searching: true, term })
+                        this.refs.conceptMapComponent.extendProps({ term })
+                    } else {
+                        this.extendState({
+                            searching: false,
+                            searchResult: false
+                        })
+                    }
                 }
             })
         }

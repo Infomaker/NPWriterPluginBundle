@@ -1,5 +1,5 @@
 import {Button, Component, FontAwesomeIcon} from "substance";
-import {api} from "writer";
+import {api, event} from "writer";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -78,6 +78,22 @@ class ImageDisplay extends Component {
             )
         }
 
+        if (!this.hasLoadingErrors && imageFile.uuid && this.props.node.uri && this.props.node.getOriginalUrl) {
+            const fileName = this._extractFileName(this.props.node.uri)
+            actionsEl.append(
+                $$('a').append($$(Button, {
+                    icon: 'download'
+                }))
+                    .attr('href', '')
+                    .attr('download', fileName)
+                    .attr('title', this.getLabel('download-image-button-title'))
+                    .on('click', (evt) => {
+                        evt.preventDefault()
+                        this._downloadOriginalImage(fileName)
+                    })
+            )
+        }
+
         if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.softcrop) {
             const configuredCrops = imageOptions.crops || []
             let currentCrops = 0
@@ -93,7 +109,9 @@ class ImageDisplay extends Component {
             }
 
             actionsEl.append($$(Button, {icon: 'crop'})
-                .on('click', () => { this._openCropper($$) })
+                .on('click', () => {
+                    this._openCropper($$)
+                })
                 .append($$('em').append(currentCrops).addClass(cropBadgeClass))
             )
         }
@@ -121,6 +139,42 @@ class ImageDisplay extends Component {
         el.append(imgContainer)
 
         return el
+    }
+
+    /**
+     * Download copy of original image
+     * @param {string} fileName
+     */
+    _downloadOriginalImage(fileName) {
+        // Disable warning of "unsaved changes" in writer while
+        // downloading image
+        api.events.triggerEvent(null, event.DISABLE_UNLOAD_WARNING, {})
+
+        // Get download (signed) url to original image
+        // (no parameters needed).
+        this.props.node.getOriginalUrl(null)
+            .then((rawUrl) => {
+                // Encode url to be able to use it as a query param
+                const queryUrl = encodeURIComponent(rawUrl)
+
+                // Trigger download using image proxy
+                // and extracted file name
+                window.location = `/api/imageproxy?url=${queryUrl}&filename=${fileName}`
+
+                // Enable warning of "unsaved changes" in writer
+                // after download has been initialized
+                setTimeout(() => {
+                    api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
+                }, 1)
+
+            })
+            .catch((e) => {
+                console.warn(e)
+
+                // Enable warning of "unsaved changes" in writer
+                // after download has been initialized
+                api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
+            })
     }
 
     /**
@@ -182,7 +236,7 @@ class ImageDisplay extends Component {
      * @private
      */
     _getImageOptions() {
-        if(this.props.imageOptions) {
+        if (this.props.imageOptions) {
             return this.props.imageOptions
         } else {
             // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
@@ -219,6 +273,19 @@ class ImageDisplay extends Component {
                 )
             })
     }
+
+    /**
+     * Extracts basecomponent of image uri. If no uri, null is returned.
+     *
+     * @param {string} uri
+     * @return {*}
+     * @private
+     */
+    _extractFileName(uri) {
+        const index = uri.lastIndexOf('/')
+        return index > 0 ? uri.substring(index) : null
+    }
+
 }
 
 export default ImageDisplay

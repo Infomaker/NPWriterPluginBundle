@@ -377,7 +377,8 @@ class SearchComponent extends Component {
                     items: json.items,
                     totalHits: json.totalHits,
                     limit: this.state.limit,
-                    start: this.state.start
+                    start: this.state.start,
+                    type: this.state.selectedEndpoint.type
                 })
             })
             .catch((e) => console.error(e))

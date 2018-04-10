@@ -3,8 +3,9 @@ import {idGenerator, api} from "writer";
 
 export default class NPGateway {
 
-    constructor(host, username, password, jobId, callback) {
+    constructor(host, username, password, jobId, callback, storeLocationConfig) {
         this.callback = callback
+        this.storeLocationConfig = storeLocationConfig
         this.comm = new NewspilotComm(host, username, password, this.queryUpdates.bind(this))
         this.comm.connect()
             .then(() => {
@@ -26,7 +27,7 @@ export default class NPGateway {
             switch (event.eventType) {
                 case "CREATE":
                 case "CHANGE":
-                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer))
+                    this.nodeMap.set(event.id, getNode(event.currentValues, imageProxyServer, this.storeLocationConfig))
                     break
                 case "REMOVE":
                     this.nodeMap.delete(event.id)
@@ -48,18 +49,18 @@ export default class NPGateway {
 
 }
 
-function getNode(currentValues, imageProxyServer) {
+function getNode(currentValues, imageProxyServer, storeLocationConfig) {
     return getTemplate({
         data: currentValues,
         config: {urlEndpoint: imageProxyServer}
-    })
+    }, storeLocationConfig)
 }
 
 
-function getTemplate(item) {
+function getTemplate(item, storeLocationConfig) {
     return {
         name: item.data.name,
-        url: getUrl(item),
+        url: getUrl(item, storeLocationConfig),
         thumbUrl: getThumb(item),
         previewUrl: getPreview(item),
         created: getSafeItemStringValue(item.data.created_date),
@@ -89,8 +90,35 @@ function getWriterProxyUrl(url) {
     return `${api.router.getEndpoint()}/api/resourceproxy?url=${encodeURIComponent(url)}`
 }
 
-function getUrl(item) {
+/**
+ * Generate dropLink
+ *
+ * @param {object} article ArticleModel instance
+ */
+function getDroplinkForItem(image) {
+    const data = {
+        imType: 'image',
+        uuid: image.guid,
+        name: image.name
+    }
+    const dropData = encodeURIComponent(JSON.stringify(data))
+
+    return `x-im-entity://x-im/image?data=${dropData}`
+}
+
+
+function getUrl(item, storeLocationConfig) {
+
     if (getSafeItemIntegerValue(item.data.storelocation_id) > 0 && getSafeItemStringValue(item.data.storepath) !== '') {
+
+        // Handle case where store location is configured as editorial open content
+        if (storeLocationConfig && storeLocationConfig[String(item.data.storelocation_id)]) {
+            let config = storeLocationConfig[item.data.storelocation_id]
+            if (config.type === 'editorial-opencontent') {
+                return getDroplinkForItem(item.data)
+            }
+        }
+
         return encodeURI(`${item.config.urlEndpoint}/${item.data.storelocation_id}/${item.data.storepath}`)
     } else {
         // last query parameter is a dummy in order for the image plugin to pick the drop up

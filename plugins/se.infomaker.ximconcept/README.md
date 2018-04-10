@@ -1,7 +1,12 @@
 # Concept plugin
 
-This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's 
+This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's
 configured to handle, but is dependent on external config and templates to enable create/edit actions on concepts.
+
+## Dependencies
+
+requires `writer => 4.4.0`
+requires `open content > 2.0.1`
 
 ## Supported types
 
@@ -148,8 +153,7 @@ Tags:
 
 ### Writer config
 
-The new concept plugin requires `writer > 3.10.1`and depends on `writer.ConceptService` class. This class needs 
-configuration from the writer config file.
+To enable Concepts you need to add configuration to `Writer` as well.
 
 ```json
 "conceptServiceConfig": {
@@ -185,12 +189,12 @@ configuration from the writer config file.
 
 #### BA_PROXY
 
-The ba_proxy is used for Open Content search requests and is a temporary dependency that will be replaced by search 
+The ba_proxy is used for Open Content search requests and is a temporary dependency that will be replaced by search
 functionality through writer backend/editorservice.
 
 #### Property map
 
-The property map is used to translate different kind of OC configurations into prop names ConceptService can use. 
+The property map is used to translate different kind of OC configurations into prop names ConceptService can use.
 The left hand side will be used by ConceptService, fill in the property-names from OC on the right hand side.
 
 ```json
@@ -203,6 +207,7 @@ The left hand side will be used by ConceptService, fill in the property-names fr
     "ConceptImTypeFull": "ConceptImTypeFull",
     "ConceptImSubTypeFull": "ConceptImSubTypeFull",
     "ConceptGeometry": "ConceptGeometry",
+    "ConceptAvatarUuid": "ConceptAvatarUuid",
     "ConceptBroaderRelation": "ConceptBroaderRelation",
     "ConceptReplacedByRelation": "ConceptReplacedByRelation"
 }
@@ -215,7 +220,7 @@ Each selected or created concept will generate a link inside the article's `item
 <link rel="subject" title="Cool corp." type="x-im/organisation" uuid="63d5dcc1-28f1-4892-9f44-142043541de1"/>
 ```
 
-If the plugin config `appendDataToLink` is set to `true`, concept data will be added as data to the link. The article 
+If the plugin config `appendDataToLink` is set to `true`, concept data will be added as data to the link. The article
 data instructions are read from a remote config file that is unique per concept type.
 
 ```xml
@@ -232,7 +237,7 @@ data instructions are read from a remote config file that is unique per concept 
 ```
 
 ### Broader
-Concepts with a `rel broad` will be decorated with data about the concepts hierarchical chain to the depth 
+Concepts with a `rel broader` will be decorated with data about the concepts hierarchical chain to the depth
 specified in ConcepService Config:
 
 ![](./doc-images/broader.png)
@@ -259,7 +264,7 @@ If a concept has been marked with "replaced by", the new concept will be added i
 
 ### x-im/polygon
 
-If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas 
+If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas
 that correlates with selected polygon. The correlating areas will be added to the article as a `related-geo link` tag.
 
 Available functions are: `"Contains"`, `"Intersects"`, `"IsWithin"`. These links are not displayed to the user but are

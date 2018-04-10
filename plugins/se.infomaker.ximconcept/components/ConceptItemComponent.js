@@ -53,7 +53,7 @@ class ConceptItemComponent extends Component {
             item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` :
                 item[propertyMap.ConceptDefinitionShort]
 
-        return !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription
+        return !this.hasValidUUid() ? this.getLabel('Invalid UUID') : isDuplicate ? this.getLabel('Duplicate') : truncatedDescription
     }
 
     render($$){
@@ -68,6 +68,7 @@ class ConceptItemComponent extends Component {
         let image
 
         if (item) {
+            const avatarUuid = item[propertyMap.ConceptAvatarUuid]
             const isDuplicate = this.props.isDuplicate(item)
             const broaderString = ConceptService.extractBroaderText(item)
             const tootltipString = this.getTooltipString(item, propertyMap, isDuplicate)
@@ -79,12 +80,16 @@ class ConceptItemComponent extends Component {
                 parent: this,
             }).ref('tooltip') : ''
 
-            if (item.image && !isHovered) {
+            if (avatarUuid) {
                 image = $$(ConceptItemImageComponent, {
                     propertyMap,
-                    src: item
-                })
-            } else {
+                    src: item,
+                    avatarUuid: avatarUuid,
+                    extraClass: isHovered ? 'hide' : ''
+                }).ref(`conceptItemImageComponent-${item.uuid}`)
+            }
+
+            if (!avatarUuid || isHovered) {
                 icon = $$(ConceptItemIcon, {
                     isHovered,
                     item,
@@ -131,9 +136,9 @@ class ConceptItemComponent extends Component {
     editItem() {
         if (this.props.editable) {
             if (!this.hasValidUUid()) {
-                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.uuid.label'), this.getLabel('invalid.uuid.description'))
+                api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid UUID'), this.getLabel('Invalid Concept-UUID'))
             } else if (this.state.item.error) {
-                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.concept.label'), this.getLabel('invalid.concept.description'))
+                api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid Concept Item'), this.getLabel('Unable to fetch the concept item'))
             } else {
                 this.props.editItem(this.props.item)
             }

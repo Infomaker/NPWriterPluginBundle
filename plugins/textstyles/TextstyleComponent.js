@@ -1,6 +1,29 @@
 import {Component, TextPropertyComponent} from 'substance'
+import './scss/textstyles.scss'
 
 class TextstyleComponent extends Component {
+
+    didMount() {
+        this.context.api.events.on(`textstyle-${this.props.node.id}`, 'document:changed', (event) => {
+            if (!event.data || !event.data.data || !event.data.data.updated) {
+                return
+            }
+
+            const nodeId = this.props.node.id
+            const updatedNodes = event.data.data.updated
+
+            for (const id in updatedNodes) {
+                if (id === nodeId) {
+                    return this.rerender()
+                }
+            }
+        })
+    }
+
+    dispose() {
+        this.context.api.events.off(`textstyle-${this.props.node.id}`, 'document:changed')
+    }
+
     render($$, options) {
         return $$('div')
         .css({
@@ -27,9 +50,14 @@ class TextstyleComponent extends Component {
     }
 
     renderTextContent($$, options) {
+        const classNames = this.props.node.content !== "" ? options.textClassName : `${options.textClassName} im-placeholder`
+
         return $$('div')
-            .addClass(options.textClassName)
-            .attr('data-id', this.props.node.id)
+            .addClass(classNames)
+            .attr({
+                'data-id': this.props.node.id,
+                'data-placeholder': options.longLabel
+            })
             .append($$(TextPropertyComponent, {
                 path: [this.props.node.id, 'content']
             }))

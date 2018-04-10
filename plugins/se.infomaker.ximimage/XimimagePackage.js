@@ -8,6 +8,8 @@ import DropImageFile from "./drop/File";
 import DropImageUri from "./drop/Uri";
 import DropImageUUID from "./drop/Uuid";
 
+import XimimageSettings from "./XimimageSettings";
+
 import XimimageFileProxy from "./XimimageFileProxy";
 
 import InsertImagesTool from "./InsertImagesTool";
@@ -35,8 +37,16 @@ export default {
         config.addDropHandler(new DropImageFile())
         config.addDropHandler(new DropImageUri())
 
+        // Settings
+        config.addPluginModule(
+            'se.infomaker.ximimage.settings',
+            XimimageSettings,
+            'se.infomaker.npwriter.settings'
+        )
+
         config.addIcon('image', {'fontawesome': 'fa-image'})
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
+        config.addIcon('download', {'fontawesome': 'fa-download'})
         config.addIcon('user-plus', {'fontawesome': 'fa-user-plus'})
         config.addIcon('upload', {'fontawesome': 'fa-upload'})
         config.addIcon('remove', {'fontawesome': 'fa-times'})
@@ -89,6 +99,31 @@ export default {
         config.addLabel('image-upload-error-message', {
             en: 'The image could not be uploaded. Please make sure it is a supported format.',
             sv: 'Bilden kunde inte laddas upp. Var god och kontrollera att att bildformatet stöds.'
+        })
+
+        config.addLabel('image-display-modes', {
+            en: 'Image display mode',
+            sv: 'Visningsformat för bilder'
+        })
+
+        config.addLabel('image-display-mode-full', {
+            en: 'Full',
+            sv: 'Full'
+        })
+
+        config.addLabel('image-display-mode-minimal', {
+            en: 'Minimal',
+            sv: 'Minimal'
+        })
+
+        config.addLabel('image-display-mode-minimized', {
+            en: 'Minimized',
+            sv: 'Minimerad'
+        })
+
+        config.addLabel('download-image-button-title', {
+            en: 'Download image',
+            sv: 'Ladda ned bild'
         })
     }
 }

@@ -35,7 +35,12 @@ Preview and thumb are rendered using Writer server as proxy to access NP Image S
   "data": {
     "imageProxyServer": "https://image.proxy.host",
     "newspilotHostName": "newspilot.host",
-    "externalSystemId" : 12
+    "externalSystemId" : 12,
+    "storeLocationConfig": {
+      "111": {
+        "type": "editorial-opencontent"
+      }
+    }
   }
 }
 ```
@@ -43,10 +48,25 @@ Preview and thumb are rendered using Writer server as proxy to access NP Image S
 
 `externalSystemId` should be the ID of the external system which the writer is connected to.
 
-Note that plugin require **https** when communicating with Newspilot API.
+`storeLocationConfig` Contains the IDs of store locations which should be threated differently.
+
+### Supported Store location config types
+
+#### editorial-opencontent
+```json
+    "storeLocationConfig": {
+      "111": {
+        "type": "editorial-opencontent"
+      }
+```
+If the store location (in this case with id `111`) is of type S3 and connected to Editorial Open content, the link will be constructed as `x-im-entity://x-im/image`. 
+This link will then be picked up by the ximimage-plugin.
 
 ## Output
 An image that has been dragged and dropped onto the article will generate the same output as `se.infomaker.ximimage` 
 plugin.
+
+Note that plugin require **https** when communicating with Newspilot API.
+
 
 

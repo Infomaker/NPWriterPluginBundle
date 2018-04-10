@@ -1,12 +1,14 @@
 import PagedatelineComponent from './PagedatelineComponent'
 import PagedatelineConverter from './PagedatelineConverter'
 import PagedatelineNode from './PagedatelineNode'
+import TextstyleCommand from '../TextstyleCommand'
 
 export default {
     name: 'pagedateline',
     id: 'se.infomaker.pagedateline',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
+        const command = 'switch-to-pagedateline';
 
         PagedatelineNode.type = this.name
         PagedatelineConverter.type = PagedatelineNode.type
@@ -17,10 +19,18 @@ export default {
 
         config.addConverter('newsml', PagedatelineConverter)
 
-        config.addTextType({
+        const textType = {
             name: this.name,
             data: {type: PagedatelineNode.type}
-        })
+        }
+
+        if (pluginConfig.shortcut) {
+            config.addCommand(command, TextstyleCommand, {textType: this.name})
+            config.addKeyboardShortcut({override:pluginConfig.shortcut}, { command: command }, false, config.getLabelProvider().getLabel(this.name))
+            textType.command = command
+        }
+
+        config.addTextType(textType)
 
         config.addLabel('pagedateline', {
             en: 'Pagedateline',

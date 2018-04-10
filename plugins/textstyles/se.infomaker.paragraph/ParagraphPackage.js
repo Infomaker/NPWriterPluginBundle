@@ -1,4 +1,5 @@
 import {registerPlugin} from 'writer'
+import TextstyleCommand from '../TextstyleCommand'
 
 import Paragraph from './Paragraph'
 import ParagraphComponent from './ParagraphComponent'
@@ -8,16 +9,19 @@ const paragraphPackage = {
     id: 'se.infomaker.paragraph',
     name: 'paragraph',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
+        const command = 'switch-to-paragraph';
+        config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Paragraph)
         config.addComponent(Paragraph.type, ParagraphComponent)
         config.addConverter('newsml', ParagraphConverter)
         config.addTextType({
             name: 'paragraph',
-            data: {type: 'paragraph'}
+            data: {type: 'paragraph'},
+            command: command
         })
 
-        config.addLabel('paragraph', {
+        config.addLabel(this.name, {
             en: 'Paragraph',
             de: 'Paragraph'
         })
@@ -31,6 +35,17 @@ const paragraphPackage = {
             en: '¶',
             sv: '¶'
         })
+
+        const combos = {
+            override: pluginConfig.shortcut,
+            standard: {
+                "default": 'ctrl+alt+0',
+                "mac": 'cmd+alt+0'
+            }
+        }
+
+        config.addKeyboardShortcut(combos, {command: command}, false, config.getLabelProvider().getLabel(this.name))
+
     }
 };
 

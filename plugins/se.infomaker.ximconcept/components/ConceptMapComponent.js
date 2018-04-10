@@ -109,7 +109,7 @@ class ConceptMapComponent extends Component {
                         results[0].geometry.location.lat(),
                         results[0].geometry.location.lng()
                     )
-                    
+
                     this.props.searchedTermPosition(
                         results[0].geometry.location.lat(),
                         results[0].geometry.location.lng()
@@ -172,13 +172,13 @@ class ConceptMapComponent extends Component {
 
     _fitBounds() {
         const bounds = new google.maps.LatLngBounds()
-        
+
         this.polygons.forEach(polygon => {
             polygon.getPath().forEach(function (path) {
                 bounds.extend(path)
             })
         })
-        
+
         this.map.fitBounds(bounds)
     }
 
@@ -186,13 +186,13 @@ class ConceptMapComponent extends Component {
         return new Promise(resolve => {
             this.service = this.service || new google.maps.places.PlacesService(this.map)
             this.service.textSearch({ query }, (results, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
-                    if (this.props.searchResult) {
-                        this.props.searchResult(results)
-                    }
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    this.props.searchResult(results)
                     resolve(results)
+                } else {
+                    this.props.searchResult([])
+                    resolve([])
                 }
-                resolve([])
             })
         })
     }

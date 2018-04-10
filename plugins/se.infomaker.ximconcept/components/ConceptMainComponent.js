@@ -18,6 +18,16 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
+        ConceptService.registerOperationHandler(
+            this.state.conceptType,
+            ConceptService.operations.ADD,
+            this.addItem
+        )
+
+        if (this.state.types) {
+            this.state.types.forEach(type => ConceptService.registerOperationHandler(type, ConceptService.operations.ADD, this.addItem))
+        }
+
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
             const types = this.state.types || []
             const eventName = event.name || ''
@@ -32,6 +42,12 @@ class ConceptMainComponent extends Component {
     }
 
     dispose() {
+        ConceptService.removeOperationHandler(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
+
+        if (this.state.types) {
+            this.state.types.forEach(type => ConceptService.removeOperationHandler(type, ConceptService.operations.ADD, this.addItem))
+        }
+
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
@@ -73,7 +89,7 @@ class ConceptMainComponent extends Component {
         } else {
             api.ui.showNotification(
                 this.state.name,
-                this.getLabel('invalid.conceptItem.label'),
+                this.getLabel('Invalid Concept'),
                 item.errors.reduce((iterator, error) => { return `${iterator}${iterator.length ? ', ' : ''}${error.error}`}, '')
             )
         }
@@ -97,7 +113,10 @@ class ConceptMainComponent extends Component {
                 this.reloadArticleConcepts()
                 this.extendState({ 'working': false })
             } else {
-                api.ui.showNotification(this.state.name, this.getLabel('formsearch.item-exists-label'), this.getLabel('formsearch.item-exists-description'))
+                api.ui.showNotification(
+                    this.state.name,
+                    this.getLabel('Conceptitem exists'),
+                    this.getLabel('The Concept is already used'))
             }
         } else {
             if (this.state.pluginConfig.editable) {
