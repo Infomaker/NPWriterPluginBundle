@@ -23,7 +23,7 @@ const XimConceptPackage = {
             sv: 'Avbryt'
         })
         configurator.addLabel('Replaced by', {
-            sv: 'Ersatt av'
+            sv: 'Ersatt av',
         })
         configurator.addLabel('No polygon edit', {
             sv: 'Redigering av polygoner är för närvarande inte möjlig'
@@ -31,23 +31,34 @@ const XimConceptPackage = {
         configurator.addLabel('Place or location search', {
             sv: 'Sök adress eller plats'
         })
-        configurator.addLabel('invalid.conceptItem.label', {
+        configurator.addLabel('Invalid Concept item', {
             sv: 'Conceptet du försöker använda verkar vara ogiltigt'
         })
-        configurator.addLabel('invalid.concept.label', {
-            sv: 'Ogiltigt Koncept'
-        })
-        configurator.addLabel('invalid.concept.description', {
+        configurator.addLabel('Unable to fetch the concept item', {
             sv: 'Konceptet kunde inte hämtas'
         })
-        configurator.addLabel('invalid.uuid.label', {
+        configurator.addLabel('Conceptitem exists', {
+            sv: 'Konceptet är redan kopplat'
+        })
+        configurator.addLabel('The Concept is already used', {
+            sv: 'Konceptet du försöker använda finns redan med i listan'
+        })
+        configurator.addLabel('Invalid UUID', {
             sv: 'Ogiltigt UUID'
         })
-        configurator.addLabel('duplicate.uuid.label', {
+        configurator.addLabel('Duplicate', {
             sv: 'Dubblett'
         })
-        configurator.addLabel('invalid.uuid.description', {
+        configurator.addLabel('Invalid Concept-UUID', {
             sv: 'Conceptet har inget giltigt UUID'
+        })
+
+        configurator.addLabel('Unknown Concept-type', {
+            sv: 'Okänd koncepttyp'
+        })
+
+        configurator.addLabel('No Concept-plugin configured for this type', {
+            sv: 'Det finns inget plugin konfigurerat för att hanterar den här koncepttypen'
         })
     }
 }
