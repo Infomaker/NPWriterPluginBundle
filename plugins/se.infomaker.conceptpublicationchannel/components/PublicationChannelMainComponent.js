@@ -90,7 +90,7 @@ class PublicationChannelMainComponent extends Component {
 
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
-            $$('h2', {}, this.getLabel('publication-channel-title')).ref('channel-label'),
+            $$('h2', {}, this.getLabel('Publication channels')).ref('channel-label'),
 
             this.state.pluginConfig.disableMainChannel ? '' : $$(MainChannelComponent, {
                 ...this.state,

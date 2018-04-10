@@ -43,14 +43,14 @@ class ChannelsComponent extends Component {
         })
 
         return $$('div', { class: `channels-component ${this.enforceMainChannel() ? 'enforce-main-channel' : ''}` },
-            !channels.length ? $$('p', { class: 'channels-message' }, this.getLabel('publication-no-channels-found')) :
-                this.enforceMainChannel() ? $$('p', { class: 'channels-message' }, this.getLabel('publication-set-main-channel')) : '',
+            !channels.length ? $$('p', { class: 'channels-message' }, this.getLabel('No channels found')) :
+                this.enforceMainChannel() ? $$('p', { class: 'channels-message' }, this.getLabel('You have to set a main channel')) : '',
             mainChannel,
             mainChannel ? $$('div', { class: 'main-channel-divider' }, '') : '',
             ...channels,
             channels.length > 2 ? $$('div', { class: 'channels-component-links' }, [
-                $$('p', { class: `${this.props.articleChannels.length === channels.length ? 'inactive' : ''}` }, this.getLabel('publication-select-all')).on('click', this.props.selectAll),
-                $$('p', { class: `${!sharedChannels.length ? 'inactive' : ''}` }, this.getLabel('publication-remove-all')).on('click', this.props.removeAll)
+                $$('p', { class: `${this.props.articleChannels.length === channels.length ? 'inactive' : ''}` }, this.getLabel('Select all')).on('click', this.props.selectAll),
+                $$('p', { class: `${!sharedChannels.length ? 'inactive' : ''}` }, this.getLabel('Clear all')).on('click', this.props.removeAll)
             ]) : ''
         ).ref('channelsComponentInstance')
     }

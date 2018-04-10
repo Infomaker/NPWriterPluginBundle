@@ -10,37 +10,26 @@ const XimConceptPackage = {
 
         configurator.addToSidebar('main', pluginConfig, PublicationChannelMainComponent)
 
-        configurator.addLabel('publication-channel-title', {
-            sv: 'Publiceringskanaler',
-            en: 'Publication channels'
+        configurator.addLabel('Publication channels', {
+            sv: 'Publiceringskanaler'
         })
-        configurator.addLabel('publication-no-channels-found', {
-            sv: 'Hittade inga kanaler',
-            en: 'No channels found'
+        configurator.addLabel('No channels found', {
+            sv: 'Hittade inga kanaler'
         })
-        configurator.addLabel('publication-main-channel', {
-            sv: 'Publiceringskanaler',
-            en: 'Main channel'
+        configurator.addLabel('Set main channel', {
+            sv: 'Välj huvudkanal'
         })
-        configurator.addLabel('publication-main-channel-label', {
-            sv: 'Välj huvudkanal',
-            en: 'Set main channel'
+        configurator.addLabel('Shared with', {
+            sv: 'Delas med'
         })
-        configurator.addLabel('publication-secondary-channels', {
-            sv: 'Delas med',
-            en: 'Shared with'
+        configurator.addLabel('You have to set a main channel', {
+            sv: 'Du måste välja en huvudkanal'
         })
-        configurator.addLabel('publication-set-main-channel', {
-            sv: 'Du måste välja en huvudkanal',
-            en: 'You have to set a main channel'
+        configurator.addLabel('Select all', {
+            sv: 'Välj alla'
         })
-        configurator.addLabel('publication-select-all', {
-            sv: 'Välj alla',
-            en: 'Select all'
-        })
-        configurator.addLabel('publication-remove-all', {
-            sv: 'Rensa',
-            en: 'Clear all'
+        configurator.addLabel('Clear all', {
+            sv: 'Rensa'
         })
     }
 }

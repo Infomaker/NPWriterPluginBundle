@@ -17,12 +17,12 @@ class MainChannelComponent extends Component {
     renderChannelsDropDown($$) {
         const mainChannel = this.props.articleChannels.find(articleChannel => articleChannel.rel === 'mainchannel')
         const options = [
-            { label: this.getLabel('publication-main-channel-label'), value: '' },
+            { label: this.getLabel('Set main channel'), value: '' },
             ...this.props.channels.map(channel => ({ label: channel[this.props.propertyMap.ConceptName], value: channel.uuid }))
         ]
 
         return $$(this.dropdownComponent, {
-            header: '', //this.getLabel('publication-main-channel'),
+            header: '',
             options: options,
             isSelected: (options, channel) => {
                 return (mainChannel !== undefined && mainChannel.uuid === channel.value)
