@@ -61,7 +61,7 @@ const XimConceptPackage = {
         })
 
         configurator.addLabel('no.concept.plugin.configured.for.type.description', {
-            sv: 'Det finns inget plugin konfigurerat som hanterar den här koncepttypen'
+            sv: 'Det finns inget plugin konfigurerat för att hanterar den här koncepttypen'
         })
     }
 }
