@@ -211,7 +211,7 @@ data instructions are read from a remote config file that is unique per concept 
 ```
 
 ### Broader
-Concepts with a `rel broad` will be decorated with data about the concepts hierarchical chain to the depth
+Concepts with a `rel broader` will be decorated with data about the concepts hierarchical chain to the depth
 specified in ConcepService Config:
 
 ![](./doc-images/broader.png)
