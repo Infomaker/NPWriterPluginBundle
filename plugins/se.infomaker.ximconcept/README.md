@@ -127,8 +127,7 @@ Tags:
 
 ### Writer config
 
-The new concept plugin requires `writer > 3.10.1` and depends on `writer.ConceptService` class. This class needs
-configuration from the writer config file.
+To enable Concepts you need to add configuration to `Writer` as well.
 
 ```json
 "conceptServiceConfig": {
