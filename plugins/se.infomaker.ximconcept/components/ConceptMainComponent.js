@@ -84,7 +84,7 @@ class ConceptMainComponent extends Component {
         } else {
             api.ui.showNotification(
                 this.state.name,
-                this.getLabel('invalid.conceptItem.label'),
+                this.getLabel('Invalid Concept'),
                 item.errors.reduce((iterator, error) => { return `${iterator}${iterator.length ? ', ' : ''}${error.error}`}, '')
             )
         }
@@ -110,8 +110,8 @@ class ConceptMainComponent extends Component {
             } else {
                 api.ui.showNotification(
                     this.state.name,
-                    this.getLabel('conceptitem.exists.label'),
-                    this.getLabel('conceptitem.exists.description'))
+                    this.getLabel('Conceptitem exists'),
+                    this.getLabel('The Concept is already used'))
             }
         } else {
             if (this.state.pluginConfig.editable) {
