@@ -1,11 +1,18 @@
 class PubStatus {
 
-    getKey() {
+    constructor(documentApi) {
+        this.api = documentApi
+    }
+
+    static getKey() {
         return "pubStatus"
     }
 
-    replace(documentApi, data) {
+    replace(data) {
+        this.api.setPubStatus({
+            change:data.value,
 
+        })
     }
 }
 
