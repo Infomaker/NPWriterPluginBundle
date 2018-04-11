@@ -1,6 +1,4 @@
 import {api, Validator} from 'writer'
-import saveOrPublish from '../util/saveOrPublish'
-
 
 class Review extends Validator {
 
@@ -13,22 +11,7 @@ class Review extends Validator {
             return contentPart.querySelector('links link[uri="im:/content-part/recension"]') !== null
         })
 
-        this.validateReviewCount(reviews)
         reviews.map(this.validateReviewGrade.bind(this))
-    }
-
-    /**
-     * Ensure that article contains only one review
-     * @param {Element[]} authors
-     */
-    validateReviewCount(reviews) {
-        if (reviews.length > 1) {
-            if (saveOrPublish() === 'save') {
-                this.addWarning(api.getLabel('validator-review-too-many'))
-            } else {
-                this.addError(api.getLabel('validator-review-too-many'))
-            }
-        }
     }
 
     /**
