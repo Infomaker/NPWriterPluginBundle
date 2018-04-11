@@ -4,6 +4,12 @@ import ConceptSearchResultComponent from './ConceptSearchResultComponent'
 
 class ConceptSearchComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.handleInput = this.handleInput.bind(this)
+    }
+
     getInitialState() {
         return {
             selected: 0,
@@ -13,14 +19,14 @@ class ConceptSearchComponent extends Component {
     resetState() {
         this.refs.searchInput.val('')
         this.extendState({
-            searching: false,
+            searching: 0,
             searchResult: null,
             searchedTerm: false,
             selected: 0,
         })
     }
 
-    render($$){
+    render($$) {
         let icon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
@@ -31,13 +37,13 @@ class ConceptSearchComponent extends Component {
             name: 'concept-search',
             class: `concept-search-input ${this.state.searchResult && this.state.searchResult.length ? 'results' : '   '}`,
             placeholder: this.props.placeholderText,
-            autocomplete: 'off',
+            autocomplete: 'off'
         })
-        .on('input', this.debounce(400, this.handleInput.bind(this)))
-        .on('keydown', this.handleKeyDown)
-        .on('focus', this.handleFocus)
-        .on('blur', this.handleBlur)
-        .ref('searchInput')
+            .on('input', this.debounce(400, this.handleInput))
+            .on('keydown', this.handleKeyDown)
+            .on('focus', this.handleFocus)
+            .on('blur', this.handleBlur)
+            .ref('searchInput')
 
         if (disabled) {
             searchInput.attr('disabled', true)
@@ -61,10 +67,11 @@ class ConceptSearchComponent extends Component {
         }
 
         if (searchedTerm) {
-            let { searchResult, selected } = this.state
+            let { searchResult, selected, searching } = this.state
 
             searchResultsContainer = $$(ConceptSearchResultComponent, {
                 searchedTerm,
+                searching,
                 searchResult,
                 selected,
                 isPolygon,
@@ -103,7 +110,7 @@ class ConceptSearchComponent extends Component {
 
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             this.extendState({
-                searching: true
+                searching: this.state.searching + 1
             })
 
             this.search(term)
@@ -126,25 +133,17 @@ class ConceptSearchComponent extends Component {
         this.resetState()
     }
 
-    handleKeyUp() {
-        const term = this.refs.searchInput.val().trim()
-
-        if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
-            this.extendState({
-                searching: true
-            })
-
-            this.search(term)
-        } else if (!this.state.selected && (!term || !term.length)) {
-            this.resetState()
-        }
-    }
-
     async search(term) {
-        const result = await ConceptService.searchForConceptSuggestions(this.props.conceptTypes, term, this.props.subtypes)
+        const result = await ConceptService.searchForConceptSuggestions({
+            conceptTypes: this.props.conceptTypes,
+            term,
+            subtypes: this.props.subtypes,
+            associatedWith: this.props.associatedWith
+        })
+
         this.extendState({
-            searching: false,
-            searchResult: this.state.searching ? result : [],
+            searching: this.state.searching - 1,
+            searchResult: result,
             selected: 0,
             searchedTerm: term,
         })
@@ -152,14 +151,14 @@ class ConceptSearchComponent extends Component {
 
     addItem(item) {
         const { propertyMap } = this.props
-        item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] : 
+        item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] :
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
 
         this.props.addItem(item)
     }
 
     handleKeyDown(e) {
-        const {keyCode} = e
+        const { keyCode } = e
         let selectedItem
 
         switch (keyCode) {
