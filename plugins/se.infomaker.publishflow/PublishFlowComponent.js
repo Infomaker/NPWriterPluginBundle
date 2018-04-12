@@ -146,14 +146,14 @@ class PublishFlowComponent extends Component {
         const statusDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         if (statusDef === null) {
-            return [
+            return $$('div').addClass('sc-np-status').append([
                 $$('h2').append(
                     this.getLabel('Unknown state')
                 ),
                 $$('p').append(
                     this.getLabel('This article has an unknown, unsupported, status')
                 )
-            ]
+            ])
         }
 
         const usableDef = this.publishFlowMgr.getStateDefinitionByPubStatus('stat:usable')
@@ -166,7 +166,7 @@ class PublishFlowComponent extends Component {
             )
         }
 
-        return [
+        return $$('div').addClass('sc-np-status').append([
             h2.append(
                 this.getLabel(title)
             ),
@@ -174,7 +174,7 @@ class PublishFlowComponent extends Component {
                 this.getLabel(statusDef.description)
             ),
             ...this.renderPriorityTransitions($$)
-        ]
+        ])
     }
 
     /**
