@@ -19,7 +19,6 @@ class ConceptSearchComponent extends Component {
     resetState() {
         this.refs.searchInput.val('')
         this.extendState({
-            hasFocus: false,
             searching: 0,
             searchResult: null,
             searchedTerm: false,
@@ -133,6 +132,7 @@ class ConceptSearchComponent extends Component {
     handleBlur() {
         this.refs.searchInput.val('')
         this.resetState()
+        this.extendState({ hasFocus: false })
     }
 
     async search(term) {
@@ -189,9 +189,11 @@ class ConceptSearchComponent extends Component {
                 e.preventDefault()
                 e.stopPropagation()
 
-                this.extendState({
-                    selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
-                })
+                if (this.state.searchResult) {
+                    this.extendState({
+                        selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
+                    })
+                }
 
                 break
             case 13: // enter
