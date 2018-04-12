@@ -38,6 +38,14 @@ class ConceptMainComponent extends Component {
             if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
                 this.reloadArticleConcepts()
             }
+
+            if (eventName === associatedWith && event.data.action === 'delete') {
+                this.state.existingItems.forEach(existingItem => {
+                    if (existingItem[this.state.propertyMap.ConceptAssociatedWith] === event.data.node.uuid) {
+                        this.removeArticleConcept(existingItem)
+                    }
+                })
+            }
         })
     }
 
