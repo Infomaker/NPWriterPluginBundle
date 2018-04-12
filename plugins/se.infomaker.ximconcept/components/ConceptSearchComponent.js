@@ -19,6 +19,7 @@ class ConceptSearchComponent extends Component {
     resetState() {
         this.refs.searchInput.val('')
         this.extendState({
+            hasFocus: false,
             searching: 0,
             searchResult: null,
             searchedTerm: false,
@@ -122,7 +123,8 @@ class ConceptSearchComponent extends Component {
     handleFocus() {
         this.resetState()
         this.extendState({
-            searching: true
+            searching: this.state.searching + 1,
+            hasFocus: true
         })
 
         this.search('*')
@@ -139,19 +141,17 @@ class ConceptSearchComponent extends Component {
             term,
             this.props.subtypes
         )
-        // const result = await ConceptService.searchForConceptSuggestions({
-        //     conceptTypes: this.props.conceptTypes,
-        //     term,
-        //     subtypes: this.props.subtypes,
-        //     associatedWith: this.props.associatedWith
-        // })
 
-        this.extendState({
-            searching: this.state.searching - 1,
-            searchResult: result,
-            selected: 0,
-            searchedTerm: term,
-        })
+        if (this.state.hasFocus) {
+            this.extendState({
+                searching: this.state.searching > 0 ? this.state.searching - 1: 0,
+                searchResult: result,
+                selected: 0,
+                searchedTerm: term,
+            })
+        } else {
+            this.resetState()
+        }
     }
 
     addItem(item) {
