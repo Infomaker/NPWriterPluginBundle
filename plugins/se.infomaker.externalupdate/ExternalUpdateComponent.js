@@ -11,7 +11,10 @@ class HistoryMainComponent extends Component {
     render($$) {
 
         const el = $$('div').ref('externalUpdateContainer').addClass('light').append(
-            $$('h2').append('*** External Update ***')
+            [
+                $$('h2').append('*** External Update ***'),
+                $$('button').on('click', () => api.newsItemMutation.setEdNote({change: 'Hello folks', eventType: 'external:changed'}))
+            ]
         )
 
         return el;
