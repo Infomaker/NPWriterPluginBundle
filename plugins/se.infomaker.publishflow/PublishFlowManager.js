@@ -17,7 +17,7 @@ class PublishFlowManager {
      */
     getStateDefinitionByPubStatus(pubStatus) {
 
-        const objectKeys = Object.keys(this.workflowStates);
+        const objectKeys = Object.keys(this.workflowStates)
 
         const key = objectKeys.find((e) => {
             return this.workflowStates[e].pubStatus === pubStatus
@@ -27,12 +27,7 @@ class PublishFlowManager {
             return this.workflowStates[key]
         }
 
-        return null;
-
-        // return this.workflowStates.find((elem) => {
-        //     return elem.pubStatus === pubStatus
-        // })
-
+        return null
     }
 
     getStateDefinitionByName(name) {
@@ -41,6 +36,7 @@ class PublishFlowManager {
 
     /**
      * Checks whether a provided transition definition matches a configured preCondition.
+     *
      * @param {object} transitionDef Transition definition which may include a preCondition
      * @param {string} pubStatus Value to check if matches precondition
      * @param {boolean} hasPublishedVersion Value to check if matches precondition
@@ -48,17 +44,17 @@ class PublishFlowManager {
      */
     isAllowed(transitionDef, pubStatus, hasPublishedVersion) {
         if (!transitionDef.preCondition) {
-            return true;
+            return true
         }
 
         if (!hasPublishedVersion && hasPublishedVersion !== false) {
-            throw new Error("hasPublishedVersion is not set in article")
+            throw new Error('hasPublishedVersion is not set in article')
         }
 
         const condition = transitionDef.preCondition
 
         if (condition.pubStatus === pubStatus && condition.hasPublishedVersion === hasPublishedVersion) {
-            return true;
+            return true
         }
 
         if (condition.pubStatus === pubStatus && !condition.hasPublishedVersion) {
@@ -69,12 +65,12 @@ class PublishFlowManager {
             return true
         }
 
-        return false;
-
+        return false
     }
 
     /**
      * Get list of transitions for specified qcode and hasPublishedVersion combination
+     *
      * @param {string} pubStatus The qcode for the pubStatus
      * @param {boolean} hasPublishedVersion The value of hasPublishedVersion
      * @return {Array} Transitions that matches the parameters
@@ -89,7 +85,7 @@ class PublishFlowManager {
 
         return stateDef.transitions.filter((transition) => {
             return this.isAllowed(transition, pubStatus, hasPublishedVersion)
-        });
+        })
 
     }
 
@@ -115,7 +111,7 @@ class PublishFlowManager {
         let actions = nextStateDef.actions
 
         if (actions === undefined) {
-            return;
+            return
         }
 
         if (!Array.isArray(actions)) {
@@ -227,12 +223,13 @@ class PublishFlowManager {
 
     /**
      * Verifies that the provided value is a valid ISO 8601 formatted timestamp.
+     *
      * @param value
      */
     getFormattedTime(value) {
 
         if (value === null) {
-            return null;
+            return null
         }
 
         const obj = moment(value)
