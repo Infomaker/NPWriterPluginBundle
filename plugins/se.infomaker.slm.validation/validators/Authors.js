@@ -1,5 +1,4 @@
 import {api, Validator} from 'writer'
-import saveOrPublish from '../util/saveOrPublish'
 
 
 class Authors extends Validator {
@@ -18,11 +17,7 @@ class Authors extends Validator {
      */
     validateAuthorCount(authors) {
         if (authors.length === 0) {
-            if (saveOrPublish() === 'save') {
-                this.addWarning(api.getLabel('validator-author-missing'))
-            } else {
-                this.addError(api.getLabel('validator-author-missing'))
-            }
+            this.addWarning(api.getLabel('validator-author-missing'))
         }
     }
 }
