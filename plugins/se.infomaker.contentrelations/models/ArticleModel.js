@@ -7,6 +7,9 @@ class ArticleModel {
      * @param {object} propertyMap object with key => value pairs of propeties (plugin => oc)
      */
     constructor(item, propertyMap) {
+        this.sections = []
+        this.profiles = []
+        this.authors = []
         try {
             const props = item.versions[0].properties
             Object.keys(propertyMap).forEach(key => {
