@@ -74,11 +74,11 @@ class SearchResultItem extends Component {
                     $$('div', { class: 'article-header-dates' }, [
                         $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['updated'])}: ${moment(article.updated[0]).locale(this.props.locale).format('lll')}`}, [
                             $$('i', { class: 'fa fa-refresh'}),
-                            moment(article.updated[0]).locale(this.props.locale).format('LT')
+                            moment(article.updated[0]).locale(this.props.locale).calendar(moment())
                         ]),
                         $$('p', { class: 'article-head-date', title: `${this.capitalize(propertyMap['published'])}: ${moment(article.published[0]).locale(this.props.locale).format('lll')}` }, [
                             $$('i', {class: 'fa fa-clock-o'}),
-                            moment(article.published[0]).locale(this.props.locale).format('LT')
+                            moment(article.published[0]).locale(this.props.locale).calendar(moment())
                         ]),
                     ])
                 ]),
@@ -104,7 +104,7 @@ class SearchResultItem extends Component {
                 ]),
             ])
         ])
-        .ref(`searchResultItem-instans-${article.id}`)
+            .ref(`searchResultItem-instans-${article.id}`)
         .on('dragstart', (e) => { this.dragStartHandler(e, article) })
         .on('dragend', () => { this.dragEndHandler(article) })
 

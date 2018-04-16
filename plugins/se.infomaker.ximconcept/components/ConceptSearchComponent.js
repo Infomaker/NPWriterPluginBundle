@@ -4,6 +4,12 @@ import ConceptSearchResultComponent from './ConceptSearchResultComponent'
 
 class ConceptSearchComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.handleInput = this.handleInput.bind(this)
+    }
+
     getInitialState() {
         return {
             selected: 0,
@@ -13,14 +19,14 @@ class ConceptSearchComponent extends Component {
     resetState() {
         this.refs.searchInput.val('')
         this.extendState({
-            searching: false,
+            searching: 0,
             searchResult: null,
             searchedTerm: false,
             selected: 0,
         })
     }
 
-    render($$){
+    render($$) {
         let icon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
@@ -33,11 +39,11 @@ class ConceptSearchComponent extends Component {
             placeholder: this.props.placeholderText,
             autocomplete: 'off'
         })
-        .on('input', this.debounce(400, this.handleInput.bind(this)))
-        .on('keydown', this.handleKeyDown)
-        .on('focus', this.handleFocus)
-        .on('blur', this.handleBlur)
-        .ref('searchInput')
+            .on('input', this.debounce(400, this.handleInput))
+            .on('keydown', this.handleKeyDown)
+            .on('focus', this.handleFocus)
+            .on('blur', this.handleBlur)
+            .ref('searchInput')
 
         if (disabled) {
             searchInput.attr('disabled', true)
@@ -61,10 +67,11 @@ class ConceptSearchComponent extends Component {
         }
 
         if (searchedTerm) {
-            let { searchResult, selected } = this.state
+            let { searchResult, selected, searching } = this.state
 
             searchResultsContainer = $$(ConceptSearchResultComponent, {
                 searchedTerm,
+                searching,
                 searchResult,
                 selected,
                 isPolygon,
@@ -103,7 +110,7 @@ class ConceptSearchComponent extends Component {
 
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             this.extendState({
-                searching: true
+                searching: this.state.searching + 1
             })
 
             this.search(term)
@@ -115,7 +122,8 @@ class ConceptSearchComponent extends Component {
     handleFocus() {
         this.resetState()
         this.extendState({
-            searching: true
+            searching: this.state.searching + 1,
+            hasFocus: true
         })
 
         this.search('*')
@@ -124,20 +132,7 @@ class ConceptSearchComponent extends Component {
     handleBlur() {
         this.refs.searchInput.val('')
         this.resetState()
-    }
-
-    handleKeyUp() {
-        const term = this.refs.searchInput.val().trim()
-
-        if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
-            this.extendState({
-                searching: true
-            })
-
-            this.search(term)
-        } else if (!this.state.selected && (!term || !term.length)) {
-            this.resetState()
-        }
+        this.extendState({ hasFocus: false })
     }
 
     async search(term) {
@@ -148,12 +143,16 @@ class ConceptSearchComponent extends Component {
             associatedWith: this.props.associatedWith
         })
 
-        this.extendState({
-            searching: false,
-            searchResult: this.state.searching ? result : [],
-            selected: 0,
-            searchedTerm: term,
-        })
+        if (this.state.hasFocus) {
+            this.extendState({
+                searching: this.state.searching > 0 ? this.state.searching - 1: 0,
+                searchResult: result,
+                selected: 0,
+                searchedTerm: term,
+            })
+        } else {
+            this.resetState()
+        }
     }
 
     addItem(item) {
@@ -165,7 +164,7 @@ class ConceptSearchComponent extends Component {
     }
 
     handleKeyDown(e) {
-        const {keyCode} = e
+        const { keyCode } = e
         let selectedItem
 
         switch (keyCode) {
@@ -191,9 +190,11 @@ class ConceptSearchComponent extends Component {
                 e.preventDefault()
                 e.stopPropagation()
 
-                this.extendState({
-                    selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
-                })
+                if (this.state.searchResult) {
+                    this.extendState({
+                        selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
+                    })
+                }
 
                 break
             case 13: // enter

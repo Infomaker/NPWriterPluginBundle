@@ -2,6 +2,9 @@
 This plugin is responsible for handling images for an article. This includes drop of images onto the article, either
 from disk or from URL.
 
+## Dependency
+`Writer version >=4.4.0`
+
 ## Plugin configuration
 
 The image plugin configuration must have several things defined to work correctly.
