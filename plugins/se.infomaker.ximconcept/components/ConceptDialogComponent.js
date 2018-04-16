@@ -50,7 +50,7 @@ class ConceptDialogComponent extends Component {
             })
         }
 
-        // Bind validation listeners and trigger first  validation
+        // Bind validation listeners and trigger first validation
         Object.keys(this.refs).forEach(ref => {
             const input = this.refs[ref]
             input.el.el.removeEventListener('input', this.validateInput.bind(this), true)

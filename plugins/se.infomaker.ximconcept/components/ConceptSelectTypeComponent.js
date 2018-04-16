@@ -9,9 +9,9 @@ class ConceptSelectTypeComponent extends Component {
 
         Object.keys(this.props.config.types).forEach(type => {
             const typeObject = this.props.config.types[type]
-            
+
             if (typeObject.editable) {
-                const icon = $$(ConceptItemIcon, { 
+                const icon = $$(ConceptItemIcon, {
                     propertyMap: this.props.propertyMap,
                     item: { ConceptImTypeFull: type }
                 })
@@ -24,7 +24,7 @@ class ConceptSelectTypeComponent extends Component {
                 el.append(iconWrapper)
             }
         })
-        
+
         return el
     }
 
@@ -38,7 +38,7 @@ class ConceptSelectTypeComponent extends Component {
     }
 
     onClose() {
-        
+
     }
 
 }

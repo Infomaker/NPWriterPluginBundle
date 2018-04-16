@@ -53,7 +53,7 @@ class ConceptItemComponent extends Component {
             item[propertyMap.ConceptDefinitionShort].length > 34 ? `${item[propertyMap.ConceptDefinitionShort].substring(0, 34, ).trim()}...` :
                 item[propertyMap.ConceptDefinitionShort]
 
-        return !this.hasValidUUid() ? this.getLabel('invalid.uuid.label') : isDuplicate ? this.getLabel('duplicate.uuid.label') : truncatedDescription
+        return !this.hasValidUUid() ? this.getLabel('Invalid UUID') : isDuplicate ? this.getLabel('Duplicate') : truncatedDescription
     }
 
     render($$){
@@ -136,9 +136,9 @@ class ConceptItemComponent extends Component {
     editItem() {
         if (this.props.editable) {
             if (!this.hasValidUUid()) {
-                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.uuid.label'), this.getLabel('invalid.uuid.description'))
+                api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid UUID'), this.getLabel('Invalid Concept-UUID'))
             } else if (this.state.item.error) {
-                api.ui.showNotification('conceptItemEdit', this.getLabel('invalid.concept.label'), this.getLabel('invalid.concept.description'))
+                api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid Concept Item'), this.getLabel('Unable to fetch the concept item'))
             } else {
                 this.props.editItem(this.props.item)
             }

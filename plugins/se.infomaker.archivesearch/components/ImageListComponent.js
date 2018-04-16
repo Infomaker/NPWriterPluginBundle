@@ -36,7 +36,8 @@ class ImageListComponent extends Component {
                                         }
 
                                         imageMetaPopup.extendProps(updatedProps)
-                                    }
+                                    },
+                                    type: this.props.type
                                 })
                             }),
                             $$(ImageMetaPopup, {

@@ -46,6 +46,7 @@ export default {
 
         config.addIcon('image', {'fontawesome': 'fa-image'})
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
+        config.addIcon('download', {'fontawesome': 'fa-download'})
         config.addIcon('user-plus', {'fontawesome': 'fa-user-plus'})
         config.addIcon('upload', {'fontawesome': 'fa-upload'})
         config.addIcon('remove', {'fontawesome': 'fa-times'})
@@ -118,6 +119,11 @@ export default {
         config.addLabel('image-display-mode-minimized', {
             en: 'Minimized',
             sv: 'Minimerad'
+        })
+
+        config.addLabel('download-image-button-title', {
+            en: 'Download image',
+            sv: 'Ladda ned bild'
         })
     }
 }

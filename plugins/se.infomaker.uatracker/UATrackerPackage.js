@@ -117,5 +117,10 @@ export default {
             en: 'Identification',
             sv: 'Identifiering'
         })
+
+        config.addLabel('uatracker-been-in', {
+            en: 'Has been in for {{loginTime}}',
+            sv: 'Har varit inne i {{loginTime}}'
+        })
     }
 }
