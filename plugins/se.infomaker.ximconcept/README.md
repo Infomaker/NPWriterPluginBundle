@@ -31,7 +31,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"label": "Författare"` The label to use above the plugin
 - `"name": "x-im/author"` The main concept type to be used by the plugin instance
 - `"enableHierarchy": false` If the plugin should display broader relations
-- `"associatedWith": "x-im/channel"` Parent, or owning concept type used to filter search results
+- `"associatedWith": "x-im/channel"` Parent, or owning concept-type used to filter search results
 - `"editable": true` If the concepts should be editable from NPWriter
 - `"placeholderText": "Sök skribent"` The search form placeholder
 - `"appendDataToLink": true` If data should be added to article link, also depends on remote concept config

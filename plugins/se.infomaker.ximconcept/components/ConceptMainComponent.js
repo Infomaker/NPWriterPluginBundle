@@ -35,16 +35,42 @@ class ConceptMainComponent extends Component {
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
+            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
                 this.reloadArticleConcepts()
             }
 
-            if (eventName === associatedWith && event.data.action === 'delete') {
+            if (event.data.action === 'delete' && eventName === associatedWith) {
+                const itemsToRemove = []
+
                 this.state.existingItems.forEach(existingItem => {
-                    if (existingItem[this.state.propertyMap.ConceptAssociatedWith] === event.data.node.uuid) {
-                        this.removeArticleConcept(existingItem)
+                    const eventUUID = event.data.node.uuid
+                    const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
+
+                    // if no multi-value (just one associated-with) and its a match, we remove the item
+                    if (itemAssociatedWith === eventUUID) {
+                        itemsToRemove.push(existingItem)
+                    }
+
+                    // if we have multiple associated-with we need to check 'em all to look for a match
+                    if (Array.isArray(itemAssociatedWith)) {
+                        let associationExists = false
+
+                        itemAssociatedWith.forEach(itemAssociatedWithUuid => {
+                            if (ConceptService.getArticleConceptByUUID(itemAssociatedWithUuid)) {
+                                associationExists = true
+                            }
+                        })
+
+                        if (!associationExists) {
+                            itemsToRemove.push(existingItem)
+                        }
                     }
                 })
+
+                if (itemsToRemove.length) {
+                    console.info('ASSOC REMOVE: ', itemsToRemove)
+                    this.confirmAndRemoveItems(itemsToRemove)
+                }
             }
         })
     }
@@ -57,6 +83,28 @@ class ConceptMainComponent extends Component {
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+    }
+
+    confirmAndRemoveItems(items) {
+        const {propertyMap} = this.state
+        const itemsString = items.reduce((iterator, item) => {
+            return `${iterator}${iterator.length ? ', ' : ''}${item[propertyMap.ConceptName]}`
+        }, '')
+
+        api.ui.showConfirmDialog(
+            this.getLabel('Related concepts will be affected'),
+            `${this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well')}: ${itemsString}`,
+            {
+                primary: {
+                    label: this.getLabel('Yes'),
+                    callback: () => { items.forEach(item => this.removeArticleConcept(item)) }
+                },
+                secondary: {
+                    label: this.getLabel('No'),
+                    callback: () => {}
+                }
+            }
+        )
     }
 
     reloadArticleConcepts() {
@@ -225,12 +273,11 @@ class ConceptMainComponent extends Component {
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
-        const el = $$('div')
-            .addClass(`concept-main-component ${conceptType}`)
-            .append(header)
-            .append(list)
-            .append(search)
-            .ref(`conceptMainComponent-${this.state.name}`)
+        const el = $$('div', { class: `concept-main-component ${conceptType}` }, [
+            header,
+            list,
+            search
+        ]).ref(`conceptMainComponent-${this.state.name}`)
 
         return el
     }
