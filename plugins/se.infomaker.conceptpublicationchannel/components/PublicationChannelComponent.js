@@ -3,7 +3,7 @@ import { api, event, ConceptService } from 'writer'
 import MainChannelComponent from './MainChannelComponent'
 import ChannelsComponent from './ChannelsComponent'
 
-class PublicationChannelMainComponent extends Component {
+class PublicationChannelComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -112,4 +112,4 @@ class PublicationChannelMainComponent extends Component {
 
 }
 
-export default PublicationChannelMainComponent
+export default PublicationChannelComponent

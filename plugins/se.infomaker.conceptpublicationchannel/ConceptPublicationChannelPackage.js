@@ -1,4 +1,4 @@
-import PublicationChannelMainComponent from './components/PublicationChannelMainComponent'
+import PublicationChannelComponent from './components/PublicationChannelComponent'
 import './scss/main.scss'
 
 const XimConceptPackage = {
@@ -8,7 +8,7 @@ const XimConceptPackage = {
     version: '{{version}}',
     configure(configurator, pluginConfig) {
 
-        configurator.addToSidebar('main', pluginConfig, PublicationChannelMainComponent)
+        configurator.addToSidebar('main', pluginConfig, PublicationChannelComponent)
 
         configurator.addLabel('Publication channels', {
             sv: 'Publiceringskanaler'
