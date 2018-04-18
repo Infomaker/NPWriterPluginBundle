@@ -49,6 +49,17 @@ class PublishFlowComponent extends Component {
             this.locked = false
             this.props.popover.enable()
         })
+
+        api.events.on(pluginId, event.DOCUMENT_EXTERNAL_UPDATED, () => {
+            console.log("The document now contains", api.newsItem.getPubStatus())
+            this.extendState({
+                status: api.newsItem.getPubStatus(),
+                hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
+                pubStart: api.newsItem.getPubStart(),
+                pubStop: api.newsItem.getPubStop(),
+            })
+            this.renderPopover()
+        })
     }
 
     dispose() {
@@ -57,8 +68,10 @@ class PublishFlowComponent extends Component {
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
         api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.USERACTION_SAVE)
+        api.events.off(pluginId, event.DOCUMENT_REPLACED)
         api.events.off(pluginId, event.USERACTION_LOCK)
         api.events.off(pluginId, event.USERACTION_UNLOCK)
+        api.events.off(pluginId, event.DOCUMENT_CHANGED_EXTERNAL)
         this._clearSaveTimeout();
     }
 
@@ -446,13 +459,13 @@ class PublishFlowComponent extends Component {
                     label: transition.title,
                     icon: icon
                 })
-                .on('click', () => {
-                    this._save(() => {
-                        return this.handleTransitionClick(transition)
+                    .on('click', () => {
+                        this._save(() => {
+                            return this.handleTransitionClick(transition)
+                        })
                     })
-                })
-                .addClass('sc-np-wide')
-                .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
+                    .addClass('sc-np-wide')
+                    .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
             )
         })
 
@@ -700,7 +713,7 @@ class PublishFlowComponent extends Component {
             stateDef.saveActionLabel + (this.state.unsavedChanges || this.props.isSaving ? ' *' : '')
         )
 
-        let status = {title:stateDef.title}
+        let status = {title: stateDef.title}
 
         if (this.state.hasPublishedVersion) {
             status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`

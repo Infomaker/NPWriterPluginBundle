@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api} from 'writer'
+import {api, event} from 'writer'
 
 class EditorialNoteComponent extends Component {
 
@@ -8,11 +8,23 @@ class EditorialNoteComponent extends Component {
     }
 
     didMount() {
-        api.events.on('notes', 'document:changed', (event) => {
+        api.events.on('notes', event.DOCUMENT_CHANGED, (event) => {
             if (event.data && event.data.type === 'ednote') {
                 this.synchronize(event)
             }
         })
+        api.events.on('notes', event.DOCUMENT_EXTERNAL_UPDATED, (event) => {
+            if (event.data.key === 'edNote') {
+                this.extendState({
+                    note: api.newsItem.getEdNote()
+                })
+            }
+        })
+    }
+
+    dispose(...args) {
+        super.dispose(...args)
+        api.events.off()
     }
 
     getInitialState() {

@@ -1,21 +1,21 @@
-class PubStatus {
+class ItemMetaExtProperty {
 
     constructor(documentApi) {
         this.documentApi = documentApi
     }
 
     getKey() {
-        return "pubStatus"
+        return "itemMetaExtProperty"
     }
 
     set(data) {
-        // TODO Validate input
-        this.documentApi.setPubStatus({
+        this.documentApi.setItemMetaExtProperty({
             change: data.value,
             eventType: "external:update"
         })
     }
+
 }
 
-export {PubStatus}
+export {ItemMetaExtProperty}
 

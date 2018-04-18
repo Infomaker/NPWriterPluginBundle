@@ -1,4 +1,4 @@
-import ExternalUpdateComponent from './ExternalUpdateComponent'
+import {ExternalUpdateComponent} from './ExternalUpdateComponent'
 
 export default {
     id: 'se.infomaker.externalupdate',

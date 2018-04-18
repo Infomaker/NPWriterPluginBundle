@@ -1,21 +1,21 @@
-class PubStatus {
+class EdNote {
 
     constructor(documentApi) {
         this.documentApi = documentApi
     }
 
     getKey() {
-        return "pubStatus"
+        return "edNote"
     }
 
     set(data) {
-        // TODO Validate input
-        this.documentApi.setPubStatus({
+        this.documentApi.setEdNote({
             change: data.value,
             eventType: "external:update"
         })
     }
+
 }
 
-export {PubStatus}
+export {EdNote}
 
