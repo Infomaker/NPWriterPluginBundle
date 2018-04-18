@@ -68,7 +68,6 @@ class ConceptMainComponent extends Component {
                 })
 
                 if (itemsToRemove.length) {
-                    console.info('ASSOC REMOVE: ', itemsToRemove)
                     this.confirmAndRemoveItems(itemsToRemove)
                 }
             }

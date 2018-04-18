@@ -136,12 +136,12 @@ class ConceptSearchComponent extends Component {
     }
 
     async search(term) {
-        const result = await ConceptService.searchForConceptSuggestions({
-            conceptTypes: this.props.conceptTypes,
+        const result = await ConceptService.searchForConceptSuggestions(
+            this.props.conceptTypes,
             term,
-            subtypes: this.props.subtypes,
-            associatedWith: this.props.associatedWith
-        })
+            this.props.subtypes,
+            this.props.associatedWith
+        )
 
         if (this.state.hasFocus) {
             this.extendState({
