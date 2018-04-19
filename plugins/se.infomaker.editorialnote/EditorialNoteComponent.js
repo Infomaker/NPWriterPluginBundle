@@ -13,7 +13,7 @@ class EditorialNoteComponent extends Component {
                 this.synchronize(event)
             }
         })
-        api.events.on('notes', event.DOCUMENT_EXTERNAL_UPDATED, (event) => {
+        api.events.on('notes', event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
             if (event.data.key === 'edNote') {
                 this.extendState({
                     note: api.newsItem.getEdNote()

@@ -50,7 +50,7 @@ class PublishFlowComponent extends Component {
             this.props.popover.enable()
         })
 
-        api.events.on(pluginId, event.DOCUMENT_EXTERNAL_UPDATED, () => {
+        api.events.on(pluginId, event.DOCUMENT_CHANGED_EXTERNAL, () => {
             console.log("The document now contains", api.newsItem.getPubStatus())
             this.extendState({
                 status: api.newsItem.getPubStatus(),
