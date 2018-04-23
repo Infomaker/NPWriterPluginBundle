@@ -46,7 +46,7 @@
     "webpack-uglify-js-plugin": "^1.1.9"
   },
   "dependencies": {
-    "@infomaker/oc-client": "0.0.5",
+    "@infomaker/oc-client": "0.0.7",
     "@infomaker/xml-handler": "0.4.0",
     "cropjs": "^1.1.0",
     "google-maps-api-loader": "1.0.0",

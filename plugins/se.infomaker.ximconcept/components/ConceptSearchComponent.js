@@ -139,7 +139,8 @@ class ConceptSearchComponent extends Component {
         const result = await ConceptService.searchForConceptSuggestions(
             this.props.conceptTypes,
             term,
-            this.props.subtypes
+            this.props.subtypes,
+            this.props.associatedWith
         )
 
         if (this.state.hasFocus) {

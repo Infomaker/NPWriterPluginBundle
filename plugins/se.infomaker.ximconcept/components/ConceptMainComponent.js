@@ -29,13 +29,47 @@ class ConceptMainComponent extends Component {
         }
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
-            const types = this.state.types ? this.state.types : []
+            const types = this.state.types || []
             const eventName = event.name || ''
             const cleanEventName = eventName.replace('-', '').replace('/', '')
+            const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType ) {
+            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
                 this.reloadArticleConcepts()
+            }
+
+            if (event.data.action === 'delete' && eventName === associatedWith) {
+                const itemsToRemove = []
+
+                this.state.existingItems.forEach(existingItem => {
+                    const eventUUID = event.data.node.uuid
+                    const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
+
+                    // if no multi-value (just one associated-with) and its a match, we remove the item
+                    if (itemAssociatedWith === eventUUID) {
+                        itemsToRemove.push(existingItem)
+                    }
+
+                    // if we have multiple associated-with we need to check 'em all to look for a match
+                    if (Array.isArray(itemAssociatedWith)) {
+                        let associationExists = false
+
+                        itemAssociatedWith.forEach(itemAssociatedWithUuid => {
+                            if (ConceptService.getArticleConceptByUUID(itemAssociatedWithUuid)) {
+                                associationExists = true
+                            }
+                        })
+
+                        if (!associationExists) {
+                            itemsToRemove.push(existingItem)
+                        }
+                    }
+                })
+
+                if (itemsToRemove.length) {
+                    this.confirmAndRemoveItems(itemsToRemove)
+                }
             }
         })
     }
@@ -50,9 +84,33 @@ class ConceptMainComponent extends Component {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
+    confirmAndRemoveItems(items) {
+        const {propertyMap} = this.state
+        const itemsString = items.reduce((iterator, item) => {
+            return `${iterator}${iterator.length ? ', ' : ''}${item[propertyMap.ConceptName]}`
+        }, '')
+
+        api.ui.showConfirmDialog(
+            this.getLabel('Related concepts will be affected'),
+            `${this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well')}: ${itemsString}`,
+            {
+                primary: {
+                    label: this.getLabel('Yes'),
+                    callback: () => { items.forEach(item => this.removeArticleConcept(item)) }
+                },
+                secondary: {
+                    label: this.getLabel('No'),
+                    callback: () => {}
+                }
+            }
+        )
+    }
+
     reloadArticleConcepts() {
+        const { pluginConfig } = this.state
         this.extendState({
-            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
+            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes),
+            associatedLinkes: pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
         })
     }
 
@@ -64,6 +122,7 @@ class ConceptMainComponent extends Component {
         const subtypes = pluginConfig.subtypes
         const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
+        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
         return {
             name,
@@ -72,7 +131,8 @@ class ConceptMainComponent extends Component {
             subtypes,
             conceptType,
             existingItems,
-            propertyMap
+            propertyMap,
+            associatedLinkes
         }
     }
 
@@ -170,10 +230,17 @@ class ConceptMainComponent extends Component {
         }
     }
 
+    shouldBeDisabled() {
+        const { singleValue, pluginConfig, associatedLinkes } = this.state
+
+        return (singleValue && this.state.existingItems.length) ? true :
+            (pluginConfig.associatedWith && (!associatedLinkes || !associatedLinkes.length)) ? true : false
+    }
+
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes } = config
+        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes, associatedWith } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
@@ -198,18 +265,18 @@ class ConceptMainComponent extends Component {
                 subtypes,
                 editable,
                 enableHierarchy,
-                disabled: (singleValue && this.state.existingItems.length) ? true : false,
+                disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,
-                itemExists: this.itemExists
+                itemExists: this.itemExists,
+                associatedWith
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
-        const el = $$('div')
-            .addClass(`concept-main-component ${conceptType}`)
-            .append(header)
-            .append(list)
-            .append(search)
-            .ref(`conceptMainComponent-${this.state.name}`)
+        const el = $$('div', { class: `concept-main-component ${conceptType}` }, [
+            header,
+            list,
+            search
+        ]).ref(`conceptMainComponent-${this.state.name}`)
 
         return el
     }
