@@ -35,16 +35,13 @@ class ConceptMainComponent extends Component {
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
-                this.reloadArticleConcepts()
-            }
-
             if (event.data.action === 'delete' && eventName === associatedWith) {
                 const itemsToRemove = []
 
                 this.state.existingItems.forEach(existingItem => {
                     const eventUUID = event.data.node.uuid
                     const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
+
 
                     // if no multi-value (just one associated-with) and its a match, we remove the item
                     if (itemAssociatedWith === eventUUID) {
@@ -66,10 +63,13 @@ class ConceptMainComponent extends Component {
                         }
                     }
                 })
-
                 if (itemsToRemove.length) {
                     this.confirmAndRemoveItems(itemsToRemove)
                 }
+            }
+
+            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
+                this.reloadArticleConcepts()
             }
         })
     }
@@ -108,10 +108,20 @@ class ConceptMainComponent extends Component {
 
     reloadArticleConcepts() {
         const { pluginConfig } = this.state
-        this.extendState({
-            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes),
-            associatedLinkes: pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
-        })
+        const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
+        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+
+        this.enrichArticles(existingItems)
+
+        this.extendState({ existingItems, associatedLinkes })
+    }
+
+    async enrichArticles(existingItems) {
+        if (Array.isArray(existingItems)) {
+            const promises = existingItems.map(ConceptService.fetchConceptItemProperties.bind(ConceptService))
+
+            this.extendState({ existingItems: await Promise.all(promises) })
+        }
     }
 
     getInitialState() {
@@ -123,6 +133,8 @@ class ConceptMainComponent extends Component {
         const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
         const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+
+        this.enrichArticles(existingItems)
 
         return {
             name,
