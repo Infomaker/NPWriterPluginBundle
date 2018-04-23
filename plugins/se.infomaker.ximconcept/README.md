@@ -172,6 +172,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
     "relatedGeoExludeSelf": false,
     "searchLimit": 50,
     "sortField": "ConceptNameString",
+    "titleSearchField": "ConceptNameString",
     "propertyMap": {
         ...
     }
@@ -185,6 +186,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
 - `"relatedGeoExludeSelf": false,` If added geo concepts should be excluded from `related-geo` tag
 - `"searchLimit": 50,` Sets the search limit for concept searches
 - `"sortField": "ConceptNameString",` Which index field to sort by
+- `"titleSearchField": "ConceptNameString",` optional property to set OC property to use for concept title search, defaults (if omitted) to `ConceptName`
 - `"propertyMap": { ... }` See below
 
 #### BA_PROXY
@@ -201,6 +203,7 @@ The left hand side will be used by ConceptService, fill in the property-names fr
 "propertyMap": {
     "uuid": "uuid",
     "ConceptName": "ConceptName",
+    "ConceptNameString": "ConceptNameString",
     "ConceptStatus": "ConceptStatus",
     "ConceptDefinitionShort": "ConceptDefinitionShort",
     "ConceptDefinitionLong": "ConceptDefinitionLong",
