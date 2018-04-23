@@ -35,7 +35,7 @@ class ConceptMainComponent extends Component {
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
+            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
                 this.reloadArticleConcepts()
             }
 
