@@ -60,9 +60,9 @@ class ConceptMainComponent extends Component {
                         }
                     }
                 })
-            }
-
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
+            } else if (event.data.action === 'delete-all' && eventName === associatedWith) {
+                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+            } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
                 this.reloadArticleConcepts()
             }
         })

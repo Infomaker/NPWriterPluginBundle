@@ -46,31 +46,31 @@ class PublicationChannelComponent extends Component {
     }
 
     confirmAndRemoveItems(channels) {
-        const { propertyMap } = this.state
-        const itemsString = Array.isArray(channels) ? channels.reduce((iterator, item) => {
-            return `${iterator}${iterator.length ? ', ' : ''}${item[propertyMap.ConceptName]}`
-        }, '') : channels.ConceptName
-
-        api.ui.showConfirmDialog(
-            this.getLabel('Related concepts will be affected'),
-            `${this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well')}: ${itemsString}`,
-            {
-                primary: {
-                    label: this.getLabel('ok'),
-                    callback: () => {
-                        if (Array.isArray(channels)) {
-                            channels.forEach(channel => ConceptService.removeArticleConceptItem(channel))
-                        } else {
-                            ConceptService.removeArticleConceptItem(channels)
-                        }
-                    }
-                },
-                secondary: {
-                    label: this.getLabel('cancel'),
-                    callback: () => { }
-                }
-            }
-        )
+        if (Array.isArray(channels)) { // Only happens when user clicks "clear"
+            ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+        } else {
+            ConceptService.removeArticleConceptItem(channels)
+        }
+        // api.ui.showConfirmDialog(
+        //     this.getLabel('Related concepts might be affected'),
+        //     this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well'),
+        //     {
+        //         primary: {
+        //             label: this.getLabel('ok'),
+        //             callback: () => {
+        //                 if (Array.isArray(channels)) { // Only happens when user clicks "clear"
+        //                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+        //                 } else {
+        //                     ConceptService.removeArticleConceptItem(channels)
+        //                 }
+        //             }
+        //         },
+        //         secondary: {
+        //             label: this.getLabel('cancel'),
+        //             callback: () => { }
+        //         }
+        //     }
+        // )
     }
 
     getInitialState() {
