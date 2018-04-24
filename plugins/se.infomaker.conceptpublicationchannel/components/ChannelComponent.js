@@ -4,10 +4,6 @@ import ChannelIconComponent from './ChannelIconComponent'
 
 class ChannelComponent extends Component {
 
-    constructor(...args) {
-        super(...args)
-    }
-
     async willReceiveProps(newProps) {
         let { channel, propertyMap } = newProps
 
