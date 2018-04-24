@@ -185,7 +185,7 @@ class ConceptSearchComponent extends Component {
                 })
 
                 break
-            case 9: // tab
+            // case 9: // tab
             case 40: // arrow down
                 e.preventDefault()
                 e.stopPropagation()
