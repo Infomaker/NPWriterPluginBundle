@@ -20,6 +20,9 @@ class ConceptItemComponent extends Component {
 
     async willReceiveProps(newProps) {
         let { item } = newProps
+
+        item = await ConceptService.fetchConceptItemProperties(item)
+
         this.setState({ item })
     }
 

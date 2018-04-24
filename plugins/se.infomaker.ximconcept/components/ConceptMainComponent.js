@@ -111,8 +111,6 @@ class ConceptMainComponent extends Component {
         const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
         const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
-        this.enrichArticles(existingItems)
-
         this.extendState({ existingItems, associatedLinkes })
     }
 
@@ -134,15 +132,13 @@ class ConceptMainComponent extends Component {
         const propertyMap = ConceptService.getPropertyMap()
         const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
-        this.enrichArticles(existingItems)
-
         return {
             name,
             pluginConfig,
             types,
             subtypes,
-            conceptType,
             existingItems,
+            conceptType,
             propertyMap,
             associatedLinkes
         }
