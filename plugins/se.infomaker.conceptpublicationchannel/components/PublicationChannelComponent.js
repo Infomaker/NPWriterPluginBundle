@@ -1,6 +1,6 @@
 import { Component } from 'substance'
 import { api, event, ConceptService } from 'writer'
-import MainChannelComponent from './MainChannelComponent'
+import SelectMainChannelComponent from './SelectMainChannelComponent'
 import ChannelsComponent from './ChannelsComponent'
 
 class PublicationChannelComponent extends Component {
@@ -45,6 +45,34 @@ class PublicationChannelComponent extends Component {
         })
     }
 
+    confirmAndRemoveItems(channels) {
+        const { propertyMap } = this.state
+        const itemsString = Array.isArray(channels) ? channels.reduce((iterator, item) => {
+            return `${iterator}${iterator.length ? ', ' : ''}${item[propertyMap.ConceptName]}`
+        }, '') : channels.ConceptName
+
+        api.ui.showConfirmDialog(
+            this.getLabel('Related concepts will be affected'),
+            `${this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well')}: ${itemsString}`,
+            {
+                primary: {
+                    label: this.getLabel('ok'),
+                    callback: () => {
+                        if (Array.isArray(channels)) {
+                            channels.forEach(channel => ConceptService.removeArticleConceptItem(channel))
+                        } else {
+                            ConceptService.removeArticleConceptItem(channels)
+                        }
+                    }
+                },
+                secondary: {
+                    label: this.getLabel('cancel'),
+                    callback: () => { }
+                }
+            }
+        )
+    }
+
     getInitialState() {
         const pluginConfig = this.props.pluginConfigObject.pluginConfigObject.data
         const conceptType = 'x-im/channel'
@@ -68,7 +96,7 @@ class PublicationChannelComponent extends Component {
     }
 
     removeChannelFromArticle(channel) {
-        ConceptService.removeArticleConceptItem(channel)
+        this.confirmAndRemoveItems(channel)
     }
 
     selectAll() {
@@ -81,18 +109,14 @@ class PublicationChannelComponent extends Component {
     }
 
     removeAll() {
-        this.state.articleChannels.forEach(articleChannel => {
-            if (articleChannel.rel !== 'mainchannel') {
-                this.removeChannelFromArticle(articleChannel)
-            }
-        })
+        this.confirmAndRemoveItems(this.state.articleChannels)
     }
 
     render($$){
         return $$('div', { class: 'publication-main-component' }, [
             $$('h2', {}, this.getLabel('Publication channels')).ref('channel-label'),
 
-            this.state.pluginConfig.disableMainChannel ? '' : $$(MainChannelComponent, {
+            this.state.pluginConfig.disableMainChannel ? '' : $$(SelectMainChannelComponent, {
                 ...this.state,
                 addChannelToArticle: this.addChannelToArticle,
                 updateArticleChannelRel: this.updateArticleChannelRel,

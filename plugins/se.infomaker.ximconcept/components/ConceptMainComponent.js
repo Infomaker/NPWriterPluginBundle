@@ -36,16 +36,13 @@ class ConceptMainComponent extends Component {
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
             if (event.data.action === 'delete' && eventName === associatedWith) {
-                const itemsToRemove = []
-
                 this.state.existingItems.forEach(existingItem => {
                     const eventUUID = event.data.node.uuid
                     const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
 
-
                     // if no multi-value (just one associated-with) and its a match, we remove the item
                     if (itemAssociatedWith === eventUUID) {
-                        itemsToRemove.push(existingItem)
+                        this.removeArticleConcept(existingItem)
                     }
 
                     // if we have multiple associated-with we need to check 'em all to look for a match
@@ -59,13 +56,10 @@ class ConceptMainComponent extends Component {
                         })
 
                         if (!associationExists) {
-                            itemsToRemove.push(existingItem)
+                            this.removeArticleConcept(existingItem)
                         }
                     }
                 })
-                if (itemsToRemove.length) {
-                    this.confirmAndRemoveItems(itemsToRemove)
-                }
             }
 
             if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
@@ -82,28 +76,6 @@ class ConceptMainComponent extends Component {
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
-    }
-
-    confirmAndRemoveItems(items) {
-        const {propertyMap} = this.state
-        const itemsString = items.reduce((iterator, item) => {
-            return `${iterator}${iterator.length ? ', ' : ''}${item[propertyMap.ConceptName]}`
-        }, '')
-
-        api.ui.showConfirmDialog(
-            this.getLabel('Related concepts will be affected'),
-            `${this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well')}: ${itemsString}`,
-            {
-                primary: {
-                    label: this.getLabel('Yes'),
-                    callback: () => { items.forEach(item => this.removeArticleConcept(item)) }
-                },
-                secondary: {
-                    label: this.getLabel('No'),
-                    callback: () => {}
-                }
-            }
-        )
     }
 
     reloadArticleConcepts() {

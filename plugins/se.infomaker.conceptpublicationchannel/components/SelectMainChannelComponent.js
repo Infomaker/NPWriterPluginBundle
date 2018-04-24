@@ -1,7 +1,7 @@
 import { Component } from 'substance'
 import { api } from 'writer'
 
-class MainChannelComponent extends Component {
+class SelectMainChannelComponent extends Component {
 
     constructor(...args) {
         super(...args)
@@ -54,7 +54,7 @@ class MainChannelComponent extends Component {
                     }
                 }
             },
-            disabled: this.props.channels.length <= 1
+            disabled: this.props.channels.length < 1
         }).ref('sortingsDropDown')
     }
 
@@ -64,4 +64,4 @@ class MainChannelComponent extends Component {
 
 }
 
-export default MainChannelComponent
+export default SelectMainChannelComponent
