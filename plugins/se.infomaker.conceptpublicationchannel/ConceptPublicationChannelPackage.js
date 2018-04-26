@@ -40,8 +40,8 @@ const XimConceptPackage = {
         configurator.addLabel('Related concepts might be affected', {
             sv: 'Relaterade koncept kan komma att påverkas'
         })
-        configurator.addLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well', {
-            sv: 'Det finns koncept som är relaterade till den du just tog bort, vill du även ta bort följande koncept'
+        configurator.addLabel('There are concepts associated with the one you are about to remove, these concepts might be removed as well', {
+            sv: 'Det finns koncept som är relaterade till de du är på väg att ta bort, dessa koncept kanske också kommer att tas bort'
         })
     }
 }
