@@ -1,22 +1,22 @@
 import {event} from 'writer'
-class ItemMetaExtProperty {
+
+class PubStart {
 
     constructor(documentApi) {
         this.documentApi = documentApi
     }
 
     getKey() {
-        return "itemMetaExtProperty"
+        return "pubStart"
     }
 
     set(data) {
-        this.documentApi.setItemMetaExtProperty({
+        this.documentApi.setPubStart({
             change: data.value,
             eventType: event.DOCUMENT_CHANGED_EXTERNAL
         })
     }
-
 }
 
-export {ItemMetaExtProperty}
+export {PubStart}
 

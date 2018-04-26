@@ -1,6 +1,7 @@
 import {Component} from 'substance'
-import {api, event} from 'writer'
+import {api, event, infocaster} from 'writer'
 import {UpdateMessageHandler} from "./UpdateMessageHandler";
+import {InfocasterIntegration} from "./InfocasterIntegration";
 
 
 class ExternalUpdateComponent extends Component {
@@ -8,7 +9,15 @@ class ExternalUpdateComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        this.messageHandler = new UpdateMessageHandler(api)
+        if (!api.newsItem.hasTemporaryId()) {
+            const messageHandler = new UpdateMessageHandler(api)
+            new InfocasterIntegration({
+                uuid: api.newsItem.getGuid(),
+                callback: (data) => {
+                    messageHandler.handleMessage(data)
+                }
+            })
+        }
     }
 
     didMount() {
@@ -32,7 +41,9 @@ class ExternalUpdateComponent extends Component {
         return $$('div').ref('externalUpdateContainer').append(
             [
                 $$('h2').append('*** External Update ***'),
-                $$('textarea').on('change', (evt) => {message = evt.target.value}).ref('messageInput'),
+                $$('textarea').on('change', (evt) => {
+                    message = evt.target.value
+                }).ref('messageInput'),
                 $$(Button, {
                     icon: 'open-link',
                     style: this.props.style
@@ -43,26 +54,10 @@ class ExternalUpdateComponent extends Component {
                         this.messageHandler.handleMessage(JSON.parse(message))
                         this.refs.messageInput.val("")
                     })
-                    .on('mouseover', () => {
-                        this.refs.tooltipOpenLink.extendProps({
-                            show: true
-                        })
-                    })
-                    .on('mouseout', () => {
-                        this.refs.tooltipOpenLink.extendProps({
-                            show: false
-                        })
-                    })
             ]
         )
 
     }
-
-
-    handleExternalUpdateMessage(message) {
-
-    }
-
 }
 
 export {ExternalUpdateComponent}

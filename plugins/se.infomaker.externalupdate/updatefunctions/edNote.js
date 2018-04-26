@@ -1,3 +1,4 @@
+import {event} from 'writer'
 class EdNote {
 
     constructor(documentApi) {
@@ -11,7 +12,7 @@ class EdNote {
     set(data) {
         this.documentApi.setEdNote({
             change: data.value,
-            eventType: "external:update"
+            eventType: event.DOCUMENT_CHANGED_EXTERNAL
         })
     }
 

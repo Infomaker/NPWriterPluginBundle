@@ -1,6 +1,7 @@
 import {PubStatus} from "./updatefunctions/pubstatus";
 import {EdNote} from "./updatefunctions/edNote";
 import {ItemMetaExtProperty} from "./updatefunctions/itemMetaExtProperty";
+import {PubStart} from "./updatefunctions/pubstart";
 
 
 class UpdateMessageHandler {
@@ -9,6 +10,7 @@ class UpdateMessageHandler {
         this.api = api
 
         this.register(PubStatus)
+        this.register(PubStart)
         this.register(EdNote)
         this.register(ItemMetaExtProperty)
 
@@ -53,7 +55,7 @@ class UpdateMessageHandler {
     }
 
     register(updateFunction) {
-        const updateFunctionInstance = new updateFunction(this.api.newsItemMutation)
+        const updateFunctionInstance = new updateFunction(this.api.article)
         this.updateFunctions.set(updateFunctionInstance.getKey(), updateFunctionInstance);
     }
 

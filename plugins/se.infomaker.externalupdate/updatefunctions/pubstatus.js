@@ -1,3 +1,5 @@
+import {event} from 'writer'
+
 class PubStatus {
 
     constructor(documentApi) {
@@ -9,10 +11,9 @@ class PubStatus {
     }
 
     set(data) {
-        // TODO Validate input
         this.documentApi.setPubStatus({
             change: data.value,
-            eventType: "external:update"
+            eventType: event.DOCUMENT_CHANGED_EXTERNAL
         })
     }
 }
