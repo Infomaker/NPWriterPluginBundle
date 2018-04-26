@@ -10,7 +10,7 @@ export default {
         config.addToSidebar('main', pluginConfig, NewsPriorityComponent)
 
         config.addLabel('newsvalue', {
-            en: 'Newsvalue',
+            en: 'News value',
             sv: 'Nyhetsvärde'
         })
         config.addLabel('Lifetime', {

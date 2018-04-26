@@ -28,42 +28,49 @@ class ConceptMainComponent extends Component {
             this.state.types.forEach(type => ConceptService.registerOperationHandler(type, ConceptService.operations.ADD, this.addItem))
         }
 
-        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (e) => {
             const types = this.state.types || []
-            const eventName = event.name || ''
+            const eventName = e.name || ''
             const cleanEventName = eventName.replace('-', '').replace('/', '')
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (event.data.action === 'delete' && eventName === associatedWith) {
-                this.state.existingItems.forEach(existingItem => {
-                    const eventUUID = event.data.node.uuid
-                    const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
+            if (eventName.length) {
+                if (e.data.action === 'delete' && (associatedWith.length && associatedWith === eventName)) {
+                    this.state.existingItems.forEach(existingItem => {
+                        const eventUUID = e.data.node.uuid
+                        const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
 
-                    // if no multi-value (just one associated-with) and its a match, we remove the item
-                    if (itemAssociatedWith === eventUUID) {
-                        this.removeArticleConcept(existingItem)
-                    }
-
-                    // if we have multiple associated-with we need to check 'em all to look for a match
-                    if (Array.isArray(itemAssociatedWith)) {
-                        let associationExists = false
-
-                        itemAssociatedWith.forEach(itemAssociatedWithUuid => {
-                            if (ConceptService.getArticleConceptByUUID(itemAssociatedWithUuid)) {
-                                associationExists = true
-                            }
-                        })
-
-                        if (!associationExists) {
-                            this.removeArticleConcept(existingItem)
+                        // if no multi-value (just one associated-with) and its a match, we remove the item
+                        if (itemAssociatedWith === eventUUID) {
+                            ConceptService.removeArticleConceptItem(existingItem)
                         }
-                    }
-                })
-            } else if (event.data.action === 'delete-all' && eventName === associatedWith) {
-                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
-            } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType || eventName === associatedWith) {
-                this.reloadArticleConcepts()
+
+                        // if we have multiple associated-with we need to check 'em all to look for a match
+                        if (Array.isArray(itemAssociatedWith)) {
+                            let associationExists = false
+
+                            itemAssociatedWith.forEach(itemAssociatedWithUuid => {
+                                if (ConceptService.getArticleConceptByUUID(itemAssociatedWithUuid)) {
+                                    associationExists = true
+                                }
+                            })
+
+                            if (!associationExists) {
+                                ConceptService.removeArticleConceptItem(existingItem)
+                            }
+                        }
+                    })
+                } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
+                    ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+                } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
+                    this.reloadArticleConcepts()
+                } else if (associatedWith.length && associatedWith === eventName) {
+                    const { pluginConfig } = this.state
+                    const associatedLinkes = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
+
+                    this.extendState({ associatedLinkes })
+                }
             }
         })
     }
@@ -84,14 +91,6 @@ class ConceptMainComponent extends Component {
         const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
         this.extendState({ existingItems, associatedLinkes })
-    }
-
-    async enrichArticles(existingItems) {
-        if (Array.isArray(existingItems)) {
-            const promises = existingItems.map(ConceptService.fetchConceptItemProperties.bind(ConceptService))
-
-            this.extendState({ existingItems: await Promise.all(promises) })
-        }
     }
 
     getInitialState() {
@@ -141,11 +140,8 @@ class ConceptMainComponent extends Component {
     async addItem(item) {
         if (item && item.uuid) {
             if (!this.itemExists(item)) {
-
                 this.extendState({ 'working': true })
                 await this.addConceptToArticle(item)
-
-                this.reloadArticleConcepts()
                 this.extendState({ 'working': false })
             } else {
                 api.ui.showNotification(
