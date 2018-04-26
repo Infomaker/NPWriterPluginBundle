@@ -45,32 +45,62 @@ class PublicationChannelComponent extends Component {
         })
     }
 
-    confirmAndRemoveItems(channels) {
-        if (Array.isArray(channels)) { // Only happens when user clicks "clear"
-            ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
-        } else {
-            ConceptService.removeArticleConceptItem(channels)
+    checkForAssociatedConceptsInArticle(channel, associatedConceptsInArticle) {
+        const { propertyMap } = this.state
+
+        if (channel[propertyMap.ConceptAssociatedWithMeRelations] && channel[propertyMap.ConceptAssociatedWithMeRelations].length) {
+            channel[propertyMap.ConceptAssociatedWithMeRelations].forEach(associatedConcept => {
+                const articleConcept = ConceptService.getArticleConceptByUUID(associatedConcept.uuid)
+                if (articleConcept) {
+                    associatedConceptsInArticle.push(articleConcept)
+                }
+            })
         }
-        // api.ui.showConfirmDialog(
-        //     this.getLabel('Related concepts might be affected'),
-        //     this.getLabel('There are concepts associated with the one you removed, do you wish to remove the following concepts as well'),
-        //     {
-        //         primary: {
-        //             label: this.getLabel('ok'),
-        //             callback: () => {
-        //                 if (Array.isArray(channels)) { // Only happens when user clicks "clear"
-        //                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
-        //                 } else {
-        //                     ConceptService.removeArticleConceptItem(channels)
-        //                 }
-        //             }
-        //         },
-        //         secondary: {
-        //             label: this.getLabel('cancel'),
-        //             callback: () => { }
-        //         }
-        //     }
-        // )
+    }
+
+    confirmAndRemoveItems(channel) {
+        const associatedConceptsInArticle = []
+
+        if (channel) {
+            if (Array.isArray(channel)) {
+                channel.forEach(channelInstans => this.checkForAssociatedConceptsInArticle(channelInstans, associatedConceptsInArticle))
+            } else {
+                this.checkForAssociatedConceptsInArticle(channel, associatedConceptsInArticle)
+            }
+        }
+
+        if (associatedConceptsInArticle.length) {
+            const conceptNameString = associatedConceptsInArticle.reduce((string, concept) => {
+                return `${string}${string.length ? ', ' : ''}${concept.title}`
+            }, '')
+
+            api.ui.showConfirmDialog(
+                this.getLabel('Related concepts might be affected'),
+                `${this.getLabel('There are concepts associated with the one you are about to remove, these concepts might be removed as well')}: ${conceptNameString}`,
+                {
+                    primary: {
+                        label: this.getLabel('ok'),
+                        callback: () => {
+                            if (Array.isArray(channel)) {
+                                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+                            } else {
+                                ConceptService.removeArticleConceptItem(channel)
+                            }
+                        }
+                    },
+                    secondary: {
+                        label: this.getLabel('cancel'),
+                        callback: () => { }
+                    }
+                }
+            )
+        } else {
+            if (Array.isArray(channel)) {
+                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+            } else {
+                ConceptService.removeArticleConceptItem(channel)
+            }
+        }
     }
 
     getInitialState() {
