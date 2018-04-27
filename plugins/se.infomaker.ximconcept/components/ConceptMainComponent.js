@@ -37,8 +37,8 @@ class ConceptMainComponent extends Component {
 
             if (eventName.length) {
                 if (e.data.action === 'delete' && (associatedWith.length && associatedWith === eventName)) {
+                    const eventUUID = e.data.node.uuid
                     this.state.existingItems.forEach(existingItem => {
-                        const eventUUID = e.data.node.uuid
                         const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
 
                         // if no multi-value (just one associated-with) and its a match, we remove the item

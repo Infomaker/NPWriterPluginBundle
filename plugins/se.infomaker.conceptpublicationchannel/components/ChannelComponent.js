@@ -1,5 +1,4 @@
 import { Component } from 'substance'
-import { ConceptService } from 'writer'
 import ChannelIconComponent from './ChannelIconComponent'
 
 class ChannelComponent extends Component {
@@ -8,8 +7,6 @@ class ChannelComponent extends Component {
         let { channel, propertyMap } = newProps
 
         if (channel) {
-            channel = await ConceptService.fetchConceptItemProperties(channel)
-
             // TODO: Fix this in ConceptService which is now dependant on the exiatance of name, type
             channel.name = channel[propertyMap.ConceptName]
             channel.type = channel[propertyMap.ConceptImTypeFull]

@@ -15,12 +15,12 @@ class PublicationChannelComponent extends Component {
         this.removeAll = this.removeAll.bind(this)
     }
 
-    async didMount() {
-        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, event => {
-            const eventName = (event.name || '').replace('-', '').replace('/', '')
+    didMount() {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, e => {
+            const eventName = (e.name || '').replace('-', '').replace('/', '')
             const conceptType = this.state.conceptType.replace('-', '').replace('/', '')
 
-            if (eventName === conceptType) {
+            if (eventName.length && eventName === conceptType) {
                 this.loadArticleConcepts()
             }
         })
@@ -33,7 +33,8 @@ class PublicationChannelComponent extends Component {
     }
 
     async loadArticleConcepts() {
-        const channels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
+        const remoteChannels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
+        const channels = remoteChannels.map(async (channel) => await ConceptService.fetchConceptItemProperties(channel))
         const articleChannels = ConceptService.getArticleConceptsByType(this.state.conceptType)
         const articleMainChannel = articleChannels.find(articleChannel => articleChannel.rel === 'mainchannel')
         const mainChannel = articleMainChannel ? channels.find(channel => channel.uuid === articleMainChannel.uuid) : null
