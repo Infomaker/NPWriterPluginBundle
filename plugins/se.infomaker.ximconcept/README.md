@@ -258,6 +258,39 @@ specified in ConcepService Config:
 </link>
 ```
 
+### Associated with
+
+Concepts that are associated with other concepts will decorate the article with information about this relationship
+
+```
+<links>
+    <link title="Channel A" rel="subject" type="x-im/channel" uuid="abcd"/>
+    <link title="Channel B" rel="subject" type="x-im/channel" uuid="efgh"/>
+
+    <!--- This Concept has the associated-with set to uuid of concept "Channel A" --->
+    <link title="Section A" rel="subject" type="x-im/section" uuid="1234">
+        <links>
+            <link title="Channel A" rel="associated-with" type="x-im/channel" uuid="abcd"/>
+        </links>
+    </link>
+
+    <!--- This Concept has the associated-with set to uuid of concept "Channel B" --->
+    <link title="Section B" rel="subject" type="x-im/section" uuid="12345">
+        <links>
+            <link title="Channel B" rel="associated-with" type="x-im/channel" uuid="efgh"/>
+        </links>
+    </link>
+
+    <!--- This Concept has the associated-with set to uuids of concept "Channel A" and "Channel B" --->
+    <link title="Section C" rel="subject" type="x-im/section" uuid="123456">
+        <links>
+            <link title="Channel A" rel="associated-with" type="x-im/channel" uuid="abcd"/>
+            <link title="Channel B" rel="associated-with" type="x-im/channel" uuid="efgh"/>
+        </links>
+    </link>
+</links>
+```
+
 ### Replaced by
 
 If a concept has been marked with "replaced by", the new concept will be added if selected:
