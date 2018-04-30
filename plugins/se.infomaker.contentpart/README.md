@@ -22,7 +22,28 @@
                 "fields": [
                     { "id": "title" },
                     { "id": "subject" },
-                    { "id": "text" }
+                    { "id": "text" },
+                    {
+                        "id": "alignment",
+                        "type": "option",
+                        "options": [
+                            {
+                                "name": "auto",
+                                "label": "Automatic",
+                                "icon": "fa-align-center"
+                            },
+                            {
+                                "name": "left",
+                                "label": "Left",
+                                "icon": "fa-align-left"
+                            },
+                            {
+                                "name": "right",
+                                "label": "Right",
+                                "icon": "fa-align-right"
+                            }
+                        ]
+                    }
                 ]
             },
             {
@@ -107,17 +128,39 @@
     {
         "id": "customFieldTwo",
         "label": "My Second Custom Field"
+    },    
+    {
+        "id": "alignment",
+        "type": "option",
+        "options": [
+            {
+                "name": "auto",
+                "label": "Automatic",
+                "icon": "fa-align-center"
+            },
+            {
+                "name": "left",
+                "label": "Left",
+                "icon": "fa-align-left"
+            },
+            {
+                "name": "right",
+                "label": "Right",
+                "icon": "fa-align-right"
+            }
+        ]
     },
     { "id": "text" }
 ]
 ```
 
-| Property  | Type   | Required | Description                                                                                                         |
-| --------- | :----: | :------: | ------------------------------------------------------------------------------------------------------------------- |
-| **id**    | String | `true`   | The name of the field on the node and in the XML output.                                                            |
-| **label** | String | `false`  | Placeholder for field                                                                                               |
-| **icon**  | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.             |
-| **type**  | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"`. Default: `"text"` |
+| Property    | Type   | Required | Description                                                                                                                     |
+| ----------- | :----: | :------: | --------------------------------------------------------------------------------------------------------------------------------|
+| **id**      | String | `true`   | The name of the field on the node and in the XML output.                                                                        |
+| **label**   | String | `false`  | Placeholder for field                                                                                                           |
+| **icon**    | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.                         |
+| **type**    | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"` or `option`. Default: `"text"` |
+| **options** | String | `false`  | If `type=option` this field contains the options, i.e. the eligible field values (defined by `name`, `label` and `icon``          |
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).
@@ -131,6 +174,7 @@ The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf >
             <element id="paragraph-273ee570c1469bdf5badeea5f0524166" type="body">Text element here</element>
         </text>
         <customField>2017-01-30T12:00:00+01:00</customField>
+        <alignment>right</alignment>
     </data>
     <links>
         <link uri="im:/content-part/background" rel="content-part"/>
