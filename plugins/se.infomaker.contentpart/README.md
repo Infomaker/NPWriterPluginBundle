@@ -160,7 +160,7 @@
 | **label**   | String | `false`  | Placeholder for field                                                                                                           |
 | **icon**    | String | `false`  | Sets icon used for field. Uses [FontAwesome icons](http://fontawesome.io/icons/). e.g., `"fa-twitter"`.                         |
 | **type**    | String | `false`  | Choose the type of input to use for the field. One of `"text"`, `"datetime"`, `"date"`, `"time"` or `option`. Default: `"text"` |
-| **options** | String | `false`  | If `type=option` this field contains the options, i.e. the eligible alignments (defined by `name`, `label` and `icon``          |
+| **options** | String | `false`  | If `type=option` this field contains the options, i.e. the eligible field values (defined by `name`, `label` and `icon``          |
 
 ## Output
 The plugin adds an object to the idf (`newsItem > contentSet > inlineXML > idf > group`).

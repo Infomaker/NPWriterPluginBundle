@@ -128,7 +128,7 @@ class ContentPartComponent extends Component {
     }
 
     /**
-     * Render option field (i.e. alignment)
+     * Render option field (e.g. alignment)
      *
      * @param $$
      * @param field
@@ -139,11 +139,11 @@ class ContentPartComponent extends Component {
         let options = [],
             currentOption = null
 
-        if (!this.props.node.fields.alignment) {
+        if (!this.props.node.fields[field.id]) {
             currentOption = field.options[0].name
         }
         else {
-            currentOption = this.props.node.fields.alignment
+            currentOption = this.props.node.fields[field.id]
         }
 
         field.options.forEach(option => {
@@ -157,8 +157,8 @@ class ContentPartComponent extends Component {
                         'title': option.label
                     })
                     .on('click', () => {
-                        if (option.name !== this.props.node.fields.alignment) {
-                            this.setAlignment(option.name)
+                        if (option.name !== this.props.node.fields[field.id]) {
+                            this.setOption(field.id, option.name)
                             this.rerender()
                         }
                         return false
@@ -167,7 +167,7 @@ class ContentPartComponent extends Component {
         });
 
         return $$('div')
-            .addClass('x-im-alignment-dynamic x-im-alignment-alignment')
+            .addClass('x-im-option-dynamic x-im-option-option')
             .attr({
                 'contenteditable': 'false'
             })
@@ -208,14 +208,13 @@ class ContentPartComponent extends Component {
     }
 
     /**
-     * Sets field (type="option") "alignment" to supplied
-     * value (i.e. parameter alignment).
-     *
-     * @param alignment
+     * Sets field of type "option" to selected value
+     * @param fieldId       Id of field to set
+     * @param fieldValue    Value to set
      */
-    setAlignment(alignment) {
+    setOption(fieldId, fieldValue) {
         api.editorSession.transaction((tx) => {
-            tx.set([this.props.node.id, 'fields', 'alignment'], alignment)
+            tx.set([this.props.node.id, 'fields', fieldId], fieldValue)
         })
     }
 }
