@@ -20,6 +20,7 @@ class MainComponent extends Component {
                 multiValue: false,
                 identifier: 'code',
                 options: this.languageOptions,
+                selectedOptions: [this.state.articleLanguage],
                 onClick: this.onLanguageClick
             })
         )

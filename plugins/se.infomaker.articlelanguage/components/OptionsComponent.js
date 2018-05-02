@@ -14,7 +14,7 @@ class OptionsComponent extends Component {
 
         this.extendState({
             optionsState: this.options.reduce((arr, option) => {
-                arr[option[this.optionIdentifier]] = Boolean(option.default)
+                arr[option[this.optionIdentifier]] = Boolean(option.default || this.props.selectedOptions.includes(option[this.optionIdentifier]))
                 return arr
             }, [])
         })
