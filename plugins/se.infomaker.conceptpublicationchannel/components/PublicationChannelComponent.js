@@ -33,8 +33,7 @@ class PublicationChannelComponent extends Component {
     }
 
     async loadArticleConcepts() {
-        const remoteChannels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
-        const channels = remoteChannels.map(async (channel) => await ConceptService.fetchConceptItemProperties(channel))
+        const channels = await ConceptService.getRemoteConceptsByType(this.state.conceptType)
         const articleChannels = ConceptService.getArticleConceptsByType(this.state.conceptType)
         const articleMainChannel = articleChannels.find(articleChannel => articleChannel.rel === 'mainchannel')
         const mainChannel = articleMainChannel ? channels.find(channel => channel.uuid === articleMainChannel.uuid) : null
@@ -48,7 +47,6 @@ class PublicationChannelComponent extends Component {
 
     checkForAssociatedConceptsInArticle(channel, associatedConceptsInArticle) {
         const { propertyMap } = this.state
-
         if (channel[propertyMap.ConceptAssociatedWithMeRelations] && channel[propertyMap.ConceptAssociatedWithMeRelations].length) {
             channel[propertyMap.ConceptAssociatedWithMeRelations].forEach(associatedConcept => {
                 const articleConcept = ConceptService.getArticleConceptByUUID(associatedConcept.uuid)
@@ -140,7 +138,7 @@ class PublicationChannelComponent extends Component {
     }
 
     removeAll() {
-        this.confirmAndRemoveItems(this.state.articleChannels)
+        this.confirmAndRemoveItems(this.state.channels)
     }
 
     render($$){
