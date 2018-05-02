@@ -19,6 +19,21 @@ requires `writer => x.x.x`
   "mandatory": false,
   "enabled": true,
   "data": {
+    "languages": [
+        {
+            "label": "Svenska",
+            "code": "sv_SE"
+        },
+        {
+            "label": "English",
+            "code": "en_GB"
+        },
+        {
+            "label": "Arabic (Egypt)",
+            "code": "ar_EG",
+            "direction": "rtl"
+        }
+    ]
   }
 }
 ```
