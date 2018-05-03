@@ -52,13 +52,13 @@ class PublicationChannelComponent extends Component {
             if (Array.isArray(channel[propertyMap.ConceptAssociatedWithMeRelations])) {
                 channel[propertyMap.ConceptAssociatedWithMeRelations].forEach(associatedConcept => {
                     const articleConcept = ConceptService.getArticleConceptByUUID(associatedConcept.uuid)
-                    if (articleConcept) {
+                    if (articleConcept && !associatedConceptsInArticle.find(associatedArticle => articleConcept.uuid === associatedArticle.uuid)) {
                         associatedConceptsInArticle.push(articleConcept)
                     }
                 })
             } else {
                 const articleConcept = ConceptService.getArticleConceptByUUID(channel[propertyMap.ConceptAssociatedWithMeRelations].uuid)
-                if (articleConcept) {
+                if (articleConcept && !associatedConceptsInArticle.find(associatedArticle => articleConcept.uuid === associatedArticle.uuid)) {
                     associatedConceptsInArticle.push(articleConcept)
                 }
             }
@@ -89,7 +89,7 @@ class PublicationChannelComponent extends Component {
                         label: this.getLabel('ok'),
                         callback: () => {
                             if (Array.isArray(channel)) {
-                                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+                                channel.forEach(channelInstance => ConceptService.removeArticleConceptItem(channelInstance))
                             } else {
                                 ConceptService.removeArticleConceptItem(channel)
                             }
@@ -103,7 +103,7 @@ class PublicationChannelComponent extends Component {
             )
         } else {
             if (Array.isArray(channel)) {
-                ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+                channel.forEach(channelInstance => ConceptService.removeArticleConceptItem(channelInstance))
             } else {
                 ConceptService.removeArticleConceptItem(channel)
             }
@@ -146,7 +146,10 @@ class PublicationChannelComponent extends Component {
     }
 
     removeAll() {
-        this.confirmAndRemoveItems(this.state.channels)
+        this.confirmAndRemoveItems(this.state.channels.filter(channel => {
+            const inArticle = this.state.articleChannels.find(articleChannel => articleChannel.uuid === channel.uuid)
+            return (inArticle && inArticle.rel !== 'mainchannel')
+        }))
     }
 
     render($$){

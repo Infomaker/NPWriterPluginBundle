@@ -50,7 +50,11 @@ class ChannelsComponent extends Component {
             ...channels,
             channels.length > 2 ? $$('div', { class: 'channels-component-links' }, [
                 $$('p', { class: `${this.props.articleChannels.length === channels.length ? 'inactive' : ''}` }, this.getLabel('Select all')).on('click', this.props.selectAll),
-                $$('p', { class: `${!sharedChannels.length ? 'inactive' : ''}` }, this.getLabel('Clear all')).on('click', this.props.removeAll)
+                $$('p', { class: `${!sharedChannels.length ? 'inactive' : ''}` }, this.getLabel('Clear all')).on('click', () => {
+                    if (sharedChannels.length) {
+                        this.props.removeAll()
+                    }
+                })
             ]) : ''
         ).ref('channelsComponentInstance')
     }
