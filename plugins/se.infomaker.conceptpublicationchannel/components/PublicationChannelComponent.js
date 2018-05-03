@@ -47,13 +47,21 @@ class PublicationChannelComponent extends Component {
 
     checkForAssociatedConceptsInArticle(channel, associatedConceptsInArticle) {
         const { propertyMap } = this.state
-        if (channel[propertyMap.ConceptAssociatedWithMeRelations] && channel[propertyMap.ConceptAssociatedWithMeRelations].length) {
-            channel[propertyMap.ConceptAssociatedWithMeRelations].forEach(associatedConcept => {
-                const articleConcept = ConceptService.getArticleConceptByUUID(associatedConcept.uuid)
+
+        if (channel[propertyMap.ConceptAssociatedWithMeRelations]) {
+            if (Array.isArray(channel[propertyMap.ConceptAssociatedWithMeRelations])) {
+                channel[propertyMap.ConceptAssociatedWithMeRelations].forEach(associatedConcept => {
+                    const articleConcept = ConceptService.getArticleConceptByUUID(associatedConcept.uuid)
+                    if (articleConcept) {
+                        associatedConceptsInArticle.push(articleConcept)
+                    }
+                })
+            } else {
+                const articleConcept = ConceptService.getArticleConceptByUUID(channel[propertyMap.ConceptAssociatedWithMeRelations].uuid)
                 if (articleConcept) {
                     associatedConceptsInArticle.push(articleConcept)
                 }
-            })
+            }
         }
     }
 
