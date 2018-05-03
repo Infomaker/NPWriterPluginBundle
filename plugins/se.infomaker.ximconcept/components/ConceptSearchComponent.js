@@ -198,11 +198,13 @@ class ConceptSearchComponent extends Component {
 
                 break
             case 13: // enter
-                selectedItem = this.state.searchResult[this.state.selected]
-                if (selectedItem || this.props.editable) {
-                    this.addItem(selectedItem)
-                    this.refs.searchInput.val('')
-                    this.resetState()
+                if (this.state.searchResult) {
+                    selectedItem = this.state.searchResult[this.state.selected]
+                    if (selectedItem || this.props.editable) {
+                        this.addItem(selectedItem)
+                        this.refs.searchInput.val('')
+                        this.resetState()
+                    }
                 }
 
                 break
