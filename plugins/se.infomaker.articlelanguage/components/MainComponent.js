@@ -20,25 +20,9 @@ class MainComponent extends Component {
     }
 
     didMount() {
-        const direction = api.editorSession.getTextDirection()
+        const direction = api.newsItem.getTextDirection()
         const languageCode = api.newsItem.getLocale()
         this.setEditorLanguage(languageCode, direction)
-
-        this.context.editorSession.onUpdate(this._onUpdate.bind(this))
-    }
-
-    dispose() {
-        this.context.editorSession.off(this)
-    }
-
-    /**
-     * @param {EditorSession} change
-     * @private
-     */
-    _onUpdate(change) {
-        if (change.hasLanguageChanged()) {
-            api.events.languageChanged()
-        }
     }
 
     render($$) {
@@ -64,6 +48,8 @@ class MainComponent extends Component {
     }
 
     /**
+     * Sets language for the editor interface, updates plugin's state
+     *
      * @param languageCode
      * @param direction
      */
@@ -76,6 +62,12 @@ class MainComponent extends Component {
         })
     }
 
+    /**
+     * Updates xml:lang-property in NewsML article
+     *
+     * @param languageCode
+     * @param direction
+     */
     setArticleLanguage(languageCode, direction) {
         const [type, subtype] = languageCode.split('_')
         const xmlLanguageCode = `${type}-${subtype}`
