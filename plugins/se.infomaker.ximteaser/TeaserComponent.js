@@ -66,10 +66,14 @@ class TeaserComponent extends Component {
 
 
     _renderEditorFields($$, currentType, hasImage) {
-        return currentType.fields
-            .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
-            .map((field) => this._createCustomFieldIfUndefined(field))
-            .map((field) => this._renderFieldByType($$, field))
+        return $$('div', {
+            'class': 'teaser-meta'
+        }).append(
+            currentType.fields
+                .filter(({id}) => id !== 'subject' || (hasImage && id === 'subject'))
+                .map((field) => this._createCustomFieldIfUndefined(field))
+                .map((field) => this._renderFieldByType($$, field))
+        )
     }
 
     /**
