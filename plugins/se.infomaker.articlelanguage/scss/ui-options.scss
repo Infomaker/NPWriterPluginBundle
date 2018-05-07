@@ -1,5 +1,6 @@
 .np-ui-options {
     display: flex;
+    flex-wrap: wrap;
     .option {
         display: flex;
         cursor: pointer;
@@ -35,6 +36,7 @@
 
         span.label {
             line-height: 1;
+            white-space: nowrap;
         }
     }
 }
