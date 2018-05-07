@@ -7,7 +7,6 @@ const {api} = writer
 class XimimageComponent extends Component {
 
     didMount() {
-        this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
     }
 
