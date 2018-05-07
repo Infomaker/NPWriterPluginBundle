@@ -38,6 +38,17 @@ requires `writer => x.x.x`
 }
 ```
 
+### Backwards compatibility for existing articles
+Existing articles and templates using two letter language codes on its `idf@xml:lang`-element.
+(eg. "sv", "en", "fi"), needs the following object in the writer config to correctly 
+map to configured languages.
+
+```
+"languageFallbacks": {
+  "sv": "sv_SE"
+}
+```
+
 ## Output
 
 The plugin manipulates the idf-element to reflect the language 
