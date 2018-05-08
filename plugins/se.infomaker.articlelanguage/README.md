@@ -3,10 +3,23 @@
 This plugin is used for setting language and which direction the text is read, right-to-left (rtl) or left-to-right (ltr).
 
 ## Dependencies
+requires `writer => 4.5.0`
 
-    // TODO: Update dependencies  
+## Currently supported languages
+Writer's internal spellcheck and suggestion tool currently has support for the following languages:
 
-requires `writer => x.x.x`
+* `en_GB` - English (Great Britain)
+* `en_US` - English (American)
+* `nb_NO` - Norsk Bokmål
+* `nn_NO` - Nynorsk
+* `nl_NL` - Nederlands
+* `sv_SE` - Svenska
+* `sv_FI` - Svenska (Finland)
+
+### Integrating your external spellcheck API
+It's possible to write your own spellcheck/suggestion API, which the Writer will use if configured.
+
+For more information about integrating your own API: [See this guide](https://infomaker.github.io/NPWriterDevelopers/guides/spellcheck-integration/).
 
 ## Plugin Configuration
 
@@ -50,7 +63,6 @@ map to configured languages.
 ```
 
 ## Output
-
 The plugin manipulates the idf-element to reflect the language 
 of the content(`newsItem > contentSet > inlineXML > idf`).
 
