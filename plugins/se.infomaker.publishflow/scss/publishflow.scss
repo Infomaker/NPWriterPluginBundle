@@ -1,56 +1,60 @@
 .sc-np-publishflow {
     width: 280px;
-    padding: 15px;
 
     &.sc-np-publishflow-haspublishedversion {
-        background: #E1F3FE;
+        background: #e1f3fe;
     }
 
     .sc-np-publish-body {
-
-        &>h2 {
-            font-weight: 600;
-            color: #555;
-
-            i {
-                margin-right: 6px;
-                color: #288dc0;
-                opacity: 0.9;
-            }
+        & > div {
         }
 
-        &>p {
-            color: #666;
-            line-height: 1.3rem !important;
-            margin-top: 0.5rem !important;
-            font-size: 85%;
-            font-family: LatoWebLight;
-            font-weight: bold;
+        .sc-np-status {
+            margin: 15px;
 
-            &.dates {
-                span {
-                    display: inline-block;
-                    width: 50px;
+            h2 {
+                font-weight: 600;
+                color: #555;
+
+                i {
+                    margin-right: 6px;
+                    color: #288dc0;
+                    opacity: 0.9;
+                }
+            }
+
+            p {
+                color: #666;
+                line-height: 1.3rem !important;
+                margin-top: 0.5rem !important;
+                font-size: 85%;
+                font-family: LatoWebLight;
+                font-weight: bold;
+
+                &.dates {
+                    span {
+                        display: inline-block;
+                        width: 50px;
+                    }
                 }
             }
         }
 
-        &>button {
+        & > button {
             .fa {
                 padding-right: 6px;
             }
         }
-        
-        &>.sc-np-wide {
+
+        & > .sc-np-wide {
             width: 100%;
             text-align: center;
         }
 
         .sc-np-publish-actions {
-            margin: 15px -15px 15px -15px;
             background: #ffffff;
 
-            &>* {
+            & > * {
                 border-bottom: 1px solid #ddd;
                 &:first-child {
                     border-top: 1px solid #ddd;
@@ -118,36 +122,43 @@
 
         div.sc-np-publish-action-section {
             background: #fbfbfb;
-            margin: 10px -15px -15px -15px;
             border-top: 1px solid #ddd;
             padding: 0 0 10px 0;
 
             .sc-np-date-time {
                 padding: 10px 15px 0 15px;
+                display: flex;
+                flex-direction: column;
+
+                & > div {
+                    display: flex;
+                    flex-direction: row;
+                }
 
                 label,
                 input {
-                    clear: both;
                     font-size: 80%;
                     width: auto;
                 }
 
                 label {
                     display: block;
-                    margin-bottom: -10px;
+                    margin-bottom: -5px;
                     line-height: 1.4rem;
                 }
 
                 input {
+                    border: none;
+                    border-bottom: 1px solid #cccbcb;
+                    background: none;
+                    border-radius: 0;
                     display: inline-block;
                     margin-bottom: 4px;
                     position: relative;
-                    overflow: visible;
-                    width: 225px;
-                    padding: 0.4rem 0.5rem;
+                    padding: 0.4rem 0.5rem 0.4rem 18px;
                 }
 
-                input:after {
+                input:before {
                     opacity: 0.4;
                     font-family: "FontAwesome";
                     position: absolute;
@@ -156,51 +167,31 @@
                     font-size: 14px;
                 }
 
-                input[type="date"],
-                input[type="time"] {
-                    padding-left: 18px;
-                    border: none;
-                    border-bottom: 1px solid #cccbcb;
-                    background: none;
-                    border-radius: 0;
-                }
-
                 input[type="date"] {
-                    width: 60%;
-                    margin-right:2%;
+                    flex: 1;
                 }
-                input[type="date"]:after {
+                input[type="date"]:before {
                     content: "\f271";
                 }
-
-
                 input[type="time"] {
-                    width: 38%;
+                    margin-left: 5px;
                 }
-                input[type="time"]:after {
+
+                input[type="time"]:before {
                     content: "\f017";
                 }
 
                 input:required:invalid,
                 input:focus:invalid {
-                    background: #FFF0F0;
-
-                    &::after {
-                        font-family: FontAwesome;
-                        content: "\f00d";
-                        position: absolute;
-                        right: -25px;
-                        color: #d9534f;
+                    background: #fff0f0;
+                    &::before {
+                        color: #a00;
                     }
                 }
 
                 input:required:valid {
-                    &::after {
-                        font-family: FontAwesome;
-                        content: "\f00c";
-                        position: absolute;
-                        right: -25px;
-                        color: #5cb85c;
+                    &::before {
+                        content: "";
                     }
                 }
             }
@@ -216,7 +207,6 @@
             padding: 10px;
             background: #fafafa;
             height: 60px;
-            margin: -15px;
         }
     }
 }

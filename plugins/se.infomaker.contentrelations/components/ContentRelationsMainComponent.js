@@ -6,7 +6,7 @@ import ContentSearchComponent from './ContentSearchComponent'
 class ContentRelationsMainComponent extends Component {
 
     didMount() {
-        const relevance = { name: 'Relevans', field: false, ascending: false }
+        const relevance = { name: this.getLabel('Relevance'), field: false, ascending: false }
         let { contentHost, contenttype } = this.state.pluginConfig
         contentHost = Object.assign({}, contentHost) // Clone contentHost to avoid overwriting sortingsPath
         contentHost.sortingsPath += `?contentType=${contenttype}`

@@ -21,9 +21,9 @@ class ConceptItemComponent extends Component {
     async willReceiveProps(newProps) {
         let { item } = newProps
 
-        this.setState({
-            item: await ConceptService.fetchConceptItemProperties(item)
-        })
+        item = await ConceptService.fetchConceptItemProperties(item)
+
+        this.setState({ item })
     }
 
     didMount() {

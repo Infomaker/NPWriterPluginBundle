@@ -1,6 +1,6 @@
-import { Component, ContainerEditor, EmphasisCommand, FontAwesomeIcon, StrongCommand, SwitchTextCommand } from 'substance'
+import {Component, ContainerEditor, EmphasisCommand, FontAwesomeIcon, StrongCommand, SwitchTextCommand} from 'substance'
 import DropDownHeadline from './DropDownHeadline'
-import { api } from 'writer'
+import {api} from 'writer'
 
 import ContentPartManager from './ContentPartManager'
 
@@ -60,7 +60,7 @@ class ContentPartComponent extends Component {
     }
 
     render($$) {
-        return $$('div', { class: 'contentpart-node im-blocknode__container' }, [
+        return $$('div', {class: 'contentpart-node im-blocknode__container'}, [
             this._renderHeader($$),
             this.state.contentPartType.fields.map(field => this._renderFieldsByType($$, field))
         ]).ref('container')
@@ -74,6 +74,8 @@ class ContentPartComponent extends Component {
         switch (field.type) {
             case '__ContainerEditor__':
                 return this._renderContainerEditor($$, field)
+            case 'option':
+                return this._renderOptionField($$, field)
             case 'datetime':
             case 'date':
             case 'time':
@@ -92,7 +94,9 @@ class ContentPartComponent extends Component {
             field: ['fields', field.id],
             placeholder: this.getLabel(field.label)
         }
-        if (field.icon) { editorProps.icon = field.icon }
+        if (field.icon) {
+            editorProps.icon = field.icon
+        }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
         return $$(FieldEditor, editorProps).ref(refName)
@@ -106,7 +110,9 @@ class ContentPartComponent extends Component {
             label: this.getLabel(field.label),
             type: field.type
         }
-        if (field.icon) { editorProps.icon = field.icon }
+        if (field.icon) {
+            editorProps.icon = field.icon
+        }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
         return $$(DatetimeFieldEditor, editorProps).ref(refName)
@@ -122,6 +128,53 @@ class ContentPartComponent extends Component {
     }
 
     /**
+     * Render option field (e.g. alignment)
+     *
+     * @param $$
+     * @param field
+     * @return {ServerResponse|*|void}
+     * @private
+     */
+    _renderOptionField($$, field) {
+        let options = [],
+            currentOption = null
+
+        if (!this.props.node.fields[field.id]) {
+            currentOption = field.options[0].name
+        }
+        else {
+            currentOption = this.props.node.fields[field.id]
+        }
+
+        field.options.forEach(option => {
+            let selectedClass = (currentOption === option.name) ? ' selected' : ''
+
+            options.push(
+                $$('em')
+                    .addClass('fa ' + option.icon + selectedClass)
+                    .attr({
+                        'contenteditable': 'false',
+                        'title': option.label
+                    })
+                    .on('click', () => {
+                        if (option.name !== this.props.node.fields[field.id]) {
+                            this.setOption(field.id, option.name)
+                            this.rerender()
+                        }
+                        return false
+                    })
+            );
+        });
+
+        return $$('div')
+            .addClass('x-im-option-dynamic x-im-option-option')
+            .attr({
+                'contenteditable': 'false'
+            })
+            .append(options)
+    }
+
+    /**
      * Renders the component's header.
      */
     _renderHeader($$) {
@@ -133,8 +186,8 @@ class ContentPartComponent extends Component {
             change: this.selectInlineText.bind(this)
         }).ref('dropdownHeadline')
 
-        return $$('div', { class: 'header' }, [
-            $$(FontAwesomeIcon, { icon: 'fa-bullhorn' }),
+        return $$('div', {class: 'header'}, [
+            $$(FontAwesomeIcon, {icon: 'fa-bullhorn'}),
             dropdownheader
         ])
     }
@@ -151,6 +204,17 @@ class ContentPartComponent extends Component {
         })
         this.extendState({
             contentPartType: this.manager.getContentPartTypeByURI(inlineText.uri)
+        })
+    }
+
+    /**
+     * Sets field of type "option" to selected value
+     * @param fieldId       Id of field to set
+     * @param fieldValue    Value to set
+     */
+    setOption(fieldId, fieldValue) {
+        api.editorSession.transaction((tx) => {
+            tx.set([this.props.node.id, 'fields', fieldId], fieldValue)
         })
     }
 }

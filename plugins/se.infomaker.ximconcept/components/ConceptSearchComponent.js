@@ -139,7 +139,8 @@ class ConceptSearchComponent extends Component {
         const result = await ConceptService.searchForConceptSuggestions(
             this.props.conceptTypes,
             term,
-            this.props.subtypes
+            this.props.subtypes,
+            this.props.associatedWith
         )
 
         if (this.state.hasFocus) {
@@ -184,7 +185,7 @@ class ConceptSearchComponent extends Component {
                 })
 
                 break
-            case 9: // tab
+            // case 9: // tab
             case 40: // arrow down
                 e.preventDefault()
                 e.stopPropagation()
@@ -197,11 +198,13 @@ class ConceptSearchComponent extends Component {
 
                 break
             case 13: // enter
-                selectedItem = this.state.searchResult[this.state.selected]
-                if (selectedItem || this.props.editable) {
-                    this.addItem(selectedItem)
-                    this.refs.searchInput.val('')
-                    this.resetState()
+                if (this.state.searchResult) {
+                    selectedItem = this.state.searchResult[this.state.selected]
+                    if (selectedItem || this.props.editable) {
+                        this.addItem(selectedItem)
+                        this.refs.searchInput.val('')
+                        this.resetState()
+                    }
                 }
 
                 break

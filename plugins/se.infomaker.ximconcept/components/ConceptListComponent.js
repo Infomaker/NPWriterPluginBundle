@@ -32,11 +32,11 @@ class ConceptListComponent extends Component {
                 isDuplicate: this.isDuplicate.bind(this)
             }).ref(`conceptItem-${item.uuid}-${index}`)
         })
-        const el = $$('div')
-            .addClass('concept-list-component')
-            .append(listItems)
-            .append(spinner)
-            .ref('conceptListComponent')
+
+        const el = $$('div', { class: 'concept-list-component' }, [
+            listItems,
+            spinner,
+        ]).ref('conceptListComponent')
 
         return el
     }

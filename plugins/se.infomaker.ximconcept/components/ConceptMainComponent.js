@@ -18,42 +18,79 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
-        ConceptService.registerOperationHandler(
+        ConceptService.on(
             this.state.conceptType,
             ConceptService.operations.ADD,
             this.addItem
         )
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.registerOperationHandler(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => ConceptService.on(type, ConceptService.operations.ADD, this.addItem))
         }
 
-        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (event) => {
-            const types = this.state.types ? this.state.types : []
-            const eventName = event.name || ''
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (e) => {
+            const types = this.state.types || []
+            const eventName = e.name || ''
             const cleanEventName = eventName.replace('-', '').replace('/', '')
+            const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
-            if (eventName === this.state.name || cleanEventName === this.state.name || matchingType ) {
-                this.reloadArticleConcepts()
+            if (eventName.length) {
+                if (e.data.action === 'delete' && (associatedWith.length && associatedWith === eventName)) {
+                    const eventUUID = e.data.node.uuid
+                    this.state.existingItems.forEach(existingItem => {
+                        const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
+
+                        // if no multi-value (just one associated-with) and its a match, we remove the item
+                        if (itemAssociatedWith === eventUUID) {
+                            ConceptService.removeArticleConceptItem(existingItem)
+                        }
+
+                        // if we have multiple associated-with we need to check 'em all to look for a match
+                        if (Array.isArray(itemAssociatedWith)) {
+                            let associationExists = false
+
+                            itemAssociatedWith.forEach(itemAssociatedWithUuid => {
+                                if (ConceptService.getArticleConceptByUUID(itemAssociatedWithUuid)) {
+                                    associationExists = true
+                                }
+                            })
+
+                            if (!associationExists) {
+                                ConceptService.removeArticleConceptItem(existingItem)
+                            }
+                        }
+                    })
+                } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
+                    ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
+                } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
+                    this.reloadArticleConcepts()
+                } else if (associatedWith.length && associatedWith === eventName) {
+                    const { pluginConfig } = this.state
+                    const associatedLinkes = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
+
+                    this.extendState({ associatedLinkes })
+                }
             }
         })
     }
 
     dispose() {
-        ConceptService.removeOperationHandler(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
+        ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.removeOperationHandler(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => ConceptService.off(type, ConceptService.operations.ADD, this.addItem))
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
     }
 
     reloadArticleConcepts() {
-        this.extendState({
-            existingItems: ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
-        })
+        const { pluginConfig } = this.state
+        const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
+        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+
+        this.extendState({ existingItems, associatedLinkes })
     }
 
     getInitialState() {
@@ -64,15 +101,17 @@ class ConceptMainComponent extends Component {
         const subtypes = pluginConfig.subtypes
         const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
+        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
         return {
             name,
             pluginConfig,
             types,
             subtypes,
-            conceptType,
             existingItems,
-            propertyMap
+            conceptType,
+            propertyMap,
+            associatedLinkes
         }
     }
 
@@ -101,11 +140,8 @@ class ConceptMainComponent extends Component {
     async addItem(item) {
         if (item && item.uuid) {
             if (!this.itemExists(item)) {
-
                 this.extendState({ 'working': true })
                 await this.addConceptToArticle(item)
-
-                this.reloadArticleConcepts()
                 this.extendState({ 'working': false })
             } else {
                 api.ui.showNotification(
@@ -170,10 +206,17 @@ class ConceptMainComponent extends Component {
         }
     }
 
+    shouldBeDisabled() {
+        const { singleValue, pluginConfig, associatedLinkes } = this.state
+
+        return (singleValue && this.state.existingItems.length) ? true :
+            (pluginConfig.associatedWith && (!associatedLinkes || !associatedLinkes.length)) ? true : false
+    }
+
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes } = config
+        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes, associatedWith } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
@@ -198,18 +241,18 @@ class ConceptMainComponent extends Component {
                 subtypes,
                 editable,
                 enableHierarchy,
-                disabled: (singleValue && this.state.existingItems.length) ? true : false,
+                disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,
-                itemExists: this.itemExists
+                itemExists: this.itemExists,
+                associatedWith
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
-        const el = $$('div')
-            .addClass(`concept-main-component ${conceptType}`)
-            .append(header)
-            .append(list)
-            .append(search)
-            .ref(`conceptMainComponent-${this.state.name}`)
+        const el = $$('div', { class: `concept-main-component ${conceptType}` }, [
+            header,
+            list,
+            search
+        ]).ref(`conceptMainComponent-${this.state.name}`)
 
         return el
     }

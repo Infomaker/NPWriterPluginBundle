@@ -59,7 +59,7 @@ class PublishFlowComponent extends Component {
         api.events.off(pluginId, event.USERACTION_SAVE)
         api.events.off(pluginId, event.USERACTION_LOCK)
         api.events.off(pluginId, event.USERACTION_UNLOCK)
-        this._clearSaveTimeout();
+        this._clearSaveTimeout()
     }
 
     getInitialState() {
@@ -146,14 +146,14 @@ class PublishFlowComponent extends Component {
         const statusDef = this.publishFlowMgr.getStateDefinitionByPubStatus(this.state.status.qcode)
 
         if (statusDef === null) {
-            return [
+            return $$('div').addClass('sc-np-status').append([
                 $$('h2').append(
                     this.getLabel('Unknown state')
                 ),
                 $$('p').append(
                     this.getLabel('This article has an unknown, unsupported, status')
                 )
-            ]
+            ])
         }
 
         const usableDef = this.publishFlowMgr.getStateDefinitionByPubStatus('stat:usable')
@@ -166,7 +166,7 @@ class PublishFlowComponent extends Component {
             )
         }
 
-        return [
+        return $$('div').addClass('sc-np-status').append([
             h2.append(
                 this.getLabel(title)
             ),
@@ -174,13 +174,13 @@ class PublishFlowComponent extends Component {
                 this.getLabel(statusDef.description)
             ),
             ...this.renderPriorityTransitions($$)
-        ]
+        ])
     }
 
     /**
      * Render pubStart and pubStop fields
      *
-     * @param {object}
+     * @param {function} $$
      * @return {object}
      */
     renderScheduling($$) {
@@ -310,11 +310,11 @@ class PublishFlowComponent extends Component {
             time = this.refs['pfc-lbl-withheld-fromtime'].val(),
             dateTime = null
 
-        if (date !== "" && time !== "") {
-            dateTime = date + "T" + time
+        if (date !== '' && time !== '') {
+            dateTime = date + 'T' + time
         }
-        else if (date !== "" && time === "") {
-            dateTime = date + "T00:00"
+        else if (date !== '' && time === '') {
+            dateTime = date + 'T00:00'
         }
 
         if (this.state.pubStart === dateTime) {
@@ -343,11 +343,11 @@ class PublishFlowComponent extends Component {
             time = this.refs['pfc-lbl-withheld-totime'].val(),
             dateTime = null
 
-        if (date !== "" && time !== "") {
-            dateTime = date + "T" + time
+        if (date !== '' && time !== '') {
+            dateTime = date + 'T' + time
         }
-        else if (date !== "" && time === "") {
-            dateTime = date + "T00:00"
+        else if (date !== '' && time === '') {
+            dateTime = date + 'T00:00'
         }
 
         if (this.state.pubStop === dateTime) {
@@ -446,13 +446,13 @@ class PublishFlowComponent extends Component {
                     label: transition.title,
                     icon: icon
                 })
-                .on('click', () => {
-                    this._save(() => {
-                        return this.handleTransitionClick(transition)
+                    .on('click', () => {
+                        this._save(() => {
+                            return this.handleTransitionClick(transition)
+                        })
                     })
-                })
-                .addClass('sc-np-wide')
-                .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
+                    .addClass('sc-np-wide')
+                    .addClass(transition.priority === 'secondary' ? 'np-ui-secondary' : '')
             )
         })
 
@@ -500,23 +500,23 @@ class PublishFlowComponent extends Component {
     }
 
     _failTimeout() {
-        this._onDocumentSaveFailed();
+        this._onDocumentSaveFailed()
         api.ui.showNotification(
             'invalidate',
-            api.getLabel("Whoops, the save operation timed out"),
-            api.getLabel("Please try again")
-        );
+            api.getLabel('Whoops, the save operation timed out'),
+            api.getLabel('Please try again')
+        )
     }
 
     _initSaveTimeout() {
-        this._clearSaveTimeout();
+        this._clearSaveTimeout()
         this._saveTimeout = setTimeout(this._failTimeout.bind(this), TIMEOUT)
     }
 
     _clearSaveTimeout() {
         if (this._saveTimeout) {
             clearTimeout(this._saveTimeout)
-            this._saveTimeout = undefined;
+            this._saveTimeout = undefined
         }
     }
 
@@ -578,7 +578,7 @@ class PublishFlowComponent extends Component {
             previousState: null
         })
 
-        api.article.copy(pluginId);
+        api.article.copy(pluginId)
         this.renderPopover()
         this.props.popover.close()
     }
@@ -700,7 +700,7 @@ class PublishFlowComponent extends Component {
             stateDef.saveActionLabel + (this.state.unsavedChanges || this.props.isSaving ? ' *' : '')
         )
 
-        let status = {title:stateDef.title}
+        let status = {title: stateDef.title}
 
         if (this.state.hasPublishedVersion) {
             status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
