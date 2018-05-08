@@ -1,8 +1,5 @@
-import {api} from 'writer'
+import {api, UIOptions} from 'writer'
 import {Component} from 'substance'
-
-import UIOptions from './OptionsComponent'
-
 /**
  * @class MainComponent
  */
