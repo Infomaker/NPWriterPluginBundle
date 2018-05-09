@@ -76,7 +76,7 @@ class ContentRelationsDropHandler extends DragAndDropHandler {
 
         function decodeUuid(xml) {
             // <uri>http://52.49.83.6/client/?id=435e5040-d94e-11e5-b5d2-0a1d41d68578</uri>
-            const reg = new RegExp(".*\?id=([^<]+)");
+            const reg = new RegExp(".*id=([^<]+)");
             const result = reg.exec(xml);
             return result[1];
         }
