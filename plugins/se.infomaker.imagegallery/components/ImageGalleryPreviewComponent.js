@@ -136,7 +136,7 @@ class ImageGalleryPreviewComponent extends Component {
     _renderImageControls($$, galleryImageNode) {
         const imageControls = $$('div').addClass('preview-image-controls')
 
-        if(this.props.imageInfoEnabled === true) {
+        if (this.props.imageInfoEnabled === true) {
             imageControls.append(
                 $$(Button, {icon: 'info'})
                     .addClass('info-image-button')
@@ -157,6 +157,18 @@ class ImageGalleryPreviewComponent extends Component {
                     })
             )
         }
+
+        if (this.props.downloadEnabled === true) {
+            imageControls.append(
+                $$(Button, {icon: 'download'})
+                    .addClass('info-image-button')
+                    .attr('title', this.getLabel('Download image'))
+                    .on('click', () => {
+                        this.props.onDownloadClick(galleryImageNode)
+                    })
+            )
+        }
+
 
         imageControls.append(
             $$(Button, {icon: 'remove'})

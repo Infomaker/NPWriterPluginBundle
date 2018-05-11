@@ -1,5 +1,5 @@
 import {Button, Component, FontAwesomeIcon} from "substance";
-import {api, event} from "writer";
+import {api} from "writer";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -79,7 +79,7 @@ class ImageDisplay extends Component {
         }
 
         if (!this.hasLoadingErrors && imageFile.uuid && this.props.node.uri && this.props.node.getOriginalUrl) {
-            const fileName = this._extractFileName(this.props.node.uri)
+            const fileName = this.props.node.getName ? this.props.node.getName() : 'unknown'
             actionsEl.append(
                 $$('a').append($$(Button, {
                     icon: 'download'
@@ -89,7 +89,7 @@ class ImageDisplay extends Component {
                     .attr('title', this.getLabel('download-image-button-title'))
                     .on('click', (evt) => {
                         evt.preventDefault()
-                        this._downloadOriginalImage(fileName)
+                        this._downloadOriginalImage()
                     })
             )
         }
@@ -143,38 +143,13 @@ class ImageDisplay extends Component {
 
     /**
      * Download copy of original image
-     * @param {string} fileName
      */
-    _downloadOriginalImage(fileName) {
-        // Disable warning of "unsaved changes" in writer while
-        // downloading image
-        api.events.triggerEvent(null, event.DISABLE_UNLOAD_WARNING, {})
-
-        // Get download (signed) url to original image
-        // (no parameters needed).
-        this.props.node.getOriginalUrl(null)
-            .then((rawUrl) => {
-                // Encode url to be able to use it as a query param
-                const queryUrl = encodeURIComponent(rawUrl)
-
-                // Trigger download using image proxy
-                // and extracted file name
-                window.location = `/api/imageproxy?url=${queryUrl}&filename=${fileName}`
-
-                // Enable warning of "unsaved changes" in writer
-                // after download has been initialized
-                setTimeout(() => {
-                    api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
-                }, 1)
-
-            })
-            .catch((e) => {
-                console.warn(e)
-
-                // Enable warning of "unsaved changes" in writer
-                // after download has been initialized
-                api.events.triggerEvent(null, event.ENABLE_UNLOAD_WARNING, {})
-            })
+    _downloadOriginalImage() {
+        if (this.props.node.downloadOriginalImage) {
+            this.props.node.downloadOriginalImage()
+        } else {
+            console.warn('Failed to download original image. Node missing download function')
+        }
     }
 
     /**
@@ -272,18 +247,6 @@ class ImageDisplay extends Component {
                     }
                 )
             })
-    }
-
-    /**
-     * Extracts basecomponent of image uri. If no uri, null is returned.
-     *
-     * @param {string} uri
-     * @return {*}
-     * @private
-     */
-    _extractFileName(uri) {
-        const index = uri.lastIndexOf('/')
-        return index > 0 ? uri.substring(index) : null
     }
 
 }
