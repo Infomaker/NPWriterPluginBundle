@@ -7,7 +7,7 @@ import TableArea from '../util/TableArea'
  * @property {TableNode} debug - True if the selection should be rendered in debug mode
  */
 
- /**
+/**
  * @typedef TableSelectionComponent.State
  * @property {?TableCellComponent} startCell - Cell component where the selection started
  * @property {?TableCellComponent} endCell - Cell component where the selection ended
