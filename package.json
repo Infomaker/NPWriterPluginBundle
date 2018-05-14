@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.prod.js",
-    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config __tooling__/webpack/webpack.prod.js",
+    "dev": "webpack-dev-server --config __tooling__/webpack/webpack.dev.js",
     "release:major": "npm version major --no-git-tag-version",
     "release:minor": "npm version minor --no-git-tag-version",
     "release:hotfix": "npm version patch --no-git-tag-version",
@@ -35,15 +35,16 @@
     "express": "^4.14.0",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.9.0",
+    "optimize-css-assets-webpack-plugin": "^4.0.1",
     "sass-loader": "^7.0.1",
     "string-replace-loader": "^2.1.1",
     "style-loader": "^0.21.0",
-    "uglify-js": "^3.3.24",
+    "uglify-js": "^3.3.25",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.4",
     "webpack-merge": "^4.1.2",
-    "webpack-uglify-js-plugin": "^1.1.9"
+    "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "dependencies": {
     "@infomaker/oc-client": "0.0.7",

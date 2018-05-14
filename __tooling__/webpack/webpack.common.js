@@ -28,7 +28,7 @@ const version = process.env.VERSION || 'dev'
 module.exports = {
     entry: getPluginBuildSpec('./plugins/plugin-build-spec'),
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, '..', '..', 'dist'),
         filename: '[name].js'
     },
     externals: {
@@ -88,11 +88,16 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        cacheDirectory: false
+                        cacheDirectory: true
                     }
                 }
             }
         ]
+    },
+    optimization: {
+        removeEmptyChunks: true,
+        mergeDuplicateChunks: true,
+        removeAvailableModules: true
     },
     plugins: [
         new MiniCssExtractPlugin('[name].css')
