@@ -10,11 +10,11 @@ class ExternalUpdateComponent extends Component {
         super(...args)
 
         if (!api.newsItem.hasTemporaryId()) {
-            const messageHandler = new UpdateMessageHandler(api)
+            this.messageHandler = new UpdateMessageHandler(api) // TODO const instead of this
             new InfocasterIntegration({
                 uuid: api.newsItem.getGuid(),
                 callback: (data) => {
-                    messageHandler.handleMessage(data)
+                    this.messageHandler.handleMessage(data)
                 }
             })
         }
@@ -40,19 +40,17 @@ class ExternalUpdateComponent extends Component {
 
         return $$('div').ref('externalUpdateContainer').append(
             [
-                $$('h2').append('*** External Update ***'),
                 $$('textarea').on('change', (evt) => {
                     message = evt.target.value
                 }).ref('messageInput'),
-                $$(Button, {
-                    icon: 'open-link',
-                    style: this.props.style
-                })
-                    .addClass('edit-link-btn visit')
-                    .append($$(Tooltip, {title: this.getLabel('open-link')}).ref('tooltipOpenLink'))
-                    .on('click', () => {
+                $$('a')
+                    .setAttribute('href', '#')
+                    .append('click me')
+                    .on('click', (e) => {
+                        e.preventDefault()
                         this.messageHandler.handleMessage(JSON.parse(message))
                         this.refs.messageInput.val("")
+                        return false
                     })
             ]
         )

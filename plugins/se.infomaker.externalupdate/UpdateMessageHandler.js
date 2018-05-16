@@ -1,4 +1,3 @@
-import {ItemMetaExtProperty} from "./updatefunctions/itemMetaExtProperty";
 import {event} from 'writer'
 
 
@@ -69,6 +68,7 @@ class UpdateMessageHandler {
             remove: article.removeContentMetaLink
         })
 
+        this.article = article
     }
 
     handleMessage(documentUpdateMessage) {
@@ -82,7 +82,7 @@ class UpdateMessageHandler {
     executeUpdateSpec(spec) {
         console.log("About to execute update function for " + spec)
         const updateFunction = this.updateFunctions.get(spec.key)
-        updateFunction[spec.op]({change: spec.value, eventType: event.DOCUMENT_CHANGED_EXTERNAL})
+        updateFunction[spec.op].call(this.article, {change: spec.value, eventType: event.DOCUMENT_CHANGED_EXTERNAL})
     }
 
     validateMessage(documentUpdateMessage) {
