@@ -78,6 +78,22 @@ class ImageDisplay extends Component {
             )
         }
 
+        if (!this.hasLoadingErrors && imageFile.uuid && this.props.node.uri && this.props.node.getOriginalUrl) {
+            const fileName = this.props.node.getName ? this.props.node.getName() : 'unknown'
+            actionsEl.append(
+                $$('a').append($$(Button, {
+                    icon: 'download'
+                }))
+                    .attr('href', '')
+                    .attr('download', fileName)
+                    .attr('title', this.getLabel('download-image-button-title'))
+                    .on('click', (evt) => {
+                        evt.preventDefault()
+                        this._downloadOriginalImage()
+                    })
+            )
+        }
+
         if (!this.hasLoadingErrors && imageFile.uuid && imageOptions.softcrop) {
             const configuredCrops = imageOptions.crops || []
             let currentCrops = 0
@@ -93,7 +109,9 @@ class ImageDisplay extends Component {
             }
 
             actionsEl.append($$(Button, {icon: 'crop'})
-                .on('click', () => { this._openCropper($$) })
+                .on('click', () => {
+                    this._openCropper($$)
+                })
                 .append($$('em').append(currentCrops).addClass(cropBadgeClass))
             )
         }
@@ -121,6 +139,17 @@ class ImageDisplay extends Component {
         el.append(imgContainer)
 
         return el
+    }
+
+    /**
+     * Download copy of original image
+     */
+    _downloadOriginalImage() {
+        if (this.props.node.downloadOriginalImage) {
+            this.props.node.downloadOriginalImage()
+        } else {
+            console.warn('Failed to download original image. Node missing download function')
+        }
     }
 
     /**
@@ -182,7 +211,7 @@ class ImageDisplay extends Component {
      * @private
      */
     _getImageOptions() {
-        if(this.props.imageOptions) {
+        if (this.props.imageOptions) {
             return this.props.imageOptions
         } else {
             // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
@@ -219,6 +248,7 @@ class ImageDisplay extends Component {
                 )
             })
     }
+
 }
 
 export default ImageDisplay

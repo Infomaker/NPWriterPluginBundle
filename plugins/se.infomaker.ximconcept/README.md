@@ -1,11 +1,11 @@
 # Concept plugin
 
-This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's 
+This plugin handles all of Infomakers supported `Concepts types`. The plugin itself will handle any type it's
 configured to handle, but is dependent on external config and templates to enable create/edit actions on concepts.
 
 ## Dependencies
 
-requires `writer > 3.10.1`
+requires `writer => 4.4.0`
 requires `open content > 2.0.1`
 
 ## Supported types
@@ -25,10 +25,48 @@ As of now these are the supported types ([External link](https://github.com/Info
 
 ### Plugin config
 
-The plugin can be configured to handle one or many types, it can also be configured to handle one or many subtypes. 
+The plugin can be configured to handle one or many types, it can also be configured to handle one or many subtypes and/or owning concept type through associatedWith.
 (e.g type x-im/place, subtypes, position, polygon).
 
+- `"label": "Författare"` The label to use above the plugin
+- `"name": "x-im/author"` The main concept type to be used by the plugin instance
+- `"enableHierarchy": false` If the plugin should display broader relations
+- `"associatedWith": "x-im/channel"` Parent, or owning concept-type used to filter search results
+- `"editable": true` If the concepts should be editable from NPWriter
+- `"placeholderText": "Sök skribent"` The search form placeholder
+- `"appendDataToLink": true` If data should be added to article link, also depends on remote concept config
+- `"provider": "writer"` Used when a new concept is created from the writer, defaults to writer
+- `"pubStatus": "imext:draft"` Used when a new concept is created from the writer, defaults to `"imext:draft"`
+- `"googleMapAPIKey": "XXX"` API-key used to populate maps when plugin is used with type x-im/place
+- `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
+- `"subtypes": [...]` A list of subtypes that are allowed
+
 #### Example Configs
+
+Section:
+
+```json
+{
+    "id": "se.infomaker.ximconcept.section",
+    "name": "ximconcept",
+    "url": "http://localhost:5001/im-ximconcept.js?concept=section",
+    "style": "http://localhost:5001/im-ximconcept.css?concept=section",
+    "enabled": true,
+    "mandatory": false,
+    "data": {
+        "label": "Avdelning",
+        "name": "x-im/section",
+        "enableHierarchy": true,
+        "associatedWith": "x-im/channel",
+        "editable": false,
+        "placeholderText": "Sök avdelning",
+        "singleValue": true,
+        "appendDataToLink": false,
+        "provider": "writer",
+        "pubStatus": "imext:draft"
+    }
+}
+```
 
 Place:
 
@@ -113,22 +151,9 @@ Tags:
 }
 ```
 
-- `"label": "Författare"` The label to use above the plugin
-- `"name": "x-im/author"` The main concept type to be used by the plugin instance
-- `"enableHierarchy": false` If the plugin should display broader relations
-- `"editable": true` If the concepts should be editable from NPWriter
-- `"placeholderText": "Sök skribent"` The search form placeholder
-- `"appendDataToLink": true` If data should be added to article link, also depends on remote concept config
-- `"provider": "writer"` Used when a new concept is created from the writer, defaults to writer
-- `"pubStatus": "imext:draft"` Used when a new concept is created from the writer, defaults to `"imext:draft"`
-- `"googleMapAPIKey": "XXX"` API-key used to populate maps when plugin is used with type x-im/place
-- `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
-- `"subtypes": [...]` A list of subtypes that are allowed
-
 ### Writer config
 
-The new concept plugin requires `writer > 3.10.1` and depends on `writer.ConceptService` class. This class needs 
-configuration from the writer config file.
+To enable Concepts you need to add configuration to `Writer` as well.
 
 ```json
 "conceptServiceConfig": {
@@ -147,6 +172,7 @@ configuration from the writer config file.
     "relatedGeoExludeSelf": false,
     "searchLimit": 50,
     "sortField": "ConceptNameString",
+    "titleSearchField": "ConceptNameString",
     "propertyMap": {
         ...
     }
@@ -160,6 +186,7 @@ configuration from the writer config file.
 - `"relatedGeoExludeSelf": false,` If added geo concepts should be excluded from `related-geo` tag
 - `"searchLimit": 50,` Sets the search limit for concept searches
 - `"sortField": "ConceptNameString",` Which index field to sort by
+- `"titleSearchField": "ConceptNameString",` optional property to set OC property to use for concept title search, defaults (if omitted) to `ConceptName`
 - `"propertyMap": { ... }` See below
 
 #### BA_PROXY
@@ -176,6 +203,7 @@ The left hand side will be used by ConceptService, fill in the property-names fr
 "propertyMap": {
     "uuid": "uuid",
     "ConceptName": "ConceptName",
+    "ConceptNameString": "ConceptNameString",
     "ConceptStatus": "ConceptStatus",
     "ConceptDefinitionShort": "ConceptDefinitionShort",
     "ConceptDefinitionLong": "ConceptDefinitionLong",
@@ -195,7 +223,7 @@ Each selected or created concept will generate a link inside the article's `item
 <link rel="subject" title="Cool corp." type="x-im/organisation" uuid="63d5dcc1-28f1-4892-9f44-142043541de1"/>
 ```
 
-If the plugin config `appendDataToLink` is set to `true`, concept data will be added as data to the link. The article 
+If the plugin config `appendDataToLink` is set to `true`, concept data will be added as data to the link. The article
 data instructions are read from a remote config file that is unique per concept type.
 
 ```xml
@@ -212,7 +240,7 @@ data instructions are read from a remote config file that is unique per concept 
 ```
 
 ### Broader
-Concepts with a `rel broad` will be decorated with data about the concepts hierarchical chain to the depth 
+Concepts with a `rel broader` will be decorated with data about the concepts hierarchical chain to the depth
 specified in ConcepService Config:
 
 ![](./doc-images/broader.png)
@@ -230,6 +258,39 @@ specified in ConcepService Config:
 </link>
 ```
 
+### Associated with
+
+Concepts that are associated with other concepts will decorate the article with information about this relationship
+
+```
+<links>
+    <link title="Channel A" rel="subject" type="x-im/channel" uuid="abcd"/>
+    <link title="Channel B" rel="subject" type="x-im/channel" uuid="efgh"/>
+
+    <!--- This Concept has the associated-with set to uuid of concept "Channel A" --->
+    <link title="Section A" rel="subject" type="x-im/section" uuid="1234">
+        <links>
+            <link title="Channel A" rel="associated-with" type="x-im/channel" uuid="abcd"/>
+        </links>
+    </link>
+
+    <!--- This Concept has the associated-with set to uuid of concept "Channel B" --->
+    <link title="Section B" rel="subject" type="x-im/section" uuid="12345">
+        <links>
+            <link title="Channel B" rel="associated-with" type="x-im/channel" uuid="efgh"/>
+        </links>
+    </link>
+
+    <!--- This Concept has the associated-with set to uuids of concept "Channel A" and "Channel B" --->
+    <link title="Section C" rel="subject" type="x-im/section" uuid="123456">
+        <links>
+            <link title="Channel A" rel="associated-with" type="x-im/channel" uuid="abcd"/>
+            <link title="Channel B" rel="associated-with" type="x-im/channel" uuid="efgh"/>
+        </links>
+    </link>
+</links>
+```
+
 ### Replaced by
 
 If a concept has been marked with "replaced by", the new concept will be added if selected:
@@ -239,7 +300,7 @@ If a concept has been marked with "replaced by", the new concept will be added i
 
 ### x-im/polygon
 
-If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas 
+If the ConceptService config property `relatedGeoFunction` is set, a background check will be made to look up areas
 that correlates with selected polygon. The correlating areas will be added to the article as a `related-geo link` tag.
 
 Available functions are: `"Contains"`, `"Intersects"`, `"IsWithin"`. These links are not displayed to the user but are

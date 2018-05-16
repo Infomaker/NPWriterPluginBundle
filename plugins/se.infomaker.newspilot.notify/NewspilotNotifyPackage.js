@@ -1,4 +1,5 @@
 import NotifyComponent from './NotifyComponent'
+import NewspilotLoginComponent from './NewspilotLoginComponent'
 import {hook} from 'writer'
 
 export default {
@@ -6,6 +7,7 @@ export default {
     id: 'se.infomaker.newspilot.notify',
     configure: function (config) {
 
+        config.addHook(hook.BEFORE_SAVE, NewspilotLoginComponent);
         config.addHook(hook.AFTER_SAVE, NotifyComponent);
 
         config.addLabel('failed_to_update', {

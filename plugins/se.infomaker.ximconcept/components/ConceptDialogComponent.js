@@ -8,6 +8,7 @@ class ConceptDialogComponent extends Component {
         super(...args)
 
         this.send = this.send.bind(this)
+        this.invalidInputs = []
     }
 
     getInitialState() {
@@ -50,7 +51,7 @@ class ConceptDialogComponent extends Component {
             })
         }
 
-        // Bind validation listeners and trigger first  validation
+        // Bind validation listeners and trigger first validation
         Object.keys(this.refs).forEach(ref => {
             const input = this.refs[ref]
             input.el.el.removeEventListener('input', this.validateInput.bind(this), true)
@@ -63,12 +64,22 @@ class ConceptDialogComponent extends Component {
         if (e.target.pattern && e.target.pattern !== '') {
             const reg = new RegExp(e.target.pattern)
             if (reg.test(e.target.value)) {
-                document.querySelector('.btn.sc-np-btn.btn-primary').disabled = false
-                e.target.classList.remove('invalid')
+                const index = this.invalidInputs.indexOf(e.target.id)
+
+                if (index > -1) {
+                    this.invalidInputs.splice(index, 1);
+                }
             } else {
-                document.querySelector('.btn.sc-np-btn.btn-primary').disabled = true
-                e.target.classList.add('invalid')
+                this.invalidInputs.push(e.target.id)
             }
+        }
+
+        if (this.invalidInputs.length) {
+            document.querySelector('.btn.sc-np-btn.btn-primary').disabled = true
+            this.extendState({ hasError: true })
+        } else {
+            document.querySelector('.btn.sc-np-btn.btn-primary').disabled = false
+            this.extendState({ hasError: false })
         }
     }
 
@@ -143,7 +154,14 @@ class ConceptDialogComponent extends Component {
     }
 
     generateInputFormGroup($$, field) {
-        const input = $$('input', { id: field.label, class: 'concept-form-control', type: field.type, value: field.value ? field.value : '', placeholder: field.placeholder, pattern: field.validation }).ref(field.refId)
+        const input = $$('input', {
+            id: field.label,
+            class: `concept-form-control ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
+            type: field.type,
+            value: field.value ? field.value : '',
+            placeholder: field.placeholder,
+            pattern: field.validation }
+        ).ref(field.refId)
 
         return this.generateFormGroup($$)
             .append(this.generateLabel($$, field))
@@ -152,7 +170,14 @@ class ConceptDialogComponent extends Component {
 
     generateTextFormGroup($$, field) {
         const rows = (field.value && field.value.length) ? (field.value.length / 80) + 2 : 3
-        const textarea = $$('textarea', { id: field.label, class: 'concept-form-control', placeholder: field.placeholder, rows: rows }).append(field.value ? field.value : '').ref(field.refId)
+        const textarea = $$('textarea', {
+            id: field.label,
+            class: `concept-form-control ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
+            placeholder: field.placeholder,
+            rows: rows
+        })
+        .append(field.value ? field.value : '')
+        .ref(field.refId)
 
         return this.generateFormGroup($$)
             .addClass('textarea-group')
@@ -162,7 +187,14 @@ class ConceptDialogComponent extends Component {
 
     generateMap($$, field) {
         const mapGroupContainer = $$('div').addClass('concept-map-group')
-        const hiddenValueInput = $$('input', { type: 'text', value: field.value ? field.value : '' }).ref(field.refId)
+        const hiddenValueInput = $$('input', {
+            id: field.label,
+            class: `concept-form-control-hidden ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
+            type: 'text',
+            value: field.value ? field.value : '',
+            pattern: field.validation
+        }).ref(field.refId)
+
         let searchInput, searchSpinner, searchResultWrapper = $$('div').addClass('location-result-wrapper'), mapsWrapper = $$('div').addClass('maps-wrapper')
 
         if (field.editable && !this.isPolygon()) {
@@ -190,6 +222,7 @@ class ConceptDialogComponent extends Component {
                                     lng: hit.geometry.location.lng()
                                 }
                             })
+                            this.refs[field.refId].el.el.dispatchEvent(new Event('input'))
                         }
                         this.refs.locationSearch.val('')
 
@@ -220,6 +253,7 @@ class ConceptDialogComponent extends Component {
                 },
                 markerPositionChanged: (lat, lng) => {
                     this.refs[field.refId].val(`POINT(${lng} ${lat})`)
+                    this.refs[field.refId].el.el.dispatchEvent(new Event('input'))
                     console.info(`POINT(${lng} ${lat})`)
                 },
                 searchResult: (results) => {

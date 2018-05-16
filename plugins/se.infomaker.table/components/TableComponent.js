@@ -10,7 +10,7 @@ import {keys, isInputKey} from '../util/keys'
  * @property {TableNode} node - Reference to the TableNode
  */
 
- /**
+/**
  * @typedef TableComponent.State
  * @property {?string} selectedCell - ID of the cell that is currently selected
  * @property {?string} focusedCell - ID of the cell that is currently focused

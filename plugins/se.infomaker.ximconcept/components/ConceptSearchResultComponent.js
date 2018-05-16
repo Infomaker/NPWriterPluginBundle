@@ -21,7 +21,7 @@ class ConceptSearchResultComponent extends Component {
             }).on('mousedown', () => { this.props.addItem(item) })
         })
 
-        if (this.props.editable && this.props.searchedTerm !== '*' && !this.props.isPolygon) {
+        if (this.props.editable && this.props.searchedTerm !== '*' && !this.props.isPolygon && !this.props.searching) {
             createConcept = $$('div').addClass('concept-create-wrapper')
                 .append($$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }))
                 .append(`${this.getLabel('create')}: ${this.props.searchedTerm}`)

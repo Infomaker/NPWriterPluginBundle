@@ -53,14 +53,23 @@ class ArchiveImageComponent extends Component {
     _onDragStart(e) {
         e.stopPropagation()
 
-        const dropData = {
-            uuid: this.props.item.uuid,
-            url: this.props.item.url,
-            credit: this.props.item.credit ? this.props.item.credit : '',
-            caption: this.props.item.caption ? this.props.item.caption.trim() : ''
-        }
+        if (this.props.type === 'editorial-opencontent') {
 
-        e.dataTransfer.setData('text/uri-list', `x-im-archive-url://x-im/image?data=${encodeURIComponent(JSON.stringify(dropData))}`)
+            const dropData = getDroplinkForItem({uuid: this.props.item.uuid, name: this.props.item.caption})
+
+            e.dataTransfer.setData('text/uri-list', dropData)
+
+        } else {
+
+            const dropData = {
+                uuid: this.props.item.uuid,
+                url: this.props.item.url,
+                credit: this.props.item.credit ? this.props.item.credit : '',
+                caption: this.props.item.caption ? this.props.item.caption.trim() : ''
+            }
+
+            e.dataTransfer.setData('text/uri-list', `x-im-archive-url://x-im/image?data=${encodeURIComponent(JSON.stringify(dropData))}`)
+        }
     }
 
     /**
@@ -79,5 +88,17 @@ class ArchiveImageComponent extends Component {
         })
     }
 }
+
+function getDroplinkForItem(image) {
+    const data = {
+        imType: 'image',
+        uuid: image.uuid,
+        name: image.name
+    }
+    const dropData = encodeURIComponent(JSON.stringify(data))
+
+    return `x-im-entity://x-im/image?data=${dropData}`
+}
+
 
 export default ArchiveImageComponent

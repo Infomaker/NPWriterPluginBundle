@@ -43,7 +43,7 @@ class ConceptItemModel {
 
         if (!this.conceptItemConfig) {
             try {
-                this.conceptItemConfig = await ConceptService.fetchConceptItemConfigJson(this.item)
+                this.conceptItemConfig = await ConceptService.getConceptItemConfigJson(this.item)
 
                 if (!this.conceptItemConfig.details) {
                     throw new Error('Concept config json missing "details" part')
@@ -83,8 +83,11 @@ class ConceptItemModel {
 
         // TODO: Un-stitch this
         if (!this.errors.length && this.item.create) {
-            this.uiGroups[0].fields[0].value = this.item.searchedTerm
+            this.uiGroups[0].fields[0].value =
+                this.item.searchedTerm || this.item.name || this.item.title || this.item.ConceptName || ''
         }
+
+        // TODO: Figureout how we can map item with OC props, to conceptItemConfig and fields
 
         return this.uiGroups
     }

@@ -14,7 +14,7 @@ const ImageGalleryPackage = {
     name: ImageGalleryNode.type,
     id: 'se.infomaker.imagegallery',
     configure(config) {
-        
+
         config.addNode(ImageGalleryNode)
         config.addNode(ImageGalleryImageNode)
         config.addComponent(ImageGalleryNode.type, ImageGalleryComponent)
@@ -25,11 +25,12 @@ const ImageGalleryPackage = {
 
         config.addConverter('newsml', ImageGalleryConverter)
 
-        config.addIcon('angle-left', { 'fontawesome': 'fa-angle-left' })
-        config.addIcon('angle-right', { 'fontawesome': 'fa-angle-right' })
-        config.addIcon('remove', { 'fontawesome': 'fa-times' })
+        config.addIcon('angle-left', {'fontawesome': 'fa-angle-left'})
+        config.addIcon('angle-right', {'fontawesome': 'fa-angle-right'})
+        config.addIcon('remove', {'fontawesome': 'fa-times'})
         config.addIcon('crop', {'fontawesome': 'fa-crop'})
         config.addIcon('info', {'fontawesome': 'fa-info'})
+        config.addIcon('download', {'fontawesome': 'fa-download'})
 
         /* Labels */
         config.addLabel('remove-image-button-title', {
@@ -69,6 +70,9 @@ const ImageGalleryPackage = {
         })
         config.addLabel('Image archive information', {
             sv: 'Arkivinformation om bild'
+        })
+        config.addLabel('Download image', {
+            sv: 'Ladda ned bild'
         })
     }
 }

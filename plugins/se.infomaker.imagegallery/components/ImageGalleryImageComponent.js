@@ -117,6 +117,14 @@ class ImageGalleryImageComponent extends Component {
             )
         }
 
+        if (this.props.downloadEnabled === true) {
+            imageControls.append(
+                $$('i').addClass('image-control fa fa-download')
+                    .attr('title', this.getLabel('Download image'))
+                    .on('click', this.props.onDownloadClick)
+            )
+        }
+
         imageControls.append(
             $$('i').addClass('image-control remove-image fa fa-times')
                 .attr('title', this.getLabel('remove-image-button-title'))

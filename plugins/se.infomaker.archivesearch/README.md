@@ -39,7 +39,8 @@ The archive search plugin is a great way of searching for images in archive repo
           "description": "Description",
           "source": "ImageSource",
           "photoDate": "Photodate"
-        }
+        },
+        "type": "editorial-opencontent"
       }
     ]
   }
@@ -62,6 +63,7 @@ Archive Host Configuration Example:
     "host": { ... },
     "standardQuery": { ... },
     "resultsMapping": { ... }
+    "type": "..."
 }
 ```
 
@@ -71,6 +73,10 @@ Archive Host Configuration Example:
 | **host**            | Object    | `true`    | Descriptive label for Type, displayed in tab menu. |
 | **standardQuery**   | Object    | `true`    | Object containing properties used for every search-call to chosen OC Host. |
 | **resultsMapping**  | Object    | `true`    | Object used for mapping OC Properties to properties used by the plugin. See [Results Mapping Options](#results-mapping-options) |
+| **type**            | String    | `false`   | Set to `editorial-opencontent` when searching for images in the Writer editorial repository |
+
+Note: When type is editorial-opencontent, the images need to have thumbnail representations in Open Content
+in order for them to be visible in the search result. This is a configuration option in Editor Service.
 
 ### Host Options
 Host configuration used by the BA-proxy service.
