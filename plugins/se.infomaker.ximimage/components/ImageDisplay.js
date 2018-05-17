@@ -170,6 +170,7 @@ class ImageDisplay extends Component {
                     height: this.props.node.height,
                     crops: this.props.node.crops.crops || [],
                     configuredCrops: imageOptions.crops,
+                    hideDisableCropsCheckbox: imageOptions.hideDisableCropsCheckbox,
                     disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                     abort: () => {
                         this.refs.cropOverlay.addClass('hidden')
@@ -215,7 +216,7 @@ class ImageDisplay extends Component {
             return this.props.imageOptions
         } else {
             // Old ximteaser needs this way of fetching imageOptions for backwards compatibility
-            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+            return ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch', 'hideDisableCropsCheckbox'].reduce((optionsObject, field) => {
                 optionsObject[field] = api.getConfigValue(this.props.parentId, field)
                 return optionsObject
             }, {})
