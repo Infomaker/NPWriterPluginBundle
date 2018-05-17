@@ -165,9 +165,6 @@ class ConceptMainComponent extends Component {
         return (existingItem !== undefined)
     }
 
-    /**
-     * Show information about the author in AuthorInfoComponent rendered in a dialog
-     */
     editItem(item) {
         const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
 
@@ -216,7 +213,7 @@ class ConceptMainComponent extends Component {
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, editable, subtypes, associatedWith } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
@@ -239,7 +236,7 @@ class ConceptMainComponent extends Component {
                 placeholderText,
                 conceptTypes: types.length ? types : conceptType,
                 subtypes,
-                editable,
+                creatable: (creatable !== undefined) ? creatable : editable,
                 enableHierarchy,
                 disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,

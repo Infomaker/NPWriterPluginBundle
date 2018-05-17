@@ -77,7 +77,7 @@ class ConceptSearchComponent extends Component {
                 isPolygon,
                 enableHierarchy,
                 propertyMap,
-                editable: this.props.editable,
+                creatable: this.props.creatable,
                 itemExists: this.props.itemExists,
                 addItem: this.addItem.bind(this)
             }).ref('searchResultComponent')
@@ -200,7 +200,7 @@ class ConceptSearchComponent extends Component {
             case 13: // enter
                 if (this.state.searchResult) {
                     selectedItem = this.state.searchResult[this.state.selected]
-                    if (selectedItem || this.props.editable) {
+                    if (selectedItem || this.props.creatable) {
                         this.addItem(selectedItem)
                         this.refs.searchInput.val('')
                         this.resetState()
