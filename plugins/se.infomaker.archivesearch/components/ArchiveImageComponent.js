@@ -89,11 +89,11 @@ class ArchiveImageComponent extends Component {
     }
 }
 
-function getDroplinkForItem(image) {
+function getDroplinkForItem({uuid, name}) {
     const data = {
         imType: 'image',
-        uuid: image.uuid,
-        name: image.name
+        uuid: uuid,
+        name: name ? name : ''
     }
     const dropData = encodeURIComponent(JSON.stringify(data))
 
