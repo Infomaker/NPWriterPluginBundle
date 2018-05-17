@@ -22,6 +22,7 @@ The image plugin configuration must have several things defined to work correctl
         "bylinesearch": false, // Default true
         "byline": false, // Default true
         "imageinfo": false, // Default true
+        "hideDisableCropsCheckbox": true, // Default false
         "crops": { ... },
         "fields": [ ... ],
         "cropInstructions": { ... },
@@ -53,6 +54,10 @@ This can be disabled by setting `byline` to `false`.
 #### Image archive information
 *Optional* Per default the image can open a dialog with meta data stored on
 the actual image. This can be disabled by setting `imageinfo` to `false`.
+
+#### Hide disable crops checkbox
+*Optional* It is possible to hide the disable crops checkbox by setting
+`hideDisableCropsCheckbox` to `true`
 
 #### Crop definitions
 *Optional* Mandatory if soft crop dialog is enabled. Expressed as an object

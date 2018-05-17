@@ -106,7 +106,8 @@ For the most basic configuration, with one teaser and the standard text fields, 
                 "8:5": [8, 5]
               },
               "imageinfo": true,
-              "softcrop": true
+              "softcrop": true,
+              "hideDisableCropsCheckbox": true
             }
           },
           {
@@ -197,15 +198,17 @@ Image Options Configuration Example:
         "16:9": [16, 9],
         "4:3": [4, 3],
         "1:1": [1, 1]
-    }
+    },
+    "hideDisableCropsCheckbox": true
 }
 ```
 
-| Property      | Type      | Required  | Description   |
-| --------      | :--:      | :------:  | -----------   |
-| **imageinfo** | Boolean   | `false`   | Per default the image can open a dialog with meta data stored on the actual image. This can be disabled by setting `imageinfo` to `false`. |
-| **softcrop**  | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `softcrop` to `true` to enable. |
-| **crops**     | Array     | `false*`  | *Required if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
+| Property                     | Type      | Required  | Description   |
+| --------                     | :--:      | :------:  | -----------   |
+| **imageinfo**                | Boolean   | `false`   | Per default the image can open a dialog with meta data stored on the actual image. This can be disabled by setting `imageinfo` to `false`. |
+| **softcrop**                 | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `softcrop` to `true` to enable. |
+| **crops**                    | Array     | `false*`  | *Required if soft crop dialog is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
+| **hideDisableCropsCheckbox** | Boolean   | `false`   | Hides the checkbox for disabling automatic crop when set to `true`, default `false`. |
 
 ### Fields Options Configuration
 Field Configuration Example:

@@ -49,7 +49,7 @@ class XimimageComponent extends Component {
         let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
 
         // TODO: extract from full config when we can get that
-        const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch'].reduce((optionsObject, field) => {
+        const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch', 'hideDisableCropsCheckbox'].reduce((optionsObject, field) => {
             optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
             return optionsObject
         }, {})
