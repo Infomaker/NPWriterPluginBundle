@@ -172,9 +172,8 @@ class ConceptMainComponent extends Component {
 
     editItem(item) {
         const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
-        console.info('Yes!', item)
+
         if (this.state.pluginConfig.types && !item[this.state.propertyMap.ConceptImTypeFull]) {
-            console.info('Ney! fel väg...')
             api.ui.showDialog(
                 ConceptSelectTypeComponent,
                 {
