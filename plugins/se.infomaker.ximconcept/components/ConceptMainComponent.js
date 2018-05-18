@@ -11,9 +11,11 @@ class ConceptMainComponent extends Component {
     constructor(...args) {
         super(...args)
 
+        this.addItem = this.addItem.bind(this)
         this.editItem = this.editItem.bind(this)
         this.removeArticleConcept = this.removeArticleConcept.bind(this)
-        this.addItem = this.addItem.bind(this)
+        this.addConceptToArticle = this.addConceptToArticle.bind(this)
+        this.updateArticleConcept = this.updateArticleConcept.bind(this)
         this.itemExists = this.itemExists.bind(this)
     }
 
@@ -150,10 +152,13 @@ class ConceptMainComponent extends Component {
                     this.getLabel('The Concept is already used'))
             }
         } else {
-            if (this.state.pluginConfig.editable) {
+            if ((this.state.pluginConfig.createable !== undefined && this.state.pluginConfig.createable) || this.state.pluginConfig.editable) {
+                const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
+                    this.state.types.length ? null : this.state.conceptType
+
                 this.editItem({
                     ...item,
-                    ConceptImTypeFull: this.state.types.length ? null : this.state.conceptType
+                    [this.state.propertyMap.ConceptImTypeFull]: conceptType
                 })
             }
         }
@@ -167,15 +172,16 @@ class ConceptMainComponent extends Component {
 
     editItem(item) {
         const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
-
+        console.info('Yes!', item)
         if (this.state.pluginConfig.types && !item[this.state.propertyMap.ConceptImTypeFull]) {
+            console.info('Ney! fel väg...')
             api.ui.showDialog(
                 ConceptSelectTypeComponent,
                 {
                     item,
                     propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
-                    typeSelected: this.editItem.bind(this)
+                    typeSelected: this.editItem
                 },
                 {
                     title,
@@ -191,7 +197,7 @@ class ConceptMainComponent extends Component {
                     item,
                     propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
-                    save: (item && item.create) ? this.addConceptToArticle.bind(this) : this.updateArticleConcept.bind(this),
+                    save: (item && item.create) ? this.addConceptToArticle : this.updateArticleConcept,
                 },
                 {
                     title,
