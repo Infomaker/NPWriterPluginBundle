@@ -21,7 +21,8 @@ As of now these are the supported types ([External link](https://github.com/Info
 - x-im/event
 - x-im/author
 - x-im/story
-
+- x-im/channel
+- x-im/section
 
 ### Plugin config
 
