@@ -99,6 +99,8 @@ class NotifyComponent extends Component {
     }
 
     dateIsValid(date) {
+        // Date.getTime() might be NaN, which is the only object not strictly equal to itself #justJavascriptThings
+        // eslint-disable-next-line
         return !isNullOrUndefined(date) && date.getTime() === date.getTime()
     }
 

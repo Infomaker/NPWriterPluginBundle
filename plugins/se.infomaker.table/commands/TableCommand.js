@@ -12,8 +12,7 @@ import selectionIsInTable from '../util/selectionIsInTable'
  * @property {number[]} cols - Indices of all columns contained in the selected area
  */
 
-
- /**
+/**
  * @typedef TableCommand.config
  * @property {string} name - Name of the command
  * @property {string} commandGroup - Name of the command group the command belongs to

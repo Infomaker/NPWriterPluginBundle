@@ -14,6 +14,7 @@ for sorting images.
   "data": {
     "cropsEnabled": true,
     "imageInfoEnabled": true,
+    "downloadEnabled": true,
     "crops": {
       "16:9": [16, 9],
       "8:5": [8, 5],
@@ -30,6 +31,7 @@ for sorting images.
 | --------              | :--:      | :------:  | -----------  |
 | **cropsEnabled**      | Boolean   | `false`   | The soft crop dialog is hidden by default. Set `cropsEnabled` to `true` to enable. Default `false`. |
 | **imageInfoEnabled**  | Boolean   | `false`   | Adds ability to display archive information for image. Set `imageInfoEnabled` to `true` to enable. Default `false`. |
+| **downloadEnabled**   | Boolean   | `false`   | Adds ability to download image (original). |
 | **crops**             | Object    | `false`   | *Required if crops is enabled.<br>Expressed as an object of named ratios. The value for each named dimension is an array of the width and height ratio. |
 
 ## Output

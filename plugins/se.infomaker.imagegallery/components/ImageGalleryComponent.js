@@ -71,11 +71,15 @@ class ImageGalleryComponent extends Component {
                 imageInfoEnabled: this._imageInfoEnabled,
                 removeImage: this._removeImage.bind(this),
                 initialPosition: this._storedGalleryPosition,
+                downloadEnabled: this._downloadEnabled,
                 onCropsClick: (galleryImageNode) => {
                     this._openCropper($$, galleryImageNode)
                 },
                 onInfoClick: (galleryImageNode) => {
                     this._openMetaData(galleryImageNode)
+                },
+                onDownloadClick: (galleryImageNode) => {
+                    this._downloadImage(galleryImageNode)
                 },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
@@ -153,6 +157,10 @@ class ImageGalleryComponent extends Component {
         return this.context.api.getConfigValue('se.infomaker.imagegallery', 'imageInfoEnabled', false)
     }
 
+    get _downloadEnabled() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'downloadEnabled', false)
+    }
+
     /**
      * @param $$
      * @returns {VirtualElement}
@@ -175,6 +183,7 @@ class ImageGalleryComponent extends Component {
                 cropsEnabled: this._cropsEnabled,
                 imageInfoEnabled: this._imageInfoEnabled,
                 configuredCrops: this._configuredCrops,
+                downloadEnabled: this._downloadEnabled,
                 remove: () => {
                     this._removeImage(galleryImageNodeId)
                 },
@@ -183,6 +192,9 @@ class ImageGalleryComponent extends Component {
                 },
                 onInfoClick: () => {
                     this._openMetaData(galleryImageNode)
+                },
+                onDownloadClick: () => {
+                    this._downloadImage(galleryImageNode)
                 }
             }).ref(galleryImageNode.id))
         })
@@ -294,7 +306,9 @@ class ImageGalleryComponent extends Component {
     /**
      * Show image meta data in a modal dialog
      *
-     * @memberof ImageDisplay
+     * @memberOf ImageGalleryComponent
+     * @param galleryImageNode
+     * @private
      */
     _openMetaData(galleryImageNode) {
         const imageNode = this.context.api.doc.get(galleryImageNode.imageFile)
@@ -318,6 +332,23 @@ class ImageGalleryComponent extends Component {
                 )
             })
     }
+
+
+    /**
+     * Download original image via image node trait.
+     *
+     * @memberOf ImageGalleryComponent
+     * @param galleryImageNode
+     * @private
+     */
+    _downloadImage(galleryImageNode) {
+        if (galleryImageNode.downloadOriginalImage) {
+            galleryImageNode.downloadOriginalImage()
+        } else {
+            console.warn('Failed to download original image. Node missing download function')
+        }
+    }
+
 
     /**
      * Handles dropped node event propagated from

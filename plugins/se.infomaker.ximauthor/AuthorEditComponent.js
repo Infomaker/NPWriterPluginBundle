@@ -248,15 +248,15 @@ class AuthorEditComponent extends AuthorBaseComponent {
     }
 
     _validateURL(url) {
-        return (/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(url))
+        return (/(http|https):\/\/(\w+:?\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%\-\/]))?/.test(url))
     }
 
     _validateEmail(email) {
-        return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/.test(email))
+        return (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,5})+$/.test(email))
     }
 
     _validatePhone(phone) {
-        return (/^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/g.test(phone))
+        return (/^[+]*[(]?[0-9]{1,3}[)]?[-\s./0-9]*$/g.test(phone))
     }
 
     _setError(error) {
