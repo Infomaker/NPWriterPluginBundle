@@ -10,7 +10,7 @@ class ExternalUpdateComponent extends Component {
         super(...args)
 
         if (!api.newsItem.hasTemporaryId()) {
-            this.messageHandler = new UpdateMessageHandler(api) // TODO const instead of this
+            this.messageHandler = new UpdateMessageHandler(api, this.getLabel) // TODO const instead of this
             new InfocasterIntegration({
                 uuid: api.newsItem.getGuid(),
                 callback: (data) => {
