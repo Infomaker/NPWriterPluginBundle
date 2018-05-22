@@ -2,7 +2,7 @@ import {api, event} from 'writer'
 import {assertThat} from "./Functions";
 
 class UpdateMessageHandler {
-    constructor(api, getLabel) {
+    constructor(api, labels) {
         const article = api.article
         this.updateFunctions = new Map()
 
@@ -49,7 +49,7 @@ class UpdateMessageHandler {
 
         this.article = article
         this.api = api
-        this.getLabel = getLabel
+        this.labels = labels
     }
 
     handleMessage(message) {
@@ -62,19 +62,19 @@ class UpdateMessageHandler {
 
             this.notifyMessageApplied(message)
         } catch (e) {
-            this.notifyMessageFailed(message)
+            this.notifyMessageFailed(message, e)
         }
     }
 
-    notifyMessageFailed(message) {
-        api.ui.showNotification('se.infomaker.externalupdate', "Failed", "Failed")
+    notifyMessageFailed(message, e) {
+        api.ui.showNotification('se.infomaker.externalupdate', "Failed", e.message)
     }
 
     notifyMessageApplied(message) {
         if (message.changedBy) {
-            const title = message.changedBy.name || this.getLabel('externalChangeTitle')
-            const email = message.changedBy.email || this.getLabel('externalChangeSomeone')
-            const body = message.changedBy.message || this.getLabel('externalChangeMessage')
+            const title = message.changedBy.name || this.labels['externalChangeTitle']
+            const email = message.changedBy.email || this.labels['externalChangeSomeone']
+            const body = message.changedBy.message || this.labels['externalChangeMessage']
             this.api.ui.showNotification(
                 'se.infomaker.externalupdate',
                 title,
@@ -82,8 +82,8 @@ class UpdateMessageHandler {
         } else {
             api.ui.showNotification(
                 'se.infomaker.externalupdate',
-                this.getLabel('externalChangeTitle'),
-                this.getLabel('externalChangeMessage'))
+                this.labels['externalChangeTitle'],
+                this.labels['externalChangeMessage'])
         }
 
     }
@@ -104,16 +104,16 @@ class UpdateMessageHandler {
 
     validateMessage(spec) {
         assertThat(spec.uuid).isDefined("Missing 'uuid' in message")
-        assertThat(spec.checksums).isDefined("Missing 'checksumes' section in message")
+        assertThat(spec.checksums).isDefined("Missing 'checksums' section in message")
         assertThat(spec.checksums.replaces).isDefined("Missing 'replaces' checksum")
         assertThat(spec.checksums.new).isDefined("Missing 'new' checksum")
         assertThat(spec.changes).isDefined("Missing 'changes' section in message")
 
-        if (!Array.isArray(documentUpdateMessage.changes)) {
+        if (!Array.isArray(spec.changes)) {
             throw new Error("Changes should be of type array")
         }
 
-        documentUpdateMessage.changes.forEach((item) => {
+        spec.changes.forEach((item) => {
             const key = item.key
             const updateFunction = this.updateFunctions.get(key)
 

@@ -18,8 +18,18 @@ function safeString(value) {
     return typeof value === 'string' ? value : ''
 }
 
-function assertThat(value) {
-    return new Asserter(value)
+class AcceptsEverythingAsserter {
+    whenDefined() {
+        return this
+    }
+
+    matches() {
+        return this
+    }
+
+    isDefined() {
+        return this
+    }
 }
 
 class Asserter {
@@ -60,18 +70,8 @@ class Asserter {
     }
 }
 
-class AcceptsEverythingAsserter {
-    whenDefined() {
-        return this
-    }
-
-    matches() {
-        return this
-    }
-
-    isDefined() {
-        return this
-    }
+function assertThat(value) {
+    return new Asserter(value)
 }
 
 
