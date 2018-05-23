@@ -8,12 +8,12 @@ class EditorialNoteComponent extends Component {
     }
 
     didMount() {
-        api.events.on('notes', event.DOCUMENT_CHANGED, (event) => {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, (event) => {
             if (event.data && event.data.type === 'ednote') {
                 this.synchronize(event)
             }
         })
-        api.events.on('notes', event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
             if (event.data.key === 'edNote') {
                 this.extendState({
                     note: api.newsItem.getEdNote()
@@ -24,7 +24,8 @@ class EditorialNoteComponent extends Component {
 
     dispose(...args) {
         super.dispose(...args)
-        api.events.off()
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
     getInitialState() {

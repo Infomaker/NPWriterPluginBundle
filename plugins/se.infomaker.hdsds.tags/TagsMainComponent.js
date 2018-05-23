@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {jxon, api} from 'writer'
+import {jxon, api, event} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
 import TagEditPersonComponent from './TagEditPersonComponent'
@@ -23,6 +23,18 @@ class TagsMainComponent extends Component {
         this.extendState({
             existingTags: this.context.api.newsItem.getTags(this.getTags())
         })
+    }
+
+    didMount() {
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
+            if (e.data.key === 'itemMetaLink' && this.getTags().indexOf(e.data.value.type) > -1) {
+                this.reload()
+            }
+        })
+    }
+
+    dispose() {
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
     render($$) {

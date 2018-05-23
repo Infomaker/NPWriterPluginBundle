@@ -1,5 +1,6 @@
-import {api, UIOptions} from 'writer'
+import {api, UIOptions, event} from 'writer'
 import {Component} from 'substance'
+
 /**
  * @class MainComponent
  */
@@ -17,6 +18,20 @@ class MainComponent extends Component {
     }
 
     didMount() {
+        this._syncWithModel();
+        api.events.on('articlelanguage', event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
+            if (event.data.key === 'language') {
+                this.extendState({articleLanguage: event.data.value})
+            }
+        })
+    }
+
+    dispose(...args) {
+        super.dispose(...args)
+        api.events.off('articlelanguage', event.DOCUMENT_CHANGED_EXTERNAL)
+    }
+
+    _syncWithModel() {
         const direction = api.newsItem.getTextDirection()
         const languageCode = api.newsItem.getLocale()
         this.setEditorLanguage(languageCode, direction)
