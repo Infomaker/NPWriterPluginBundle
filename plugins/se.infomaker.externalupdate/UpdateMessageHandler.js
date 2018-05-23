@@ -42,9 +42,9 @@ class UpdateMessageHandler {
             remove: article.removeContentMetaLink
         })
 
-        this.updateFunctions.set('contentMetaData', {
-            add: article.addContentMetaData,
-            remove: article.removeContentMetaData
+        this.updateFunctions.set('contentMetadata', {
+            add: article.addContentMetadata,
+            remove: article.removeContentMetadata
         })
 
         this.article = article
