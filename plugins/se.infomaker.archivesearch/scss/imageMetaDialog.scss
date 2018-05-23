@@ -20,7 +20,7 @@
     background: #111;
     border-bottom: 1px solid #3e3e3e;
     img {
-      max-height: 900px;
+      max-height: 500px;
       max-width: 100%;
       margin: 0 auto;
       display: block;
@@ -68,22 +68,28 @@
   }
 }
 
-@media all and (max-width: 1440px) {
-  .image-meta-display {
-    .image {
-      img {
-        max-height: 500px;
-      }
-    }
-  }
-}
-
 @media all and (max-width: 1280px) {
   .image-meta-display {
     .image {
       img {
         max-height: 400px;
       }
+    }
+    .image-info {
+      min-width: 400px;
+    }
+  }
+}
+
+@media all and (max-width: 810px) {
+  .image-meta-display {
+    .image {
+      img {
+        max-height: 300px;
+      }
+    }
+    .image-info {
+      min-width: 200px;
     }
   }
 }

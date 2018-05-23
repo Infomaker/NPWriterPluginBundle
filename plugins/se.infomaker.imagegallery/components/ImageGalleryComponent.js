@@ -157,6 +157,10 @@ class ImageGalleryComponent extends Component {
         return this.context.api.getConfigValue('se.infomaker.imagegallery', 'imageInfoEnabled', false)
     }
 
+    get _hideDisableCropsCheckbox() {
+        return this.context.api.getConfigValue('se.infomaker.imagegallery', 'hideDisableCropsCheckbox', false)
+    }
+
     get _downloadEnabled() {
         return this.context.api.getConfigValue('se.infomaker.imagegallery', 'downloadEnabled', false)
     }
@@ -183,6 +187,7 @@ class ImageGalleryComponent extends Component {
                 cropsEnabled: this._cropsEnabled,
                 imageInfoEnabled: this._imageInfoEnabled,
                 configuredCrops: this._configuredCrops,
+                hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
                 downloadEnabled: this._downloadEnabled,
                 remove: () => {
                     this._removeImage(galleryImageNodeId)
@@ -277,6 +282,7 @@ class ImageGalleryComponent extends Component {
                     height: galleryImageNode.height,
                     crops: galleryImageNode.crops.crops || [],
                     disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
+                    hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
                     abort: () => {
                         this.refs.cropperOverlay.addClass('hidden')
                         return true

@@ -21,7 +21,8 @@ As of now these are the supported types ([External link](https://github.com/Info
 - x-im/event
 - x-im/author
 - x-im/story
-
+- x-im/channel
+- x-im/section
 
 ### Plugin config
 
@@ -33,6 +34,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"enableHierarchy": false` If the plugin should display broader relations
 - `"associatedWith": "x-im/channel"` Parent, or owning concept-type used to filter search results
 - `"editable": true` If the concepts should be editable from NPWriter
+- `"creatable": true` Optional property, If the concepts should be creatable from NPWriter, if omitted the value from editable will be used
 - `"placeholderText": "Sök skribent"` The search form placeholder
 - `"appendDataToLink": true` If data should be added to article link, also depends on remote concept config
 - `"provider": "writer"` Used when a new concept is created from the writer, defaults to writer
@@ -108,7 +110,8 @@ Author:
         "label": "Författare",
         "name": "x-im/author",
         "enableHierarchy": false,
-        "editable": true,
+        "editable": false,
+        "creatable": true,
         "placeholderText": "Sök skribent",
         "appendDataToLink": true,
         "provider": "writer",
