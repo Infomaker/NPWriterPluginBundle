@@ -7,28 +7,20 @@ const TextmanipulationPackage = {
     version: '{{version}}',
     configure: function (config) {
 
-        config.addLabel('Characters', {
-            sv: 'Antal tecken'
+        config.addLabel('Search for', {
+            sv: 'Sök efter'
         })
 
-        config.addLabel('Words', {
-            sv: 'Antal ord'
+        config.addLabel('Replace with', {
+            sv: 'Ersätt med'
         })
 
-        config.addLabel('Source', {
-            sv: 'Källa'
+        config.addLabel('Find next', {
+            sv: 'Sök nästa'
         })
 
-        config.addLabel('No source found', {
-            sv: 'Ingen källa'
-        })
-
-        config.addLabel('Created', {
-            sv: 'Skapad'
-        })
-
-        config.addLabel('Updated', {
-            sv: 'Uppdaterad'
+        config.addLabel('Replace', {
+            sv: 'Ersätt'
         })
 
         config.addPopover(

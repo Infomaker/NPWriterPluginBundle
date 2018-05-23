@@ -17,16 +17,16 @@ class TextmanipulationComponent extends Component {
 
     render($$) {
         const el = $$('div').append([
-            $$('label').attr({ for: 'im-tm_str'}).append(this.getLabel('Search')),
+            $$('label').attr({ for: 'im-tm_str'}).append(this.getLabel('Search for')),
             $$('input').attr({ id: 'im-tm_str', name: 'im-tm_str' }).ref('im-tm_str'),
-            $$('label').attr({ for: 'im-tm_to'}).append(this.getLabel('Replace')),
+            $$('label').attr({ for: 'im-tm_to'}).append(this.getLabel('Replace with')),
             $$('input').attr({ id: 'im-tm_to', name: 'im-tm_to' }).ref('im-tm_to'),
             $$('div').append([
-                $$(UIButton, { label: 'Find' }).ref('im-tm_find')
+                $$(UIButton, { label: this.getLabel('Find next') }).ref('im-tm_find')
                     .on('click', () => {
                         this.findNext()
                     }),
-                $$(UIButton, { label: 'Replace' }).ref('im-tm_replace')
+                $$(UIButton, { label: this.getLabel('Replace') }).ref('im-tm_replace')
                     .on('click', () => {
                         this.replace(true)
                     })
