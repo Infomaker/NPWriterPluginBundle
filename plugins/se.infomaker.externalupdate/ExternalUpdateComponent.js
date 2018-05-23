@@ -13,7 +13,9 @@ class ExternalUpdateComponent extends Component {
             this.messageHandler = new UpdateMessageHandler(api, {
                 externalChangeTitle: this.getLabel('externalChangeTitle'),
                 externalChangeSomeone: this.getLabel('externalChangeSomeone'),
-                externalChangeMessage: this.getLabel('externalChangeMessage')
+                externalChangeMessage: this.getLabel('externalChangeMessage'),
+                messageFailed: this.getLabel('messageFailed'),
+                messageFailedReason: this.getLabel('messageFailedReason')
             }) // TODO const instead of this
             new InfocasterIntegration({
                 uuid: api.newsItem.getGuid(),

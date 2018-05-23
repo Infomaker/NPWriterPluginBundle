@@ -67,7 +67,14 @@ class UpdateMessageHandler {
     }
 
     notifyMessageFailed(message, e) {
-        api.ui.showNotification('se.infomaker.externalupdate', "Failed", e.message)
+        api.ui.showMessageDialog(
+            [
+                {
+                    type: 'error',
+                    message: `${this.labels['messageFailed']}
+                    ${this.labels['messageFailedReason']}: ${e.message}`
+                }
+            ], ()=>{}, ()=>{})
     }
 
     notifyMessageApplied(message) {
