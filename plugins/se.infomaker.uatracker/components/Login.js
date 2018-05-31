@@ -27,7 +27,7 @@ class Login extends Component {
         emailGroup.append([emailLabel, emailInput, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar')])
 
         const nameGroup = $$('div').addClass('form-group')
-        const label = $$('span').append('Enter your name')
+        const label = $$('span').append(this.getLabel('Enter your name'))
         const name = $$('input').attr('type', 'text').addClass('form-control').ref('username')
         nameGroup.append([label, name])
 
