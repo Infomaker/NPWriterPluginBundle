@@ -22,10 +22,10 @@ class DropImageUUID extends DragAndDropHandler {
         const dropData = this.getDataFromURL(params.uri)
 
         // Fetch the image
-        const uuid = dropData.uuid
+        const {uuid, name} = dropData
         const nodeId = idGenerator()
 
-        if (!dropData.uuid) {
+        if (!uuid) {
             throw new Error('Unsupported data. UUID must exist')
         }
 
@@ -33,7 +33,7 @@ class DropImageUUID extends DragAndDropHandler {
             parentNodeId: nodeId,
             type: 'npfile',
             imType: 'x-im/image',
-            uuid: uuid,
+            uuid,
             sourceUUID: uuid,
         }
 
@@ -45,7 +45,7 @@ class DropImageUUID extends DragAndDropHandler {
             id: nodeId,
             type: 'ximimage',
             imageFile: imageFile.id,
-            caption: dropData.name,
+            caption: name ? name : '',
             alttext: '',
             credit: '',
             alignment: ''
