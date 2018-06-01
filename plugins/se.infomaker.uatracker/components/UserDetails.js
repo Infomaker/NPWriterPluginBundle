@@ -8,7 +8,6 @@ import { moment} from 'writer'
  * @extends {Component}
  * @property {Object} props
  * @property {User} props.user - User object to display
- * @property {function} [props.logout] - Callback to run when logout button pressed
  * @example
     $$(UserDetails, {
         user: {
@@ -19,8 +18,7 @@ import { moment} from 'writer'
             socketId: '50w2YflUWbV2-sM6AABW',
             uuid: 'd92cb6aa-d444-4f99-ae22-61ba2691b09f',
             customerKey: 'im-writer'
-        },
-        logout: () => console.log('Logging out')
+        }
     })
  */
 class UserDetails extends Component {
@@ -29,26 +27,21 @@ class UserDetails extends Component {
         const user = this.props.user
         const loginTime = moment(Number(user.timestamp)).fromNow(true)
         let name = user.name
-        let logoutButton = null
 
-        if (user.isActiveUser && typeof this.props.logout === 'function') {
+        if (user.isActiveUser) {
             name += ' ' + this.getLabel('(You)')
-            logoutButton = $$('button', { class: 'btn btn-secondary logout'},
-                this.getLabel('Logout')
-            ).on('click', this.props.logout)
         }
 
         return $$('div', { class: 'popover-content user-details' }, [
             $$('div', { class: 'content' }, [
                 $$('h2', { class: 'name heading' }, name),
-                $$('div', { class: 'email message' }, user.email),
-                logoutButton
+                $$('div', { class: 'email message' }, user.email)
             ]),
             $$('div', { class: 'footer' }, [
                 $$(FontAwesomeIcon, {icon: 'fa-clock-o'}),
                 $$('div', { class: 'login-time' },
                     this.getLabel('uatracker-been-in')
-                    .replace('{{loginTime}}', loginTime)
+                        .replace('{{loginTime}}', loginTime)
                 )
             ])
         ])

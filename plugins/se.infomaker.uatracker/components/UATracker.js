@@ -64,7 +64,9 @@ class UATracker extends Component {
     }
 
     didMount() {
-        this.showLogin()
+        this.loadAuthenticatedUser().then(user => {
+            this.userLogin(user)
+        })
     }
 
     _onDocumentChanged(change) {
@@ -145,7 +147,7 @@ class UATracker extends Component {
         const host = api.getConfigValue('se.infomaker.uatracker', 'host')
         this.socket = io(host)
 
-        this.socket.on('error', () => {})
+        this.socket.on('error', (e) => { console.error('Socket error', e)})
         this.socket.on('connect', () => this.onConnect())
         this.socket.on('connect_error', () => this.onSocketConnectError())
         this.socket.on('article/user-change', (users) => this.onUserChange(users))
@@ -253,19 +255,15 @@ class UATracker extends Component {
         api.ui.showDialog(Dialog, dialogProps, dialogOptions)
     }
 
-    showLogin() {
-        if (api.history.isAvailable()) {
-            const user = api.history.storage.getItem('user')
-            if (user) {
-                this.login(JSON.parse(user))
-            } else {
-                api.ui.showDialog(Login, { login: this.userLogin.bind(this) }, {
-                    title: this.getLabel('uatracker-dialog-title'),
-                    primary: this.getLabel('Continue'),
-                    secondary: false,
-                    disableEscKey: true
-                })
-            }
+    loadAuthenticatedUser() {
+        try {
+            return api.user.getUserInfo().then(user => {
+                if (user) {
+                    return {email: user.email, name: `${user.given_name} ${user.family_name}`}
+                }
+            })
+        } catch (e) {
+            throw new Error('User info api endpoint not available')
         }
     }
 
@@ -284,21 +282,6 @@ class UATracker extends Component {
         this.login(user)
     }
 
-    logout() {
-        if (api.history.isAvailable()) {
-            api.history.storage.removeItem('user')
-            this.socket.close()
-            this.showLogin()
-        }
-
-        this.extendState({
-            email: null,
-            name: null,
-            socketId: null,
-            users: []
-        })
-    }
-
     render($$) {
         const el = $$('div')
         const container = $$('div').addClass('sc-np-bar-container uatracker')
@@ -312,8 +295,7 @@ class UATracker extends Component {
                 users: this.state.users,
                 socketId: this.state.socketId,
                 lockedBy: this.state.lockedBy,
-                limit: 5,
-                logout: this.logout.bind(this)
+                limit: 5
             }).ref('user-list')
 
             const lockElem = $$(LockButtonBarItem, {

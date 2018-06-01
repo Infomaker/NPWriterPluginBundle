@@ -12,7 +12,6 @@ import UserDetails from './UserDetails';
  * @property {Object} props
  * @property {User} props.user - User object to display
  * @property {string} props.lockedBy - Socket ID of user who currently has the article locked
- * @property {function} [props.logout] - Callback to run when logout button pressed
  * @example
     $$(UserItem, {
         user: {
@@ -24,8 +23,7 @@ import UserDetails from './UserDetails';
             uuid: 'd92cb6aa-d444-4f99-ae22-61ba2691b09f',
             customerKey: 'im-writer'
         },
-        lockedBy: '50w2YflUWbV2-sM6AABW',
-        logout: () => console.log('Logging out')
+        lockedBy: '50w2YflUWbV2-sM6AABW'
     })
  */
 class UserItem extends Component {
@@ -91,7 +89,7 @@ class UserItem extends Component {
     _renderPopover($$, user) {
         const popover = $$(Popover, {
             sticky: false,
-            content: $$(UserDetails, { user: user, logout: this.props.logout })
+            content: $$(UserDetails, { user: user })
         }).ref('popover')
         return popover
     }

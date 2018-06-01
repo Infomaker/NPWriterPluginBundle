@@ -108,11 +108,6 @@ export default {
             sv: 'Fortsätt'
         })
 
-        config.addLabel('Logout', {
-            en: 'Logout',
-            sv: 'Logga ut'
-        })
-
         config.addLabel('uatracker-dialog-title', {
             en: 'Identification',
             sv: 'Identifiering'

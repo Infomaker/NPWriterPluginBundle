@@ -12,7 +12,6 @@ import UserItem from './UserItem'
  * @property {string} props.socketId - Socket ID of the current user
  * @property {string} props.lockedBy - Socket ID of user who currently has the article locked
  * @property {number} props.limit - Amount of users to show
- * @property {function} props.logout - Callback to run when logout button pressed
  */
 class UserList extends Component {
 
@@ -53,8 +52,7 @@ class UserList extends Component {
                 // Add active user to end of list
                 $$(UserItem, {
                     user: activeUser,
-                    lockedBy: this.props.lockedBy,
-                    logout: this.props.logout
+                    lockedBy: this.props.lockedBy
                 }).ref('user-item-active')
 
             ]
