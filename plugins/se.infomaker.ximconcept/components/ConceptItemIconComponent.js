@@ -26,7 +26,8 @@ class ConceptItemIconComponent extends Component {
             // TODO: Refactor this to use external config-file
             'x-cu/industry': 'fa-industry',
             'x-cu/responsibility': 'fa-calendar-check-o',
-            'x-cu/project': 'fa-balance-scale'
+            'x-cu/project': 'fa-balance-scale',
+            'x-cu/radio': 'fa-microphone'
         }
 
         return conceptTypeIcons[type] || 'fa-question-circle-o'
