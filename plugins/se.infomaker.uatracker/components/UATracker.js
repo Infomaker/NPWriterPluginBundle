@@ -45,12 +45,19 @@ class UATracker extends Component {
         super(...args)
         api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
         api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
+        this.userLogin = this.userLogin.bind(this)
+        this.onConnect = this.onConnect.bind(this)
+        this.onSocketConnectError = this.onSocketConnectError.bind(this)
+        this.onUserChange = this.onUserChange.bind(this)
+        this.onLockStatusChange = this.onLockStatusChange.bind(this)
+        this.onVersionChange = this.onVersionChange.bind(this)
+        this.setIsActiveUser = this.setIsActiveUser.bind(this)
     }
 
     dispose() {
         api.events.off(pluginId, event.DOCUMENT_CHANGED)
         api.events.off(pluginId, event.DOCUMENT_SAVED)
-        this.socket.close()
+        this._closeSocket()
     }
 
     getInitialState() {
@@ -64,9 +71,11 @@ class UATracker extends Component {
     }
 
     didMount() {
-        this.loadAuthenticatedUser().then(user => {
-            this.userLogin(user)
-        })
+        // Avoid opening more than one socket connection when app is switching state rapidly during save
+        if(api.app.state.status !== 'saving') {
+            this.loadAuthenticatedUser()
+                .then(this.userLogin)
+        }
     }
 
     _onDocumentChanged(change) {
@@ -144,15 +153,21 @@ class UATracker extends Component {
     }
 
     setupLiveArticles() {
-        const host = api.getConfigValue('se.infomaker.uatracker', 'host')
+        const host = api.getConfigValue('se.infomaker.uatracker', 'host', false)
+
+        if(!host) {
+            console.error('No configured UA-tracker host for plugin se.infomaker.uatracker')
+            return
+        }
+
         this.socket = io(host)
 
         this.socket.on('error', (e) => { console.error('Socket error', e)})
-        this.socket.on('connect', () => this.onConnect())
-        this.socket.on('connect_error', () => this.onSocketConnectError())
-        this.socket.on('article/user-change', (users) => this.onUserChange(users))
-        this.socket.on('article/lock-status-change', (lockStatus) => this.onLockStatusChange(lockStatus))
-        this.socket.on('article/version-change', (versionData) => this.onVersionChange(versionData))
+        this.socket.on('connect', this.onConnect)
+        this.socket.on('connect_error', this.onSocketConnectError)
+        this.socket.on('article/user-change', this.onUserChange)
+        this.socket.on('article/lock-status-change', this.onLockStatusChange)
+        this.socket.on('article/version-change', this.onVersionChange)
     }
 
     onConnect() {
@@ -161,7 +176,7 @@ class UATracker extends Component {
     }
 
     onUserChange(users) {
-        users = users.map(this.setIsActiveUser.bind(this))
+        users = users.map(this.setIsActiveUser)
         this.extendState({
             users: users,
             socketId: this.socket.id // TODO: Maybe move this to onConnect
@@ -197,11 +212,14 @@ class UATracker extends Component {
     }
 
     setLockStatus(lockedBy) {
-        if (lockedBy && lockedBy !== this.socket.id) { // Locked by other user
+        if (lockedBy && lockedBy !== this.socket.id) {
+            // Locked by other user
             this.lockArticle()
-        } else if (lockedBy === this.socket.id) { // Locked by active user
+        } else if (lockedBy === this.socket.id) {
+            // Locked by active user
             this.unlockArticle()
-        } else { // Not locked
+        } else {
+            // Not locked
             if (!this.state.articleOutdated) {
                 this.unlockArticle()
             }
@@ -307,6 +325,12 @@ class UATracker extends Component {
         }
 
         return el
+    }
+
+    _closeSocket() {
+        if(this.socket) {
+            this.socket.close()
+        }
     }
 }
 
