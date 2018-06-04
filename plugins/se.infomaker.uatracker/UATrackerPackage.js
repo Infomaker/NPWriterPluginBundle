@@ -1,4 +1,5 @@
 import UATrackerComponent from './components/UATracker'
+import './scss/index.scss';
 
 export default {
     name: 'uatracker',

@@ -2,17 +2,10 @@ import io from 'socket.io-client'
 import { Component } from 'substance'
 import { api, moment, event } from 'writer'
 
-import Login from './Login'
 import Dialog from './Dialog'
 import UserListBarItem from './UserListBarItem'
 import LockButtonBarItem from './LockButtonBarItem'
 import NoConnectionBarItem from './NoConnectionBarItem'
-
-import '../scss/uatracker.scss'
-import '../scss/no-connection.scss'
-import '../scss/login.scss'
-import '../scss/user.scss'
-import '../scss/lock.scss'
 
 const pluginId = 'se.infomaker.uatracker'
 
