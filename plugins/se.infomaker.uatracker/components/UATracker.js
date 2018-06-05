@@ -65,7 +65,8 @@ class UATracker extends Component {
 
     didMount() {
         // Avoid opening more than one socket connection when app is switching state rapidly during save
-        if(api.app.state.status !== 'saving') {
+        const {isSaving} = this.props
+        if(!isSaving) {
             this.loadAuthenticatedUser()
                 .then(this.userLogin)
         }
