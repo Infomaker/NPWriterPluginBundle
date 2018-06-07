@@ -4,17 +4,9 @@ export default {
     id: 'se.infomaker.externalupdate',
     name: 'externalupdate',
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (config, pluginConfig) {
 
-        config.addPopover(
-            'externalupdatecomponent',
-            {
-                icon: 'fa-server',
-                align: 'right',
-                sticky: true
-            },
-            ExternalUpdateComponent
-        )
+        config.addToSidebar('main', pluginConfig, ExternalUpdateComponent)
 
         config.addLabel('externalChangeTitle', {
             sv: 'Artikeln har uppdaterats',

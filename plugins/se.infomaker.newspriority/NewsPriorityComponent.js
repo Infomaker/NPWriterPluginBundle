@@ -24,6 +24,7 @@ class NewsPriorityComponent extends Component {
     }
 
     dispose() {
+        api.events.off(this.props.pluginConfigObject.id, 'data:duplicated')
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }

@@ -1,4 +1,5 @@
 import {Component} from 'substance'
+import {event} from 'writer'
 
 class PublicationchannelComponent extends Component {
 
@@ -7,14 +8,18 @@ class PublicationchannelComponent extends Component {
     }
 
     didMount() {
-        this.context.api.events.on('publicationchannel', 'data:changed', (event) => {
+        this.context.api.events.on(this.props.pluginConfigObject.id, 'data:changed', (event) => {
             if (event.data && event.data.type === 'channel') {
                 this.synchronize(event)
             }
         })
 
-        this.context.api.events.on('publicationchannel', 'data:duplicated', () => {
+        this.context.api.events.on(this.props.pluginConfigObject.id, 'data:duplicated', () => {
             this.clearAllChannels()
+        })
+
+        this.context.api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
+            this.extendState(this.getInitialState())
         })
 
         if (this.state.useMainChannel === true) {
@@ -25,7 +30,17 @@ class PublicationchannelComponent extends Component {
 
             })
         }
+
     }
+
+    dispose() {
+        this.context.api.events.off(this.props.pluginConfigObject.id, 'data:duplicated')
+        this.context.api.events.off(this.props.pluginConfigObject.id, 'data:changed')
+        this.context.api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
+    }
+
+
+
 
     /**
      * Get initial state for publication channels

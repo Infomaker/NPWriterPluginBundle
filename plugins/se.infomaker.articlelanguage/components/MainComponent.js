@@ -20,8 +20,8 @@ class MainComponent extends Component {
     didMount() {
         this._syncWithModel();
         api.events.on('articlelanguage', event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
-            if (event.data.key === 'language') {
-                this.extendState({articleLanguage: event.data.value})
+            if (event.data.key === 'idfLanguage') {
+                this._syncWithModel();
             }
         })
     }

@@ -8,6 +8,11 @@ class UpdateMessageHandler {
 
         this.updateFunctions.set('pubStart', {set: article.setPubStart})
 
+        this.updateFunctions.set('service', {
+            add: article.addService,
+            remove: article.removeService
+        })
+
         this.updateFunctions.set('pubStop', {set: article.setPubStop})
 
         this.updateFunctions.set('pubStatus', {set: article.setPubStatus})
@@ -32,6 +37,8 @@ class UpdateMessageHandler {
         this.updateFunctions.set('description', {set: article.setDescription})
 
         this.updateFunctions.set('language', {set: article.setLanguage})
+
+        this.updateFunctions.set('idfLanguage', {set: article.setIdfLanguage})
 
         this.updateFunctions.set('by', {set: article.setBy})
 
@@ -59,6 +66,8 @@ class UpdateMessageHandler {
             message.changes.forEach((updateSpec) => {
                 this.executeUpdateSpec(updateSpec)
             })
+
+            this.updateArticleEtag(message)
 
             this.notifyMessageApplied(message)
         } catch (e) {
@@ -133,6 +142,11 @@ class UpdateMessageHandler {
                 throw new Error(`Update function '${key}' does not contain operation '${item.op}`)
             }
         })
+    }
+
+    updateArticleEtag(spec) {
+        const newEtag = spec.checksums.new
+        api.router.setEtag(spec.uuid, newEtag)
     }
 
 }
