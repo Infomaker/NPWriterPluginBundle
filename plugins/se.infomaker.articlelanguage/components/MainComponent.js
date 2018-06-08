@@ -25,7 +25,8 @@ class MainComponent extends Component {
         const current = this.languageOptions.find(option => {
             return option.code === languageCode
         })
-        this.props.popover.setTitle(current.label ? current.label : languageCode)
+
+        this.props.popover.setTitle(current && current.label ? current.label : languageCode)
     }
 
     render($$) {
@@ -49,7 +50,7 @@ class MainComponent extends Component {
 
         this.setEditorLanguage(languageCode, direction)
         this.setArticleLanguage(languageCode, direction)
-        this.props.popover.setTitle(option ? option.label : languageCode)
+        this.props.popover.setTitle(option && option.label ? option.label : languageCode)
     }
 
     /**
