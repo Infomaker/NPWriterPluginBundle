@@ -21,8 +21,6 @@ class UpdateMessageHandler {
 
         this.updateFunctions.set('title', {set: article.setTitle})
 
-        this.updateFunctions.set('title', {set: article.setTitle})
-
         this.updateFunctions.set('itemMetaExtProperty', {set: article.setItemMetaExtProperty})
 
         this.updateFunctions.set('itemMetaLink', {
