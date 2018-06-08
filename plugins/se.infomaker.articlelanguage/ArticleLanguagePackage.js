@@ -10,6 +10,15 @@ export default {
             sv: 'Artikelspråk'
         })
 
-        configurator.addToSidebar('main', pluginConfig, MainComponent)
+
+        configurator.addPopover(
+            'im-articlelanguage',
+            {
+                title: 'Language',
+                align: 'left',
+                sticky: false
+            },
+            MainComponent
+        )
     }
 }

@@ -1,0 +1,30 @@
+.im-textmanipulation {
+    padding: 15px;
+
+    & > input {
+        min-width: 240px;
+    }
+
+    label {
+        font-size: 80%;
+        display: block;
+        line-height: 80%;
+        padding-top: 8px;
+    }
+
+    & > div {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-evenly;
+
+        &.toggles {
+            flex-flow: column;
+            font-size: 90%;
+            padding-bottom: 10px;
+            
+            span {
+                line-height: 90%;
+            }
+        }
+    }
+}

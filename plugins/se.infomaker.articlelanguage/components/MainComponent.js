@@ -1,4 +1,4 @@
-import {api, UIOptions, event} from 'writer'
+import {api, event} from 'writer'
 import {Component} from 'substance'
 
 /**
@@ -35,28 +35,36 @@ class MainComponent extends Component {
         const direction = api.newsItem.getTextDirection()
         const languageCode = api.newsItem.getLocale()
         this.setEditorLanguage(languageCode, direction)
+
+        const current = this.languageOptions.find(option => {
+            return option.code === languageCode
+        })
+
+        this.props.popover.setTitle(current && current.label ? current.label : languageCode)
     }
 
     render($$) {
-        return $$('div').addClass('im-articlelanguage').append(
-            $$('h2').append(this.getLabel('Article Language')),
-            $$(UIOptions, {
-                multiValue: false,
-                identifier: 'code',
-                options: this.languageOptions,
-                selectedOptions: [this.state.articleLanguage],
-                onClick: this.onLanguageClick
-            })
-        )
+        return $$('ul')
+            .addClass('im-articlelanguage context-menu')
+            .append(
+                ...this.languageOptions.map(option => this.renderOption($$, option))
+            )
     }
 
-    onLanguageClick(selectedOptions) {
-        const [option] = selectedOptions
+    renderOption($$, option) {
+        return $$('li')
+            .addClass(this.state.articleLanguage === option.code ? 'active' : '')
+            .on('click', () => this.onLanguageClick(option))
+            .append(`${option.label}`)
+    }
+
+    onLanguageClick(option) {
         const languageCode = option ? option.code : this.defaultLanguage
         const direction = option ? option.direction : 'ltr'
 
         this.setEditorLanguage(languageCode, direction)
         this.setArticleLanguage(languageCode, direction)
+        this.props.popover.setTitle(option && option.label ? option.label : languageCode)
     }
 
     /**

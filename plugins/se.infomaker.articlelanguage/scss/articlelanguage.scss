@@ -1,0 +1,19 @@
+.im-articlelanguage {
+    min-width: 200px;
+
+    &.context-menu {
+        li {
+            line-height: 2rem;
+
+            &:first-child {
+                padding-top: 7px;
+                border-radius: 4px 4px 0 0;
+            }
+
+            &:last-child {
+                padding-bottom: 7px;
+                border-radius: 0 0 4px 4px;
+            }
+        }
+    }
+}
