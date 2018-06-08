@@ -92,12 +92,14 @@ class UpdateMessageHandler {
             this.api.ui.showNotification(
                 'se.infomaker.externalupdate',
                 title,
-                `${body} --${email}`)
+                `${body} --${email}`,
+                true)
         } else {
             api.ui.showNotification(
                 'se.infomaker.externalupdate',
                 this.labels['externalChangeTitle'],
-                this.labels['externalChangeMessage'])
+                this.labels['externalChangeMessage'],
+                true)
         }
 
     }
