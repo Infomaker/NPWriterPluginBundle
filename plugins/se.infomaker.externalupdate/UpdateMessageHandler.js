@@ -86,13 +86,14 @@ class UpdateMessageHandler {
 
     notifyMessageApplied(message) {
         if (message.changedBy) {
-            const title = message.changedBy.name || this.labels['externalChangeTitle']
+            const title = this.labels['externalChangeTitle']
+            const name = message.changedBy.name || ''
             const email = message.changedBy.email || this.labels['externalChangeSomeone']
             const body = message.changedBy.message || this.labels['externalChangeMessage']
             this.api.ui.showNotification(
                 'se.infomaker.externalupdate',
                 title,
-                `${body} --${email}`,
+                `${body} -- ${name} (${email})`,
                 true)
         } else {
             api.ui.showNotification(
