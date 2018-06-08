@@ -24,7 +24,8 @@ class ExternalUpdateComponent extends Component {
                 callback: (data) => {
                     messageHandler.handleMessage(data)
                 },
-                token: this.props.pluginConfigObject.pluginConfigObject.data.token
+                token: this.props.pluginConfigObject.pluginConfigObject.data.token,
+                publisherId: this.props.pluginConfigObject.pluginConfigObject.data.publisherId
             })
         }
     }
