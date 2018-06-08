@@ -36,7 +36,7 @@ const TextmanipulationPackage = {
             {
                 icon: 'fa-search',
                 align: 'right',
-                sticky: true
+                sticky: false
             },
             TextmanipulationComponent
         )
