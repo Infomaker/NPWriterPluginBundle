@@ -23,6 +23,14 @@ const TextmanipulationPackage = {
             sv: 'Ersätt'
         })
 
+        config.addLabel('Match whole words', {
+            sv: 'Endast hela ord'
+        })
+
+        config.addLabel('Case sensitive', {
+            sv: 'Matcha gemener/VERSALER'
+        })
+
         config.addPopover(
             'textmanipulation',
             {

@@ -1,5 +1,5 @@
 const {Component} = substance
-const {UIButton} = writer
+const {UIButton, api} = writer
 import './scss/index.scss'
 
 class TextmanipulationComponent extends Component {
@@ -11,16 +11,47 @@ class TextmanipulationComponent extends Component {
                 to: ''
             },
             matches: [],
-            offset: null
+            offset: null,
+            words: false,
+            case: false
+        }
+    }
+
+    didUpdate() {
+        if (this.props.popover.active) {
+            this.refs["im-tm_str"].el.focus()
         }
     }
 
     render($$) {
+        const Toggle = api.ui.getComponent('toggle')
         const el = $$('div').append([
             $$('label').attr({ for: 'im-tm_str'}).append(this.getLabel('Search for')),
             $$('input').attr({ id: 'im-tm_str', name: 'im-tm_str' }).ref('im-tm_str'),
             $$('label').attr({ for: 'im-tm_to'}).append(this.getLabel('Replace with')),
             $$('input').attr({ id: 'im-tm_to', name: 'im-tm_to' }).ref('im-tm_to'),
+            $$('div').addClass('toggles').append([
+                $$(Toggle, {
+                    id: 'im-tm_words',
+                    label: this.getLabel('Match whole words'),
+                    checked: this.state.words,
+                    onToggle: checked => {
+                        this.extendState({
+                            words: checked
+                        })
+                    }
+                }),
+                $$(Toggle, {
+                    id: 'im-tm_case',
+                    label: this.getLabel('Case sensitive'),
+                    checked: this.state.case,
+                    onToggle: checked => {
+                        this.extendState({
+                            case: checked
+                        })
+                    }
+                })
+            ]),
             $$('div').append([
                 $$(UIButton, { label: this.getLabel('Find next') }).ref('im-tm_find')
                     .on('click', () => {
@@ -68,15 +99,20 @@ class TextmanipulationComponent extends Component {
                 continue
             }
 
-            let start = nodes[id].content.indexOf(str)
-            while (start !== -1) {
+            const len = str.length
+            let match
+            let matchString = str.replace('/', '\\/')
+            if (this.state.words) {
+                matchString = `\\b${matchString}\\b`
+            }
+
+            const re = new RegExp(matchString, `g${this.state.case ? '' : 'i'}`)
+            while ((match = re.exec(nodes[id].content)) !== null) {
                 this.state.matches.push({
                     nodeId: id,
-                    start: start,
-                    end: start + str.length
+                    start: match.index,
+                    end: match.index + len
                 })
-
-                start = nodes[id].content.indexOf(str, start + str.length)
             }
         }
 

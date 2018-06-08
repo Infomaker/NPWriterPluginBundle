@@ -16,5 +16,15 @@
         display: flex;
         flex-flow: row;
         justify-content: space-evenly;
+
+        &.toggles {
+            flex-flow: column;
+            font-size: 90%;
+            padding-bottom: 10px;
+            
+            span {
+                line-height: 90%;
+            }
+        }
     }
 }
