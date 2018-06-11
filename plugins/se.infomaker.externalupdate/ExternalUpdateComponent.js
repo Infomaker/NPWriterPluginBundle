@@ -11,12 +11,40 @@ class ExternalUpdateComponent extends Component {
 
         if (!api.newsItem.hasTemporaryId()) {
 
-            const messageHandler = new UpdateMessageHandler(api, {
-                externalChangeTitle: this.getLabel('externalChangeTitle'),
-                externalChangeSomeone: this.getLabel('externalChangeSomeone'),
-                externalChangeMessage: this.getLabel('externalChangeMessage'),
-                messageFailed: this.getLabel('messageFailed'),
-                messageFailedReason: this.getLabel('messageFailedReason')
+            const messageHandler = new UpdateMessageHandler(api.article, {
+                failed: (message, e) => {
+                    api.ui.showMessageDialog(
+                        [
+                            {
+                                type: 'error',
+                                message: `${this.getLabel('messageFailed')} ${this.getLabel('messageFailedReason')}: ${e.message}`
+                            }
+                        ],
+                        () => {
+                        },
+                        () => {
+                        })
+                },
+                applied: (message) => {
+                    if (message.changedBy) {
+                        const title = this.getLabel('externalChangeTitle')
+                        const name = message.changedBy.name || ''
+                        const email = message.changedBy.email || this.getLabel('externalChangeSomeone')
+                        const body = message.changedBy.message || this.getLabel('externalChangeMessage')
+                        api.ui.showNotification(
+                            'se.infomaker.externalupdate',
+                            title,
+                            `${body} -- ${name} (${email})`,
+                            true)
+                    } else {
+                        api.ui.showNotification(
+                            'se.infomaker.externalupdate',
+                            this.getLabel('externalChangeTitle'),
+                            this.getLabel('externalChangeMessage'),
+                            true)
+                    }
+
+                }
             })
 
             new InfocasterIntegration({
@@ -41,6 +69,14 @@ class ExternalUpdateComponent extends Component {
 
         api.events.off('ExternalUpdateComponent', 'external:updated')
     }
+
+    notifyMessageFailed(message, e) {
+    }
+
+    notifyMessageApplied(message) {
+
+    }
+
 
     render($$) {
 

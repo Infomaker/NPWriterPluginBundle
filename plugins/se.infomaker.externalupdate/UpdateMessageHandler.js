@@ -2,8 +2,8 @@ import {api, event} from 'writer'
 import {assertThat} from "./Functions";
 
 class UpdateMessageHandler {
-    constructor(api, labels) {
-        const article = api.article
+    constructor(article, {failed, applied}) {
+
         this.updateFunctions = new Map()
 
         this.updateFunctions.set('pubStart', {set: article.setPubStart})
@@ -53,8 +53,8 @@ class UpdateMessageHandler {
         })
 
         this.article = article
-        this.api = api
-        this.labels = labels
+        this.failed = failed
+        this.applied = applied
     }
 
     handleMessage(message) {
@@ -67,42 +67,10 @@ class UpdateMessageHandler {
 
             this.updateArticleEtag(message)
 
-            this.notifyMessageApplied(message)
+            this.applied(message)
         } catch (e) {
-            this.notifyMessageFailed(message, e)
+            this.failed(message, e)
         }
-    }
-
-    notifyMessageFailed(message, e) {
-        api.ui.showMessageDialog(
-            [
-                {
-                    type: 'error',
-                    message: `${this.labels['messageFailed']}
-                    ${this.labels['messageFailedReason']}: ${e.message}`
-                }
-            ], ()=>{}, ()=>{})
-    }
-
-    notifyMessageApplied(message) {
-        if (message.changedBy) {
-            const title = this.labels['externalChangeTitle']
-            const name = message.changedBy.name || ''
-            const email = message.changedBy.email || this.labels['externalChangeSomeone']
-            const body = message.changedBy.message || this.labels['externalChangeMessage']
-            this.api.ui.showNotification(
-                'se.infomaker.externalupdate',
-                title,
-                `${body} -- ${name} (${email})`,
-                true)
-        } else {
-            api.ui.showNotification(
-                'se.infomaker.externalupdate',
-                this.labels['externalChangeTitle'],
-                this.labels['externalChangeMessage'],
-                true)
-        }
-
     }
 
     executeUpdateSpec(spec) {
