@@ -90,13 +90,15 @@ The plugin listens for updates on articles when all of the prerequisites below a
 * The plugin is configured with the correct `publisherId`
 * The plugin is configured with a `token` matching the `publisherId`
 
-When a update message, which is specified in a [JSON schema](external-update-jsonschema.json), is broadcasted to the plugin, it applies the updates to the article with the data in the update message, when all the statements above are true:
+When a update message, which is specified in a [JSON schema](external-update-jsonschema.json), is broadcasted to the plugin, it applies the
+updates to the article with the data in the update message, when all the statements below are true:
 
 * The `uuid` in the update message has the same value as the `guid` in the opened article
 * The checksum called `replaces` in the update message corresponds to the `ETag` for the opened article.
 * The update message validates against the JSON schema
 
-If any of the statements above is false, the user is informed that he/she needs to manually copy the article text and reload the article, since it is not possible to apply the changes.
+If any of the statements above is false, the user is informed that he/she needs to manually copy the article text and reload the article,
+since it is not possible to apply the changes.
 
 In the case where all staements are true, the changes are applied and the user is informed that changes has been made.
 
