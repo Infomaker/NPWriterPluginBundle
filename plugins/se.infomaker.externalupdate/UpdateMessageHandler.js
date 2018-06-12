@@ -1,8 +1,15 @@
 import {api, event} from 'writer'
 import {assertThat} from "./Functions";
+import Ajv from 'ajv'
+import schema from './external-update-jsonschema'
+import schema_draft__06 from 'ajv/lib/refs/json-schema-draft-06'
+
 
 class UpdateMessageHandler {
     constructor(article, {failed, applied}) {
+
+        this.ajv = new Ajv()
+        this.ajv.addMetaSchema(schema_draft__06)
 
         this.updateFunctions = new Map()
 
@@ -88,6 +95,13 @@ class UpdateMessageHandler {
     }
 
     validateMessage(spec) {
+
+        const valid = this.ajv.validate(schema, spec)
+
+        if (!valid) {
+            throw new Error("The message does not match the json schema")
+        }
+
         assertThat(spec.uuid).isDefined("Missing 'uuid' in message")
         assertThat(spec.checksums).isDefined("Missing 'checksums' section in message")
         assertThat(spec.checksums.replaces).isDefined("Missing 'replaces' checksum")
