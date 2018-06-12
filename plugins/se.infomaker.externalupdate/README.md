@@ -1,4 +1,4 @@
-# # External updates
+# External updates
 When changes are made to articles in the article repository,
 which in case with Open Content is usually called editorial Open Content,
 by an external service the changes would make the article in the
