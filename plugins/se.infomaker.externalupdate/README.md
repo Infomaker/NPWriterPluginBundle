@@ -129,9 +129,8 @@ https://infocaster-domain/v1/publisher/[publisherId]/broadcast/[uuid]/publish?au
 
 ```
 
-`[publisherId]` should be replaced by the publisher ID
-`[uuid]` is the ID of the article that has been changed
-`[token]` should be replaced with the access token
-
+* `[publisherId]` should be replaced by the publisher ID
+* `[uuid]` is the ID of the article that has been changed
+* `[token]` should be replaced with the access token
 
 The change message should be put in the body of the POST request.
