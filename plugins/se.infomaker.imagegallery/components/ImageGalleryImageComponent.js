@@ -1,4 +1,5 @@
 import {Component} from 'substance'
+import { debug } from 'util';
 
 /**
  * @class ImageGalleryImageComponent
@@ -41,17 +42,17 @@ class ImageGalleryImageComponent extends Component {
         const nodeId = this.props.node.id
         const InlineImageComponent = this.context.api.ui.getComponent('InlineImageComponent')
         const numberDisplay = $$('div').addClass('number-display')
+
+        // The wrapper (content) being dragged
         const itemWrapper = $$('div', {
             draggable: false,
             class: 'item-wrapper',
-            id: `index_${nodeId}`
+            id: `im_ig_index_${nodeId}`
         })
-        .on('dragstart', this._dragStart.bind(this))
-        .on('dragend', this._dragEnd.bind(this))
-        .on('dragenter', this._dragEnter.bind(this))
-        .on('dragleave', this._dragLeave.bind(this))
-        .on('dragover', this._dragOver.bind(this))
-        .ref('itemWrapper')
+            .on('dragenter', this._dragEnter)
+            .on('dragleave', this._dragLeave)
+            .on('dragover', this._dragOver)
+            .ref('itemWrapper')
 
         const imageWrapper = $$('div').addClass('image-wrapper')
         const imageEl = $$(InlineImageComponent, {nodeId: this.props.node.imageFile}).attr('draggable', false)
@@ -60,13 +61,16 @@ class ImageGalleryImageComponent extends Component {
         imageWrapper.append(imageEl)
         numberDisplay.append(this.props.index + 1)
 
-        // When clicking on dragAnchor, set draggable on itemWrapper
-        // effectively dragging the wrapper using one of its child elements
-        const dragAnchor = $$('div')
+        // Drag anchor used to drag the wrapper around
+        const dragAnchor = $$('div', {
+            class: 'drag-me',
+            id: `im_ig_anchor_${nodeId}`,
+            draggable: true
+        })
             .html(this._getSvg())
-            .addClass('drag-me')
-            .on('mousedown', () => this.refs.itemWrapper.attr('draggable', true))
-            .on('mouseup', () => this.refs.itemWrapper.attr('draggable', false))
+            .on('dragstart', this._dragStart)
+            .on('dragend', this._dragEnd)
+            .ref('dragAnchor')
 
         return itemWrapper
             .append(dragAnchor)
@@ -171,22 +175,46 @@ class ImageGalleryImageComponent extends Component {
     }
 
     /**
+     * Drag start event on the drag anchor or its descendant elements
+     *
      * @param ev
      * @private
      */
     _dragStart(ev) {
-        const target = this.refs.itemWrapper
+        const wrapper = document.getElementById(this.refs.itemWrapper.el.id)
 
         ev.stopPropagation()
-
-        ev.dataTransfer.setDragImage(target.el.el, ev.offsetX, target.el.el.offsetHeight / 2)
+        ev.dataTransfer.setDragImage(this._clone(wrapper), ev.offsetX, wrapper.offsetHeight / 2)
         ev.dataTransfer.setData('text/plain', this.props.node.id)
         ev.dataTransfer.dropEffect = 'move'
 
-        // Preserve style of dragged element, but style of element still in DOM
+        // Hide the wrapper element that the dragged anchor is inside
         setTimeout(() => {
-            target.addClass('dragging')
+            wrapper.classList.add('dragging')
         })
+    }
+
+    /**
+     * Clone the wrapper dom node and insert into the body. This will give the cloned
+     * element the correct z-index, so that when the cloned element is used as a basis
+     * for the dragging ghost image will be reliably and correctly displayed.
+     *
+     * @param {DOMNode} wrapper Dom node to clone as the base for a drag ghost image
+     */
+    _clone(wrapper) {
+        const oldClone = document.getElementById('im-ig-draggable-clone')
+        if (oldClone) {
+            document.body.removeChild(oldClone)
+        }
+
+        const clone = wrapper.cloneNode(true);
+        clone.id = 'im-ig-draggable-clone'
+        clone.classList.add('drag-clone')
+        clone.style.width = `${wrapper.offsetWidth}px`
+
+        document.body.appendChild(clone)
+
+        return clone
     }
 
     /**
