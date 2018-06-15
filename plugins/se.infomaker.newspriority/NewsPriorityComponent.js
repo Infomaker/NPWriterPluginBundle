@@ -1,5 +1,5 @@
 const {Component} = substance
-const {api, moment, idGenerator} = writer
+const {api, moment, idGenerator, event} = writer
 const {isObject, isEmpty} = writer.lodash
 const pluginId = 'se.infomaker.newspriority'
 
@@ -11,11 +11,24 @@ class NewsPriorityComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on('newspriority', 'data:duplicated', () => {
+        api.events.on(this.props.pluginConfigObject.id, 'data:duplicated', () => {
             api.clearNewsPriority('newspriority');
             this.rerender();
         });
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
+            if (e.data.key === 'contentMetadata' && e.data.value.type === 'x-im/newsvalue') {
+                this.updateState()
+            }
+        })
+
     }
+
+    dispose() {
+        api.events.off(this.props.pluginConfigObject.id, 'data:duplicated')
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
+    }
+
 
     getInitialState() {
 

@@ -24,12 +24,18 @@ class PublicationChannelComponent extends Component {
                 this.loadArticleConcepts()
             }
         })
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
+            if (e.data.key === 'itemMetaLink' && e.data.value.type === this.state.conceptType) {
+                this.loadArticleConcepts()
+            }
+        })
 
         this.loadArticleConcepts()
     }
 
     dispose() {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
     async loadArticleConcepts() {

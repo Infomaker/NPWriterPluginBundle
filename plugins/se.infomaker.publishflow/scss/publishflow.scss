@@ -210,32 +210,3 @@
         }
     }
 }
-
-.sc-np-bar-container {
-
-    // Override save button style
-    .np-ui-btn-group {
-        button:first-child {
-            border-radius: 3px 0 0 3px;
-        }
-
-        button:last-child {
-            border-radius: 0 3px 3px 0;
-            padding: 0.5rem 0.5rem;
-        }
-
-        &.disabled {
-            button {
-                border-color: #878787;
-                color: #b1b1b1;
-                background-color: #878787;
-            }
-        }
-    }
-
-    // Override publish status
-    .sc-np-bar-item {
-        color: #888;
-        margin: 0 18px !important;
-    }
-}
