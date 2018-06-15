@@ -1,4 +1,4 @@
-import {api} from 'writer'
+import {api, event} from 'writer'
 import {Component} from 'substance'
 
 /**
@@ -18,6 +18,20 @@ class MainComponent extends Component {
     }
 
     didMount() {
+        this._syncWithModel();
+        api.events.on('articlelanguage', event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
+            if (event.data.key === 'idfLanguage') {
+                this._syncWithModel();
+            }
+        })
+    }
+
+    dispose(...args) {
+        super.dispose(...args)
+        api.events.off('articlelanguage', event.DOCUMENT_CHANGED_EXTERNAL)
+    }
+
+    _syncWithModel() {
         const direction = api.newsItem.getTextDirection()
         const languageCode = api.newsItem.getLocale()
         this.setEditorLanguage(languageCode, direction)

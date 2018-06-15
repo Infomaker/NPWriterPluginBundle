@@ -75,7 +75,16 @@ class ConceptMainComponent extends Component {
                 }
             }
         })
+
+        api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, (e) => {
+            if (e.data.key === 'itemMetaLink') {
+                if (this.state.conceptType === e.data.value.type) {
+                    this.reloadArticleConcepts()
+                }
+            }
+        })
     }
+
 
     dispose() {
         ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
@@ -85,6 +94,7 @@ class ConceptMainComponent extends Component {
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
     reloadArticleConcepts() {

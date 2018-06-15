@@ -1,7 +1,22 @@
 import {Component} from "substance"
-import {api} from "writer"
+import {api, event} from "writer"
 
 class OptionsComponent extends Component {
+
+    didMount() {
+        api.events.on(
+            this.props.pluginConfigObject.id,
+            event.DOCUMENT_CHANGED_EXTERNAL,
+            (event) => {
+                if (event.data.key === 'contentMetaLink') {
+                    this.rerender()
+                }
+            })
+    }
+
+    dispose() {
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
+    }
 
     /**
      * Initial state
@@ -96,7 +111,7 @@ class OptionsComponent extends Component {
             this.addContentMetaLink(selectedList, selectedOption)
         }
 
-        this.setState({
+        this.extendState({
             list: this.state.list
         })
 
@@ -158,7 +173,9 @@ class OptionsComponent extends Component {
     }
 
     isMultivalue(list) {
-        if (list.type === 'dropdown') { return false }
+        if (list.type === 'dropdown') {
+            return false
+        }
         return list.multivalue || (list.multivalue === undefined && this.options.multivalue)
     }
 }

@@ -49,6 +49,18 @@ class PublishFlowComponent extends Component {
             this.locked = false
             this.props.popover.enable()
         })
+
+        api.events.on(pluginId, event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
+            if (event.data.key === 'pubStatus') {
+                this.extendState({
+                    status: api.newsItem.getPubStatus(),
+                    hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
+                    pubStart: api.newsItem.getPubStart(),
+                    pubStop: api.newsItem.getPubStop(),
+                })
+                this.renderPopover()
+            }
+        })
     }
 
     dispose() {
@@ -57,8 +69,10 @@ class PublishFlowComponent extends Component {
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
         api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
         api.events.off(pluginId, event.USERACTION_SAVE)
+        api.events.off(pluginId, event.DOCUMENT_REPLACED)
         api.events.off(pluginId, event.USERACTION_LOCK)
         api.events.off(pluginId, event.USERACTION_UNLOCK)
+        api.events.off(pluginId, event.DOCUMENT_CHANGED_EXTERNAL)
         this._clearSaveTimeout()
     }
 
