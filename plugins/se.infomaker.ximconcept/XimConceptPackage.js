@@ -26,7 +26,8 @@ const XimConceptPackage = {
             sv: 'Ersatt av',
         })
         configurator.addLabel('No polygon edit', {
-            sv: 'Redigering av polygoner är för närvarande inte möjlig'
+            sv: 'Redigering av polygoner är för närvarande inte möjlig via writern',
+            en: 'Currently there is support for polygon editing from the writer'
         })
         configurator.addLabel('Place or location search', {
             sv: 'Sök adress eller plats'
@@ -52,7 +53,9 @@ const XimConceptPackage = {
         configurator.addLabel('Invalid Concept-UUID', {
             sv: 'Conceptet har inget giltigt UUID'
         })
-
+        configurator.addLabel('unable to parse geometric data', {
+            sv: 'den geometriska datan kan inte tolkas'
+        })
         configurator.addLabel('Unknown Concept-type', {
             sv: 'Okänd koncepttyp'
         })
