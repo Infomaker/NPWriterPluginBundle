@@ -3,11 +3,11 @@ import GoogleMapsApiLoader from 'google-maps-api-loader'
 
 class ConceptMapComponent extends Component {
 
-    static setGoogleApi(googleApi) {
+    setGoogleApi(googleApi) {
         window._googleApi = googleApi
     }
 
-    static getGetGoogleApi() {
+    getGetGoogleApi() {
         return window._googleApi
     }
 
@@ -63,7 +63,7 @@ class ConceptMapComponent extends Component {
     }
 
     async didMount() {
-        if (!ConceptMapComponent.getGetGoogleApi()) {
+        if (!this.getGetGoogleApi()) {
 
             /**
              * This will create a google object on the global namespace
@@ -73,10 +73,10 @@ class ConceptMapComponent extends Component {
                 apiKey: this.props.apiKey,
             })
 
-            ConceptMapComponent.setGoogleApi(googleApi)
+            this.setGoogleApi(googleApi)
         }
 
-        this.googleApi = ConceptMapComponent.getGetGoogleApi()
+        this.googleApi = this.getGetGoogleApi()
 
         try {
             this.refs.mapContainer.addClass('visible')

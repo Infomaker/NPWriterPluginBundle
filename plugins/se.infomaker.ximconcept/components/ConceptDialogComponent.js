@@ -177,9 +177,7 @@ class ConceptDialogComponent extends Component {
             class: `concept-form-control ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
             placeholder: field.placeholder,
             rows: rows
-        })
-        .append(field.value ? field.value : '')
-        .ref(field.refId)
+        }).append(field.value ? field.value : '').ref(field.refId)
 
         return this.generateFormGroup($$)
             .addClass('textarea-group')
@@ -239,10 +237,11 @@ class ConceptDialogComponent extends Component {
             searchInput = $$('p').append(this.getLabel('No polygon edit'))
         }
 
-        mapsWrapper
-            .append(searchInput)
-            .append(searchSpinner)
-            .append(searchResultWrapper)
+        mapsWrapper.append([
+            searchInput,
+            searchSpinner,
+            searchResultWrapper
+        ])
 
         if (this.props.config.googleMapAPIKey) {
             const map = $$(ConceptMapComponent, {
@@ -305,7 +304,7 @@ class ConceptDialogComponent extends Component {
     isPolygon() {
         const { item } = this.props
         const geometry = (item && item.data) ? item.data.geometry : ''
-        return (geometry.indexOf('POLYGON') !== -1 || geometry.indexOf('MULTIPOLYGON') !== -1)
+        return (geometry.indexOf('POLYGON') !== -1)
     }
 
     extractItemGeometry() {
@@ -323,7 +322,6 @@ class ConceptDialogComponent extends Component {
 
     _extractGeoJson(geometryString) {
         const geoObject = Geometry.parse(geometryString)
-        window.geoObject = geoObject
 
         return {
             geoJson: {
