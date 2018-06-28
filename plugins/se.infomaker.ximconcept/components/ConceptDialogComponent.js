@@ -1,4 +1,5 @@
 import { Component } from 'substance'
+import { Geometry } from 'wkx'
 import ConceptItemModel from '../models/ConceptItemModel'
 import ConceptMapComponent from './ConceptMapComponent'
 
@@ -8,6 +9,7 @@ class ConceptDialogComponent extends Component {
         super(...args)
 
         this.send = this.send.bind(this)
+        this.validateInput = this.validateInput.bind(this)
         this.invalidInputs = []
     }
 
@@ -22,7 +24,7 @@ class ConceptDialogComponent extends Component {
         this.conceptItemModel = null
         Object.keys(this.refs).forEach(ref => {
             const input = this.refs[ref]
-            input.el.el.removeEventListener('input', this.validateInput.bind(this), true)
+            input.el.el.removeEventListener('input', this.validateInput, true)
         })
     }
 
@@ -54,8 +56,8 @@ class ConceptDialogComponent extends Component {
         // Bind validation listeners and trigger first validation
         Object.keys(this.refs).forEach(ref => {
             const input = this.refs[ref]
-            input.el.el.removeEventListener('input', this.validateInput.bind(this), true)
-            input.el.el.addEventListener('input', this.validateInput.bind(this), true)
+            input.el.el.removeEventListener('input', this.validateInput, true)
+            input.el.el.addEventListener('input', this.validateInput, true)
             input.el.el.dispatchEvent(new Event('input'))
         })
     }
@@ -212,8 +214,7 @@ class ConceptDialogComponent extends Component {
                     return $$('div', { class: 'result-item' }, [
                         $$('strong', {}, `${hit.name}: `),
                         hit.formatted_address
-                    ])
-                    .on('click', () => {
+                    ]).on('click', () => {
                         if (hit.geometry && hit.geometry.location) {
                             this.refs[field.refId].val(`POINT(${hit.geometry.location.lng()} ${hit.geometry.location.lat()})`)
                             this.refs.conceptMapComponent.setProps({
@@ -263,7 +264,12 @@ class ConceptDialogComponent extends Component {
                     })
                 },
                 loaded: () => {
-                    this.refs.conceptMapComponent.setProps(this.extractItemGeometry())
+                    // Needs to be async to make sure component is completely mounted
+                    setTimeout(() => {
+                        if (this.refs.conceptMapComponent) {
+                            this.refs.conceptMapComponent.setProps(this.extractItemGeometry())
+                        }
+                    })
                 }
             }).ref('conceptMapComponent')
 
@@ -299,13 +305,7 @@ class ConceptDialogComponent extends Component {
     isPolygon() {
         const { item } = this.props
         const geometry = (item && item.data) ? item.data.geometry : ''
-        return (geometry.indexOf('POLYGON') !== -1)
-    }
-
-    isMultiPolygon() {
-        const { item } = this.props
-        const geometry = (item && item.data) ? item.data.geometry : ''
-        return (geometry.indexOf('MULTIPOLYGON') !== -1)
+        return (geometry.indexOf('POLYGON') !== -1 || geometry.indexOf('MULTIPOLYGON') !== -1)
     }
 
     extractItemGeometry() {
@@ -313,12 +313,29 @@ class ConceptDialogComponent extends Component {
         const geometry = (item && item.data) ? item.data.geometry : false
 
         if (geometry) {
-            return this.isMultiPolygon(geometry) ?
-                this._extractMultiPolygon(geometry) : this.isPolygon() ?
-                this._extractPolygon(geometry) :
-                this._extractLatLng(geometry)
+            return this.isPolygon(geometry)
+                ? this._extractGeoJson(geometry)
+                : this._extractLatLng(geometry)
         } else {
             return {}
+        }
+    }
+
+    _extractGeoJson(geometryString) {
+        const geoObject = Geometry.parse(geometryString)
+        window.geoObject = geoObject
+
+        return {
+            geoJson: {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': geoObject.toGeoJSON()
+                    }
+                ]
+            }
         }
     }
 
@@ -331,46 +348,6 @@ class ConceptDialogComponent extends Component {
                 lng: latLongString[0] || 0
             }
         }
-    }
-
-    _extractMultiPolygon(geometryString) {
-        const multiPtsArray = []
-        const polygons = geometryString.match(/\(\([0-9 \.\,\-]+\)\)/g)
-
-        polygons.forEach(polygon => {
-            multiPtsArray.push(
-                this._extractPolygon(polygon).ptsArray
-            )
-        })
-
-        return {
-            multiPtsArray
-        }
-    }
-
-    _extractPolygon(geometryString) {
-        const ptsArray = []
-        geometryString = geometryString.replace(/ +(?= )/g, '')
-
-        function addPoints(data) {
-            const pointsData = data.split(",")
-
-            pointsData.forEach(point => {
-                ptsArray.push(point.trim().split(" "))
-            })
-        }
-
-        //Get ring if there's many
-        const regex = /\(([^()]+)\)/g
-        let results
-        do {
-            results = regex.exec(geometryString)
-            if (results) {
-                addPoints(results[1])
-            }
-        } while (results)
-
-        return { ptsArray }
     }
 
     async onClose(action) {
