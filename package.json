@@ -1,12 +1,12 @@
 {
   "name": "npwriter-plugin-bundle",
-  "version": "7.5.0",
+  "version": "7.6.0",
   "description": "Infomaker plugin bundle for Newspilot Writer",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config __tooling__/webpack/webpack.prod.js",
-    "dev": "webpack-dev-server --config __tooling__/webpack/webpack.dev.js",
+    "dev": "webpack-dev-server --config __tooling__/webpack/webpack.dev.js --compress",
     "release:major": "npm version major --no-git-tag-version",
     "release:minor": "npm version minor --no-git-tag-version",
     "release:hotfix": "npm version patch --no-git-tag-version",
@@ -49,6 +49,7 @@
   "dependencies": {
     "@infomaker/oc-client": "0.0.7",
     "@infomaker/xml-handler": "0.4.0",
+    "ajv": "^6.5.1",
     "cropjs": "^1.1.0",
     "google-maps-api-loader": "1.0.0",
     "newspilot-js-client": "git+ssh://git@bitbucket.org/infomaker/newspilot-js-client.git#3568c3c183e6a5258462c9be21c06d1360a02d1b",

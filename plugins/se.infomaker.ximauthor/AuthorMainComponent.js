@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api, NilUUID, jxon, idGenerator} from 'writer'
+import {api, NilUUID, jxon, idGenerator, event} from 'writer'
 import AuthorListComponent from './AuthorListComponent'
 import AuthorEditComponent from './AuthorEditComponent'
 import AuthorTemplate from './template/author'
@@ -17,11 +17,28 @@ class AuthorMainComponent extends Component {
         }
     }
 
+    didMount() {
+        api.events.on(
+            this.props.pluginConfigObject.id,
+            event.DOCUMENT_CHANGED_EXTERNAL,
+            (event) => {
+                if (event.data.key === 'itemMetaLink' && event.data.value.type === 'x-im/author') {
+                    this.reloadAuthors()
+                }
+            })
+    }
+
+    dispose() {
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
+    }
+
     reloadAuthors() {
         this.extendState({
             existingAuthors: api.newsItem.getAuthors()
         })
     }
+
+
 
     render($$) {
         const noSearch = api.getConfigValue(this.props.pluginConfigObject.id, 'noSearch');
