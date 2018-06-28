@@ -144,18 +144,22 @@ class ConceptMapComponent extends Component {
     }
 
     setGeJson(geoJson) {
-        this.map.data.addGeoJson(geoJson)
-        this.map.data.setStyle({
-            strokeColor: '#3A99D9',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#1E90FF',
-            fillOpacity: 0.35
-        })
-        this._fitBounds()
+        try {
+            this.map.data.addGeoJson(geoJson)
+            this.map.data.setStyle({
+                strokeColor: '#3A99D9',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#1E90FF',
+                fillOpacity: 0.35
+            })
+            this.fitBounds()
+        } catch (error) {
+            console.warn('Error loading geoJson into map: ', error)
+        }
     }
 
-    _fitBounds() {
+    fitBounds() {
         const bounds = new google.maps.LatLngBounds()
         this.map.data.forEach((feature) => {
             feature.getGeometry().forEachLatLng((latlng) => {
@@ -182,13 +186,12 @@ class ConceptMapComponent extends Component {
     }
 
     render($$){
-        const el = $$('div').addClass('concept-map-component')
-        const mapContainer = $$('div', {
-            class: 'map-container',
-            id: 'map-container',
-        }).ref('mapContainer')
-
-        return el.append(mapContainer)
+        return $$('div', { class: 'concept-map-component' },
+            $$('div', {
+                class: 'map-container',
+                id: 'map-container',
+            }).ref('mapContainer')
+        )
     }
 
 }

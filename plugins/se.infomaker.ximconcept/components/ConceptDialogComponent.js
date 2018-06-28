@@ -1,3 +1,4 @@
+import { api } from 'writer'
 import { Component } from 'substance'
 import { Geometry } from 'wkx'
 import ConceptItemModel from '../models/ConceptItemModel'
@@ -195,7 +196,7 @@ class ConceptDialogComponent extends Component {
             pattern: field.validation
         }).ref(field.refId)
 
-        let searchInput, searchSpinner, searchResultWrapper = $$('div').addClass('location-result-wrapper'), mapsWrapper = $$('div').addClass('maps-wrapper')
+        let searchInput, searchSpinner, errorMessage, searchResultWrapper = $$('div').addClass('location-result-wrapper'), mapsWrapper = $$('div').addClass('maps-wrapper')
 
         if (field.editable && !this.isPolygon()) {
             searchInput = $$('input', { type: 'text', placeholder: this.getLabel('Place or location search'), class: 'location-form-control' }).ref('locationSearch')
@@ -237,7 +238,12 @@ class ConceptDialogComponent extends Component {
             searchInput = $$('p').append(this.getLabel('No polygon edit'))
         }
 
+        if (this.state.geometryError) {
+            errorMessage = $$('p', {}, this.state.geometryError)
+        }
+
         mapsWrapper.append([
+            errorMessage,
             searchInput,
             searchSpinner,
             searchResultWrapper
@@ -313,31 +319,41 @@ class ConceptDialogComponent extends Component {
 
         if (geometry) {
             return this.isPolygon(geometry)
-                ? this._extractGeoJson(geometry)
-                : this._extractLatLng(geometry)
+                ? this.extractGeoJson(geometry)
+                : this.extractLatLng(geometry)
         } else {
             return {}
         }
     }
 
-    _extractGeoJson(geometryString) {
-        const geoObject = Geometry.parse(geometryString)
+    extractGeoJson(geometryString) {
+        let geoObject, responseObject = {}
 
-        return {
-            geoJson: {
-                'type': 'FeatureCollection',
-                'features': [
-                    {
-                        'type': 'Feature',
-                        'properties': {},
-                        'geometry': geoObject.toGeoJSON()
-                    }
-                ]
+        try {
+            geoObject = Geometry.parse(geometryString)
+            responseObject = {
+                geoJson: {
+                    'type': 'FeatureCollection',
+                    'features': [
+                        {
+                            'type': 'Feature',
+                            'properties': {},
+                            'geometry': geoObject.toGeoJSON()
+                        }
+                    ]
+                }
             }
+        } catch (error) {
+            console.info(`Error parsing concept geometry: ${error.name } - ${error.message}`)
+            this.extendState({
+                geometryError: `${this.getLabel('Invalid Concept item')}, ${this.getLabel('unable to parse geometric data')}.`
+            })
         }
+
+        return responseObject
     }
 
-    _extractLatLng(geometryString) {
+    extractLatLng(geometryString) {
         const latLongString = /POINT\(([0-9\-\.\s]+)\)/.exec(geometryString || '')[1].split(' ')
 
         return {
