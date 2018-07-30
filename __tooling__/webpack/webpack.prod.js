@@ -16,7 +16,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 console.info(` ----------------------------
-   Plugin production build 
+   Plugin production build
  ----------------------------`)
 
 module.exports = merge(common,
@@ -32,7 +32,9 @@ module.exports = merge(common,
                     parallel: true,
                     sourceMap: true
                 }),
-                new OptimizeCSSAssetsPlugin({})
+                new OptimizeCSSAssetsPlugin({
+                    cssProcessorOptions: { zindex: false }
+                })
             ]
         },
     }
