@@ -59,6 +59,11 @@ class TableNode extends BlockNode {
             }
         }
     }
+    
+    getMetaForCol(colIndex) {
+        const meta = this.meta.find(({id}) => colIndex === id)
+        return meta ? meta : {}
+    }
 
     /**
      * Returns the owner of the cell at the provided coordinates
@@ -520,6 +525,10 @@ TableNode.schema = {
     header: { type: 'boolean', default: false },
     footer: { type: 'boolean', default: false },
     caption: { type: 'string', default: '' },
+    meta: {
+        type: ['array'],
+        default: []
+    },
     cells: {
         type: ['array', 'array', 'id'],
         default: [[]],

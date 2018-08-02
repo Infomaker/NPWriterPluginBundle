@@ -70,22 +70,29 @@ class TableCellComponent extends Component {
 
         return $$(cellType, cellAttributes, [
             editor,
-            this._renderCellSizeInfo($$)
+            this._renderCellInfo($$)
         ]).ref('cell')
     }
 
     /**
      * Renders info about the cell size if it has a rowspan or colspan
      */
-    _renderCellSizeInfo($$) {
+    _renderCellInfo($$) {
+        const {index, format} = this.props.meta
         const node = this.props.node
-        if (node.rowspan < 2 && node.colspan < 2) return null
+        if (!index && !format && node.rowspan < 2 && node.colspan < 2) {
+            return null
+        }
+
         const rowspan = node.rowspan || 1
         const colspan = node.colspan || 1
+        const sizeString = (rowspan > 1 || colspan > 1) ? `${colspan}x${rowspan}` : ''
 
-        return $$('div', {class: 'cell-size-info'}, [
-            `${colspan}x${rowspan}`
-        ])
+        return $$('div', {class: 'cell-info'}, [
+            sizeString,
+            format,
+            index ? '*' : ''
+        ].join(' '))
     }
 
     /**

@@ -13,7 +13,9 @@ export default {
     },
 
     _getColspan(colspans, rowIndex, colIndex) {
-        if (!colspans[rowIndex]) { return 0 }
+        if (!colspans[rowIndex]) {
+            return 0
+        }
         return colspans[rowIndex][colIndex]
     },
 
@@ -25,14 +27,23 @@ export default {
     },
 
     // From newsml to node
-    import: function (el, node, converter) {
+    import: function(el, node, converter) {
         if (!el.id) {
             node.id = uuid(this.type)
         }
 
         const trs = [...el.findAll('thead > tr'), ...el.findAll('tbody > tr'), ...el.findAll('tfoot > tr')]
+        const metaCols = [...el.findAll('meta > col')]
         const rowspans = [] // we remember active rowspans here
         const colspans = [] // we remember active colspans here
+
+        node.meta = metaCols.map((col) => {
+            return {
+                id: parseInt(col.attr('id'), 10),
+                format: col.attr('format'),
+                index: col.attr('index')
+            }
+        })
 
         node.cells = trs.map((tr, rowIndex) => {
             const row = []
@@ -96,14 +107,33 @@ export default {
     },
 
     // from node to newsml
-    export: function (node, el, converter) {
+    export: function(node, el, converter) {
         let $$ = converter.$$
         let rowCount = node.rowCount
         let colCount = node.colCount
 
+        let metaElem = $$('meta')
         let theadElem = $$('thead')
         let tbodyElem = $$('tbody')
         let tfootElem = $$('tfoot')
+
+        node.meta.forEach(({index, format, id}) => {
+            if (format || index) {
+                const colEl = $$('col')
+
+                colEl.attr('id', id)
+                if (index) {
+                    colEl.attr('index', index)
+                }
+                if (format) {
+                    colEl.attr('format', format)
+                }
+
+                metaElem.append(colEl)
+            }
+        })
+
+        el.append(metaElem)
 
         for (let row = 0; row < rowCount; row++) {
             let rowElem = $$('tr')
