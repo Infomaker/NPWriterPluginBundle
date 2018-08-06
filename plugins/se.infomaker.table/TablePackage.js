@@ -23,6 +23,7 @@ import TableContextMenuTool from './tools/TableContextMenuTool'
 import HTMLTableConverter from './converters/HTMLTableConverter'
 import XMLTableConverter from './converters/XMLTableConverter'
 import TableCellConverter from './converters/TableCellConverter'
+import ToggleIndexCommand from './commands/ToggleIndexCommand'
 
 const MAIN_TOOL_GROUP = 'context-menu-primary'
 const TABLE_COMMAND_GROUP = 'table'
@@ -58,6 +59,10 @@ const COMMANDS = {
     EMPHASIS: 'table-emphasis',
     CELL_STRONG: 'table-cell-strong',
     CELL_EMPHASIS: 'table-cell-emphasis',
+
+    // Meta
+    META_TOGGLE_INDEX: 'table-meta-toggle-index',
+    META_SET_FORMAT: 'table-meta-toggle-index'
 }
 
 
@@ -149,6 +154,9 @@ export default {
         config.addCommand(COMMANDS.UNMERGE_CELLS, UnmergeCellsCommand, {
             commandGroup: TABLE_COMMAND_GROUP
         })
+        config.addCommand(COMMANDS.META_TOGGLE_INDEX, ToggleIndexCommand, {
+            commandGroup: TABLE_COMMAND_GROUP
+        })
 
         // Converters
         config.addConverter('newsml', XMLTableConverter)
@@ -208,7 +216,8 @@ export default {
             COMMANDS.DELETE_COLUMN,
             COMMANDS.DELETE_COLUMNS,
             COMMANDS.MERGE_CELLS,
-            COMMANDS.UNMERGE_CELLS
+            COMMANDS.UNMERGE_CELLS,
+            COMMANDS.META_TOGGLE_INDEX
         ]
 
         mainToolgroupTools.forEach(tool => {

@@ -103,7 +103,7 @@ class TableComponent extends Component {
                         disabled: this.props.disabled,
                         header: this.isHeaderRow(row),
                         selectionState: this._getSelectionStateForCell(cellNode.id),
-                        meta: row === 0 && this.isHeaderRow(row) ? node.getMetaForCol(col) : {}
+                        meta: this.isHeaderRow(row) ? node.getMetaForCol(col) : {}
                     }).ref(cellNode.id)
                     rowElem.append(cellElem)
                 }

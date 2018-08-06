@@ -34,7 +34,8 @@ class TableCellComponent extends Component {
     shouldRerender(newProps) {
         const headerChanged = this.props.header !== newProps.header
         const selectionStateChanged = this.props.selectionState !== newProps.selectionState
-        return headerChanged || selectionStateChanged
+        const metaChanged = this.props.meta !== newProps.meta
+        return headerChanged || selectionStateChanged || metaChanged
     }
 
     render($$) {

@@ -117,7 +117,9 @@ export default {
         let tbodyElem = $$('tbody')
         let tfootElem = $$('tfoot')
 
-        node.meta.forEach(({index, format, id}) => {
+        node.meta.sort((a, b) => {
+            return a.id > b.id ? 1 : -1
+        }).forEach(({index, format, id}) => {
             if (format || index) {
                 const colEl = $$('col')
 
