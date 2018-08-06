@@ -318,5 +318,23 @@ export default {
             en: 'Unmerge cells',
             sv: 'Separera celler'
         })
+
+
+        config.addLabel(COMMANDS.META_TOGGLE_INDEX, {
+            en: 'Toggle Index',
+            sv: 'Lägg till/ta bort index'
+        })
+        config.addLabel(COMMANDS.META_SET_FORMAT_NUMBER, {
+            en: 'Set number format',
+            sv: 'Sätt siffer-format'
+        })
+        config.addLabel(COMMANDS.META_SET_FORMAT_TEXT, {
+            en: 'Set text format',
+            sv: 'Sätt text-format'
+        })
+        config.addLabel(COMMANDS.META_CLEAR_FORMAT, {
+            en: 'Clear format',
+            sv: 'Rensa format'
+        })
     }
 }
