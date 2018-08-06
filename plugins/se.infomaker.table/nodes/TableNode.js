@@ -98,6 +98,30 @@ class TableNode extends BlockNode {
         tx.set([tableNode.id, 'meta'], tableNode.meta)
     }
 
+    moveColMetaOnRemove(colIndex, tx) {
+        this.transferColMeta(colIndex, tx, true)
+    }
+
+    moveColMetaOnAdd(colIndex, tx) {
+        this.transferColMeta(colIndex, tx)
+    }
+
+    transferColMeta(colIndex, tx, removing = false) {
+        const tableMeta = this.meta.map((meta) => {
+            if(colIndex <= meta.id) {
+                if(removing) {
+                    meta.id--
+                } else {
+                    meta.id++
+                }
+            }
+
+            return meta
+        })
+
+        tx.set([this.id, 'meta'], tableMeta)
+    }
+
     /**
      * Returns the owner of the cell at the provided coordinates
      *
@@ -409,19 +433,6 @@ class TableNode extends BlockNode {
         tx.set([tableNode.id, 'cells'], cells)
     }
 
-    transferColMeta(colIndex, tx) {
-
-        const tableMeta = this.meta.map((meta) => {
-            if(colIndex <= meta.id) {
-                meta.id++
-            }
-
-            return meta
-        })
-
-        tx.set([this.id, 'meta'], tableMeta)
-    }
-
     /**
      * Insert a column at the specified index.
      *
@@ -439,7 +450,7 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.insertRowAt(colIndex, tx))
         }
 
-        this.transferColMeta(colIndex, tx)
+        this.moveColMetaOnAdd(colIndex, tx)
 
         // Save a reference to the table node
         // `this` will refer to the table node as it is before the transaction.
@@ -499,6 +510,7 @@ class TableNode extends BlockNode {
         }
 
         this.removeMetaForCol(colIndex, tx)
+        this.moveColMetaOnRemove(colIndex, tx)
 
         // Save a reference to the table node
         // `this` will refer to the table node as it is before the transaction.
