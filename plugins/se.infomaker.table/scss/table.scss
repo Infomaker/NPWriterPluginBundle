@@ -6,6 +6,7 @@
         width: 100%;
         border-collapse: collapse;
         border: 1px solid #eee;
+
         caption {
             font-style: italic;
             font-weight: bold;
@@ -31,6 +32,14 @@
             &.focused {
                 box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.4);
                 z-index: 2; // Pop out of selection
+            }
+            &.number-format {
+                text-align: right;
+                .cell-info {
+                    bottom: 0;
+                    left: 0.4em;
+                    right: auto;
+                }
             }
             .cell-info {
                 pointer-events: none;

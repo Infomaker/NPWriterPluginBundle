@@ -40,6 +40,7 @@ class TableCellComponent extends Component {
 
     render($$) {
         const node = this.props.node
+        const {format} = this.props.meta
         const cellType = this.props.header ? 'th' : 'td'
         const classNames = []
 
@@ -49,6 +50,10 @@ class TableCellComponent extends Component {
 
         if (this.props.selectionState === 'focused') {
             classNames.push('focused')
+        }
+
+        if(format) {
+            classNames.push(`${format}-format`)
         }
 
         const cellAttributes = {
@@ -80,20 +85,24 @@ class TableCellComponent extends Component {
      */
     _renderCellInfo($$) {
         const {index, format} = this.props.meta
+        const {header} = this.props
         const node = this.props.node
         if (!index && !format && node.rowspan < 2 && node.colspan < 2) {
             return null
         }
 
+        const cellInfo = []
         const rowspan = node.rowspan || 1
         const colspan = node.colspan || 1
-        const sizeString = (rowspan > 1 || colspan > 1) ? `${colspan}x${rowspan}` : ''
 
-        return $$('div', {class: 'cell-info'}, [
-            sizeString,
-            format,
-            index ? '*' : ''
-        ].join(' '))
+        if(rowspan > 1 || colspan > 1) {
+            cellInfo.push(`${colspan}x${rowspan}`)
+        }
+        if(header) {
+            cellInfo.push(format, index ? '*' : '')
+        }
+
+        return $$('div', {class: `cell-info`}, cellInfo.join(' '))
     }
 
     /**
