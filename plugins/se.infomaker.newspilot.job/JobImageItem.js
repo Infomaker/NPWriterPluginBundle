@@ -21,7 +21,7 @@ class JobImageItem extends Component {
             })
 
         if (this._isImage(this.props.jobImage.url)) {
-            this.renderDragableImage($$, divBox, this.props.jobImage)
+            this.renderDraggableImage($$, divBox, this.props.jobImage)
         } else {
             this.renderImage($$, divBox, this.props.jobImage)
         }
@@ -29,7 +29,7 @@ class JobImageItem extends Component {
         return divBox
     }
 
-    renderDragableImage($$, divBox, jobImage) {
+    renderDraggableImage($$, divBox, jobImage) {
         const ul = $$('ul')
 
         const listDrag = $$('li')
