@@ -23,6 +23,8 @@ import TableContextMenuTool from './tools/TableContextMenuTool'
 import HTMLTableConverter from './converters/HTMLTableConverter'
 import XMLTableConverter from './converters/XMLTableConverter'
 import TableCellConverter from './converters/TableCellConverter'
+import ToggleIndexCommand from './commands/ToggleIndexCommand'
+import SetFormatCommand from './commands/SetFormatCommand'
 
 const MAIN_TOOL_GROUP = 'context-menu-primary'
 const TABLE_COMMAND_GROUP = 'table'
@@ -58,6 +60,12 @@ const COMMANDS = {
     EMPHASIS: 'table-emphasis',
     CELL_STRONG: 'table-cell-strong',
     CELL_EMPHASIS: 'table-cell-emphasis',
+
+    // Meta
+    META_TOGGLE_INDEX: 'table-meta-toggle-index',
+    META_SET_FORMAT_NUMBER: 'table-meta-set-format-number',
+    META_SET_FORMAT_TEXT: 'table-meta-set-format-text',
+    META_CLEAR_FORMAT: 'table-meta-clear-format'
 }
 
 
@@ -149,6 +157,24 @@ export default {
         config.addCommand(COMMANDS.UNMERGE_CELLS, UnmergeCellsCommand, {
             commandGroup: TABLE_COMMAND_GROUP
         })
+        config.addCommand(COMMANDS.META_TOGGLE_INDEX, ToggleIndexCommand, {
+            commandGroup: TABLE_COMMAND_GROUP
+        })
+
+        config.addCommand(COMMANDS.META_SET_FORMAT_NUMBER, SetFormatCommand, {
+            commandGroup: TABLE_COMMAND_GROUP,
+            format: 'number'
+        })
+        config.addCommand(COMMANDS.META_SET_FORMAT_TEXT, SetFormatCommand, {
+            commandGroup: TABLE_COMMAND_GROUP,
+            format: 'text'
+        })
+        config.addCommand(COMMANDS.META_CLEAR_FORMAT, SetFormatCommand, {
+            commandGroup: TABLE_COMMAND_GROUP,
+            format: null
+        })
+
+
 
         // Converters
         config.addConverter('newsml', XMLTableConverter)
@@ -208,7 +234,11 @@ export default {
             COMMANDS.DELETE_COLUMN,
             COMMANDS.DELETE_COLUMNS,
             COMMANDS.MERGE_CELLS,
-            COMMANDS.UNMERGE_CELLS
+            COMMANDS.UNMERGE_CELLS,
+            COMMANDS.META_TOGGLE_INDEX,
+            COMMANDS.META_SET_FORMAT_NUMBER,
+            COMMANDS.META_SET_FORMAT_TEXT,
+            COMMANDS.META_CLEAR_FORMAT
         ]
 
         mainToolgroupTools.forEach(tool => {
@@ -287,6 +317,24 @@ export default {
         config.addLabel(COMMANDS.UNMERGE_CELLS, {
             en: 'Unmerge cells',
             sv: 'Separera celler'
+        })
+
+
+        config.addLabel(COMMANDS.META_TOGGLE_INDEX, {
+            en: 'Toggle column index',
+            sv: 'Lägg till/ta bort kolumn-index'
+        })
+        config.addLabel(COMMANDS.META_SET_FORMAT_NUMBER, {
+            en: 'Set number column format',
+            sv: 'Sätt siffer-format på kolumn'
+        })
+        config.addLabel(COMMANDS.META_SET_FORMAT_TEXT, {
+            en: 'Set text column format',
+            sv: 'Sätt text-format på kolumn'
+        })
+        config.addLabel(COMMANDS.META_CLEAR_FORMAT, {
+            en: 'Clear column format',
+            sv: 'Rensa format på kolumn'
         })
     }
 }
