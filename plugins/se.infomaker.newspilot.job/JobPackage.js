@@ -73,8 +73,8 @@ export default {
         })
 
         config.addLabel('unsupported-format', {
-            en: 'Unsupported image format in the Writer',
-            sv: 'Bildformatet stödjs inte av Writer'
+            en: 'Unsupported image format',
+            sv: 'Bildformatet stödjs inte'
         })
 
         config.addIcon('reload', {'fontawesome': 'fa-refresh'})
