@@ -1,40 +1,38 @@
 import {Component} from 'substance'
 import {api, ConceptService} from 'writer'
+import {AuthorDialogComponent} from './AuthorDialogComponent'
 
 class UserComponent extends Component {
 
     didMount() {
         this._getUserState()
-            .then((sub) => {
+            .then(({userInfo, authorInfo}) => {
                 this.extendState({
-                    sub
+                    userInfo,
+                    authorInfo
                 })
             })
     }
 
     getInitialState() {
         return {
-            sub: null
+            userInfo: null,
+            authorInfo: null
         }
     }
 
     render($$) {
-        if(this.state.sub) {
-            api.ui.showConfirmDialog('Verify author',
-                this.state.sub.name,
+        console.log(this.state)
+        if (this.state.userInfo && !this.state.authorInfo) {
+            api.ui.showDialog(AuthorDialogComponent,
                 {
-                    primary: {
-                        label: 'Jag e ja',
-                        callback: () => {
-                            console.info('det e ja')
-                        }
-                    },
-                    secondary: {
-                        label: 'Jag e inte ja',
-                        callback: () => {
-                            console.info('det e inte ja')
-                        }
-                    }
+                    ...this.state.userInfo
+                },
+                {
+                    title: this.getLabel('Add to image byline'),
+                    global: true,
+                    primary: false,
+                    secondary: false
                 })
         }
 
@@ -44,10 +42,11 @@ class UserComponent extends Component {
     async _getUserState() {
 
         const userInfo = await api.user.getUserInfo()
+        const authorInfo = await ConceptService.getAuthorConceptBySub(userInfo.sub)
 
-        const authorConcept = await ConceptService.getAuthorConceptBySub(userInfo.sub)
+        console.log(userInfo.sub)
 
-        return authorConcept
+        return {userInfo, authorInfo}
     }
 
 }
