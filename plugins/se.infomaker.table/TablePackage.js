@@ -321,20 +321,20 @@ export default {
 
 
         config.addLabel(COMMANDS.META_TOGGLE_INDEX, {
-            en: 'Toggle Index',
-            sv: 'Lägg till/ta bort index'
+            en: 'Toggle column index',
+            sv: 'Lägg till/ta bort kolumn-index'
         })
         config.addLabel(COMMANDS.META_SET_FORMAT_NUMBER, {
-            en: 'Set number format',
-            sv: 'Sätt siffer-format'
+            en: 'Set number column format',
+            sv: 'Sätt siffer-format på kolumn'
         })
         config.addLabel(COMMANDS.META_SET_FORMAT_TEXT, {
-            en: 'Set text format',
-            sv: 'Sätt text-format'
+            en: 'Set text column format',
+            sv: 'Sätt text-format på kolumn'
         })
         config.addLabel(COMMANDS.META_CLEAR_FORMAT, {
-            en: 'Clear format',
-            sv: 'Rensa format'
+            en: 'Clear column format',
+            sv: 'Rensa format på kolumn'
         })
     }
 }
