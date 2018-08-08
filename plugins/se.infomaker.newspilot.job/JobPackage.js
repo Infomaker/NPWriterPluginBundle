@@ -72,6 +72,11 @@ export default {
             sv: 'Loggar in, vänligen vänta'
         })
 
+        config.addLabel('unsupported-format', {
+            en: 'Unsupported image format in the Writer',
+            sv: 'Bildformatet stödjs inte av Writer'
+        })
+
         config.addIcon('reload', {'fontawesome': 'fa-refresh'})
     }
 }

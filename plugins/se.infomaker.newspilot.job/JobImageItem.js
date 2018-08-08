@@ -13,7 +13,6 @@ class JobImageItem extends Component {
     }
 
     render($$) {
-        const jobImage = this.props.jobImage
 
         const divBox = $$('div')
             .addClass('box')
@@ -21,6 +20,16 @@ class JobImageItem extends Component {
                 this._showImageInfo();
             })
 
+        if (this._isImage(this.props.jobImage.url)) {
+            this.renderDragableImage($$, divBox, this.props.jobImage)
+        } else {
+            this.renderImage($$, divBox, this.props.jobImage)
+        }
+
+        return divBox
+    }
+
+    renderDragableImage($$, divBox, jobImage) {
         const ul = $$('ul')
 
         const listDrag = $$('li')
@@ -45,8 +54,40 @@ class JobImageItem extends Component {
         ul.append([listDrag, listContent])
 
         divBox.append(ul)
+    }
 
-        return divBox
+    renderImage($$, divBox, jobImage) {
+        const ul = $$('ul').addClass('disabled')
+
+        const listDrag = $$('li')
+            .addClass('nodrag')
+
+        const listContent = $$('li')
+            .addClass('content')
+
+        const divImage = $$('div')
+            .addClass('imageplaceholder')
+            .attr('style', 'background-image:url(' + jobImage.thumbUrl + ')')
+
+        const label = $$('span')
+            .addClass('title')
+            .append(jobImage.name)
+
+        const unsupportedLabel = $$('span')
+            .addClass('unsupported')
+            .append(this.getLabel('unsupported-format'))
+
+        listContent.append([label, divImage, unsupportedLabel])
+
+        ul.append([listDrag, listContent])
+
+        divBox.append(ul)
+    }
+
+    _isImage(uri) {
+        // Load allowed filextension from config file
+        const fileExtensionsFromConfig = this.context.api.getConfigValue('se.infomaker.ximimage', 'imageFileExtension', ['jpeg', 'jpg', 'gif', 'png'])
+        return fileExtensionsFromConfig.some((extension) => uri.includes(extension))
     }
 
     _onDragStart(e) {
