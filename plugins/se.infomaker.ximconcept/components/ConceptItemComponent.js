@@ -60,7 +60,7 @@ class ConceptItemComponent extends Component {
         const { item, isHovered } = this.state
         const { propertyMap, icon, editable } = this.props
         const type = (item && item[propertyMap.ConceptImTypeFull]) ? item[propertyMap.ConceptImTypeFull] : ''
-        const editableClass = this.props.editable ? 'editable' : ''
+        const editableClass = editable ? 'editable' : ''
         const el = $$('div')
 
         let displayIcon
