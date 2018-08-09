@@ -27,10 +27,10 @@ class ConceptSearchComponent extends Component {
     }
 
     render($$) {
-        let icon, searchResultsContainer
+        let searchFormIcon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
-        const { disabled, subtypes, enableHierarchy, propertyMap } = this.props
+        const { disabled, subtypes, enableHierarchy, propertyMap, icon } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
@@ -49,17 +49,17 @@ class ConceptSearchComponent extends Component {
             searchInput.attr('disabled', true)
         } else {
             if (this.state.searching) {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-spinner fa-spin concept-search-icon searching',
                     "aria-hidden": 'true'
                 })
             } else if (searchedTerm) {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-times concept-search-icon abort',
                     "aria-hidden": 'true'
                 }).on('click', this.resetState.bind(this))
             } else {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-search concept-search-icon search',
                     "aria-hidden": 'true'
                 })
@@ -74,6 +74,7 @@ class ConceptSearchComponent extends Component {
                 searching,
                 searchResult,
                 selected,
+                icon,
                 isPolygon,
                 enableHierarchy,
                 propertyMap,
@@ -86,7 +87,7 @@ class ConceptSearchComponent extends Component {
 
         el.addClass('concept-search-component')
             .append(searchInput)
-            .append(icon)
+            .append(searchFormIcon)
             .append(searchResultsContainer)
 
         return el

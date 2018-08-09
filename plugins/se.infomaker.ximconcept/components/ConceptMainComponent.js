@@ -69,9 +69,9 @@ class ConceptMainComponent extends Component {
                     this.reloadArticleConcepts()
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
-                    const associatedLinkes = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
+                    const associatedLinks = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
 
-                    this.extendState({ associatedLinkes })
+                    this.extendState({ associatedLinks })
                 }
             }
         })
@@ -100,9 +100,9 @@ class ConceptMainComponent extends Component {
     reloadArticleConcepts() {
         const { pluginConfig } = this.state
         const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
-        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
-        this.extendState({ existingItems, associatedLinkes })
+        this.extendState({ existingItems, associatedLinks })
     }
 
     getInitialState() {
@@ -113,7 +113,7 @@ class ConceptMainComponent extends Component {
         const subtypes = pluginConfig.subtypes
         const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
-        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
         return {
             name,
@@ -123,7 +123,7 @@ class ConceptMainComponent extends Component {
             existingItems,
             conceptType,
             propertyMap,
-            associatedLinkes
+            associatedLinks
         }
     }
 
@@ -219,16 +219,16 @@ class ConceptMainComponent extends Component {
     }
 
     shouldBeDisabled() {
-        const { singleValue, pluginConfig, associatedLinkes } = this.state
+        const { singleValue, pluginConfig, associatedLinks } = this.state
 
         return (singleValue && this.state.existingItems.length) ? true :
-            (pluginConfig.associatedWith && (!associatedLinkes || !associatedLinkes.length)) ? true : false
+            (pluginConfig.associatedWith && (!associatedLinks || !associatedLinks.length)) ? true : false
     }
 
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
@@ -243,6 +243,7 @@ class ConceptMainComponent extends Component {
             working: this.state.working,
             enableHierarchy,
             editable,
+            icon,
         }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
@@ -256,7 +257,8 @@ class ConceptMainComponent extends Component {
                 disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,
                 itemExists: this.itemExists,
-                associatedWith
+                associatedWith,
+                icon,
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 

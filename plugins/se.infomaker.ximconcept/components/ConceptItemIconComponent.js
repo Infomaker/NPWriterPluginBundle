@@ -30,7 +30,7 @@ class ConceptItemIconComponent extends Component {
             'x-cu/radio': 'fa-microphone'
         }
 
-        return conceptTypeIcons[type] || 'fa-question-circle-o'
+        return this.props.icon || conceptTypeIcons[type] || 'fa-question-circle-o'
     }
 
     getIconString() {
