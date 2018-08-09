@@ -228,7 +228,7 @@ class ConceptMainComponent extends Component {
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2')
@@ -243,6 +243,7 @@ class ConceptMainComponent extends Component {
             working: this.state.working,
             enableHierarchy,
             editable,
+            icon,
         }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
@@ -256,7 +257,8 @@ class ConceptMainComponent extends Component {
                 disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,
                 itemExists: this.itemExists,
-                associatedWith
+                associatedWith,
+                icon,
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 

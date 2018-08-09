@@ -11,7 +11,7 @@ class ConceptListComponent extends Component {
 
     render($$) {
         let spinner
-        const { editable, working, propertyMap } = this.props
+        const { editable, working, propertyMap, icon } = this.props
 
         if (working) {
             spinner = $$('i', {
@@ -24,6 +24,7 @@ class ConceptListComponent extends Component {
             return $$(ConceptItemComponent, {
                 item,
                 editable,
+                icon,
                 propertyMap,
                 enableHierarchy: this.props.enableHierarchy,
                 editItem: this.props.editItem,

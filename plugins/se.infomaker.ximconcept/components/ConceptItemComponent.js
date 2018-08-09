@@ -58,12 +58,12 @@ class ConceptItemComponent extends Component {
 
     render($$){
         const { item, isHovered } = this.state
-        const { propertyMap } = this.props
+        const { propertyMap, icon, editable } = this.props
         const type = (item && item[propertyMap.ConceptImTypeFull]) ? item[propertyMap.ConceptImTypeFull] : ''
-        const editable = this.props.editable ? 'editable' : ''
+        const editableClass = this.props.editable ? 'editable' : ''
         const el = $$('div')
 
-        let icon
+        let displayIcon
         let removeIcon
         let image
 
@@ -90,11 +90,12 @@ class ConceptItemComponent extends Component {
             }
 
             if (!avatarUuid || isHovered) {
-                icon = $$(ConceptItemIcon, {
+                displayIcon = $$(ConceptItemIcon, {
                     isHovered,
                     item,
+                    icon,
                     propertyMap,
-                    editable: this.props.editable
+                    editable,
                 })
             }
 
@@ -111,10 +112,10 @@ class ConceptItemComponent extends Component {
             el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''} ${item.error ? 'not-found' : ''}`)
                 .addClass(isDuplicate ? 'duplicate' : '')
                 .append(image)
-                .append(icon)
+                .append(displayIcon)
                 .append(itemContent)
                 .append(removeIcon)
-                .addClass(`${type} ${editable}`)
+                .addClass(`${type} ${editableClass}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
                 .on('click', this.editItem)
