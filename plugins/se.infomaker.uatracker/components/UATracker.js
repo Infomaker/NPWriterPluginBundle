@@ -271,7 +271,13 @@ class UATracker extends Component {
         try {
             return api.user.getUserInfo().then(user => {
                 if (user) {
-                    return {email: user.email, name: `${user.given_name} ${user.family_name}`}
+                    // TODO: Remove
+                    console.log('GOT AUTH USER', user)
+                    return {
+                        email: user.email,
+                        name: `${user.given_name} ${user.family_name}`,
+                        picture: user.picture
+                    }
                 }
             })
         } catch (e) {
@@ -291,6 +297,21 @@ class UATracker extends Component {
         if (api.history.isAvailable()) {
             api.history.storage.setItem('user', JSON.stringify(user))
         }
+
+        // UA-trackern does not handle IMID authorized users, i.e.
+        // when opening a new article UA-tracker will not serve
+        // any users to display hence we need to add the auth user
+        // to "users" in order for plugin to render the user. When
+        // article is saved first time, the UA-tracker way to handle
+        // this will take over.
+
+        // Add timestamp to user (in order to render for how long
+        // user has been on new article).
+        user.timestamp = moment().format('x')
+
+        this.extendState({
+            users: [user]
+        })
         this.login(user)
     }
 

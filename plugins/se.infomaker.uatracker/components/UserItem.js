@@ -58,6 +58,9 @@ class UserItem extends Component {
 
     render($$) {
         const user = this.props.user
+        // TODO: Remove
+        console.log('UserItem user:', user)
+
         const Avatar = api.ui.getComponent('avatar')
 
         const itemClassNames = ['user-list-item']
@@ -66,12 +69,20 @@ class UserItem extends Component {
             itemClassNames.push('active')
         }
 
+        let avatarSource
+        if (user.picture) {
+            avatarSource = 'url'
+        } else {
+            avatarSource = 'gravatar'
+        }
+
         return $$('li', { class: itemClassNames.join(' ')},
             [
                 $$(Avatar, {
-                    avatarSource: 'gravatar',
+                    avatarSource: avatarSource,
                     avatarId: user.email,
-                    avatarAlt: this.extractUserInitials(user)
+                    avatarAlt: this.extractUserInitials(user),
+                    avatarUrl: user.picture
                 }).ref('avatar-' + user.socketId),
 
                 $$('div', { class: 'status-indicator' }),
