@@ -66,7 +66,8 @@ class ConceptMainComponent extends Component {
                 } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
                 } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
-                    this.reloadArticleConcepts()
+                    const updatedConcept = (e.data && e.data.data) ? e.data.data : false
+                    this.reloadArticleConcepts(updatedConcept)
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
                     const associatedLinks = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
@@ -97,12 +98,14 @@ class ConceptMainComponent extends Component {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
-    reloadArticleConcepts() {
+    reloadArticleConcepts(updatedConcept = null) {
         const { pluginConfig } = this.state
         const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
         const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
-        this.extendState({ existingItems, associatedLinks })
+        this.extendState({ associatedLinks })
+
+        this.decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept)
     }
 
     getInitialState() {
@@ -111,9 +114,12 @@ class ConceptMainComponent extends Component {
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
-        const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
+        const articleConcepts = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
         const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const existingItems = []
+
+        this.decorateExistingItemsWithRemoteMeta(articleConcepts)
 
         return {
             name,
@@ -124,6 +130,31 @@ class ConceptMainComponent extends Component {
             conceptType,
             propertyMap,
             associatedLinks
+        }
+    }
+
+    async decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept) {
+        if (Array.isArray(existingItems)) {
+            const enhancedItems = await Promise.all(existingItems.map(async (item) => {
+                const existingItem = this.state ?
+                    this.state.existingItems.find(existingItem => existingItem.uuid === item.uuid) :
+                    false
+
+                if ((updatedConcept && existingItem) && updatedConcept.uuid === existingItem.uuid) {
+                    existingItem.isEnhanced = false
+                }
+
+                if (existingItem && existingItem.isEnhanced) {
+                    item = existingItem
+                } else {
+                    item = await ConceptService.fetchConceptItemProperties(item)
+                    item.isEnhanced = true
+                }
+
+                return item
+            }))
+
+            this.extendState({ existingItems: enhancedItems })
         }
     }
 
@@ -162,7 +193,7 @@ class ConceptMainComponent extends Component {
                     this.getLabel('The Concept is already used'))
             }
         } else {
-            if ((this.state.pluginConfig.createable !== undefined && this.state.pluginConfig.createable) || this.state.pluginConfig.editable) {
+            if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
                 const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
                     this.state.types.length ? null : this.state.conceptType
 
@@ -231,10 +262,9 @@ class ConceptMainComponent extends Component {
         const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
-        const header = $$('h2')
-            .append(`${label} (${this.state.existingItems.length})`)
-            .addClass('concept-header')
-
+        const header = $$('h2', { class: 'concept-header' }, [
+            `${label} (${this.state.existingItems.length})`
+        ])
         const list = $$(ConceptListComponent, {
             propertyMap,
             editItem: this.editItem,
@@ -262,13 +292,11 @@ class ConceptMainComponent extends Component {
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
-        const el = $$('div', { class: `concept-main-component ${conceptType}` }, [
+        return $$('div', { class: `concept-main-component ${conceptType}` }, [
             header,
             list,
             search
         ]).ref(`conceptMainComponent-${this.state.name}`)
-
-        return el
     }
 }
 
