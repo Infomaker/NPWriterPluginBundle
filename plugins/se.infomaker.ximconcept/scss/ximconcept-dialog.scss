@@ -1,6 +1,7 @@
 .concept-dialog-component {
     max-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 10px 25px;
 
     .warning {
