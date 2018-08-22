@@ -27,7 +27,7 @@ const XimConceptPackage = {
         })
         configurator.addLabel('No polygon edit', {
             sv: 'Redigering av polygoner är för närvarande inte möjlig via writern',
-            en: 'Currently there is support for polygon editing from the writer'
+            en: 'Currently there is no support for polygon editing from the writer'
         })
         configurator.addLabel('Place or location search', {
             sv: 'Sök adress eller plats'
