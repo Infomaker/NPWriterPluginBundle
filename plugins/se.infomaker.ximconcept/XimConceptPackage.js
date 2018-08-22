@@ -13,13 +13,13 @@ const XimConceptPackage = {
 
         configurator.addToSidebar('main', pluginConfig, ConceptMainComponent)
 
-        configurator.addLabel('create', {
+        configurator.addLabel('Create', {
             sv: 'Skapa'
         })
-        configurator.addLabel('save', {
+        configurator.addLabel('Save', {
             sv: 'Spara'
         })
-        configurator.addLabel('cancel', {
+        configurator.addLabel('Cancel', {
             sv: 'Avbryt'
         })
         configurator.addLabel('Replaced by', {

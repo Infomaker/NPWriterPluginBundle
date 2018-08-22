@@ -32,7 +32,7 @@ class ConceptSearchResultComponent extends Component {
         if (this.props.creatable && this.props.searchedTerm !== '*' && !this.props.isPolygon && !this.props.searching) {
             createConcept = $$('div').addClass('concept-create-wrapper')
                 .append($$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }))
-                .append(`${this.getLabel('create')}: ${this.props.searchedTerm}`)
+                .append(`${this.getLabel('Create')}: ${this.props.searchedTerm}`)
                 .on('mousedown', this.props.addItem)
         }
 

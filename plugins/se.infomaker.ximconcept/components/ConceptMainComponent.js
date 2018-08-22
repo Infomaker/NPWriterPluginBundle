@@ -181,7 +181,7 @@ class ConceptMainComponent extends Component {
     }
 
     editItem(item) {
-        const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
+        const title = `${item.create ? this.getLabel('Create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
 
         if (this.state.pluginConfig.types && !item[this.state.propertyMap.ConceptImTypeFull]) {
             api.ui.showDialog(
@@ -196,7 +196,7 @@ class ConceptMainComponent extends Component {
                     title,
                     cssClass: 'hide-overflow',
                     primary: false,
-                    secondary: this.getLabel('cancel'),
+                    secondary: this.getLabel('Cancel'),
                 }
             )
         } else {
@@ -211,8 +211,8 @@ class ConceptMainComponent extends Component {
                 {
                     title,
                     cssClass: 'hide-overflow',
-                    primary: this.getLabel('save'),
-                    secondary: this.getLabel('cancel'),
+                    primary: this.getLabel('Save'),
+                    secondary: this.getLabel('Cancel'),
                 }
             )
         }
