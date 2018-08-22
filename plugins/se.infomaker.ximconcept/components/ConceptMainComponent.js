@@ -244,6 +244,7 @@ class ConceptMainComponent extends Component {
             enableHierarchy,
             editable,
             icon,
+            types: config.types
         }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
@@ -259,6 +260,7 @@ class ConceptMainComponent extends Component {
                 itemExists: this.itemExists,
                 associatedWith,
                 icon,
+                types: config.types
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
