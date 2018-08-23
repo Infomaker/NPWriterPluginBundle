@@ -66,7 +66,7 @@ class ConceptMainComponent extends Component {
                 } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
                 } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
-                    const updatedConcept = (e.data && e.data.data) ? e.data.data : false
+                    const updatedConcept = (e.data && e.data.data) ? e.data.data : null
                     this.reloadArticleConcepts(updatedConcept)
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
@@ -98,6 +98,11 @@ class ConceptMainComponent extends Component {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
+    /**
+     * reload concepts from article
+     *
+     * @param {object} updatedConcept optional object that triggered document changed event, defaults to null
+     */
     reloadArticleConcepts(updatedConcept = null) {
         const { pluginConfig } = this.state
         const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
@@ -133,11 +138,18 @@ class ConceptMainComponent extends Component {
         }
     }
 
+    /**
+     * Fetch additional data from OC for each concept
+     * Will check if item already has been decorated before fetch
+     *
+     * @param {array} existingItems array with concepts from the article
+     * @param {object} updatedConcept optional object that triggered document changed event, defaults to null
+     */
     async decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept) {
         if (Array.isArray(existingItems)) {
-            const enhancedItems = await Promise.all(existingItems.map(async (item) => {
+            const decoratedItems = await Promise.all(existingItems.map(async (item) => {
                 const existingItem = this.state ?
-                    this.state.existingItems.find(existingItem => existingItem.uuid === item.uuid) :
+                    this.state.existingItems.find(({ uuid }) => uuid === item.uuid) :
                     false
 
                 if ((updatedConcept && existingItem) && updatedConcept.uuid === existingItem.uuid) {
@@ -154,7 +166,7 @@ class ConceptMainComponent extends Component {
                 return item
             }))
 
-            this.extendState({ existingItems: enhancedItems })
+            this.extendState({ existingItems: decoratedItems })
         }
     }
 
