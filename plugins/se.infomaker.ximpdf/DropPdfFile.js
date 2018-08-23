@@ -9,11 +9,40 @@ class DropPdfFile extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        insertPdfCommand(tx, params.file)
+        const nodeId = insertPdfCommand(tx, params.file)
+
         setTimeout(() => {
             api.editorSession.fileManager.sync()
-        }, 300)
+                .catch(err => {
+                    api.ui.showNotification(
+                        'ximpdf',
+                        api.getLabel('pdf-error-title'),
+                        api.getLabel('pdf-upload-error-message')
+                    )
+                    this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
+                })
+        }, 0)
+    }
 
+    /**
+     * @todo When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
+     */
+    removeNodesOnUploadFailure(tx, nodeId, errors) {
+        try {
+            const document = api.editorSession.getDocument()
+            const node = document.get(nodeId)
+            const pdfFile = node.pdfFile
+
+            api.document.deleteNode('ximpdf', node)
+            if (pdfFile) {
+                api.editorSession.transaction((tx) => {
+                    tx.delete(pdfFile)
+                })
+            }
+        }
+        catch (e) {
+            errors.push(e.message)
+        }
     }
 }
 

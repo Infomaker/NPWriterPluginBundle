@@ -19,11 +19,13 @@ export default function (tx, data) {
 
     let isFile = data instanceof File
 
-    if(isFile) {
+    if (isFile) {
         pdfFileNode['sourceFile'] = data
-    } else if(typeof data === 'string') {
+    }
+    else if (typeof data === 'string') {
         pdfFileNode['sourceUrl'] = data
-    } else {
+    }
+    else {
         throw new Error('Unsupported data. Must be File or String')
     }
 
@@ -35,4 +37,6 @@ export default function (tx, data) {
         type: 'ximpdf',
         pdfFile: pdfFile.id
     })
+
+    return parentNodeId
 }
