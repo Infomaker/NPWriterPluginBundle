@@ -146,28 +146,26 @@ class ConceptMainComponent extends Component {
      * @param {object} updatedConcept optional object that triggered document changed event, defaults to null
      */
     async decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept) {
-        if (Array.isArray(existingItems)) {
-            const decoratedItems = await Promise.all(existingItems.map(async (item) => {
-                const existingItem = this.state ?
-                    this.state.existingItems.find(({ uuid }) => uuid === item.uuid) :
-                    false
+        const decoratedItems = await Promise.all(existingItems.map(async (item) => {
+            const existingItem = this.state ?
+                this.state.existingItems.find(({ uuid }) => uuid === item.uuid) :
+                false
 
-                if ((updatedConcept && existingItem) && updatedConcept.uuid === existingItem.uuid) {
-                    existingItem.isEnhanced = false
-                }
+            if ((updatedConcept && existingItem) && updatedConcept.uuid === existingItem.uuid) {
+                existingItem.isEnhanced = false
+            }
 
-                if (existingItem && existingItem.isEnhanced) {
-                    item = existingItem
-                } else {
-                    item = await ConceptService.fetchConceptItemProperties(item)
-                    item.isEnhanced = true
-                }
+            if (existingItem && existingItem.isEnhanced) {
+                item = existingItem
+            } else {
+                item = await ConceptService.fetchConceptItemProperties(item)
+                item.isEnhanced = true
+            }
 
-                return item
-            }))
+            return item
+        }))
 
-            this.extendState({ existingItems: decoratedItems })
-        }
+        this.extendState({ existingItems: decoratedItems })
     }
 
     async addConceptToArticle(item) {
