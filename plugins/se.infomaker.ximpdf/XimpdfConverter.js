@@ -58,14 +58,6 @@ export default {
             type: 'x-im/pdf'
         })
 
-        // Data element
-        // const data = $$('data').append([
-        //     $$('text').append( converter.annotatedText([node.id, 'text']))
-        // ])
-
-        // el.attr('uuid', fileNode.uuid)
-
-        // Link element
         const link = $$('link').attr({
             rel: 'self',
             type: 'x-im/pdf',
