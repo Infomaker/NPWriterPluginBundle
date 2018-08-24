@@ -158,8 +158,8 @@ class ConceptMainComponent extends Component {
             } else {
                 api.ui.showNotification(
                     this.state.name,
-                    this.getLabel('Conceptitem exists'),
-                    this.getLabel('The Concept is already used'))
+                    this.getLabel('Concept item exists'),
+                    this.getLabel('This Concept is already used'))
             }
         } else {
             if ((this.state.pluginConfig.createable !== undefined && this.state.pluginConfig.createable) || this.state.pluginConfig.editable) {
