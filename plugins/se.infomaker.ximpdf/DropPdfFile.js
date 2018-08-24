@@ -14,11 +14,6 @@ class DropPdfFile extends DragAndDropHandler {
         setTimeout(() => {
             api.editorSession.fileManager.sync()
                 .catch(err => {
-                    api.ui.showNotification(
-                        'ximpdf',
-                        api.getLabel('pdf-error-title'),
-                        api.getLabel('pdf-upload-error-message')
-                    )
                     this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
                 })
         }, 0)
@@ -31,9 +26,21 @@ class DropPdfFile extends DragAndDropHandler {
         try {
             const document = api.editorSession.getDocument()
             const node = document.get(nodeId)
-            const pdfFile = node.pdfFile
 
+            if (!node) {
+                // Node have been removed while uploading by "undo" or user deleting it
+                return
+            }
+
+            api.ui.showNotification(
+                'ximpdf',
+                api.getLabel('pdf-error-title'),
+                api.getLabel('pdf-upload-error-message')
+            )
+
+            const pdfFile = node.pdfFile
             api.document.deleteNode('ximpdf', node)
+            
             if (pdfFile) {
                 api.editorSession.transaction((tx) => {
                     tx.delete(pdfFile)
