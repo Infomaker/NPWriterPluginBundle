@@ -18,7 +18,7 @@ class ConceptSearchItemComponent extends Component {
     }
 
     render($$){
-        const { item, propertyMap } = this.props
+        const { item, propertyMap, icon } = this.props
         const avatarUuid = item[propertyMap.ConceptAvatarUuid]
         const broaderString = (this.props.enableHierarchy && item[propertyMap.ConceptBroaderRelation]) ? `(${ConceptService.extractBroaderText(item, true)})` : ''
         const fullBroaderString = ConceptService.extractBroaderText(item)
@@ -41,8 +41,9 @@ class ConceptSearchItemComponent extends Component {
 
         const conceptIcon = !avatarUuid ? $$(ConceptItemIcon, {
             propertyMap,
-            item
-        }) : ''
+            item,
+            icon,
+        }).ref(`concept-search-item-icon-${item.uuid}`) : ''
 
         const broaderWrapper = $$('span')
 

@@ -12,22 +12,19 @@ class ConceptItemComponent extends Component {
         this.onMouseLeave = this.onMouseLeave.bind(this)
         this.editItem = this.editItem.bind(this)
         this.removeItem = this.removeItem.bind(this)
+
+        this.Tooltip = api.ui.getComponent('tooltip')
     }
 
     getInitialState() {
         return { isHovered: false }
     }
 
-    async willReceiveProps(newProps) {
-        let { item } = newProps
-
-        item = await ConceptService.fetchConceptItemProperties(item)
-
-        this.setState({ item })
-    }
-
-    didMount() {
-        this.Tooltip = api.ui.getComponent('tooltip')
+    shouldRerender(newProps, newState) {
+        return (
+            newProps.item.isEnhanced !== this.props.isEnhanced ||
+            newState.isHovered !== this.state.isHovered
+        )
     }
 
     onMouseEnter() {
@@ -57,13 +54,14 @@ class ConceptItemComponent extends Component {
     }
 
     render($$){
-        const { item, isHovered } = this.state
-        const { propertyMap } = this.props
+        const { item } = this.props
+        const { isHovered } = this.state
+        const { propertyMap, icon, editable } = this.props
         const type = (item && item[propertyMap.ConceptImTypeFull]) ? item[propertyMap.ConceptImTypeFull] : ''
-        const editable = this.props.editable ? 'editable' : ''
+        const editableClass = editable ? 'editable' : ''
         const el = $$('div')
 
-        let icon
+        let displayIcon
         let removeIcon
         let image
 
@@ -90,12 +88,13 @@ class ConceptItemComponent extends Component {
             }
 
             if (!avatarUuid || isHovered) {
-                icon = $$(ConceptItemIcon, {
+                displayIcon = $$(ConceptItemIcon, {
                     isHovered,
                     item,
+                    icon,
                     propertyMap,
-                    editable: this.props.editable
-                })
+                    editable,
+                }).ref(`displayIcon-${item.uuid}`)
             }
 
             removeIcon = $$('i', {
@@ -103,18 +102,18 @@ class ConceptItemComponent extends Component {
                 "aria-hidden": "true"
             }).on('click', this.removeItem)
 
-            const itemContent = $$('div')
-                .addClass('concept-item-content')
-                .append(item.name || item.title || item[propertyMap.ConceptName])
-                .append(tooltip)
+            const itemContent = $$('div', { class: 'concept-item-content' }, [
+                item.name || item.title || item[propertyMap.ConceptName],
+                tooltip
+            ])
 
             el.addClass(`concept-item-component ${item[propertyMap.ConceptStatus]} ${!this.hasValidUUid() ? 'invalid-uuid' : ''} ${item.error ? 'not-found' : ''}`)
                 .addClass(isDuplicate ? 'duplicate' : '')
                 .append(image)
-                .append(icon)
+                .append(displayIcon)
                 .append(itemContent)
                 .append(removeIcon)
-                .addClass(`${type} ${editable}`)
+                .addClass(`${type} ${editableClass}`)
                 .on('mouseenter', this.onMouseEnter)
                 .on('mouseleave', this.onMouseLeave)
                 .on('click', this.editItem)
@@ -130,14 +129,14 @@ class ConceptItemComponent extends Component {
     removeItem(e) {
         e.preventDefault()
         e.stopPropagation()
-        this.props.removeItem(this.state.item)
+        this.props.removeItem(this.props.item)
     }
 
     editItem() {
         if (this.props.editable) {
             if (!this.hasValidUUid()) {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid UUID'), this.getLabel('Invalid Concept-UUID'))
-            } else if (this.state.item.error) {
+            } else if (this.props.item.error) {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid Concept Item'), this.getLabel('Unable to fetch the concept item'))
             } else {
                 this.props.editItem(this.props.item)

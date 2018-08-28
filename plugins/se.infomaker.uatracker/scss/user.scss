@@ -71,7 +71,7 @@ $avatar-height: 27px;
                 height: $avatar-height;
                 position: relative;
 
-                img.avatar {
+                img.avatar, i.avatar--simple {
                     height: $avatar-height;
                     width: $avatar-width;
                     display: block;
@@ -81,6 +81,7 @@ $avatar-height: 27px;
                     animation: bounce 0.3s ease-in-out;
 
                     // Show colored background instead of broken image
+                    // or if simple-avatar is shown as fallback
                     &:before {
                         content: '';
                         width: 100%;
@@ -92,7 +93,9 @@ $avatar-height: 27px;
                     }
 
                     // Show user initials if image does not exist
+                    // or if simple-avatar is shown as fallback
                     &:after {
+                        font-family: 'Lato';
                         content: attr(alt);
                         text-transform: lowercase;
                         width: $avatar-width;
@@ -105,10 +108,17 @@ $avatar-height: 27px;
                         font-size: 14px;
                     }
                 }
+                // Override position if default simple avatar is rendered
+                i.avatar--simple {
+                    &:after {
+                        top: 5px;
+                    }
+                }
             }
 
             .status-indicator {
                 height: 6px;
+                width: $avatar-width;
                 margin-top: 1px;
                 padding: 0 2px;
                 font-size: 6px;

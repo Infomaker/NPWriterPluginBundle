@@ -34,11 +34,13 @@ class TableCellComponent extends Component {
     shouldRerender(newProps) {
         const headerChanged = this.props.header !== newProps.header
         const selectionStateChanged = this.props.selectionState !== newProps.selectionState
-        return headerChanged || selectionStateChanged
+        const metaChanged = this.props.meta !== newProps.meta
+        return headerChanged || selectionStateChanged || metaChanged
     }
 
     render($$) {
         const node = this.props.node
+        const {format} = this.props.meta
         const cellType = this.props.header ? 'th' : 'td'
         const classNames = []
 
@@ -48,6 +50,10 @@ class TableCellComponent extends Component {
 
         if (this.props.selectionState === 'focused') {
             classNames.push('focused')
+        }
+
+        if(format) {
+            classNames.push(`${format}-format`)
         }
 
         const cellAttributes = {
@@ -70,22 +76,33 @@ class TableCellComponent extends Component {
 
         return $$(cellType, cellAttributes, [
             editor,
-            this._renderCellSizeInfo($$)
+            this._renderCellInfo($$)
         ]).ref('cell')
     }
 
     /**
      * Renders info about the cell size if it has a rowspan or colspan
      */
-    _renderCellSizeInfo($$) {
+    _renderCellInfo($$) {
+        const {index, format} = this.props.meta
+        const {header} = this.props
         const node = this.props.node
-        if (node.rowspan < 2 && node.colspan < 2) return null
+        if (!index && !format && node.rowspan < 2 && node.colspan < 2) {
+            return null
+        }
+
+        const cellInfo = []
         const rowspan = node.rowspan || 1
         const colspan = node.colspan || 1
 
-        return $$('div', {class: 'cell-size-info'}, [
-            `${colspan}x${rowspan}`
-        ])
+        if(rowspan > 1 || colspan > 1) {
+            cellInfo.push(`${colspan}x${rowspan}`)
+        }
+        if(header) {
+            cellInfo.push(format, index ? '*' : '')
+        }
+
+        return $$('div', {class: `cell-info`}, cellInfo.join(' '))
     }
 
     /**

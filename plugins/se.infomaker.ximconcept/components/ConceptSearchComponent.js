@@ -8,6 +8,7 @@ class ConceptSearchComponent extends Component {
         super(...args)
 
         this.handleInput = this.handleInput.bind(this)
+        this.addItem = this.addItem.bind(this)
     }
 
     getInitialState() {
@@ -27,10 +28,10 @@ class ConceptSearchComponent extends Component {
     }
 
     render($$) {
-        let icon, searchResultsContainer
+        let searchFormIcon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
-        const { disabled, subtypes, enableHierarchy, propertyMap } = this.props
+        const { disabled, subtypes, enableHierarchy, propertyMap, icon } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
@@ -49,17 +50,17 @@ class ConceptSearchComponent extends Component {
             searchInput.attr('disabled', true)
         } else {
             if (this.state.searching) {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-spinner fa-spin concept-search-icon searching',
                     "aria-hidden": 'true'
                 })
             } else if (searchedTerm) {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-times concept-search-icon abort',
                     "aria-hidden": 'true'
                 }).on('click', this.resetState.bind(this))
             } else {
-                icon = $$('i', {
+                searchFormIcon = $$('i', {
                     class: 'fa fa-search concept-search-icon search',
                     "aria-hidden": 'true'
                 })
@@ -74,19 +75,20 @@ class ConceptSearchComponent extends Component {
                 searching,
                 searchResult,
                 selected,
+                icon,
                 isPolygon,
                 enableHierarchy,
                 propertyMap,
                 creatable: this.props.creatable,
                 itemExists: this.props.itemExists,
-                addItem: this.addItem.bind(this)
+                addItem: this.addItem
             }).ref('searchResultComponent')
         }
 
 
         el.addClass('concept-search-component')
             .append(searchInput)
-            .append(icon)
+            .append(searchFormIcon)
             .append(searchResultsContainer)
 
         return el
@@ -160,6 +162,7 @@ class ConceptSearchComponent extends Component {
         item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] :
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
 
+        this.resetState()
         this.props.addItem(item)
     }
 

@@ -56,6 +56,17 @@
     padding: 5px
   }
 
+  .disabled {
+      opacity: 0.5;
+  }
+
+  .nodrag {
+      position: relative;
+      width: 25px;
+      min-width: 25px;
+      border-right: 1px solid #dedede;
+  }
+
   .drag {
     position: relative;
     width: 25px;
@@ -89,6 +100,15 @@
       word-break: break-all;
       color: rgba(0, 0, 0, 0.75);
       cursor: pointer;
+    }
+
+    .unsupported {
+        padding: 5px 5px;
+        display: inline-block;
+        width: 80%;
+        font-size: 80%;
+        text-decoration: none;
+        font-style: italic;
     }
 
     .imageplaceholder {

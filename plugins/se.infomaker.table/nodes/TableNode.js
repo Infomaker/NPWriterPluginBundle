@@ -2,8 +2,8 @@
  * Modified version of substance table node
  * https://github.com/substance/substance/blob/v1.0.0-beta.6.5/packages/table/Table.js
  */
-import { BlockNode, uuid } from 'substance'
-import { api } from 'writer'
+import {BlockNode, uuid} from 'substance'
+import {api} from 'writer'
 
 class TableNode extends BlockNode {
 
@@ -41,7 +41,9 @@ class TableNode extends BlockNode {
     }
 
     getCellAt(row, col) {
-        if (!Array.isArray(this.cells[row])) { return }
+        if (!Array.isArray(this.cells[row])) {
+            return
+        }
         let cellId = this.cells[row][col]
         if (cellId) {
             return this.document.get(cellId)
@@ -58,6 +60,66 @@ class TableNode extends BlockNode {
                 }
             }
         }
+    }
+
+    getMetaForCol(colIndex) {
+        const meta = this.meta.find(({id}) => colIndex === id)
+        return meta ? meta : {}
+    }
+
+    setMetaForCol(colIndex, meta, tx) {
+        const tableNode = tx.get([this.id])
+        if (!this.meta.find(({id}) => colIndex === id)) {
+            meta.id = colIndex
+            this.addMeta(meta, tx)
+        } else {
+            const tableMeta = this.meta.map((colMeta) => {
+                if (colMeta.id === colIndex) {
+                    colMeta = meta
+                }
+                return colMeta
+            })
+
+            tx.set([tableNode.id, 'meta'], tableMeta)
+        }
+    }
+
+    removeMetaForCol(colIndex, tx) {
+        const tableNode = tx.get([this.id])
+        const tableMeta = tableNode.meta.filter(({id}) => id !== colIndex)
+
+        tx.set([tableNode.id, 'meta'], tableMeta)
+    }
+
+    addMeta(meta, tx) {
+        const tableNode = tx.get([this.id])
+        tableNode.meta.push(meta)
+
+        tx.set([tableNode.id, 'meta'], tableNode.meta)
+    }
+
+    moveColMetaOnRemove(colIndex, tx) {
+        this.transferColMeta(colIndex, tx, true)
+    }
+
+    moveColMetaOnAdd(colIndex, tx) {
+        this.transferColMeta(colIndex, tx)
+    }
+
+    transferColMeta(colIndex, tx, removing = false) {
+        const tableMeta = this.meta.map((meta) => {
+            if(colIndex <= meta.id) {
+                if(removing) {
+                    meta.id--
+                } else {
+                    meta.id++
+                }
+            }
+
+            return meta
+        })
+
+        tx.set([this.id, 'meta'], tableMeta)
     }
 
     /**
@@ -105,9 +167,11 @@ class TableNode extends BlockNode {
      * @param {Boolean} horizontal - Set to true if the search method should be along the x axis
      * @returns {TableCellNode} The next cell node or the provided cell if no next cell found
      */
-    getNextCell(currentCellId, horizontal=false, reverse=false, area=null) {
+    getNextCell(currentCellId, horizontal = false, reverse = false, area = null) {
         const coords = this.getCellCoords(currentCellId)
-        if (!coords) { return null }
+        if (!coords) {
+            return null
+        }
 
         const cell = this.getNextCellAt(coords[0], coords[1], horizontal, reverse, area)
         if (cell) {
@@ -125,7 +189,7 @@ class TableNode extends BlockNode {
      * @param {*} reverse
      * @param {*} area
      */
-    getNextCellAt(row, col, horizontal=false, reverse=false, area=null) {
+    getNextCellAt(row, col, horizontal = false, reverse = false, area = null) {
         const mainAxis = horizontal ? col : row
         const secondaryAxis = horizontal ? row : col
         const mainAxisCount = horizontal ? this.colCount : this.rowCount
@@ -237,7 +301,9 @@ class TableNode extends BlockNode {
 
         for (let row = startRow; row < startRow + rowspan; row++) {
             for (let col = startCol; col < startCol + colspan; col++) {
-                if (row === startRow && col === startCol) { continue } // Skip first cell
+                if (row === startRow && col === startCol) {
+                    continue
+                } // Skip first cell
                 tableNode.createCellAt(row, col, 0, 0, tx)
             }
         }
@@ -384,6 +450,8 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.insertRowAt(colIndex, tx))
         }
 
+        this.moveColMetaOnAdd(colIndex, tx)
+
         // Save a reference to the table node
         // `this` will refer to the table node as it is before the transaction.
         // Any changes in the transaction will not be reflected in `this`
@@ -441,6 +509,9 @@ class TableNode extends BlockNode {
             return api.editorSession.transaction(tx => this.deleteRowAt(colIndex, tx))
         }
 
+        this.removeMetaForCol(colIndex, tx)
+        this.moveColMetaOnRemove(colIndex, tx)
+
         // Save a reference to the table node
         // `this` will refer to the table node as it is before the transaction.
         // Any changes in the transaction will not be reflected in `this`
@@ -487,7 +558,7 @@ class TableNode extends BlockNode {
         tx.set([tableNode.id, 'cells'], cells)
     }
 
-    createCellAt(row, col, rowspan=0, colspan=0, tx) {
+    createCellAt(row, col, rowspan = 0, colspan = 0, tx) {
         const tableNode = tx.get(this.id)
         const cell = tx.create({
             id: uuid('table-cell'),
@@ -517,14 +588,18 @@ class TableNode extends BlockNode {
 
 TableNode.schema = {
     type: 'table',
-    header: { type: 'boolean', default: false },
-    footer: { type: 'boolean', default: false },
-    caption: { type: 'string', default: '' },
+    header: {type: 'boolean', default: false},
+    footer: {type: 'boolean', default: false},
+    caption: {type: 'string', default: ''},
+    meta: {
+        type: ['array', 'object'],
+        default: []
+    },
     cells: {
         type: ['array', 'array', 'id'],
         default: [[]],
         owned: true
-    },
+    }
     // area: { type: 'object', optional: false }
 }
 

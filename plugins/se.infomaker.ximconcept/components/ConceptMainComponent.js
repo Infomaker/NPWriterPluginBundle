@@ -66,12 +66,13 @@ class ConceptMainComponent extends Component {
                 } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
                 } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
-                    this.reloadArticleConcepts()
+                    const updatedConcept = (e.data && e.data.data) ? e.data.data : null
+                    this.reloadArticleConcepts(updatedConcept)
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
-                    const associatedLinkes = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
+                    const associatedLinks = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
 
-                    this.extendState({ associatedLinkes })
+                    this.extendState({ associatedLinks })
                 }
             }
         })
@@ -97,12 +98,19 @@ class ConceptMainComponent extends Component {
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
-    reloadArticleConcepts() {
+    /**
+     * reload concepts from article
+     *
+     * @param {object} updatedConcept optional object that triggered document changed event, defaults to null
+     */
+    reloadArticleConcepts(updatedConcept = null) {
         const { pluginConfig } = this.state
         const existingItems = ConceptService.getArticleConceptsByType(this.state.conceptType, this.state.types, this.state.subtypes)
-        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
 
-        this.extendState({ existingItems, associatedLinkes })
+        this.extendState({ associatedLinks })
+
+        this.decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept)
     }
 
     getInitialState() {
@@ -111,9 +119,12 @@ class ConceptMainComponent extends Component {
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
-        const existingItems = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
+        const articleConcepts = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
-        const associatedLinkes = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
+        const existingItems = []
+
+        this.decorateExistingItemsWithRemoteMeta(articleConcepts)
 
         return {
             name,
@@ -123,8 +134,38 @@ class ConceptMainComponent extends Component {
             existingItems,
             conceptType,
             propertyMap,
-            associatedLinkes
+            associatedLinks
         }
+    }
+
+    /**
+     * Fetch additional data from OC for each concept
+     * Will check if item already has been decorated before fetch
+     *
+     * @param {array} existingItems array with concepts from the article
+     * @param {object} updatedConcept optional object that triggered document changed event, defaults to null
+     */
+    async decorateExistingItemsWithRemoteMeta(existingItems, updatedConcept) {
+        const decoratedItems = await Promise.all(existingItems.map(async (item) => {
+            const existingItem = this.state ?
+                this.state.existingItems.find(({ uuid }) => uuid === item.uuid) :
+                false
+
+            if ((updatedConcept && existingItem) && updatedConcept.uuid === existingItem.uuid) {
+                existingItem.isEnhanced = false
+            }
+
+            if (existingItem && existingItem.isEnhanced) {
+                item = existingItem
+            } else {
+                item = await ConceptService.fetchConceptItemProperties(item)
+                item.isEnhanced = true
+            }
+
+            return item
+        }))
+
+        this.extendState({ existingItems: decoratedItems })
     }
 
     async addConceptToArticle(item) {
@@ -162,7 +203,7 @@ class ConceptMainComponent extends Component {
                     this.getLabel('The Concept is already used'))
             }
         } else {
-            if ((this.state.pluginConfig.createable !== undefined && this.state.pluginConfig.createable) || this.state.pluginConfig.editable) {
+            if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
                 const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
                     this.state.types.length ? null : this.state.conceptType
 
@@ -219,22 +260,21 @@ class ConceptMainComponent extends Component {
     }
 
     shouldBeDisabled() {
-        const { singleValue, pluginConfig, associatedLinkes } = this.state
+        const { singleValue, pluginConfig, associatedLinks } = this.state
 
         return (singleValue && this.state.existingItems.length) ? true :
-            (pluginConfig.associatedWith && (!associatedLinkes || !associatedLinkes.length)) ? true : false
+            (pluginConfig.associatedWith && (!associatedLinks || !associatedLinks.length)) ? true : false
     }
 
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
-        const header = $$('h2')
-            .append(`${label} (${this.state.existingItems.length})`)
-            .addClass('concept-header')
-
+        const header = $$('h2', { class: 'concept-header' }, [
+            `${label} (${this.state.existingItems.length})`
+        ])
         const list = $$(ConceptListComponent, {
             propertyMap,
             editItem: this.editItem,
@@ -243,6 +283,7 @@ class ConceptMainComponent extends Component {
             working: this.state.working,
             enableHierarchy,
             editable,
+            icon,
         }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
@@ -256,17 +297,16 @@ class ConceptMainComponent extends Component {
                 disabled: this.shouldBeDisabled(),
                 addItem: this.addItem,
                 itemExists: this.itemExists,
-                associatedWith
+                associatedWith,
+                icon,
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 
-        const el = $$('div', { class: `concept-main-component ${conceptType}` }, [
+        return $$('div', { class: `concept-main-component ${conceptType}` }, [
             header,
             list,
             search
         ]).ref(`conceptMainComponent-${this.state.name}`)
-
-        return el
     }
 }
 
