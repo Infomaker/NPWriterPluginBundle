@@ -72,8 +72,6 @@ class InsertImageCommand extends WriterCommand {
 
         es.transaction(tx => {
             addedFileNodes.forEach(node => {
-                delete(es.fileManager.proxies[node.imageFile])
-                console.warn(`Removing ${node.imageFile} and ${node.id}`)
                 tx.delete(node.imageFile)
                 tx.delete(node.id)
             }, {
