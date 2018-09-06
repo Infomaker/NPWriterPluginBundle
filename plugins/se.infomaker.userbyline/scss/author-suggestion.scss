@@ -1,0 +1,38 @@
+.user-author-suggestions-wrapper {
+    .user-author-suggestions-list {
+        list-style-type: none;
+        margin-right: 1em ;
+
+        .user-author-suggestions-list-item {
+            display: flex;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #d9d9d9;
+            cursor: pointer;
+
+            .user-list-avatar-wrapper {
+                display: flex;
+                align-items: center;
+
+                .user-list-avatar {
+                    align-self: center;
+                    text-align: center;
+                    width: 20px;
+                    height: auto;
+                    margin-right: 10px;
+                    border-radius: 10px;
+                }
+            }
+            .user-list-item-name {
+                font-style: normal;
+            }
+            .user-list-item-short {
+                font-style: italic;
+            }
+        }
+    }
+    .user-author-suggestion-links-wrapper {
+        text-align: right;
+        padding: 20px;
+    }
+}

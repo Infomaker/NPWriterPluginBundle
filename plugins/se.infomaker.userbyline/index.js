@@ -1,9 +1,9 @@
 import {registerPlugin} from 'writer'
-import UserPackage from './UserPackage'
+import UserBylinePackage from './UserBylinePackage'
 
 export default () => {
     if (registerPlugin) {
-        registerPlugin(UserPackage)
+        registerPlugin(UserBylinePackage)
     } else {
         console.info('Register method not yet available')
     }
