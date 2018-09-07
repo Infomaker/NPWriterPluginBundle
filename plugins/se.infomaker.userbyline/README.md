@@ -6,6 +6,11 @@ It will also set IM.ID sub on connected author concepts.
 
 ![IM.ID user byline workflow](./docimages/writer-imid-byline.png "IM.ID user byline workflow")
 
+## Dependencies
+
+requires `writer => IM.ID`
+requires `ConceptPlugin (x-im/author) > IM.ID`
+
 ## Configuration
 
 The following config is used in the plugin config:
