@@ -6,7 +6,7 @@ class AuthorSuggestionComponent extends Component {
     render($$) {
         const { suggestion, propertyMap } = this.props
 
-        return $$('li', { class: 'user-author-suggestions-list-item' }, [
+        return $$('li', { class: `user-author-suggestions-list-item ${suggestion[propertyMap.ConceptImIdSubjectId] ? 'existing-sub' : '' }` }, [
             $$('div', { class: 'user-list-avatar-wrapper' }, [
                 suggestion.ConceptAvatarUuid ?
                     $$('img', {
@@ -19,7 +19,11 @@ class AuthorSuggestionComponent extends Component {
                 $$('p', { class: 'user-list-item-name' }, `${suggestion[propertyMap.ConceptName]}`),
                 $$('p', { class: 'user-list-item-short' }, `${suggestion[propertyMap.ConceptDefinitionShort]}`)
             ])
-        ]).on('click', () => this.props.addAuthor(suggestion))
+        ]).on('click', () => {
+            if (!suggestion[propertyMap.ConceptImIdSubjectId]) {
+                this.props.addAuthor(suggestion)
+            }
+        })
     }
 }
 

@@ -91,7 +91,10 @@ class ConceptMainComponent extends Component {
         ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.off(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.off(type, ConceptService.operations.ADD, this.addItem)
+                ConceptService.off(type, ConceptService.operations.UPDATE, this.updatedItem)
+            })
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
@@ -168,8 +171,17 @@ class ConceptMainComponent extends Component {
         this.extendState({ existingItems: decoratedItems })
     }
 
+    /**
+     * Will fetch concept XML and parse properties specified in remote concept config
+     *
+     * @param {object} item conceptItem to add
+     */
     async addConceptToArticle(item) {
-        item = await (new ConceptItemModel(item, this.state.pluginConfig, this.state.propertyMap)).extractConceptArticleData(item)
+        item = await (new ConceptItemModel(
+            item,
+            this.state.pluginConfig,
+            this.state.propertyMap)
+        ).extractConceptArticleData(item)
 
         if (!item.errors) {
             ConceptService.addArticleConcept(item)
@@ -190,6 +202,12 @@ class ConceptMainComponent extends Component {
         ConceptService.removeArticleConceptItem(item)
     }
 
+    /**
+     * Add concept to the article
+     * If called with an object without uuid it will try to create the concept
+     *
+     * @param {object} item conceptItem
+     */
     async addItem(item) {
         if (item && item.uuid) {
             if (!this.itemExists(item)) {

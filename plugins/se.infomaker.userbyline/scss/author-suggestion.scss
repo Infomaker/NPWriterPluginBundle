@@ -10,6 +10,10 @@
             border-bottom: 1px solid #d9d9d9;
             cursor: pointer;
 
+            &.existing-sub {
+                cursor: not-allowed;
+                background: #fafafa;
+            }
             .user-list-avatar-wrapper {
                 display: flex;
                 align-items: center;
