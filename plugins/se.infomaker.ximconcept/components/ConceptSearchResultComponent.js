@@ -3,28 +3,48 @@ import ConceptSearchItemComponent from './ConceptSearchItemComponent'
 
 class ConceptSearchResultComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.scrollItemIntoView = this.scrollItemIntoView.bind(this)
+    }
+
     render($$){
         let createConcept
+        let typeIcon = false
+        let icon = this.props.icon
+        const { propertyMap, addItem, enableHierarchy } = this.props
         const el = $$('div').addClass('concepts-search-result-wrapper')
         const matches = this.props.searchResult.map((item, index) => {
             const selected = (index === this.props.selected)
             const itemExists = this.props.itemExists(item)
+            typeIcon = false
+
+            if (this.props.types) {
+                Object.keys(this.props.types).forEach(type => {
+                    const itemType = item[propertyMap.ConceptImTypeFull] || item.type
+                    if (itemType === type) {
+                        typeIcon = this.props.types[type].icon
+                    }
+                })
+            }
 
             return $$(ConceptSearchItemComponent, {
                 item,
                 selected,
                 itemExists,
-                propertyMap: this.props.propertyMap,
-                addItem: this.props.addItem,
-                enableHierarchy: this.props.enableHierarchy,
-                scrollIntoView: this.scrollItemIntoView.bind(this)
+                propertyMap,
+                addItem,
+                enableHierarchy,
+                icon: typeIcon ? typeIcon : icon,
+                scrollIntoView: this.scrollItemIntoView
             }).on('mousedown', () => { this.props.addItem(item) })
         })
 
         if (this.props.creatable && this.props.searchedTerm !== '*' && !this.props.isPolygon && !this.props.searching) {
             createConcept = $$('div').addClass('concept-create-wrapper')
                 .append($$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }))
-                .append(`${this.getLabel('create')}: ${this.props.searchedTerm}`)
+                .append(`${this.getLabel('Create')}: ${this.props.searchedTerm}`)
                 .on('mousedown', this.props.addItem)
         }
 

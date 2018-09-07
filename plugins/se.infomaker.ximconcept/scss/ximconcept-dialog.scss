@@ -1,6 +1,7 @@
 .concept-dialog-component {
     max-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 10px 25px;
 
     .warning {
@@ -81,10 +82,10 @@
             width: 110%;
             margin-left: -25px;
             position: relative;
-            
+
             p {
                 padding: 6px 10px;
-                margin: 5px;
+                -margin: 5px;
             }
             .location-form-control {
                 padding: 6px 10px;

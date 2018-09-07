@@ -64,6 +64,7 @@ fs.readdir(distFolder, (err, files) => {
                 s3.putObject(uploadFileObject, (err, data) => {
                     if (err) {
                         console.error("Something is fishy for file " + fileName + ": " + err)
+                        throw new Error("Failed to upload plugins to AWS")
                     } else {
                         console.log(fileName + " uploaded");
                     }

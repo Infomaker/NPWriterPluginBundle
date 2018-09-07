@@ -3,10 +3,12 @@ import GoogleMapsApiLoader from 'google-maps-api-loader'
 
 class ConceptMapComponent extends Component {
 
-    constructor(...args) {
-        super(...args)
+    setGoogleApi(googleApi) {
+        window._googleApi = googleApi
+    }
 
-        this.polygons = []
+    getGetGoogleApi() {
+        return window._googleApi
     }
 
     shouldRerender() {
@@ -17,16 +19,6 @@ class ConceptMapComponent extends Component {
         if (this.map) {
             this.map.unbindAll()
         }
-
-        if (this.polygons) {
-            delete this.polygons
-        }
-    }
-
-    convertPtsToGooglPts(ptsArray) {
-        return ptsArray.map(point => {
-            return new google.maps.LatLng(point[1], point[0])
-        })
     }
 
     willReceiveProps(newProps) {
@@ -36,22 +28,16 @@ class ConceptMapComponent extends Component {
         }
 
         if (this.map) {
-            if (newProps.latLng) {
+            if (newProps.geoJson) {
+                this.setGeJson(newProps.geoJson)
+            }
+            else if (newProps.latLng) {
                 const googleLatLng = new google.maps.LatLng(newProps.latLng.lat, newProps.latLng.lng)
                 this.setMarker(googleLatLng)
 
             } else if (newProps.googleLatLng) {
                 this.setMarker(newProps.googleLatLng)
 
-            } else if (newProps.ptsArray) {
-                const googlePtsArray = this.convertPtsToGooglPts(newProps.ptsArray)
-                this.setPolygon(googlePtsArray)
-            } else if (newProps.multiPtsArray) {
-                newProps.multiPtsArray.forEach(ptsArray => {
-                    const googlePtsArray = this.convertPtsToGooglPts(ptsArray)
-                    this.setPolygon(googlePtsArray)
-                })
-                this._fitBounds()
             } else if (newProps.term) {
                 this.searchPlaces(newProps.term)
             }
@@ -59,10 +45,10 @@ class ConceptMapComponent extends Component {
     }
 
     getDefaultMapOptions() {
-        let latlng = new google.maps.LatLng(56.683687, 16.363279)
+        let latLng = new google.maps.LatLng(56.683687, 16.363279)
         return {
             zoom: 14,
-            center: latlng,
+            center: latLng,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             scrollwheel: false,
 
@@ -77,21 +63,23 @@ class ConceptMapComponent extends Component {
     }
 
     async didMount() {
-        const apiKey = this.props.apiKey
+        if (!this.getGetGoogleApi()) {
+
+            /**
+             * This will create a google object on the global namespace
+             */
+            const googleApi = await GoogleMapsApiLoader({
+                libraries: ['geometry', 'places'],
+                apiKey: this.props.apiKey,
+            })
+
+            this.setGoogleApi(googleApi)
+        }
+
+        this.googleApi = this.getGetGoogleApi()
 
         try {
             this.refs.mapContainer.addClass('visible')
-
-            if (!this.googleApi) {
-
-                /**
-                 * This will create a google object on the global namespace
-                 */
-                this.googleApi = await GoogleMapsApiLoader({
-                    libraries: ['geometry', 'places'],
-                    apiKey: apiKey,
-                })
-            }
 
             if (!this.map) {
                 const defaultMapOptions = this.getDefaultMapOptions()
@@ -155,27 +143,27 @@ class ConceptMapComponent extends Component {
         this.map.setCenter(googleLatLng)
     }
 
-    setPolygon(ptsArray) {
-        const polygon = new google.maps.Polygon({
-            paths: ptsArray,
-            strokeColor: '#3A99D9',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#1E90FF',
-            fillOpacity: 0.35
-        })
-        polygon.setMap(this.map)
-        this.polygons.push(polygon)
-
-        this._fitBounds()
+    setGeJson(geoJson) {
+        try {
+            this.map.data.addGeoJson(geoJson)
+            this.map.data.setStyle({
+                strokeColor: '#3A99D9',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#1E90FF',
+                fillOpacity: 0.35
+            })
+            this.fitBounds()
+        } catch (error) {
+            console.warn('Error loading geoJson into map: ', error)
+        }
     }
 
-    _fitBounds() {
+    fitBounds() {
         const bounds = new google.maps.LatLngBounds()
-
-        this.polygons.forEach(polygon => {
-            polygon.getPath().forEach(function (path) {
-                bounds.extend(path)
+        this.map.data.forEach((feature) => {
+            feature.getGeometry().forEachLatLng((latlng) => {
+                bounds.extend(latlng);
             })
         })
 
@@ -198,13 +186,12 @@ class ConceptMapComponent extends Component {
     }
 
     render($$){
-        const el = $$('div').addClass('concept-map-component')
-        const mapContainer = $$('div', {
-            class: 'map-container',
-            id: 'map-container',
-        }).ref('mapContainer')
-
-        return el.append(mapContainer)
+        return $$('div', { class: 'concept-map-component' },
+            $$('div', {
+                class: 'map-container',
+                id: 'map-container',
+            }).ref('mapContainer')
+        )
     }
 
 }

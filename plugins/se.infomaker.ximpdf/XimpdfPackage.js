@@ -24,9 +24,20 @@ export default {
         config.addDropHandler(new DropPdfUri())
         config.addMacro(XimpdfMacro)
         config.addFileProxy(XimpdfFileProxy)
+
         config.addLabel('Insert PDF document', {
             en: 'Insert PDF document',
             sv: 'Infoga PDF dokument'
+        })
+
+        config.addLabel('pdf-error-title', {
+            en: 'Error during PDF upload',
+            sv: 'Fel vid PDF-uppladdning'
+        })
+
+        config.addLabel('pdf-upload-error-message', {
+            en: 'The PDF could not be uploaded for an unknown reason.',
+            sv: 'PDF-filen kunde inte laddas upp av okänd anledning.'
         })
     }
 }

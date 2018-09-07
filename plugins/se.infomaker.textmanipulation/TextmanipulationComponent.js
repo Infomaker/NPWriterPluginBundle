@@ -17,9 +17,11 @@ class TextmanipulationComponent extends Component {
         }
     }
 
-    didUpdate() {
-        if (this.props.popover.active) {
-            this.refs["im-tm_str"].el.focus()
+    willReceiveProps(newProps) {
+        if (newProps.popover.active && !this.props.active) {
+            setTimeout(() => {
+                this.refs["im-tm_str"].el.focus()
+            })
         }
     }
 

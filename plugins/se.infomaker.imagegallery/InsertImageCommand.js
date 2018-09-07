@@ -21,28 +21,65 @@ class InsertImageCommand extends WriterCommand {
         const createdImageNodes = []
         const fileManager = api.editorSession.fileManager
 
-        switch (data.type) {
-            case 'file':
-                createdImageNodes.push(...this._insertFiles(tx, data.files, imageGalleryNode))
-                break
-            case 'node':
-                createdImageNodes.push(...this._insertNode(tx, data.nodeId, imageGalleryNode))
-                break
-            case 'uri':
-                createdImageNodes.push(...this._insertUri(tx, data.uriData, imageGalleryNode))
-                break
-            case 'url':
-                createdImageNodes.push(...this._insertUrl(tx, data.url, imageGalleryNode))
-                break
-            default:
-                break
+        try {
+            switch (data.type) {
+                case 'file':
+                    createdImageNodes.push(...this._insertFiles(tx, data.files, imageGalleryNode))
+                    break
+                case 'node':
+                    createdImageNodes.push(...this._insertNode(tx, data.nodeId, imageGalleryNode))
+                    break
+                case 'uri':
+                    createdImageNodes.push(...this._insertUri(tx, data.uriData, imageGalleryNode))
+                    break
+                case 'url':
+                    createdImageNodes.push(...this._insertUrl(tx, data.url, imageGalleryNode))
+                    break
+                default:
+                    break
+            }
+        }
+        catch(ex) {
+            this.cleanupOnFailure(imageGalleryNode, createdImageNodes)
         }
 
         // Wait for substance operations before syncing files
         setTimeout(() => {
             fileManager.sync()
-                .then(() => imageGalleryNode.emit('onImagesAdded', createdImageNodes))
+                .then(() => {
+                    imageGalleryNode.emit('onImagesAdded', createdImageNodes)
+                })
+                .catch(() => {
+                    this.cleanupOnFailure(imageGalleryNode, createdImageNodes)
+                })
         }, 0)
+    }
+
+    /**
+     * On failing adding images to gallery, remove the added nodes as well as
+     * proxy nodes, then reset the image gallerys nodes to what it was.
+     *
+     * @param  {[type]} imageGalleryNode [description]
+     * @param  {[type]} addedFileNodes   [description]
+     * @return {[type]}                  [description]
+     */
+    cleanupOnFailure(imageGalleryNode, addedFileNodes) {
+        // Error is dealt with earlier, now is the time to clear everything
+        const es = api.editorSession
+
+        const removeIds = addedFileNodes.map(node => node.id)
+        const keepNodes = imageGalleryNode.nodes.filter(id => !removeIds.includes(id))
+
+        es.transaction(tx => {
+            addedFileNodes.forEach(node => {
+                tx.delete(node.imageFile)
+                tx.delete(node.id)
+            }, {
+                history: false
+            })
+
+            tx.set([imageGalleryNode.id, 'nodes'], keepNodes)
+        })
     }
 
     /**

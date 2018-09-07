@@ -13,20 +13,21 @@ const XimConceptPackage = {
 
         configurator.addToSidebar('main', pluginConfig, ConceptMainComponent)
 
-        configurator.addLabel('create', {
+        configurator.addLabel('Create', {
             sv: 'Skapa'
         })
-        configurator.addLabel('save', {
+        configurator.addLabel('Save', {
             sv: 'Spara'
         })
-        configurator.addLabel('cancel', {
+        configurator.addLabel('Cancel', {
             sv: 'Avbryt'
         })
         configurator.addLabel('Replaced by', {
             sv: 'Ersatt av',
         })
         configurator.addLabel('No polygon edit', {
-            sv: 'Redigering av polygoner är för närvarande inte möjlig'
+            sv: 'Redigering av polygoner är för närvarande inte möjlig via writern',
+            en: 'Currently there is no support for polygon editing from the writer'
         })
         configurator.addLabel('Place or location search', {
             sv: 'Sök adress eller plats'
@@ -37,11 +38,11 @@ const XimConceptPackage = {
         configurator.addLabel('Unable to fetch the concept item', {
             sv: 'Konceptet kunde inte hämtas'
         })
-        configurator.addLabel('Conceptitem exists', {
+        configurator.addLabel('Concept item exists', {
             sv: 'Konceptet är redan kopplat'
         })
-        configurator.addLabel('The Concept is already used', {
-            sv: 'Konceptet du försöker använda finns redan med i listan'
+        configurator.addLabel('This Concept is already used', {
+            sv: 'Konceptet du försöker lägga till används redan'
         })
         configurator.addLabel('Invalid UUID', {
             sv: 'Ogiltigt UUID'
@@ -52,7 +53,9 @@ const XimConceptPackage = {
         configurator.addLabel('Invalid Concept-UUID', {
             sv: 'Conceptet har inget giltigt UUID'
         })
-
+        configurator.addLabel('unable to parse geometric data', {
+            sv: 'den geometriska datan kan inte tolkas'
+        })
         configurator.addLabel('Unknown Concept-type', {
             sv: 'Okänd koncepttyp'
         })

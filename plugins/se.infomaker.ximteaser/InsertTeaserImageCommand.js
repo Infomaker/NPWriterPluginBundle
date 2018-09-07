@@ -22,19 +22,20 @@ class InsertTeaserImageCommand extends WriterCommand {
     _handleInsert(tx, params) {
         const activeTeaserNode = params.context.node
         const {data} = params
+        let imageFileNode
 
         switch(data.type) {
             case 'file':
-                this._insertFileImage(tx, data.file, activeTeaserNode)
+                imageFileNode = this._insertFileImage(tx, data.file, activeTeaserNode)
                 break
             case 'node':
-                this._insertNodeImage(tx, data.nodeId, activeTeaserNode)
+                imageFileNode = this._insertNodeImage(tx, data.nodeId, activeTeaserNode)
                 break
             case 'uri':
-                this._insertUriImage(tx, data.uriData, activeTeaserNode)
+                imageFileNode = this._insertUriImage(tx, data.uriData, activeTeaserNode)
                 break
             case 'url':
-                this._insertUrlImage(tx, data.url, activeTeaserNode)
+                imageFileNode = this._insertUrlImage(tx, data.url, activeTeaserNode)
                 break
             default:
                 break
@@ -42,9 +43,27 @@ class InsertTeaserImageCommand extends WriterCommand {
 
         // timeout to wait for substance execution to finish
         setTimeout(() => {
-            api.editorSession.fileManager.sync()
+            const es = api.editorSession
+
+            es.fileManager.sync()
                 .then(() => {
                     activeTeaserNode.emit('onImageUploaded')
+                })
+                .catch(() => {
+                    // Error is dealt with lower down, now is the time to clear everything
+                    if (imageFileNode) {
+                        es.transaction(tx => {
+                            tx.set([activeTeaserNode.id, 'imageFile'], null)
+                            tx.set([activeTeaserNode.id, 'crops'], [])
+
+                            for (var proxyId in es.fileManager.proxies) {
+                                if (proxyId === imageFileNode.id) {
+                                    tx.delete(imageFileNode.id)
+                                    delete(es.fileManager.proxies[proxyId])
+                                }
+                            }
+                        })
+                    }
                 })
         }, 0)
     }
@@ -76,9 +95,11 @@ class InsertTeaserImageCommand extends WriterCommand {
                 tx.set([teaserNode.id, 'crops'], [])
                 tx.set([teaserNode.id, 'height'], draggedNode.height)
                 tx.set([teaserNode.id, 'width'], draggedNode.width)
+
+                return imageFileNode
             }
         } catch (_) {
-
+            return null
         }
     }
 
@@ -113,6 +134,8 @@ class InsertTeaserImageCommand extends WriterCommand {
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
         tx.set([teaserNode.id, 'crops'], [])
+
+        return imageFile
     }
 
     /**
@@ -133,6 +156,8 @@ class InsertTeaserImageCommand extends WriterCommand {
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
         tx.set([teaserNode.id, 'crops'], [])
+
+        return imageFile
     }
 
     /**
@@ -155,6 +180,8 @@ class InsertTeaserImageCommand extends WriterCommand {
 
         tx.set([teaserNode.id, 'imageFile'], imageFile.id)
         tx.set([teaserNode.id, 'crops'], [])
+
+        return imageFile
     }
 }
 
