@@ -13,13 +13,13 @@ const XimConceptPackage = {
 
         configurator.addToSidebar('main', pluginConfig, ConceptMainComponent)
 
-        configurator.addLabel('create', {
+        configurator.addLabel('Create', {
             sv: 'Skapa'
         })
-        configurator.addLabel('save', {
+        configurator.addLabel('Save', {
             sv: 'Spara'
         })
-        configurator.addLabel('cancel', {
+        configurator.addLabel('Cancel', {
             sv: 'Avbryt'
         })
         configurator.addLabel('Replaced by', {
@@ -27,7 +27,7 @@ const XimConceptPackage = {
         })
         configurator.addLabel('No polygon edit', {
             sv: 'Redigering av polygoner är för närvarande inte möjlig via writern',
-            en: 'Currently there is support for polygon editing from the writer'
+            en: 'Currently there is no support for polygon editing from the writer'
         })
         configurator.addLabel('Place or location search', {
             sv: 'Sök adress eller plats'
@@ -38,11 +38,11 @@ const XimConceptPackage = {
         configurator.addLabel('Unable to fetch the concept item', {
             sv: 'Konceptet kunde inte hämtas'
         })
-        configurator.addLabel('Conceptitem exists', {
+        configurator.addLabel('Concept item exists', {
             sv: 'Konceptet är redan kopplat'
         })
-        configurator.addLabel('The Concept is already used', {
-            sv: 'Konceptet du försöker använda finns redan med i listan'
+        configurator.addLabel('This Concept is already used', {
+            sv: 'Konceptet du försöker lägga till används redan'
         })
         configurator.addLabel('Invalid UUID', {
             sv: 'Ogiltigt UUID'

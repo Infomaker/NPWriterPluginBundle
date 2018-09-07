@@ -61,12 +61,18 @@ class XimpdfComponent extends Component {
     }
 
     renderHeader($$, fileNode) {
+        let url
+        try {
+            url = fileNode.getUrl()
+        }
+        catch(ex) {}
+
         return $$('div')
             .append([
                 $$(FontAwesomeIcon, {icon: 'fa-file-pdf-o'}),
                 $$('a').append(this.getLabel('Portable Document Format'))
                     .attr('contenteditable', false)
-                    .attr('href', fileNode.getUrl())
+                    .attr('href', url)
                     .addClass('pdf-link')
                     .attr('target', '_blank')
                     .on('click', function (evt) {

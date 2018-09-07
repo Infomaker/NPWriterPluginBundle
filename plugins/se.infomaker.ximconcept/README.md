@@ -36,7 +36,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"editable": true` If the concepts should be editable from NPWriter
 - `"creatable": true` Optional property, If the concepts should be creatable from NPWriter, if omitted the value from editable will be used
 - `"placeholderText": "Sök skribent"` The search form placeholder
-- `"icon": "fa-superpowers"` Optional font-awesome icon to use with this type
+- `"icon": "fa-superpowers"` Optional font-awesome icon to use with this type (also supported in nested 'types' array)
 - `"appendDataToLink": true` If data should be added to article link, also depends on remote concept config
 - `"provider": "writer"` Used when a new concept is created from the writer, defaults to writer
 - `"pubStatus": "imext:draft"` Used when a new concept is created from the writer, defaults to `"imext:draft"`
@@ -141,7 +141,8 @@ Tags:
         "types": {
             "x-im/person": {
                 "name": "Person",
-                "editable": true
+                "editable": true,
+                "icon": "fa-superpowers"
             },
             "x-im/organisation": {
                 "name": "Organisation",

@@ -49,31 +49,30 @@ export default {
 
     export: function (node, el, converter) {
         const $$ = converter.$$;
-
         const fileNode = node.document.get(node.pdfFile)
 
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
+            uuid: fileNode.id,
             type: 'x-im/pdf'
         })
 
-        // Data element
-        const data = $$('data').append([
-            $$('text').append( converter.annotatedText([node.id, 'text']))
-        ])
-
-        el.attr('uuid', fileNode.uuid)
-
-        // Link element
         const link = $$('link').attr({
             rel: 'self',
             type: 'x-im/pdf',
             uri: node.uri ? node.uri : '',
             uuid: fileNode.uuid ? fileNode.uuid : NilUUID.getNilUUID()
-        }).append(data);
+        })
 
-        // Links
+        link.append(
+            $$('data').append(
+                $$('text').append(
+                    (node.data) ? converter.annotatedText([node.id, 'text']) : ''
+                )
+            )
+        )
+
         el.append(
             $$('links').append(
                 link

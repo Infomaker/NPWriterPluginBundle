@@ -17,7 +17,6 @@ class DropImageFile extends DragAndDropHandler {
                     imageNode.emit('onImageUploaded')
                 })
                 .catch((err) => {
-                    api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
                     this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
                 })
         }, 0)
@@ -39,8 +38,15 @@ class DropImageFile extends DragAndDropHandler {
         try {
             const document = api.editorSession.getDocument()
             const node = document.get(nodeId)
-            const imageFile = node.imageFile
 
+            if (!node) {
+                // Node have been removed while uploading by "undo" or user deleting it
+                return
+            }
+
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+
+            const imageFile = node.imageFile
             api.document.deleteNode('ximimage', node)
 
             if (imageFile) {

@@ -31,7 +31,7 @@ class ConceptSearchComponent extends Component {
         let searchFormIcon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
-        const { disabled, subtypes, enableHierarchy, propertyMap, icon } = this.props
+        const { disabled, subtypes, enableHierarchy, propertyMap, icon, types } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
@@ -76,6 +76,7 @@ class ConceptSearchComponent extends Component {
                 searchResult,
                 selected,
                 icon,
+                types,
                 isPolygon,
                 enableHierarchy,
                 propertyMap,
