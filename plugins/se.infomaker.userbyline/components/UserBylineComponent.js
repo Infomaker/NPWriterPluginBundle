@@ -40,23 +40,38 @@ class UserBylineComponent extends Component {
         return { userInfo, authorInfo }
     }
 
-    addAuthor(author) {
+    /**
+     * Will set IM.ID user connected author-concept as byline
+     *
+     * @param {object} author
+     */
+    async addAuthor(author) {
         const { sub } = this.state.userInfo
         const { propertyMap } = this.state
 
         if (!author[propertyMap.ConceptImIdSubjectId]) {
             author[propertyMap.ConceptImIdSubjectId] = sub
 
-            // ConceptService.trigger(
-            //     ConceptService.operations.UPDATE,
-            //     author
-            // )
+            await this.updateAuthorConcept(author)
         }
 
         ConceptService.trigger(
             ConceptService.operations.ADD,
             author
         )
+    }
+
+    /**
+     * Will update user XML in repo
+     *
+     * @param {object} author
+     */
+    async updateAuthorConcept(author) {
+        const conceptXml = await ConceptService.getConceptItemXml(author)
+        const conceptItemConfig = await ConceptService.getConceptItemConfigJson(author)
+        const subjectIdXpath = conceptItemConfig.instructions.imid.sub
+
+        
     }
 
     getInitialState() {
