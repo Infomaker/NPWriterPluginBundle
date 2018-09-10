@@ -19,7 +19,8 @@ sequenceDiagram
     participant Infocaster
     participant External Update Plugin
     participant Article
-    External Service->>Article Repository: Read article + Original ETag
+    External Service->>Article Repository: Get article
+    Article Repository->>External Service:Article + Original ETag
     External Service->>External Service: Perform updates on article
     External Service->>Article Repository: Store updated article
     Article Repository->>External Service: new ETag for updated article
@@ -27,7 +28,11 @@ sequenceDiagram
     External Service->>Infocaster: publish change message
     Infocaster->>Writer Update Plugin: broadcast change message
     Writer Update Plugin->>Writer Update Plugin: Validate message
-    Writer Update Plugin->>Article: Apply changes in message
+    alt If valid change message
+        Writer Update Plugin->>Article: Apply changes to article
+    else
+        Writer Update Plugin-->>Writer Update Plugin: Prompt user to reload article
+    end
 ```
 *Sequence diagram for parties involved in external update*
 
