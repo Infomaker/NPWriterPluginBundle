@@ -23,10 +23,11 @@ sequenceDiagram
     External Service->>External Service: Perform updates on article
     External Service->>Article Repository: Store updated article
     Article Repository->>External Service: new ETag for updated article
+    External Service->>External Service: Construct change message
     External Service->>Infocaster: publish change message
-    Infocaster->>External Update Plugin: broadcast change message
-    External Update Plugin->>External Update Plugin: Validate message
-    External Update Plugin->>Article: Apply changes in message
+    Infocaster->>Writer Update Plugin: broadcast change message
+    Writer Update Plugin->>Writer Update Plugin: Validate message
+    Writer Update Plugin->>Article: Apply changes in message
 ```
 *Sequence diagram for parties involved in external update*
 
