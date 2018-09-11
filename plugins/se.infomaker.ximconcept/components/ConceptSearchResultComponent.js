@@ -11,10 +11,9 @@ class ConceptSearchResultComponent extends Component {
 
     render($$){
         let createConcept
+        const { propertyMap, icon, addItem, enableHierarchy } = this.props
         let typeIcon = false
-        let icon = this.props.icon
-        const { propertyMap, addItem, enableHierarchy } = this.props
-        const el = $$('div').addClass('concepts-search-result-wrapper')
+
         const matches = this.props.searchResult.map((item, index) => {
             const selected = (index === this.props.selected)
             const itemExists = this.props.itemExists(item)
@@ -38,22 +37,22 @@ class ConceptSearchResultComponent extends Component {
                 enableHierarchy,
                 icon: typeIcon ? typeIcon : icon,
                 scrollIntoView: this.scrollItemIntoView
-            }).on('mousedown', () => { this.props.addItem(item) })
+            }).ref(`concept-search-result-item-${item.uuid}`).on('mousedown', () => { this.props.addItem(item) })
         })
 
         if (this.props.creatable && this.props.searchedTerm !== '*' && !this.props.isPolygon && !this.props.searching) {
-            createConcept = $$('div').addClass('concept-create-wrapper')
-                .append($$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }))
-                .append(`${this.getLabel('Create')}: ${this.props.searchedTerm}`)
-                .on('mousedown', this.props.addItem)
+            createConcept = $$('div', { class: 'concept-create-wrapper' }, [
+                $$('i', { class: 'fa fa-plus concept-create-icon', 'aria-hidden': 'true' }),
+                `${this.getLabel('create')}: ${this.props.searchedTerm}`
+            ]).on('mousedown', this.props.addItem)
         }
 
-        const result = $$('div')
-            .addClass('concept-search-result-component')
-            .append(matches)
-            .ref('searchResultContainer')
-
-        return el.append(result).append(createConcept)
+        return $$('div', { class: 'concepts-search-result-wrapper' }, [
+            $$('div', { class: 'concept-search-result-component' }, [
+                ...matches
+            ]).ref('searchResultContainer'),
+            createConcept
+        ]).ref(`concepts-search-result-wrapper`)
     }
 
     scrollItemIntoView(item) {

@@ -43,7 +43,7 @@ class ConceptSearchItemComponent extends Component {
             propertyMap,
             item,
             icon,
-        }) : ''
+        }).ref(`concept-search-item-icon-${item.uuid}`) : ''
 
         const broaderWrapper = $$('span')
 

@@ -43,17 +43,16 @@ class ConceptItemIconComponent extends Component {
             return this.props.item[propertyMap.ConceptImSubTypeFull] ? this.props.item[propertyMap.ConceptImSubTypeFull] : this.props.item[propertyMap.ConceptImTypeFull]
         }
 
-        return this.props.item[propertyMap.ConceptImTypeFull]
+        return this.props.item[propertyMap.ConceptImTypeFull] || this.props.item.type
     }
 
     render($$){
-        const el = $$('div').addClass('concept-item-icon-wrapper')
-        const icon = $$('i', {
-            "class": `fa ${this.getIconString()} concept-item-icon ${this.getItemConceptType()}`,
-            "aria-hidden": "true"
-        })
-
-        return el.append(icon)
+        return $$('div', { class: 'concept-item-icon-wrapper' }, [
+            $$('i', {
+                "class": `fa ${this.getIconString()} concept-item-icon ${this.getItemConceptType()}`,
+                "aria-hidden": "true"
+            }).ref(`conceptIcon-${this.props.item.uuid}-icon`)
+        ]).ref(`conceptIcon-${this.props.item.uuid}-wrapper`)
     }
 
 }

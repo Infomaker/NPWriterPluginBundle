@@ -8,6 +8,7 @@ class ConceptSearchComponent extends Component {
         super(...args)
 
         this.handleInput = this.handleInput.bind(this)
+        this.addItem = this.addItem.bind(this)
     }
 
     getInitialState() {
@@ -81,7 +82,7 @@ class ConceptSearchComponent extends Component {
                 propertyMap,
                 creatable: this.props.creatable,
                 itemExists: this.props.itemExists,
-                addItem: this.addItem.bind(this)
+                addItem: this.addItem
             }).ref('searchResultComponent')
         }
 
@@ -162,6 +163,7 @@ class ConceptSearchComponent extends Component {
         item = (item && item[propertyMap.ConceptReplacedByRelation]) ? item[propertyMap.ConceptReplacedByRelation] :
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
 
+        this.resetState()
         this.props.addItem(item)
     }
 
