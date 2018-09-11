@@ -45,13 +45,15 @@ class AuthorDialogComponent extends Component {
         )
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
-            suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
-                suggestionInformation,
-                ...renderedSuggestions
-            ) : '',
-            $$('div', { class: 'user-author-suggestion-links-wrapper' }, [
-                $$('a', { class: 'create-new-author-link' }, 'Skapa ny')
-            ])
+            suggestionInformation,
+            $$('div', { class: 'user-author-suggestions-list-wrapper'},
+                suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
+                    ...renderedSuggestions
+                ) : '',
+            )
+            // $$('div', { class: 'user-author-suggestion-links-wrapper' }, [
+            //     $$('a', { class: 'create-new-author-link' }, 'Skapa ny')
+            // ])
         ]).on('keydown', this.overrideEscapeButton)
     }
 

@@ -67,11 +67,9 @@ class UserBylineComponent extends Component {
      * @param {object} author
      */
     async updateAuthorConcept(author) {
-        const conceptXml = await ConceptService.getConceptItemXml(author)
-        const conceptItemConfig = await ConceptService.getConceptItemConfigJson(author)
-        const subjectIdXpath = conceptItemConfig.instructions.imid.sub
-
-        
+        // const conceptXml = await ConceptService.getConceptItemXml(author)
+        // const conceptItemConfig = await ConceptService.getConceptItemConfigJson(author)
+        // const subjectIdXpath = conceptItemConfig.instructions.imid.sub
     }
 
     getInitialState() {
