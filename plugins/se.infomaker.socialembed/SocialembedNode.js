@@ -67,7 +67,7 @@ class SocialembedNode extends BlockNode {
                 try {
                     tplNode.innerHTML = json.html
                     parentNode = tplNode.content.childNodes[0].querySelector('blockquote>div')
-                    oldImgNode = tplNode.content.childNodes[0].querySelector('blockquote>div>div')
+                    oldImgNode = tplNode.content.childNodes[0].querySelector('blockquote>div>a')
 
                     newImgNode = document.createElement('img')
                     newImgNode.setAttribute('src', json.thumbnail_url)
