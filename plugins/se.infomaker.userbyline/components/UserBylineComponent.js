@@ -22,15 +22,44 @@ class UserBylineComponent extends Component {
                 this.addImidUserToArticleByline(authorInfo)
             } else {
                 suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
-
-                this.extendState({
-                    suggestions,
-                    propertyMap
-                })
+                console.info('Sugge: ', suggestions)
+                this.displayModal(suggestions)
             }
         }
     }
 
+    /**
+     * Method to open a writer modal with a list of suggested authors
+     *
+     * @param {array} suggestions array with concept suggestions
+     */
+    displayModal(suggestions) {
+        const {propertyMap} = this.state
+        if (this.state.userInfo && !this.state.authorInfo) {
+            console.info('??', suggestions)
+            api.ui.showDialog(AuthorDialogComponent,
+                {
+                    ...this.state.userInfo,
+                    suggestions,
+                    propertyMap,
+                    addImidUserToArticleByline: this.addImidUserToArticleByline,
+                },
+                {
+                    title: 'Lägg till författare',
+                    global: true,
+                    primary: false,
+                    secondary: false
+                }
+            )
+        }
+    }
+
+    /**
+     * Load IMID user info from writer and
+     * try to load corresponding author from OC
+     *
+     * @returns {object} With userInfo and authorInfo
+     */
     async loadUserState() {
         const userInfo = await api.user.getUserInfo()
         const authorInfo = await ConceptService.getRemoteConceptBySub(userInfo.sub)
@@ -64,7 +93,7 @@ class UserBylineComponent extends Component {
     /**
      * Will update user XML in OC
      *
-     * @param {object} author
+     * @param {object} author concept
      */
     async addSubToAuthorXml(author) {
         const { propertyMap } = this.state
@@ -106,25 +135,6 @@ class UserBylineComponent extends Component {
     }
 
     render($$) {
-        const { suggestions, propertyMap } = this.state
-
-        if (this.state.userInfo && !this.state.authorInfo) {
-            api.ui.showDialog(AuthorDialogComponent,
-                {
-                    ...this.state.userInfo,
-                    suggestions,
-                    propertyMap,
-                    addImidUserToArticleByline: this.addImidUserToArticleByline,
-                },
-                {
-                    title: this.getLabel('Add to image byline'),
-                    global: true,
-                    primary: false,
-                    secondary: false
-                }
-            )
-        }
-
         return $$('div')
     }
 }

@@ -31,6 +31,7 @@ class AuthorDialogComponent extends Component {
 
     render($$) {
         const { suggestions } = this.props
+        console.info('suggestions', suggestions)
         const renderedSuggestions = suggestions.map(suggestion => $$(AuthorSuggestionComponent, {
             ...this.props,
             addAuthor: this.addAuthor,
@@ -41,19 +42,23 @@ class AuthorDialogComponent extends Component {
                 'Vi hittade inga författare som matchade inloggad användare. Vänligen kontaka din administrativa avdelning.' :
                 renderedSuggestions.length === 1 ?
                     'Är detta du?' :
-                    'Är någon av dessa författare du?'
+                    'Är du någon av dessa författare?'
         )
+        const authorSubInfo = $$('p', { class: 'user-author-sub-info' },
+            renderedSuggestions.length ?
+                'Vald författare kommer att kopplas till din inloggade användare. Detta val behöver du därför enbart göra en gång.' :
+                ''
+        )
+
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
             suggestionInformation,
+            authorSubInfo,
             $$('div', { class: 'user-author-suggestions-list-wrapper'},
                 suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
                     ...renderedSuggestions
                 ) : '',
             )
-            // $$('div', { class: 'user-author-suggestion-links-wrapper' }, [
-            //     $$('a', { class: 'create-new-author-link' }, 'Skapa ny')
-            // ])
         ]).on('keydown', this.overrideEscapeButton)
     }
 
