@@ -31,7 +31,6 @@ class AuthorDialogComponent extends Component {
 
     render($$) {
         const { suggestions } = this.props
-        console.info('suggestions', suggestions)
         const renderedSuggestions = suggestions.map(suggestion => $$(AuthorSuggestionComponent, {
             ...this.props,
             addAuthor: this.addAuthor,
@@ -39,26 +38,30 @@ class AuthorDialogComponent extends Component {
         }))
         const suggestionInformation = $$('h4', { class: 'user-author-suggestion-info' },
             !renderedSuggestions.length ?
-                'Vi hittade inga författare som matchade inloggad användare. Vänligen kontaka din administrativa avdelning.' :
+                this.getLabel('No author concepts matching logged in user was found. Please contact your support department.') :
                 renderedSuggestions.length === 1 ?
-                    'Är detta du?' :
-                    'Är du någon av dessa författare?'
+                    this.getLabel('Is this you?') :
+                    this.getLabel('Are you one of these authors?')
         )
         const authorSubInfo = $$('p', { class: 'user-author-sub-info' },
             renderedSuggestions.length ?
-                'Vald författare kommer att kopplas till din inloggade användare. Detta val behöver du därför enbart göra en gång.' :
+                this.getLabel('Selected author will be associated with current user account. You only have to do this once.') :
                 ''
         )
-
+        const supportInfo = $$('p', { class: 'user-support-info' },
+            this.getLabel('If you cant find an author please contact your support department.')
+        )
+        const suggestionWrapper = $$('div', { class: 'user-author-suggestions-list-wrapper' },
+            suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
+                ...renderedSuggestions
+            ) : '',
+        )
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
             suggestionInformation,
             authorSubInfo,
-            $$('div', { class: 'user-author-suggestions-list-wrapper'},
-                suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
-                    ...renderedSuggestions
-                ) : '',
-            )
+            supportInfo,
+            suggestionWrapper
         ]).on('keydown', this.overrideEscapeButton)
     }
 

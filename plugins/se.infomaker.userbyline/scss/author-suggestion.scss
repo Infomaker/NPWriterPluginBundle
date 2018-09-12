@@ -2,9 +2,10 @@
     .user-author-suggestion-info {
         padding: 10px 30px;
     }
-    .user-author-sub-info {
-            padding: 0px 30px 20px 30px;;
+    .user-author-sub-info, .user-support-info {
+        padding: 0px 30px 20px 30px;;
         font-style: italic;
+        font-size: 12px;
     }
     .user-author-suggestions-list {
         list-style-type: none;
@@ -24,9 +25,10 @@
                 margin: 0px 20px 5px 20px;
             }
 
-            &.existing-sub {
+            &.existing-sub, &.existing-sub:hover {
                 cursor: not-allowed;
-                background: #fafafa;
+                background: #f1efef;
+                opacity: 0.6;
             }
             .user-list-avatar-wrapper {
                 display: flex;

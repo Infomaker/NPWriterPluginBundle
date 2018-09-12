@@ -22,7 +22,6 @@ class UserBylineComponent extends Component {
                 this.addImidUserToArticleByline(authorInfo)
             } else {
                 suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
-                console.info('Sugge: ', suggestions)
                 this.displayModal(suggestions)
             }
         }
@@ -36,7 +35,6 @@ class UserBylineComponent extends Component {
     displayModal(suggestions) {
         const {propertyMap} = this.state
         if (this.state.userInfo && !this.state.authorInfo) {
-            console.info('??', suggestions)
             api.ui.showDialog(AuthorDialogComponent,
                 {
                     ...this.state.userInfo,
@@ -45,7 +43,7 @@ class UserBylineComponent extends Component {
                     addImidUserToArticleByline: this.addImidUserToArticleByline,
                 },
                 {
-                    title: 'Lägg till författare',
+                    title: this.getLabel('Add author to byline'),
                     global: true,
                     primary: false,
                     secondary: false
