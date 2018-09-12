@@ -38,7 +38,7 @@ class AuthorDialogComponent extends Component {
         }))
         const suggestionInformation = $$('h4', { class: 'user-author-suggestion-info' },
             !renderedSuggestions.length ?
-                'Vi hittade inga författare som matchade inloggad användare.' :
+                'Vi hittade inga författare som matchade inloggad användare. Vänligen kontaka din administrativa avdelning.' :
                 renderedSuggestions.length === 1 ?
                     'Är detta du?' :
                     'Är någon av dessa författare du?'
