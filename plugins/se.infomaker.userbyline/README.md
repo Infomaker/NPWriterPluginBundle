@@ -2,14 +2,20 @@
 
 A plugin that handles IM.ID user byline implementation for traceability. Will by default set current user as author on new articles.
 
-It will also set IM.ID sub on connected author concepts.
+If there ias no match for IMID sub on any author concept a search for authors with the same email will be made.
 
-![IM.ID user byline workflow](./docimages/writer-imid-byline.png "IM.ID user byline workflow")
+When an author is selected from suggestion list, it will also set IM.ID sub on connected author concept.
+
+<!-- Initial plan, not implemented yet. Will not create a new concept -->
+<!-- ![IM.ID user byline workflow](./docimages/writer-imid-byline.png "IM.ID user byline workflow") -->
 
 ## Dependencies
 
-requires `writer => IM.ID`
-requires `ConceptPlugin (x-im/author) > IM.ID`
+> requires `writer => IM.ID`
+
+> requires `ConceptPlugin (x-im/author) > IM.ID`
+
+> requires `ConceptAuthorFirstname`, `ConceptAuthorLastname`, `ConceptAuthorEmail` and `ConceptImIdSubjectId` in open content.
 
 ## Configuration
 
