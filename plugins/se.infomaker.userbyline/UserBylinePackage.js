@@ -15,7 +15,7 @@ export default {
         })
 
         configurator.addLabel('No author concepts matching logged in user was found. Please contact your support department.', {
-            sv: 'Vi hittade inga författare som matchade inloggad användare. Vänligen kontaka din administrativa avdelning.'
+            sv: 'Vi hittade inte någon författare som matchade inloggad användare. Vänligen kontaka din supportavdelning.'
         })
 
         configurator.addLabel('Is this you?', {
@@ -27,7 +27,7 @@ export default {
         })
 
         configurator.addLabel('If you cant find an author please contact your support department.', {
-            sv: 'Hittar du inte dig själv så vänligen kontakta din administrativa avdelning.'
+            sv: 'Hittar du inte dig själv så vänligen kontakta din supportavdelning.'
         })
 
         configurator.addLabel('Already associated with another user', {

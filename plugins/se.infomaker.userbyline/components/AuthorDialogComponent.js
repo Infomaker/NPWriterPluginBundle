@@ -49,10 +49,12 @@ class AuthorDialogComponent extends Component {
                 ''
         )
         const supportInfo = $$('p', { class: 'user-support-info' },
-            this.getLabel('If you cant find an author please contact your support department.')
+            renderedSuggestions.length ?
+                this.getLabel('If you cant find an author please contact your support department.') :
+                ''
         )
         const suggestionWrapper = $$('div', { class: 'user-author-suggestions-list-wrapper' },
-            suggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
+            renderedSuggestions.length ? $$('ul', { class: 'user-author-suggestions-list' },
                 ...renderedSuggestions
             ) : '',
         )

@@ -16,12 +16,11 @@ class UserBylineComponent extends Component {
         if (!api.newsItem.getGuid()) {
             const { userInfo, authorInfo } = await this.loadUserState()
             const propertyMap = this.state.propertyMap
-            let suggestions = []
 
             if (authorInfo) {
                 this.addImidUserToArticleByline(authorInfo)
             } else {
-                suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
+                const suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
                 this.displayModal(suggestions)
             }
         }
@@ -77,9 +76,7 @@ class UserBylineComponent extends Component {
         const { propertyMap } = this.state
 
         if (!author[propertyMap.ConceptImIdSubjectId]) {
-            author[propertyMap.ConceptImIdSubjectId] = sub
-
-            await this.addSubToAuthorXml(author)
+            await this.addSubToAuthorXml(author, sub)
         }
 
         ConceptService.trigger(
@@ -93,9 +90,7 @@ class UserBylineComponent extends Component {
      *
      * @param {object} author concept
      */
-    async addSubToAuthorXml(author) {
-        const { propertyMap } = this.state
-        const sub = author[propertyMap.ConceptImIdSubjectId]
+    async addSubToAuthorXml(author, sub) {
         const conceptXml = await ConceptService.getConceptItemXml(author)
         const conceptItemConfig = await ConceptService.getConceptItemConfigJson(author)
         const subInstruction = conceptItemConfig.instructions.imid ?
