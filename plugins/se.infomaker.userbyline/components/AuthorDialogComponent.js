@@ -26,7 +26,7 @@ class AuthorDialogComponent extends Component {
 
     addAuthor(author) {
         this.send('dialog:close')
-        this.props.addAuthor(author)
+        this.props.addImidUserToArticleByline(author)
     }
 
     render($$) {
