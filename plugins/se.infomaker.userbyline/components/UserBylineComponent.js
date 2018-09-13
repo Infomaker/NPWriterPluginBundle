@@ -12,7 +12,11 @@ class UserBylineComponent extends Component {
     }
 
     async didMount() {
-        // If we are looking at a new article eg. no guid
+
+        /**
+         * If we are looking at a new article eg. no guid
+         * this workflow should kick in
+         */
         if (!api.newsItem.getGuid()) {
             const { userInfo, authorInfo } = await this.loadUserState()
             const propertyMap = this.state.propertyMap
@@ -67,7 +71,7 @@ class UserBylineComponent extends Component {
     }
 
     /**
-     * Will set IM.ID user connected author-concept as byline
+     * Will set IM.ID connected author-concept as byline
      *
      * @param {object} author
      */
@@ -79,14 +83,12 @@ class UserBylineComponent extends Component {
             await this.addSubToAuthorXml(author, sub)
         }
 
-        ConceptService.trigger(
-            ConceptService.operations.ADD,
-            author
-        )
+        // TODO: Decorate author according to instructions in config
+        ConceptService.addArticleConcept(author, false)
     }
 
     /**
-     * Will update user XML in OC
+     * Will update author XML with sub in OC
      *
      * @param {object} author concept
      */

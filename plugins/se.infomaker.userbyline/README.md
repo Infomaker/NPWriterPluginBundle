@@ -11,9 +11,9 @@ When an author is selected from suggestion list, it will also set IM.ID sub on c
 
 ## Dependencies
 
-> requires `writer => IM.ID`
+> requires `writer >= IM.ID`
 
-> requires `ConceptPlugin (x-im/author) > IM.ID`
+> requires `ConceptPlugin (x-im/author) >= IM.ID`
 
 > requires `ConceptAuthorFirstname`, `ConceptAuthorLastname`, `ConceptAuthorEmail` and `ConceptImIdSubjectId` in open content.
 
