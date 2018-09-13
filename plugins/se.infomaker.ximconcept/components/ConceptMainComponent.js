@@ -13,6 +13,7 @@ class ConceptMainComponent extends Component {
 
         this.addItem = this.addItem.bind(this)
         this.editItem = this.editItem.bind(this)
+        this.reloadArticleConcepts = this.reloadArticleConcepts.bind(this)
         this.removeArticleConcept = this.removeArticleConcept.bind(this)
         this.addConceptToArticle = this.addConceptToArticle.bind(this)
         this.updateArticleConcept = this.updateArticleConcept.bind(this)
@@ -20,22 +21,25 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
-        ConceptService.on(
-            this.state.conceptType,
-            ConceptService.operations.ADD,
-            this.addItem
-        )
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.on(conceptType, operations.ADD, this.addItem)
+        ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.on(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.on(type, operations.ADD, this.addItem)
+                ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+            })
         }
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (e) => {
-            const types = this.state.types || []
             const eventName = e.name || ''
-            const cleanEventName = eventName.replace('-', '').replace('/', '')
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
-            const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
             if (eventName.length) {
                 if (e.data.action === 'delete' && (associatedWith.length && associatedWith === eventName)) {
@@ -65,9 +69,6 @@ class ConceptMainComponent extends Component {
                     })
                 } else if (e.data.action === 'delete-all' && (associatedWith.length && associatedWith === eventName)) {
                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
-                } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
-                    const updatedConcept = (e.data && e.data.data) ? e.data.data : null
-                    this.reloadArticleConcepts(updatedConcept)
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
                     const associatedLinks = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
@@ -88,12 +89,20 @@ class ConceptMainComponent extends Component {
 
 
     dispose() {
-        ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.off(conceptType, operations.ADD, this.addItem)
+        ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
             this.state.types.forEach(type => {
-                ConceptService.off(type, ConceptService.operations.ADD, this.addItem)
-                ConceptService.off(type, ConceptService.operations.UPDATE, this.updatedItem)
+                ConceptService.off(type, operations.ADD, this.addItem)
+                ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
 
