@@ -61,19 +61,26 @@ class UserItem extends Component {
     render($$) {
         const user = this.props.user
         const Avatar = api.ui.getComponent('avatar')
-
         const itemClassNames = ['user-list-item']
 
         if (this.state.hasLock) {
             itemClassNames.push('active')
         }
 
+        let avatarSource
+        if (user.picture) {
+            avatarSource = 'url'
+        } else {
+            avatarSource = 'gravatar'
+        }
+
         return $$('li', { class: itemClassNames.join(' ')},
             [
                 $$(Avatar, {
-                    avatarSource: 'gravatar',
+                    avatarSource: avatarSource,
                     avatarId: user.email,
-                    avatarAlt: this.extractUserInitials(user)
+                    avatarAlt: this.extractUserInitials(user),
+                    avatarUrl: user.picture
                 }).ref('avatar-' + user.socketId),
 
                 $$('div', { class: 'status-indicator' }),

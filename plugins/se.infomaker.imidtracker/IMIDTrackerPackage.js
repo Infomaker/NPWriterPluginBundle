@@ -1,53 +1,56 @@
-import UATrackerComponent from './components/UATracker'
+'use strict'
+
+import IMIDTrackerComponent from './components/IMIDTracker'
+import './scss/index.scss'
 
 export default {
-    name: 'uatracker',
-    id: 'se.infomaker.uatracker',
-    version: '{{version}}',
-    configure: function(config) {
 
-        config.addTopBarComponent('uatracker', { align: 'right' }, UATrackerComponent)
+    name: 'imidtracker',
+    id: 'se.infomaker.imidtracker',
+    configure: function (config) {
+
+        config.addTopBarComponent('imidtracker', {align: 'right'}, IMIDTrackerComponent)
 
         // Unlock dialog
-        config.addLabel('uatracker-unlock-article-title', {
+        config.addLabel('imidtracker-unlock-article-title', {
             en: 'Temporarily Locked',
             sv: 'Tillfälligt låst'
         })
 
-        config.addLabel('uatracker-unlock-article-message', {
+        config.addLabel('imidtracker-unlock-article-message', {
             en: 'Unlocking and taking over an article will overwrite the active users unsaved changes. If you are unsure, check with the active user before unlocking.',
             sv: 'Att låsa upp och ta över en artikel kommer skriva över den aktiva användarens ändringar som inte är sparade. Om du är osäker, kontrollera med den aktiva användaren innan.'
         })
 
         // Article locked dialog
-        config.addLabel('uatracker-article-locked-title', {
+        config.addLabel('imidtracker-article-locked-title', {
             en: 'The article is locked',
             sv: 'Artikeln är låst'
         })
 
-        config.addLabel('uatracker-article-locked-message', {
+        config.addLabel('imidtracker-article-locked-message', {
             en: 'You must unlock the article before editing it.',
             sv: 'För att göra ändringar i artikeln måste du låsa upp den först.'
         })
 
         // Article takover dialog
-        config.addLabel('uatracker-article-taken-over-title', {
+        config.addLabel('imidtracker-article-taken-over-title', {
             en: 'Someone has locked the article',
             sv: 'Någon har låst artikeln'
         })
 
-        config.addLabel('uatracker-article-taken-over-message', {
+        config.addLabel('imidtracker-article-taken-over-message', {
             en: '{{name}} ({{email}}) has locked and taken control of the article',
             sv: '{{name}} ({{email}}) har låst och tagit över artikeln.'
         })
 
         // Article outdated dialog
-        config.addLabel('uatracker-article-outdated-title', {
+        config.addLabel('imidtracker-article-outdated-title', {
             en: 'There is a newer version of the article available',
             sv: 'Det finns en nyare version av artikeln'
         })
 
-        config.addLabel('uatracker-article-outdated-message', {
+        config.addLabel('imidtracker-article-outdated-message', {
             en: '{{name}} ({{email}}) has saved the article. Refresh the page to fetch the latest changes.',
             sv: '{{name}} ({{email}}) har sparat artikeln. Ladda om sidan för att se de nya ändringarna.'
         })
@@ -66,6 +69,11 @@ export default {
             sv: 'Ange ditt namn'
         })
 
+        config.addLabel('Logout', {
+            en: 'Logout',
+            sv: 'Logga ut'
+        })
+
         // No connection component
         config.addLabel('no-connection-headline', {
             en: 'No connection to user identification service',
@@ -77,7 +85,7 @@ export default {
             sv: 'Det gick inte ansluta till identifieringstjänsten. Detta innebär att andra användare kan ha denna artikeln öppen samtidigt.'
         })
 
-        config.addLabel('uatracker-no-connetion', {
+        config.addLabel('imidtracker-no-connetion', {
             en: 'No connection',
             sv: 'Ingen anslutning'
         })
@@ -108,17 +116,7 @@ export default {
             sv: 'Fortsätt'
         })
 
-        config.addLabel('Logout', {
-            en: 'Logout',
-            sv: 'Logga ut'
-        })
-
-        config.addLabel('uatracker-dialog-title', {
-            en: 'Identification',
-            sv: 'Identifiering'
-        })
-
-        config.addLabel('uatracker-been-in', {
+        config.addLabel('imidtracker-been-in', {
             en: 'Has been in for {{loginTime}}',
             sv: 'Har varit inne i {{loginTime}}'
         })

@@ -47,7 +47,7 @@ class UserDetails extends Component {
             $$('div', { class: 'footer' }, [
                 $$(FontAwesomeIcon, {icon: 'fa-clock-o'}),
                 $$('div', { class: 'login-time' },
-                    this.getLabel('uatracker-been-in')
+                    this.getLabel('imidtracker-been-in')
                         .replace('{{loginTime}}', loginTime)
                 )
             ])
