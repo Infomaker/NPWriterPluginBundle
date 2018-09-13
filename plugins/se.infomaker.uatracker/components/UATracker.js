@@ -2,10 +2,17 @@ import io from 'socket.io-client'
 import { Component } from 'substance'
 import { api, moment, event } from 'writer'
 
+import Login from './Login'
 import Dialog from './Dialog'
 import UserListBarItem from './UserListBarItem'
 import LockButtonBarItem from './LockButtonBarItem'
 import NoConnectionBarItem from './NoConnectionBarItem'
+
+import '../scss/uatracker.scss'
+import '../scss/no-connection.scss'
+import '../scss/login.scss'
+import '../scss/user.scss'
+import '../scss/lock.scss'
 
 const pluginId = 'se.infomaker.uatracker'
 
@@ -38,19 +45,12 @@ class UATracker extends Component {
         super(...args)
         api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
         api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
-        this.userLogin = this.userLogin.bind(this)
-        this.onConnect = this.onConnect.bind(this)
-        this.onSocketConnectError = this.onSocketConnectError.bind(this)
-        this.onUserChange = this.onUserChange.bind(this)
-        this.onLockStatusChange = this.onLockStatusChange.bind(this)
-        this.onVersionChange = this.onVersionChange.bind(this)
-        this.setIsActiveUser = this.setIsActiveUser.bind(this)
     }
 
     dispose() {
         api.events.off(pluginId, event.DOCUMENT_CHANGED)
         api.events.off(pluginId, event.DOCUMENT_SAVED)
-        this._closeSocket()
+        this.socket.close()
     }
 
     getInitialState() {
@@ -64,12 +64,7 @@ class UATracker extends Component {
     }
 
     didMount() {
-        // Avoid opening more than one socket connection when app is switching state rapidly during save
-        const {isSaving} = this.props
-        if(!isSaving) {
-            this.loadAuthenticatedUser()
-                .then(this.userLogin)
-        }
+        this.showLogin()
     }
 
     _onDocumentChanged(change) {
@@ -147,21 +142,15 @@ class UATracker extends Component {
     }
 
     setupLiveArticles() {
-        const host = api.getConfigValue('se.infomaker.uatracker', 'host', false)
-
-        if(!host) {
-            console.error('No configured UA-tracker host for plugin se.infomaker.uatracker')
-            return
-        }
-
+        const host = api.getConfigValue('se.infomaker.uatracker', 'host')
         this.socket = io(host)
 
-        this.socket.on('error', (e) => { console.error('Socket error', e)})
-        this.socket.on('connect', this.onConnect)
-        this.socket.on('connect_error', this.onSocketConnectError)
-        this.socket.on('article/user-change', this.onUserChange)
-        this.socket.on('article/lock-status-change', this.onLockStatusChange)
-        this.socket.on('article/version-change', this.onVersionChange)
+        this.socket.on('error', () => {})
+        this.socket.on('connect', () => this.onConnect())
+        this.socket.on('connect_error', () => this.onSocketConnectError())
+        this.socket.on('article/user-change', (users) => this.onUserChange(users))
+        this.socket.on('article/lock-status-change', (lockStatus) => this.onLockStatusChange(lockStatus))
+        this.socket.on('article/version-change', (versionData) => this.onVersionChange(versionData))
     }
 
     onConnect() {
@@ -170,7 +159,7 @@ class UATracker extends Component {
     }
 
     onUserChange(users) {
-        users = users.map(this.setIsActiveUser)
+        users = users.map(this.setIsActiveUser.bind(this))
         this.extendState({
             users: users,
             socketId: this.socket.id // TODO: Maybe move this to onConnect
@@ -206,14 +195,11 @@ class UATracker extends Component {
     }
 
     setLockStatus(lockedBy) {
-        if (lockedBy && lockedBy !== this.socket.id) {
-            // Locked by other user
+        if (lockedBy && lockedBy !== this.socket.id) { // Locked by other user
             this.lockArticle()
-        } else if (lockedBy === this.socket.id) {
-            // Locked by active user
+        } else if (lockedBy === this.socket.id) { // Locked by active user
             this.unlockArticle()
-        } else {
-            // Not locked
+        } else { // Not locked
             if (!this.state.articleOutdated) {
                 this.unlockArticle()
             }
@@ -267,21 +253,19 @@ class UATracker extends Component {
         api.ui.showDialog(Dialog, dialogProps, dialogOptions)
     }
 
-    loadAuthenticatedUser() {
-        try {
-            return api.user.getUserInfo().then(user => {
-                if (user) {
-                    // TODO: Remove
-                    console.log('GOT AUTH USER', user)
-                    return {
-                        email: user.email,
-                        name: `${user.given_name} ${user.family_name}`,
-                        picture: user.picture
-                    }
-                }
-            })
-        } catch (e) {
-            throw new Error('User info api endpoint not available')
+    showLogin() {
+        if (api.history.isAvailable()) {
+            const user = api.history.storage.getItem('user')
+            if (user) {
+                this.login(JSON.parse(user))
+            } else {
+                api.ui.showDialog(Login, { login: this.userLogin.bind(this) }, {
+                    title: this.getLabel('uatracker-dialog-title'),
+                    primary: this.getLabel('Continue'),
+                    secondary: false,
+                    disableEscKey: true
+                })
+            }
         }
     }
 
@@ -297,22 +281,22 @@ class UATracker extends Component {
         if (api.history.isAvailable()) {
             api.history.storage.setItem('user', JSON.stringify(user))
         }
+        this.login(user)
+    }
 
-        // UA-trackern does not handle IMID authorized users, i.e.
-        // when opening a new article UA-tracker will not serve
-        // any users to display hence we need to add the auth user
-        // to "users" in order for plugin to render the user. When
-        // article is saved first time, the UA-tracker way to handle
-        // this will take over.
-
-        // Add timestamp to user (in order to render for how long
-        // user has been on new article).
-        user.timestamp = moment().format('x')
+    logout() {
+        if (api.history.isAvailable()) {
+            api.history.storage.removeItem('user')
+            this.socket.close()
+            this.showLogin()
+        }
 
         this.extendState({
-            users: [user]
+            email: null,
+            name: null,
+            socketId: null,
+            users: []
         })
-        this.login(user)
     }
 
     render($$) {
@@ -328,7 +312,8 @@ class UATracker extends Component {
                 users: this.state.users,
                 socketId: this.state.socketId,
                 lockedBy: this.state.lockedBy,
-                limit: 5
+                limit: 5,
+                logout: this.logout.bind(this)
             }).ref('user-list')
 
             const lockElem = $$(LockButtonBarItem, {
@@ -340,12 +325,6 @@ class UATracker extends Component {
         }
 
         return el
-    }
-
-    _closeSocket() {
-        if(this.socket) {
-            this.socket.close()
-        }
     }
 }
 
