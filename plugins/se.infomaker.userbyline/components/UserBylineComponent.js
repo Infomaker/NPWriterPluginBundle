@@ -9,6 +9,7 @@ class UserBylineComponent extends Component {
         super(...args)
 
         this.addImidUserToArticleByline = this.addImidUserToArticleByline.bind(this)
+        this.addSubToAuthorXml = this.addSubToAuthorXml.bind(this)
     }
 
     async didMount() {
@@ -79,11 +80,25 @@ class UserBylineComponent extends Component {
         const { sub } = this.state.userInfo
         const { propertyMap } = this.state
 
+        this.authorConfig = await ConceptService.getConceptItemConfigJson(author)
+        this.authorXml = await ConceptService.getConceptItemXml(author)
+        this.xmlHandler = new XmlHandler(this.authorXml)
+
         if (!author[propertyMap.ConceptImIdSubjectId]) {
             await this.addSubToAuthorXml(author, sub)
         }
 
-        // TODO: Decorate author according to instructions in config
+        const articleDataInstructions = (this.authorConfig && this.authorConfig.instructions) ?
+            this.authorConfig.instructions.articleData :
+            null
+
+        if (articleDataInstructions) {
+            author.articleData = articleDataInstructions.reduce((accumulator, prop) => {
+                accumulator[prop.name] = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(prop.xpath))
+                return accumulator
+            }, {})
+        }
+
         ConceptService.addArticleConcept(author, false)
     }
 
@@ -93,26 +108,23 @@ class UserBylineComponent extends Component {
      * @param {object} author concept
      */
     async addSubToAuthorXml(author, sub) {
-        const conceptXml = await ConceptService.getConceptItemXml(author)
-        const conceptItemConfig = await ConceptService.getConceptItemConfigJson(author)
-        const subInstruction = conceptItemConfig.instructions.imid ?
-            conceptItemConfig.instructions.imid.find(instruction => instruction.name === 'sameas-imid-sub') :
+        const subInstruction = (this.authorConfig.instructions && this.authorConfig.instructions.imid) ?
+            this.authorConfig.instructions.imid.find(instruction => instruction.name === 'sameas-imid-sub') :
             null
 
         const subXpath = (subInstruction && subInstruction.xpath) ? subInstruction && subInstruction.xpath : null
 
-        if (sub && conceptXml && subXpath) {
-            const xmlHandler = new XmlHandler(conceptXml)
-            let subNode = xmlHandler.getNode(subXpath)
+        if (sub && subXpath && this.authorXml) {
+            let subNode = this.xmlHandler.getNode(subXpath)
 
             if (!subNode || !subNode.singleNodeValue) {
-                xmlHandler.createNodes(subXpath)
-                subNode = xmlHandler.getNode(subXpath)
+                this.xmlHandler.createNodes(subXpath)
+                subNode = this.xmlHandler.getNode(subXpath)
             }
 
-            xmlHandler.setNodeValue(subNode, `imid://user/sub/${sub}`)
+            this.xmlHandler.setNodeValue(subNode, `imid://user/sub/${sub}`)
             const xmlString = new XMLSerializer()
-                .serializeToString(conceptXml.documentElement)
+                .serializeToString(this.authorXml.documentElement)
                 .trim()
                 .replace(/ xmlns=""/g, '')
 
@@ -124,7 +136,6 @@ class UserBylineComponent extends Component {
         return {
             userInfo: null,
             authorInfo: null,
-            suggestions: [],
             propertyMap: ConceptService.getPropertyMap()
         }
     }
