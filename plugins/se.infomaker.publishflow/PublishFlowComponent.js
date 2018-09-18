@@ -26,6 +26,10 @@ class PublishFlowComponent extends Component {
             this._onDocumentSaveFailed()
         })
 
+        api.events.on(pluginId, event.CANCELED_LOGIN, () => {
+            this._onDocumentSaveFailed()
+        })
+
         api.events.on(pluginId, event.USERACTION_SAVE, () => {
             if (!this.props.saveInProgress) {
                 this.saveInProgress = true
@@ -68,6 +72,7 @@ class PublishFlowComponent extends Component {
         api.events.off(pluginId, event.DOCUMENT_SAVED)
         api.events.off(pluginId, event.DOCUMENT_SAVE_FAILED)
         api.events.off(pluginId, event.USERACTION_CANCEL_SAVE)
+        api.events.off(pluginId, event.CANCELED_LOGIN)
         api.events.off(pluginId, event.USERACTION_SAVE)
         api.events.off(pluginId, event.DOCUMENT_REPLACED)
         api.events.off(pluginId, event.USERACTION_LOCK)
