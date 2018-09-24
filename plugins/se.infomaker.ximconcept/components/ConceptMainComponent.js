@@ -26,6 +26,7 @@ class ConceptMainComponent extends Component {
 
         ConceptService.on(conceptType, operations.ADD, this.addItem)
         ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.UPDATE, this.editItem)
         ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
         ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
@@ -33,6 +34,7 @@ class ConceptMainComponent extends Component {
             this.state.types.forEach(type => {
                 ConceptService.on(type, operations.ADD, this.addItem)
                 ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.UPDATE, this.editItem)
                 ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
             })
         }
@@ -94,6 +96,7 @@ class ConceptMainComponent extends Component {
 
         ConceptService.off(conceptType, operations.ADD, this.addItem)
         ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.UPDATE, this.editItem)
         ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
         ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
@@ -101,6 +104,7 @@ class ConceptMainComponent extends Component {
             this.state.types.forEach(type => {
                 ConceptService.off(type, operations.ADD, this.addItem)
                 ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.UPDATE, this.editItem)
                 ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
                 ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
             })
