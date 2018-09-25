@@ -43,6 +43,11 @@ class AuthorDialogComponent extends Component {
                     this.getLabel('Is this you?') :
                     this.getLabel('Are you one of these authors?')
         )
+        const severalMatchesInfo = $$('p', { class: 'user-author-sub-info' },
+            renderedSuggestions.length > 1 ?
+                this.getLabel('There are several authors with the same email as you. Please select the one that is you.') :
+                ''
+        )
         const authorSubInfo = $$('p', { class: 'user-author-sub-info' },
             renderedSuggestions.length ?
                 this.getLabel('Selected author will be associated with current user account. You only have to do this once.') :
@@ -61,6 +66,7 @@ class AuthorDialogComponent extends Component {
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
             suggestionInformation,
+            severalMatchesInfo,
             authorSubInfo,
             supportInfo,
             suggestionWrapper

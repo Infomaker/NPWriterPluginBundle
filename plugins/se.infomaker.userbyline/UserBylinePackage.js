@@ -18,8 +18,16 @@ export default {
             sv: 'Vi hittade inte någon författare som matchade inloggad användare. Vänligen kontaka din supportavdelning.'
         })
 
+        configurator.addLabel('There are several authors with the same email as you. Please select the one that is you.', {
+            sv: 'Det finns flera författare med samma email som du. För att säkerställa att rätt författare kopplas till dig, ber vi dig berätta vem du är.'
+        })
+
         configurator.addLabel('Is this you?', {
             sv: 'Är detta du?'
+        })
+
+        configurator.addLabel('Select', {
+            sv: 'Använd'
         })
 
         configurator.addLabel('Are you one of these authors?', {
