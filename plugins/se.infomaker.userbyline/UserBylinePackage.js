@@ -30,6 +30,10 @@ export default {
             sv: 'Använd'
         })
 
+        configurator.addLabel('Refresh list', {
+            sv: 'Uppdatera listan'
+        })
+
         configurator.addLabel('Are you one of these authors?', {
             sv: 'Är du någon av dessa författare?'
         })

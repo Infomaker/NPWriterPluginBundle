@@ -93,6 +93,18 @@
             }
         }
     }
+    .user-author-suggestion-spinner {
+        text-align: center;
+        margin: 20px auto;
+        display: block;
+        font-size: 1.5em;
+    }
+    .user-author-suggestions-refresh {
+        margin: 15px 25px;
+        padding: 5px;
+        display: block;
+        cursor: pointer;
+    }
     .user-author-suggestion-links-wrapper {
         text-align: right;
         padding: 20px;

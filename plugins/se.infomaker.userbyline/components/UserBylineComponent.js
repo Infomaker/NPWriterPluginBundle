@@ -8,8 +8,19 @@ class UserBylineComponent extends Component {
     constructor(...args) {
         super(...args)
 
+        this.reloadList = this.reloadList.bind(this)
         this.addImidUserToArticleByline = this.addImidUserToArticleByline.bind(this)
         this.addSubToAuthorXml = this.addSubToAuthorXml.bind(this)
+    }
+
+    async reloadList() {
+        if (this.modalReloadFunction) {
+            const { userInfo } = await this.loadUserState()
+            const { propertyMap } = this.state
+            const suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
+
+            this.modalReloadFunction(suggestions)
+        }
     }
 
     async didMount() {
@@ -20,7 +31,7 @@ class UserBylineComponent extends Component {
          */
         if (!api.newsItem.getGuid()) {
             const { userInfo, authorInfo } = await this.loadUserState()
-            const propertyMap = this.state.propertyMap
+            const { propertyMap } = this.state
 
             if (authorInfo) {
                 this.addImidUserToArticleByline(authorInfo)
@@ -37,20 +48,27 @@ class UserBylineComponent extends Component {
      * @param {array} suggestions array with concept suggestions
      */
     displayModal(suggestions) {
-        const {propertyMap} = this.state
+        const { propertyMap } = this.state
         if (this.state.userInfo && !this.state.authorInfo) {
             api.ui.showDialog(AuthorDialogComponent,
                 {
                     ...this.state.userInfo,
                     suggestions,
                     propertyMap,
+
+                    reloadList: this.reloadList,
+                    setReloadFunction: (reloadFunction) => {
+                        this.modalReloadFunction = reloadFunction
+                    },
+
                     addImidUserToArticleByline: this.addImidUserToArticleByline,
                 },
                 {
                     title: this.getLabel('Add author to byline'),
                     global: true,
                     primary: false,
-                    secondary: false
+                    secondary: false,
+                    tertiary: false
                 }
             )
         }
