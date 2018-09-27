@@ -588,6 +588,8 @@ class PublishFlowComponent extends Component {
     _createDuplicate() {
         this.publishFlowMgr.setPubStatus('imext:draft')
 
+        api.article.copy(pluginId)
+
         this.extendState({
             status: api.newsItem.getPubStatus(),
             hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
@@ -597,7 +599,6 @@ class PublishFlowComponent extends Component {
             previousState: null
         })
 
-        api.article.copy(pluginId)
         this.renderPopover()
         this.props.popover.close()
     }
