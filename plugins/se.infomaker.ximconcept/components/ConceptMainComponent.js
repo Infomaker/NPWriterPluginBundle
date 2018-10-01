@@ -36,6 +36,7 @@ class ConceptMainComponent extends Component {
                 ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
                 ConceptService.on(type, operations.UPDATE, this.editItem)
                 ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
 
