@@ -19,6 +19,7 @@ class IMIDTracker extends Component {
 
         api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
         api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
+        api.events.on(pluginId, event.DID_LOGIN, this.handleUserChange.bind(this))
 
         this._onConnect = this._onConnect.bind(this)
         this._onSocketConnectError = this._onSocketConnectError.bind(this)
@@ -29,9 +30,36 @@ class IMIDTracker extends Component {
         this._userLogin = this._userLogin.bind(this)
     }
 
+    /**
+     * Functionality to handle if user session expires and
+     * a new session is created with a new user sub
+     * eg if a different user signs in mid. operation
+     */
+    async handleUserChange(event) {
+        const userInfo = event.data
+        userInfo.name = `${userInfo.given_name} ${userInfo.family_name}`
+        userInfo.isActiveUser = true
+
+        if (userInfo.sub !== this.state.sub) {
+            const shouldLockArticle = (this.state.lockedBy && this.socket && this.state.lockedBy === this.socket.id) ? true : false
+            this._closeSocket()
+
+            await this.setState(
+                this.getInitialState()
+            )
+
+            await this._userLogin(userInfo)
+
+            if (shouldLockArticle) {
+                this._lockArticle()
+            }
+        }
+    }
+
     dispose() {
         api.events.off(pluginId, event.DOCUMENT_CHANGED)
         api.events.off(pluginId, event.DOCUMENT_SAVED)
+        api.events.off(pluginId, event.DID_LOGIN)
         this._closeSocket()
     }
 
@@ -231,11 +259,12 @@ class IMIDTracker extends Component {
         this._login(user)
     }
 
-    _login({email, name, picture}) {
+    _login({email, name, picture, sub}) {
         this.extendState({
-            email: email,
-            name: name,
-            picture: picture
+            email,
+            name,
+            picture,
+            sub
         })
 
         if (this._useUATracker()) {
@@ -363,7 +392,8 @@ class IMIDTracker extends Component {
             email: user.email,
             name: `${user.given_name} ${user.family_name}`,
             picture: user.picture,
-            isActiveUser: true
+            isActiveUser: true,
+            sub: user.sub
         }
 
     }
