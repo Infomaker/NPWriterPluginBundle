@@ -6,6 +6,17 @@ const {api} = writer
 
 class XimimageComponent extends Component {
 
+
+    constructor(...args) {
+        super(...args)
+        const alignment = api.getConfigValue('se.infomaker.ximimage', 'fields').find(field => field.name === "alignment");
+        if (alignment && alignment.defaultOption) {
+            if (!this.props.node.alignment && api.newsItem.hasTemporaryId()) {
+                this.props.node.alignment = alignment.defaultOption
+            }
+        }
+    }
+
     didMount() {
         this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
@@ -140,19 +151,10 @@ class XimimageComponent extends Component {
     }
 
     renderOptionField($$, obj) {
-        let options = [],
-            currentOption = null
-
-        if (!this.props.node.alignment) {
-            currentOption = obj.options[0].name
-            // this.props.node.setAlignment(currentOption)
-        }
-        else {
-            currentOption = this.props.node.alignment
-        }
+        let options = []
 
         obj.options.forEach(option => {
-            let selectedClass = (currentOption === option.name) ? ' selected' : ''
+            let selectedClass = (this.props.node.alignment === option.name) ? ' selected' : ''
 
             options.push(
                 $$('em')

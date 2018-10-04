@@ -126,6 +126,9 @@ addition there are a number of different fields that can be turned on:
 option fields. Option fields have fixed set of values defined. Below is an
 example where all the fields are enabled and configured.
 
+The defaultOption is field is optional, but when it exists it defines which option which should be selected
+by default when a new image is added to the article.
+
 ```json
 "fields": [
     {
@@ -163,7 +166,8 @@ example where all the fields are enabled and configured.
                 "label": "Right",
                 "icon": "fa-align-right"
             }
-        ]
+        ],
+        "defaultOption": "left"
     }
 ]
 ```
