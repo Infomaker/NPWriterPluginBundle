@@ -53,6 +53,9 @@ const XimConceptPackage = {
         configurator.addLabel('Invalid Concept-UUID', {
             sv: 'Conceptet har inget giltigt UUID'
         })
+        configurator.addLabel('Invalid or missing Concept geometry', {
+            sv: 'Konceptet saknar eller har en ogiltig geometri'
+        })
         configurator.addLabel('unable to parse geometric data', {
             sv: 'den geometriska datan kan inte tolkas'
         })
