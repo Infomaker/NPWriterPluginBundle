@@ -50,6 +50,7 @@
         }
 
         .sc-np-publish-actions {
+            user-select: none;
             background: #ffffff;
 
             & > * {
@@ -60,6 +61,11 @@
             }
 
             a {
+                &.disabled{
+                    cursor: not-allowed;
+                    opacity: 0.5;
+                }
+
                 background: none;
                 border-radius: 0;
                 color: #666;
