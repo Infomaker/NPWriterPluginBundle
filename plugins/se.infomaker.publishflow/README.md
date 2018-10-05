@@ -92,6 +92,14 @@ An array of available transitions to other states.
         "nextState": "publish",
         "title": "Publicera",
         "preCondition": {
+            "hasPublishedVersion": false,
+        },
+    },
+    {
+        "nextState": "withhold",
+        "title": "Tidspublicera",
+        "preCondition": {
+            "hasPubStart": true,
             "hasPublishedVersion": false
         }
     },
@@ -104,7 +112,7 @@ An array of available transitions to other states.
 |nextState|The name of a workflow item to transition to|
 |title|The title of the menu option displayed to the user (icon from next state is used automatically)|
 |priority|Optional, can be either "primary" or "secondary", will display this as a more visible call to action button above all other transition menu items|
-|preCondition|A condition for this transition. Only `hasPublishedVersion` true/false supported right now. For example ```preCondition{ "hasPublishedVersion": true }``` will make this transition visible only if the article has a published (public) version. |
+|preCondition|A condition for this transition. Only `hasPublishedVersion` true/false and `hasPubStart` true/false are supported right now. For example ```preCondition{ "hasPublishedVersion": true }``` will make this transition visible only if the article has a published (public) version. ```hasPubStart:true``` will render the option disabled|
 
 ### Actions
 An object of actions to perform when first transitioning into this workflow item. Surrounded by an array.
