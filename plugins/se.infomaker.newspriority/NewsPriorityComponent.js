@@ -11,10 +11,8 @@ class NewsPriorityComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on(this.props.pluginConfigObject.id, 'data:duplicated', () => {
-            api.clearNewsPriority('newspriority');
-            this.rerender();
-        });
+        this.Tooltip = api.ui.getComponent('tooltip')
+
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
             if (e.data.key === 'contentMetadata' && e.data.value.type === 'x-im/newsvalue') {
                 this.updateState()
@@ -23,15 +21,17 @@ class NewsPriorityComponent extends Component {
 
     }
 
+    shouldRerender(newProps, newState) {
+        return (newState.score !== this.state.score || newState.duration !== this.state.duration)
+    }
+
     dispose() {
-        api.events.off(this.props.pluginConfigObject.id, 'data:duplicated')
-        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
+        api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_COPIED)
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
 
     getInitialState() {
-
         this.scores = api.getConfigValue(pluginId, 'scores');
         this.lifetimes = api.getConfigValue(pluginId, 'lifetimes');
         this.durationKey = api.getConfigValue(pluginId, 'durationKey');
@@ -95,7 +95,6 @@ class NewsPriorityComponent extends Component {
     }
 
     render($$) {
-
         const el = $$('div');
 
         const prioTitle = $$('h2').text(this.getLabel('newsvalue'));
@@ -126,15 +125,17 @@ class NewsPriorityComponent extends Component {
     }
 
     _renderPriority($$) {
-        const prio = $$('div').addClass('btn-group');
+        const prio = $$('div').addClass('btn-group')
+        const currentScore = parseInt(this.state.score, 10)
 
-        const buttons = this.scores.map((score) => {
+        const buttons = this.scores.map(score => {
+            const scoreOption = parseInt(score.value, 10)
+            const buttonClass = (currentScore === scoreOption) ? "active" : ""
 
-            const Tooltip = api.ui.getComponent('tooltip')
             return $$('button')
                 .append([
-                    $$(Tooltip, {title: score.text}).ref('tooltip-' + score.value),
-                    $$('span').addClass('label').text(String(score.value))
+                    $$(this.Tooltip, {title: score.text}).ref('tooltip-' + score.value),
+                    $$('span').addClass('label').text(scoreOption)
                         .on('click', () => {
                             this.setNewsPriority(score.value);
                             this.toogleTooltip('tooltip-' + score.value, false)
@@ -147,27 +148,27 @@ class NewsPriorityComponent extends Component {
                         })
                 ])
                 .addClass('btn btn-secondary sc-np-btn')
-                .addClass(parseInt(this.state.score, 10) === score.value ? "active" : "")
-
-        });
+                .addClass(buttonClass)
+        })
 
         prio.append(buttons)
         return prio;
     }
 
     _renderLifeTime($$) {
-        const lifetime = $$('div').addClass('btn-group lifetime');
+        const lifetime = $$('div').addClass('btn-group lifetime')
+        const currentDuration = this.state[this.durationKey]
 
-        const buttons = this.lifetimes.map(function (lifetime) {
+        const buttons = this.lifetimes.map(lifetime => {
+            const buttonClass = (currentDuration === lifetime.value) ? "active" : ""
 
-            const Tooltip = api.ui.getComponent('tooltip')
             return $$('button')
                 .addClass('btn btn-secondary sc-np-btn')
                 .append([
-                    $$(Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
+                    $$(this.Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
                     $$('span').addClass('label').text(lifetime.label)
-                        .on('click', (e) => {
-                            this.setLifetime(e, lifetime);
+                        .on('click', () => {
+                            this.setLifetime(lifetime);
                             this.toogleTooltip('tooltip-' + lifetime.label, false)
                         })
                         .on('mouseenter', () => {
@@ -178,10 +179,8 @@ class NewsPriorityComponent extends Component {
                         })
                 ])
                 .attr('title', lifetime.text)
-                .addClass(this.state[this.durationKey] === lifetime.value ? "active" : "")
-
-
-        }.bind(this));
+                .addClass(buttonClass)
+        })
 
         lifetime.append(buttons);
         return lifetime;
@@ -237,24 +236,7 @@ class NewsPriorityComponent extends Component {
         return form;
     }
 
-    /*
-     toggleTooltip(ev) {
-     $(ev.target).tooltip('toggle');
-     ev.target.timeout = window.setTimeout(function () {
-     this.hideTooltip(ev)
-     }.bind(this), 3000)
-     }
-
-     hideTooltip(ev) {
-     if (ev.target.timeout) {
-     window.clearTimeout(ev.target.timeout);
-     ev.target.timeout = undefined;
-     }
-     $(ev.target).tooltip('hide');
-     }*/
-
     setNewsPriority(score) {
-        //$(ev.target).tooltip('hide');
         const newsPriority = api.newsItem.getNewsPriority();
         newsPriority.data.score = score;
 
@@ -265,13 +247,11 @@ class NewsPriorityComponent extends Component {
         });
     }
 
-    setLifetime(ev, lifetime) {
-
-        //$(ev.target).tooltip('hide');
+    setLifetime(lifetime) {
         const newsPriority = api.newsItem.getNewsPriority();
 
         for (let n = 0; n < this.lifetimes.length; n++) {
-            if (ev.target.textContent === this.lifetimes[n].label) {
+            if (lifetime.label === this.lifetimes[n].label) {
                 newsPriority.data.description = this.lifetimes[n].label;
                 newsPriority.data[this.durationKey] = this.lifetimes[n].value;
                 break;
@@ -282,7 +262,6 @@ class NewsPriorityComponent extends Component {
         if (this.extendedState && this.extendedState.end) {
             extendedState.end = this.extendedState.end;
         }
-
 
         if (lifetime.value === 'custom' && this.extendedState && this.extendedState.end) {
             newsPriority.data.end = this.extendedState.end;

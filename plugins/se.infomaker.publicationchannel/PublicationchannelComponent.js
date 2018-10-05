@@ -8,13 +8,13 @@ class PublicationchannelComponent extends Component {
     }
 
     didMount() {
-        this.context.api.events.on(this.props.pluginConfigObject.id, 'data:changed', (event) => {
+        this.context.api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, (event) => {
             if (event.data && event.data.type === 'channel') {
                 this.synchronize(event)
             }
         })
 
-        this.context.api.events.on(this.props.pluginConfigObject.id, 'data:duplicated', () => {
+        this.context.api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_COPIED, () => {
             this.clearAllChannels()
         })
 
@@ -34,8 +34,8 @@ class PublicationchannelComponent extends Component {
     }
 
     dispose() {
-        this.context.api.events.off(this.props.pluginConfigObject.id, 'data:duplicated')
-        this.context.api.events.off(this.props.pluginConfigObject.id, 'data:changed')
+        this.context.api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_COPIED)
+        this.context.api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
         this.context.api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL)
     }
 
