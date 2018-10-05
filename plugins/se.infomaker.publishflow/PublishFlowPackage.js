@@ -44,6 +44,10 @@ export default {
             sv: 'Okänd status'
         })
 
+        config.addLabel('Missing Publication date', {
+            sv: 'Publiceringsdatum saknas'
+        })
+
         config.addLabel('This article has an unknown, unsupported, status', {
             sv: 'Artikeln har en okänd eller felaktig status'
         })
