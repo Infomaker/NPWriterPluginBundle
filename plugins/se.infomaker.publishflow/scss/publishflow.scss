@@ -6,8 +6,6 @@
     }
 
     .sc-np-publish-body {
-        & > div {
-        }
 
         .sc-np-status {
             margin: 15px;
@@ -96,6 +94,13 @@
                     i.fa-stack-1x {
                         font-size: 14px;
                     }
+                }
+
+                span.transition-title {
+                    max-width: 210px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 span {
