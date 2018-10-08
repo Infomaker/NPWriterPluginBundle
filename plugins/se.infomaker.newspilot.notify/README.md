@@ -29,7 +29,7 @@ Install this plugin in the writer environment by adding the settings below to yo
 ```
 
 `integrationService` corresponds to Newspilot Integration Service.
-### Filterering
+### Filtering
 `filter` is used to filter documents to be sent to the Newspilot Integration Service. If the filter matches the criterias the article will be sent to the Newspilot Integration Service
 * `query` is an xpath telling what in the newsItem to filter on.The xpath HAS to have a namspace prefix for the default namespace (like `wr` above) and use the ils prefix for http://www.infomaker.se/lookupservice.
 * `type` is the kind of comparison to filter with. The possible values are `EXISTS`, `NOT_EXISTS`, `EQUALS`, `NOT_EQUALS`, `DATE_OLDER_THAN`, `DATE_YOUNGER_THAN`.
