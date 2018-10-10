@@ -21,7 +21,7 @@ When an author is selected from suggestion list, it will also set IM.ID sub on c
 
 The following config is used in the plugin config:
 
-- `"useAuthorConcept": true` Boolean to indicate if AuthorConcept should be set or not, when user creates a new article, default value if omitted is set to true
+- `"supportEmail": "conceptadmin@myorg.com"` Optional email to display when user does not match any existing author concept.
 
 ```json
 {
@@ -32,7 +32,7 @@ The following config is used in the plugin config:
     "mandatory": false,
     "enabled": true,
     "data": {
-        "useAuthorConcept": false
+        "supportEmail": "conceptadmin@myorg.com"
     }
 }
 ```

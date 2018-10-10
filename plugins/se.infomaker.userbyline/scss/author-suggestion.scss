@@ -4,9 +4,12 @@
         padding: 10px 30px;
     }
     .user-author-sub-info, .user-support-info {
-        padding: 0px 30px 20px 30px;;
+        padding: 0px 30px 20px 30px;
         font-style: italic;
-        font-size: 13px!important;
+        font-size: 100%!important;
+        &:last-of-type {
+            padding: 0px 30px 10px 30px;
+        }
     }
     .user-author-suggestions-list {
         list-style-type: none;
@@ -95,9 +98,15 @@
     }
     .user-author-suggestion-spinner {
         text-align: center;
-        margin: 20px auto;
+        margin: 30px auto;
         display: block;
         font-size: 1.5em;
+    }
+    .user-author-support {
+        margin: 0px 20px 20px;
+        padding: 5px 10px;
+        display: block;
+        font-style: italic;
     }
     .user-author-suggestions-refresh {
         margin: 15px 25px;

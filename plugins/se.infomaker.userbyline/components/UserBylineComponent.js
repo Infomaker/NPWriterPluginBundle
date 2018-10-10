@@ -55,7 +55,7 @@ class UserBylineComponent extends Component {
                     ...this.state.userInfo,
                     suggestions,
                     propertyMap,
-
+                    supportEmail: api.getConfigValue('se.infomaker.user-byline', 'supportEmail', false),
                     reloadList: this.reloadList,
                     setReloadFunction: (reloadFunction) => {
                         this.modalReloadFunction = reloadFunction

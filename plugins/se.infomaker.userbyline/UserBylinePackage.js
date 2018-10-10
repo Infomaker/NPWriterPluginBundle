@@ -14,8 +14,8 @@ export default {
             sv: 'Lägg till författare'
         })
 
-        configurator.addLabel('No author concepts matching logged in user was found. Please contact your support department.', {
-            sv: 'Vi hittade inte någon författare som matchade inloggad användare. Vänligen kontaka din supportavdelning.'
+        configurator.addLabel('No author concepts matching logged in user was found.', {
+            sv: 'Vi hittade inte någon författare som matchade inloggad användare.'
         })
 
         configurator.addLabel('There are several authors with the same email as you. Please select the one that is you.', {
@@ -38,8 +38,8 @@ export default {
             sv: 'Är du någon av dessa författare?'
         })
 
-        configurator.addLabel('If you cant find an author please contact your support department.', {
-            sv: 'Hittar du inte dig själv så vänligen kontakta din supportavdelning.'
+        configurator.addLabel('For assistance please contact your support department.', {
+            sv: 'För hjälp vänligen kontakta din supportavdelning.'
         })
 
         configurator.addLabel('Already associated with another user', {

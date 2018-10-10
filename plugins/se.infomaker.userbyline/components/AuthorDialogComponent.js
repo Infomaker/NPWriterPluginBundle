@@ -50,34 +50,32 @@ class AuthorDialogComponent extends Component {
 
     render($$) {
         const { suggestions, loading } = this.state
+        const { supportEmail } = this.props
         const renderedSuggestions = suggestions.map(suggestion => $$(AuthorSuggestionComponent, {
             ...this.props,
             addAuthor: this.addAuthor,
             suggestion
         }))
+
         const loader = loading ? $$('i', { class: 'fa fa-spinner fa-spin user-author-suggestion-spinner' }, '') : ''
-        const suggestionInformation = $$('h4', { class: 'user-author-suggestion-info' },
+        const supportEmailEl = supportEmail ? $$('a', { class: 'user-author-support', href: `mailto:${supportEmail}` }, ` ${supportEmail}`) : ''
+
+        const suggestionHeader = $$('h4', { class: 'user-author-suggestion-info' },
             !renderedSuggestions.length ?
-                this.getLabel('No author concepts matching logged in user was found. Please contact your support department.') :
+                this.getLabel('No author concepts matching logged in user was found.') :
                 renderedSuggestions.length === 1 ?
                     this.getLabel('Is this you?') :
                     this.getLabel('Are you one of these authors?')
         )
-        const severalMatchesInfo = $$('p', { class: 'user-author-sub-info' },
-            renderedSuggestions.length > 1 ?
-                this.getLabel('There are several authors with the same email as you. Please select the one that is you.') :
-                ''
-        )
-        const authorSubInfo = $$('p', { class: 'user-author-sub-info' },
-            renderedSuggestions.length ?
-                this.getLabel('Selected author will be associated with current user account. You only have to do this once.') :
-                ''
-        )
-        const supportInfo = $$('p', { class: 'user-support-info' },
-            renderedSuggestions.length ?
-                this.getLabel('If you cant find an author please contact your support department.') :
-                ''
-        )
+
+        const severalMatchesInfo = renderedSuggestions.length > 1 ?
+            $$('p', { class: 'user-author-sub-info' }, this.getLabel('There are several authors with the same email as you. Please select the one that is you.')) : ''
+
+        const authorSubInfo = renderedSuggestions.length ?
+            $$('p', { class: 'user-author-sub-info' }, this.getLabel('Selected author will be associated with current user account. You only have to do this once.')) : ''
+
+        const supportInfo = $$('p', { class: 'user-support-info' }, this.getLabel('For assistance please contact your support department.'))
+
         const suggestionsWrapper = $$('div', { class: 'user-author-suggestions-list-wrapper' },
             (renderedSuggestions.length && !loading) ? $$('ul', { class: 'user-author-suggestions-list' },
                 ...renderedSuggestions
@@ -93,10 +91,11 @@ class AuthorDialogComponent extends Component {
         })
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
-            suggestionInformation,
+            suggestionHeader,
             severalMatchesInfo,
             authorSubInfo,
             supportInfo,
+            supportEmailEl,
             loader,
             suggestionsWrapper,
             refreshList,

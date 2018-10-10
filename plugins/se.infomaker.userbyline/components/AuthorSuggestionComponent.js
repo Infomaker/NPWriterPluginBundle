@@ -27,7 +27,7 @@ class AuthorSuggestionComponent extends Component {
                     `${suggestion[propertyMap.ConceptName]}${existingSub ? ` (${this.getLabel('Already associated with another user')})` : ''}`),
                 $$('p', { class: 'user-list-item-short' }, `${this.getTruncatedDescription(suggestion[propertyMap.ConceptDefinitionShort])}`)
             ]),
-            $$('div', { class: 'user-list-select-wrapper' }, this.getLabel('Select'))
+            !existingSub ? $$('div', { class: 'user-list-select-wrapper' }, this.getLabel('Select')) : ''
         ]).on('click', () => {
             if (!existingSub) {
                 this.props.addAuthor(suggestion)
