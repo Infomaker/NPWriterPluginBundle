@@ -10,9 +10,9 @@ class XimimageComponent extends Component {
     constructor(...args) {
         super(...args)
         const alignment = api.getConfigValue('se.infomaker.ximimage', 'fields').find(field => field.name === "alignment");
-        if (alignment && alignment.defaultOption) {
+        if (alignment && alignment.defaultValue) {
             if (!this.props.node.alignment && api.newsItem.hasTemporaryId()) {
-                this.props.node.alignment = alignment.defaultOption
+                this.props.node.alignment = alignment.defaultValue
             }
         }
     }
