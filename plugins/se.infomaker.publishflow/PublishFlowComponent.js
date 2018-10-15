@@ -407,6 +407,7 @@ class PublishFlowComponent extends Component {
 
     /**
      * Render transition which is defined in config file.
+     *
      * @param {VirtualElement} $$
      * @param {string} transition The transition, in the configuration, to render
      * @return {VirtualObject}
@@ -415,22 +416,23 @@ class PublishFlowComponent extends Component {
         const nextState = this.publishFlowMgr.getStateDefinitionByName(transition.nextState)
         const icon = nextState && nextState.icon ? nextState.icon : 'fa-question'
         const color = nextState && nextState.color ? nextState.color : '#888888'
+        const isEnabled = this.publishFlowMgr.isEnabled(transition, this.state.pubStart)
 
-        return $$('a')
-            .append([
-                $$('span').addClass('fa-stack fa-lg').append([
-                    $$('i').addClass('fa fa-circle fa-stack-2x').css('color', color),
-                    $$('i').addClass(`fa ${icon} fa-stack-1x fa-inverse`)
-                ]),
-                $$('span').append(
-                    this.getLabel(transition.title)
-                )
-            ])
-            .on('click', () => {
+        return $$('a', { class: `${isEnabled ? '' : 'disabled'}`, title: `${isEnabled ? this.getLabel(transition.title) : this.getLabel('Missing Publication date')}` }, [
+            $$('span', { class: 'fa-stack fa-lg' }, [
+                $$('i').addClass('fa fa-circle fa-stack-2x').css('color', color),
+                $$('i').addClass(`fa ${icon} fa-stack-1x fa-inverse`)
+            ]),
+            $$('span', { class: 'transition-title' },
+                this.getLabel(transition.title)
+            )
+        ]).on('click', () => {
+            if (isEnabled) {
                 this._save(() => {
                     return this.handleTransitionClick(transition)
                 })
-            })
+            }
+        })
     }
 
     /**

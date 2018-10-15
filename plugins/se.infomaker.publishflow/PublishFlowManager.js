@@ -69,6 +69,24 @@ class PublishFlowManager {
     }
 
     /**
+     * Checks wether a provided transition matches a given precondition, used for enabling/disabling an element
+     *
+     * @param {object} transitionDef Transition definition which may include a preCondition
+     * @param {string} pubStart article pubStart
+     */
+    isEnabled(transitionDef, pubStart) {
+        if (!transitionDef.preCondition) {
+            return true
+        }
+
+        if (!transitionDef.preCondition.hasPubStart) {
+            return true
+        }
+
+        return pubStart ? true : false
+    }
+
+    /**
      * Get list of transitions for specified qcode and hasPublishedVersion combination
      *
      * @param {string} pubStatus The qcode for the pubStatus
