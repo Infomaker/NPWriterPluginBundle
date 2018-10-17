@@ -68,7 +68,7 @@ export default {
         link.append(
             $$('data').append(
                 $$('text').append(
-                    (node.data) ? converter.annotatedText([node.id, 'text']) : ''
+                    (node.text) ? converter.annotatedText([node.id, 'text']) : ''
                 )
             )
         )
