@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import { ConceptService } from 'writer'
+import { ConceptService, api } from 'writer'
 import ConceptSearchResultComponent from './ConceptSearchResultComponent'
 
 class ConceptSearchComponent extends Component {
@@ -31,7 +31,7 @@ class ConceptSearchComponent extends Component {
         let searchFormIcon, searchResultsContainer
         const el = $$('div')
         const { searchedTerm } = this.state
-        const { disabled, subtypes, enableHierarchy, propertyMap, icon } = this.props
+        const { disabled, subtypes, enableHierarchy, propertyMap, icon, types } = this.props
         const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
         const searchInput = $$('input', {
             type: 'text',
@@ -76,6 +76,7 @@ class ConceptSearchComponent extends Component {
                 searchResult,
                 selected,
                 icon,
+                types,
                 isPolygon,
                 enableHierarchy,
                 propertyMap,
@@ -163,6 +164,19 @@ class ConceptSearchComponent extends Component {
             (item && !item.target) ? item : { searchedTerm: this.state.searchedTerm, create: true }
 
         this.resetState()
+
+        /**
+         * Concepts of type x-im/place needs some special attention
+         * since writer/newsitem implementation allows adding but not fetching concepts without geometry
+         */
+        if (item[propertyMap.ConceptImTypeFull] === 'x-im/place'){
+            const geometry = item[propertyMap.ConceptGeometry]
+
+            if (!geometry || (!geometry.includes('POINT') && !geometry.includes('POLYGON'))) {
+                return api.ui.showNotification('conceptItemAdd', this.getLabel('Invalid Concept item'), this.getLabel('Invalid or missing Concept geometry'))
+            }
+        }
+
         this.props.addItem(item)
     }
 

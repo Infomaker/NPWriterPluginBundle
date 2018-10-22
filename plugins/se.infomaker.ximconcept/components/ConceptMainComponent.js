@@ -231,8 +231,8 @@ class ConceptMainComponent extends Component {
             } else {
                 api.ui.showNotification(
                     this.state.name,
-                    this.getLabel('Conceptitem exists'),
-                    this.getLabel('The Concept is already used'))
+                    this.getLabel('Concept item exists'),
+                    this.getLabel('This Concept is already used'))
             }
         } else {
             if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
@@ -254,7 +254,7 @@ class ConceptMainComponent extends Component {
     }
 
     editItem(item) {
-        const title = `${item.create ? this.getLabel('create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
+        const title = `${item.create ? this.getLabel('Create') : ''} ${this.state.pluginConfig.label}: ${item[this.state.propertyMap.ConceptName] ? item[this.state.propertyMap.ConceptName] : ''}`
 
         if (this.state.pluginConfig.types && !item[this.state.propertyMap.ConceptImTypeFull]) {
             api.ui.showDialog(
@@ -269,7 +269,7 @@ class ConceptMainComponent extends Component {
                     title,
                     cssClass: 'hide-overflow',
                     primary: false,
-                    secondary: this.getLabel('cancel'),
+                    secondary: this.getLabel('Cancel'),
                 }
             )
         } else {
@@ -284,8 +284,8 @@ class ConceptMainComponent extends Component {
                 {
                     title,
                     cssClass: 'hide-overflow',
-                    primary: this.getLabel('save'),
-                    secondary: this.getLabel('cancel'),
+                    primary: this.getLabel('Save'),
+                    secondary: this.getLabel('Cancel'),
                 }
             )
         }
@@ -316,6 +316,7 @@ class ConceptMainComponent extends Component {
             enableHierarchy,
             editable,
             icon,
+            types: config.types
         }).ref(`conceptListComponent-${this.state.name}`)
 
         if (!singleValue || !this.state.existingItems.length) {
@@ -331,6 +332,7 @@ class ConceptMainComponent extends Component {
                 itemExists: this.itemExists,
                 associatedWith,
                 icon,
+                types: config.types
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 

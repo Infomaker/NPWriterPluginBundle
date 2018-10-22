@@ -12,9 +12,21 @@ class ConceptSearchResultComponent extends Component {
     render($$){
         let createConcept
         const { propertyMap, icon, addItem, enableHierarchy } = this.props
+        let typeIcon = false
+
         const matches = this.props.searchResult.map((item, index) => {
             const selected = (index === this.props.selected)
             const itemExists = this.props.itemExists(item)
+            typeIcon = false
+
+            if (this.props.types) {
+                Object.keys(this.props.types).forEach(type => {
+                    const itemType = item[propertyMap.ConceptImTypeFull] || item.type
+                    if (itemType === type) {
+                        typeIcon = this.props.types[type].icon
+                    }
+                })
+            }
 
             return $$(ConceptSearchItemComponent, {
                 item,
@@ -22,8 +34,8 @@ class ConceptSearchResultComponent extends Component {
                 itemExists,
                 propertyMap,
                 addItem,
-                icon,
                 enableHierarchy,
+                icon: typeIcon ? typeIcon : icon,
                 scrollIntoView: this.scrollItemIntoView
             }).ref(`concept-search-result-item-${item.uuid}`).on('mousedown', () => { this.props.addItem(item) })
         })

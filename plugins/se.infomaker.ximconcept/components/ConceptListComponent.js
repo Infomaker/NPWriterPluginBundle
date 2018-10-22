@@ -17,7 +17,8 @@ class ConceptListComponent extends Component {
 
     render($$) {
         let spinner
-        const { working } = this.props
+        let icon = this.props.icon
+        const { working, propertyMap } = this.props
 
         if (working) {
             spinner = $$('i', {
@@ -27,8 +28,21 @@ class ConceptListComponent extends Component {
         }
 
         const listItems = this.props.existingItems.map((item, index) => {
+            if (this.props.types) {
+                Object.keys(this.props.types).forEach(type => {
+                    const itemType = item[propertyMap.ConceptImTypeFull] || item.type
+                    if (itemType === type) {
+                        const typeIcon = this.props.types[type].icon
+                        if (typeIcon && typeIcon.length) {
+                            icon = typeIcon
+                        }
+                    }
+                })
+            }
+
             return $$(ConceptItemComponent, {
                 item,
+                icon,
                 ...this.props,
                 key: item.uuid,
                 isDuplicate: this.isDuplicate

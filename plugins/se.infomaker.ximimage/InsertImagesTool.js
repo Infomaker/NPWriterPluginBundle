@@ -70,13 +70,15 @@ class XimimageTool extends Tool {
             const doc = api.editorSession.getDocument()
             const node = doc.get(nodeId)
 
-            api.document.deleteNode('ximimage', node)
+            if(node) {
+                api.document.deleteNode('ximimage', node)
 
-            const imageFile = node.imageFile
-            if (imageFile) {
-                api.editorSession.transaction((tx) => {
-                    tx.delete(imageFile)
-                })
+                const imageFile = node.imageFile
+                if (imageFile) {
+                    api.editorSession.transaction((tx) => {
+                        tx.delete(imageFile)
+                    })
+                }
             }
         }
         catch (err) {
