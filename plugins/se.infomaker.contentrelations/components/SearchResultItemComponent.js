@@ -44,6 +44,7 @@ class SearchResultItem extends Component {
     }
 
     render($$){
+        console.info('RENDER SearchResultItem')
         const {item, propertyMap, icons} = this.props
         const article = new ArticleModel(item, propertyMap)
         const articleChannelIcons = article.channels.map(channel => {
@@ -98,15 +99,15 @@ class SearchResultItem extends Component {
                         ])
                     ]),
                     article.images.length ? $$('div', { class: 'article-image-wrapper' }, [
-                        $$('img', { src: `${this.props.host}/${article.images[0]}/files/thumb` }),
+                        $$('img', { src: `${this.props.host}/${article.images[0]}/files/thumb` }).ref(`imageRef-${article.images[0]}`),
                         article.images.length > 1 ? $$('p', { class: 'article-image-count', title: 'Image count' }, article.images.length) : ''
                     ]) : '',
                 ]),
             ])
         ])
             .ref(`searchResultItem-instans-${article.id}`)
-        .on('dragstart', (e) => { this.dragStartHandler(e, article) })
-        .on('dragend', () => { this.dragEndHandler(article) })
+            .on('dragstart', (e) => { this.dragStartHandler(e, article) })
+            .on('dragend', () => { this.dragEndHandler(article) })
 
         return el
     }
