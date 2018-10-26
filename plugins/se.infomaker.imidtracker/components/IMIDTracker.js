@@ -17,10 +17,6 @@ class IMIDTracker extends Component {
     constructor(...args) {
         super(...args)
 
-        api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
-        api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
-        api.events.on(pluginId, event.DID_LOGIN, this.handleUserChange.bind(this))
-
         this._onConnect = this._onConnect.bind(this)
         this._onSocketConnectError = this._onSocketConnectError.bind(this)
         this._onUserChange = this._onUserChange.bind(this)
@@ -74,6 +70,10 @@ class IMIDTracker extends Component {
     }
 
     didMount() {
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
+        api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
+        api.events.on(pluginId, event.DID_LOGIN, this.handleUserChange.bind(this))
+
         const {isSaving} = this.props
 
         if (!isSaving) {
@@ -153,8 +153,8 @@ class IMIDTracker extends Component {
             // to let all other users know it has been updated.
             // Save should be disabled elsewhere if the article is not locked by us.
 
-            // Only unlock article if user has socketId
-            if (this._articleInformation.socketId) {
+            // Only unlock article if user has socket (and socketId)
+            if (this.socket && this._articleInformation.socketId) {
                 // Trigger an event telling the socket server that we have unlocked this article
                 this.socket.emit('article/unlocked', this._articleInformation)
             }
