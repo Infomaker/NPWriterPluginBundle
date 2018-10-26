@@ -191,6 +191,8 @@ class ConceptMainComponent extends Component {
      * @param {object} item conceptItem to add
      */
     async addConceptToArticle(item) {
+        // This will decorate ConceptItem with data to store in the article
+        // Model will use remote configured concept instructions
         item = await (new ConceptItemModel(
             item,
             this.state.pluginConfig,
@@ -198,6 +200,7 @@ class ConceptMainComponent extends Component {
         ).extractConceptArticleData(item)
 
         if (!item.errors) {
+            item = await ConceptService.fetchConceptItemProperties(item)
             ConceptService.addArticleConcept(item)
         } else {
             api.ui.showNotification(
@@ -232,16 +235,20 @@ class ConceptMainComponent extends Component {
                 api.ui.showNotification(
                     this.state.name,
                     this.getLabel('Concept item exists'),
-                    this.getLabel('This Concept is already used'))
+                    this.getLabel('This Concept is already used')
+                )
             }
         } else {
             if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
-                const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
-                    this.state.types.length ? null : this.state.conceptType
+                const ConceptImTypeFullPropName = this.state.propertyMap.ConceptImTypeFull
+                const conceptType = item[ConceptImTypeFullPropName] ? item[ConceptImTypeFullPropName] :
+                    this.state.types.length ?
+                        null :
+                        this.state.conceptType
 
                 this.editItem({
                     ...item,
-                    [this.state.propertyMap.ConceptImTypeFull]: conceptType
+                    [ConceptImTypeFullPropName]: conceptType
                 })
             }
         }
