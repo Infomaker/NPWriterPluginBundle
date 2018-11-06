@@ -7,4 +7,6 @@ node_modules
 clover.xml
 coverage
 .idea/*
+.history/
 .vscode
+.history/
