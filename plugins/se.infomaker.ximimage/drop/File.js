@@ -1,11 +1,11 @@
-import {lodash, api} from 'writer'
+import {api} from 'writer'
 import insertImage from '../models/insertImage'
 import {DragAndDropHandler} from 'substance'
 
 // Implements a file drop handler
 class DropImageFile extends DragAndDropHandler {
     match(params) {
-        return params.type === 'file' && lodash.startsWith(params.file.type, 'image')
+        return params.type === 'file' && params.file.type.startsWith('image')
     }
 
     drop(tx, params) {
@@ -17,7 +17,8 @@ class DropImageFile extends DragAndDropHandler {
                     imageNode.emit('onImageUploaded')
                 })
                 .catch((err) => {
-                    this.removeNodesOnUploadFailure(tx, nodeId, [err.message])
+                    const silent = (err.type === 'abort')
+                    this.removeNodesOnUploadFailure(tx, nodeId, [err.message], silent)
                 })
         }, 0)
     }
@@ -34,7 +35,7 @@ class DropImageFile extends DragAndDropHandler {
     /**
      * @todo When image cannot be uploaded, the proxy, file node and object node should be removed using the api.
      */
-    removeNodesOnUploadFailure(tx, nodeId, errors) {
+    removeNodesOnUploadFailure(tx, nodeId, errors, silent) {
         try {
             const document = api.editorSession.getDocument()
             const node = document.get(nodeId)
@@ -44,7 +45,9 @@ class DropImageFile extends DragAndDropHandler {
                 return
             }
 
-            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+            if (!silent) {
+                api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+            }
 
             const imageFile = node.imageFile
             api.document.deleteNode('ximimage', node)
