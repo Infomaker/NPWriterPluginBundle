@@ -1,4 +1,5 @@
 import insertPdfCommand from './InsertPdfCommand'
+import removePDFNode from './RemovePDFNode'
 import {DragAndDropHandler} from 'substance'
 import {api} from 'writer'
 
@@ -8,10 +9,14 @@ class DropPdfUri extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        insertPdfCommand(tx, params.uri)
+        const nodeId = insertPdfCommand(tx, params.uri)
         setTimeout(() => {
             api.editorSession.fileManager.sync()
-        }, 300)
+                .catch(err => {
+                    const silent = (err.type === 'abort')
+                    removePDFNode(nodeId, err, silent)
+                })
+        }, 0)
     }
 }
 

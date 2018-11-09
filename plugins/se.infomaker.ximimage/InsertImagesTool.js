@@ -41,8 +41,9 @@ class XimimageTool extends Tool {
                 const imageNode = api.editorSession.getDocument().get(nodeId)
                 imageNode.emit('onImageUploaded')
             })
-            .catch(() => {
-                return this.onUploadFailure(nodeId)
+            .catch(err => {
+                const silent = (err.type === 'abort')
+                return this.onUploadFailure(nodeId, silent)
             })
     }
 
@@ -58,10 +59,13 @@ class XimimageTool extends Tool {
         }
     }
 
-    onUploadFailure(nodeId) {
-        // If the image upload fails it is probably because it is an unsupported format,
-        // but because we are not sure, we use the generic image upload error message
-        api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+    onUploadFailure(nodeId, silent) {
+        // Silent = true indicates upload was aborted due to unauthorised user, auth-workflow will handle user feedback
+        if(!silent) {
+            // If the image upload fails it is probably because it is an unsupported format,
+            // but because we are not sure, we use the generic image upload error message
+            api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('image-upload-error-message'))
+        }
         this.removeNode(nodeId)
     }
 
