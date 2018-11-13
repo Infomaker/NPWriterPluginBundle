@@ -45,6 +45,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"googleMapAPIKey": "XXX"` API-key used to populate maps when plugin is used with type x-im/place
 - `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
 - `"subtypes": [...]` A list of subtypes that are allowed
+- `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
 
 #### Example Configs
 
@@ -140,6 +141,7 @@ Tags:
         "enableHierarchy": true,
         "editable": true,
         "placeholderText": "Sök taggar",
+        "rel": "subject",
         "types": {
             "x-im/person": {
                 "name": "Person",
