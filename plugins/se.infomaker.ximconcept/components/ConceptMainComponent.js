@@ -133,6 +133,7 @@ class ConceptMainComponent extends Component {
     getInitialState() {
         const pluginConfig = this.props.pluginConfigObject.pluginConfigObject.data
         const conceptType = pluginConfig.name
+        const rel = pluginConfig.rel
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
@@ -145,6 +146,7 @@ class ConceptMainComponent extends Component {
 
         return {
             name,
+            rel,
             pluginConfig,
             types,
             subtypes,
@@ -201,6 +203,11 @@ class ConceptMainComponent extends Component {
 
         if (!item.errors) {
             item = await ConceptService.fetchConceptItemProperties(item)
+
+            if (this.state.rel) {
+                item.rel = this.state.rel
+            }
+
             ConceptService.addArticleConcept(item)
         } else {
             api.ui.showNotification(

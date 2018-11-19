@@ -119,7 +119,8 @@ In the case where all staements are true, the changes are applied and the user i
   "mandatory": false,
   "data": {
       "token": "[access token]",
-      "publisherId": "[publisher id]"
+      "publisherId": "[publisher id]",
+      "infocasterHost": "[url to infocaster]"
   }
 }
 ```
