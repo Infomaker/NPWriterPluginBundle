@@ -22,6 +22,8 @@ class HistoryMainComponent extends Component {
         api.events.on('history', event.HISTORY_CLEARED, () => {
             this.updateHistoryState()
         })
+
+        this.historyArticles = this.context.api.history.getHistory()
     }
 
     dispose() {
@@ -31,15 +33,7 @@ class HistoryMainComponent extends Component {
     }
 
     updateHistoryState() {
-        this.extendState({
-            historyArticles: this.context.api.history.getHistory()
-        });
-    }
-
-    getInitialState() {
-        return {
-            historyArticles: this.context.api.history.getHistory()
-        }
+        this.historyArticles = this.context.api.history.getHistory()
     }
 
     render($$) {
@@ -48,10 +42,10 @@ class HistoryMainComponent extends Component {
             $$('h2').append(this.getLabel('history-popover-headline'))
         )
         el.append($$('p').append(this.getLabel('history-popover-description')))
-        if (this.state.historyArticles.length === 0) {
+        if (this.historyArticles.length === 0) {
             el.append($$('p').append(this.getLabel('history-popover-no-items-description')))
         }
-        if (this.state.historyForArticle === false) {
+        if (this.historyForArticle === false) {
             return el
         }
 
@@ -60,12 +54,12 @@ class HistoryMainComponent extends Component {
             scrollbarType: 'native'
         }).ref('historyScroll')
 
-        let versions = this.state.historyArticles.map(function (article) {
+        let versions = this.historyArticles.map(function (article) {
             return this.renderHistoryItem($$, article);
         }.bind(this));
 
         scroll.append(versions)
-        if (this.state.historyArticles.length > 0) {
+        if (this.historyArticles.length > 0) {
             scroll.append($$(RemoveAll, {removeAll: this.removeAll.bind(this)}))
         }
 
