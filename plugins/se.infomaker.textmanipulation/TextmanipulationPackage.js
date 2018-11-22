@@ -15,12 +15,22 @@ const TextmanipulationPackage = {
             sv: 'Ersätt med'
         })
 
-        config.addLabel('Find next', {
-            sv: 'Sök nästa'
+        config.addLabel('next', {
+            sv: 'Nästa',
+            en: 'Next'
+        })
+
+        config.addLabel('prev', {
+            sv: 'Föregående',
+            en: 'Prev'
         })
 
         config.addLabel('Replace', {
             sv: 'Ersätt'
+        })
+
+        config.addLabel('Replace all', {
+            sv: 'Ersätt alla'
         })
 
         config.addLabel('Match whole words', {
