@@ -106,14 +106,14 @@ export default {
             sv: 'Visningsformat för bilder'
         })
 
-        config.addLabel('image-display-mode-full', {
-            en: 'Full',
-            sv: 'Full'
+        config.addLabel('image-display-mode-normal', {
+            en: 'Normal',
+            sv: 'Normal'
         })
 
-        config.addLabel('image-display-mode-minimal', {
-            en: 'Minimal',
-            sv: 'Minimal'
+        config.addLabel('image-display-mode-slim', {
+            en: 'Slim',
+            sv: 'Avskalad'
         })
 
         config.addLabel('image-display-mode-minimized', {

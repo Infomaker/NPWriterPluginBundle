@@ -3,7 +3,7 @@ import {Component} from 'substance'
 class XimimageSettings extends Component {
     constructor(...args) {
         super(...args)
-        this.displayModes = ['full', 'minimal', 'minimized']
+        this.displayModes = ['normal', 'slim', 'minimized']
     }
 
     render($$) {
@@ -21,7 +21,7 @@ class XimimageSettings extends Component {
 
     renderImageModeDropdown($$) {
         const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
-        const selectedDisplayMode = this.props.properties ? this.props.properties.imageDisplayMode : 'full'
+        const selectedDisplayMode = this.props.properties ? this.props.properties.imageDisplayMode : 'normal'
         return $$(DropdownComponent, {
             options: this.displayModes.map(displayMode => {
                 return {
