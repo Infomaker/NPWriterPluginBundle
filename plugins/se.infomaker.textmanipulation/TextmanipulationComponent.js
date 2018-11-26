@@ -1,5 +1,5 @@
 const {Component} = substance
-const {UIButton, UIToggle, api} = writer
+const {UIButton, UIToggle} = writer
 import './scss/index.scss'
 
 class TextmanipulationComponent extends Component {
@@ -20,7 +20,7 @@ class TextmanipulationComponent extends Component {
     willReceiveProps(newProps) {
         if (newProps.popover.active && !this.props.active) {
             setTimeout(() => {
-                this.refs["im-tm_str"].el.focus()
+                this.refs['im-tm_str'].el.focus()
             })
         }
     }
@@ -60,10 +60,9 @@ class TextmanipulationComponent extends Component {
                     .ref('im-tm_find_prev')
                     .addClass('np-ui-secondary')
                     .on('click', (evt) => {
-                            this.findPrev()
-                            evt.target.focus()
-                        }
-                    ).attr({tabIndex: '0'}),
+                        this.findPrev()
+                        evt.target.focus()
+                    }).attr({tabIndex: '0'}),
                 $$(UIButton, {label: this.getLabel('next')})
                     .ref('im-tm_find_next')
                     .addClass('np-ui-secondary')
@@ -73,31 +72,27 @@ class TextmanipulationComponent extends Component {
                     })
                     .attr({tabIndex: '0'}),
                 $$(UIButton, {
-                        label: this.getLabel('Replace')
-                    }
-                )
+                    label: this.getLabel('Replace')
+                })
                     .addClass(this.state.matches.length === 0 ? 'np-ui-secondary disabled' : 'np-ui-secondary')
                     .ref('im-tm_replace')
                     .on('click', (evt) => {
-                            if (this.state.matches.length > 0) {
-                                this.replace()
-                            }
-                            setTimeout(() => {
-                                evt.target.focus()
-                            }, 500)
+                        if (this.state.matches.length > 0) {
+                            this.replace()
                         }
-                    ).attr({tabIndex: '0'}),
+                        setTimeout(() => {
+                            evt.target.focus()
+                        }, 500)
+                    }).attr({tabIndex: '0'}),
                 $$(UIButton, {
-                        label: this.getLabel('Replace all')
-                    }
-                )
+                    label: this.getLabel('Replace all')
+                })
                     .ref('im-tm_replace_all')
                     .addClass('np-ui-secondary')
                     .on('click', (evt) => {
-                            this.replaceAll()
-                            evt.target.focus()
-                        }
-                    ).attr({tabIndex: '0'})
+                        this.replaceAll()
+                        evt.target.focus()
+                    }).attr({tabIndex: '0'})
             ])
         ])
 
@@ -130,7 +125,7 @@ class TextmanipulationComponent extends Component {
         const doc = this.context.editorSession.getDocument()
         const nodes = doc.getNodes()
 
-        for (let id in nodes) {
+        for(let id in nodes) {
             // Only text nodes should have the content property
             if (!nodes[id].content) {
                 continue
@@ -144,12 +139,12 @@ class TextmanipulationComponent extends Component {
             }
 
             const re = new RegExp(matchString, `g${this.state.case ? '' : 'i'}`)
-            while ((match = re.exec(nodes[id].content)) !== null) {
+            while((match = re.exec(nodes[id].content)) !== null) {
                 const item = {
                     nodeId: id,
                     start: match.index,
                     end: match.index + len
-                };
+                }
                 if (backwards) {
                     this.state.matches.unshift(item)
                 } else {
@@ -222,10 +217,7 @@ class TextmanipulationComponent extends Component {
     */
     replaceAll() {
 
-        this.search();
-
-        const from = this.state.action.from
-        const to = this.state.action.to
+        this.search()
 
         if (this.state.matches.length === 0) {
             this._notifyUser(this.getLabel('No hits'))
@@ -252,7 +244,7 @@ class TextmanipulationComponent extends Component {
                 startOffset: searchHit.start,
                 endOffset: searchHit.start + this.state.action.from.length
             }
-        );
+        )
         tx.setSelection(sel)
 
         tx.insertText(this.state.action.to)
@@ -271,7 +263,7 @@ class TextmanipulationComponent extends Component {
                 return
             }
 
-            const editorSession = this.context.editorSession;
+            const editorSession = this.context.editorSession
             editorSession.setSelection(null)
 
             return
