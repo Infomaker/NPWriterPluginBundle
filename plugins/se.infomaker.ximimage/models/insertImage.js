@@ -52,14 +52,5 @@ export default function(tx, data) {
         height: 0
     })
 
-    // Set selection after inserted node, this avoids that the
-    // first image in a multi upload/insertion is deleted.
-    tx.setSelection({
-        type: 'node',
-        containerId: tx.getSelection().containerId,
-        nodeId: nodeId,
-        mode: 'after'
-    })
-
     return nodeId
 }

@@ -136,6 +136,11 @@ class OptionsComponent extends Component {
     }
 
     addContentMetaLink(list, option) {
+
+        if (option.uri === undefined) {
+            return
+        }
+
         this.context.api.newsItem.addContentMetaLink(this.pluginName, {
             '@rel': option.rel || list.link.rel,
             '@title': option.title,
@@ -161,7 +166,7 @@ class OptionsComponent extends Component {
         const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, listType || this._getLinkType())
 
         for (let i = 0; i < selectedItems.length; i++) {
-            if (selectedItems[i]["@uri"] === data.uri) {
+            if (data.uri !== undefined && selectedItems[i]["@uri"] === data.uri) {
                 return true;
             }
         }

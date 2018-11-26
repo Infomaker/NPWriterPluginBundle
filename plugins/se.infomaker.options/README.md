@@ -12,13 +12,13 @@ of options to choose from.
     "enabled": true,
     "mandatory": true,
     "data": {"options": {
-        "type": "dropdown",
+        "type": "toggle",
         "label": "Article options",
         "link": {
             "rel": "articleoptions",
             "type": "x-im/articleoptions"
         },
-        "multivalue": false,
+        "multivalue": true,
         "values": [
             {
                 "uri": "im://articleoptions/premium",
@@ -33,27 +33,30 @@ of options to choose from.
                 "title": "Instagram"
             },
             {
-                "title": "Article tone",
+                "title": "Article placement",
                 "uri": "im://articleoptions/tone",
                 "list": {
-                    "type": "toggle",
-                    "label": "Article tone options",
+                    "type": "dropdown",
+                    "label": "Article placement options",
                     "link": {
-                        "rel": "articleoptions/tone",
-                        "type": "x-im/articleoptions/tone"
+                        "rel": "articleoptions/placement",
+                        "type": "x-im/articleoptions/placement"
                     },
-                    "multivalue": true,
+                    "multivalue": false,
                     "values": [
                         {
-                            "uri": "im://articleoptions/tone/positive",
+                            "title": "- Please select placement -"
+                        },
+                        {
+                            "uri": "im://articleoptions/placement/top",
                             "title": "Positive tone"
                         },
                         {
-                            "uri": "im://articleoptions/tone/neutral",
+                            "uri": "im://articleoptions/tone/middle",
                             "title": "Neutral tone"
                         },
                         {
-                            "uri": "im://articleoptions/tone/negative",
+                            "uri": "im://articleoptions/tone/bottom",
                             "title": "Negative tone"
                         }
                     ]
@@ -63,10 +66,11 @@ of options to choose from.
     }}
 }
 ```
-he example above states a dropdown list with 4 selectable items.
-The multivalue options is set to false, which means that only one value may be selected.
-The fourth option 'Article tone' has a sub-list defined with three options.
-It's a toggle style and since multivalue is set to true, it is possible to select any number of these options.
+he example above states a list of 4 toggable options. The `multivalue` setting is set to true, which means that any of them may be selected.
+
+The fourth option 'Article placement' has a sub-list defined with three options.
+It's a dropdown style with setting `multivalue` set to false, so only one of the items may be selected.
+The first item does not have a `uri` key, which means that it's a *header* and does not result in a link in the document.
 
 
 The option plugin supports being defined multiple times in the configuration file so that
