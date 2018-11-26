@@ -201,7 +201,9 @@ class TextmanipulationComponent extends Component {
 
         const match = this.state.matches[this.state.offset]
 
-        this._performReplace(match)
+        this.context.editorSession.transaction(tx => {
+            this._performReplace(tx, match)
+        })
 
         this.state.matches.splice(this.state.offset, 1)
         this.extendState({
@@ -232,35 +234,29 @@ class TextmanipulationComponent extends Component {
 
         const matches = this.state.matches.slice()
 
-        matches.reverse().forEach((searchHit) => {
-            this._performReplace(searchHit)
+        this.context.editorSession.transaction(tx => {
+            matches.reverse().forEach((searchHit) => {
+                this._performReplace(tx, searchHit)
+            })
         })
 
         this._notifyUser(`${this.getLabel('Replaced')} ${matches.length} ${this.getLabel('Occurrences')}`)
     }
 
-    _performReplace(searchHit) {
-        this.context.editorSession.transaction(tx => {
-            tx.update(
-                [searchHit.nodeId, 'content'],
-                {
-                    delete: {
-                        start: searchHit.start,
-                        end: searchHit.end
-                    }
-                }
-            )
+    _performReplace(tx, searchHit) {
 
-            tx.update(
-                [searchHit.nodeId, 'content'],
-                {
-                    insert: {
-                        offset: searchHit.start,
-                        value: this.state.action.to
-                    }
-                }
-            )
-        })
+        const sel = tx.createSelection(
+            {
+                type: 'property',
+                path: [searchHit.nodeId, 'content'],
+                startOffset: searchHit.start,
+                endOffset: searchHit.start + this.state.action.from.length
+            }
+        );
+        tx.setSelection(sel)
+
+        tx.insertText(this.state.action.to)
+
     }
 
     _notifyUser(message) {
