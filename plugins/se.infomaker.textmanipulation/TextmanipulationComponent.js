@@ -1,5 +1,5 @@
 const {Component} = substance
-const {UIButton, api} = writer
+const {UIButton, UIToggle} = writer
 import './scss/index.scss'
 
 class TextmanipulationComponent extends Component {
@@ -20,33 +20,34 @@ class TextmanipulationComponent extends Component {
     willReceiveProps(newProps) {
         if (newProps.popover.active && !this.props.active) {
             setTimeout(() => {
-                this.refs["im-tm_str"].el.focus()
+                this.refs['im-tm_str'].el.focus()
             })
         }
     }
 
     render($$) {
-        const Toggle = api.ui.getComponent('toggle')
         const el = $$('div').append([
-            $$('label').attr({ for: 'im-tm_str'}).append(this.getLabel('Search for')),
-            $$('input').attr({ id: 'im-tm_str', name: 'im-tm_str' }).ref('im-tm_str'),
-            $$('label').attr({ for: 'im-tm_to'}).append(this.getLabel('Replace with')),
-            $$('input').attr({ id: 'im-tm_to', name: 'im-tm_to' }).ref('im-tm_to'),
+            $$('label').attr({for: 'im-tm_str'}).append(this.getLabel('Search for')),
+            $$('input').attr({id: 'im-tm_str', name: 'im-tm_str', tabIndex: '0', 'data-test': 'test'}).ref('im-tm_str'),
+            $$('label').attr({for: 'im-tm_to'}).append(this.getLabel('Replace with')),
+            $$('input').attr({id: 'im-tm_to', name: 'im-tm_to', tabIndex: '0'}).ref('im-tm_to'),
             $$('div').addClass('toggles').append([
-                $$(Toggle, {
+                $$(UIToggle, {
                     id: 'im-tm_words',
                     label: this.getLabel('Match whole words'),
                     checked: this.state.words,
+                    tabIndex: '0',
                     onToggle: checked => {
                         this.extendState({
                             words: checked
                         })
                     }
                 }),
-                $$(Toggle, {
+                $$(UIToggle, {
                     id: 'im-tm_case',
                     label: this.getLabel('Case sensitive'),
                     checked: this.state.case,
+                    tabIndex: '0',
                     onToggle: checked => {
                         this.extendState({
                             case: checked
@@ -55,14 +56,43 @@ class TextmanipulationComponent extends Component {
                 })
             ]),
             $$('div').append([
-                $$(UIButton, { label: this.getLabel('Find next') }).ref('im-tm_find')
-                    .on('click', () => {
+                $$(UIButton, {label: this.getLabel('prev')})
+                    .ref('im-tm_find_prev')
+                    .addClass('np-ui-secondary')
+                    .on('click', (evt) => {
+                        this.findPrev()
+                        evt.target.focus()
+                    }).attr({tabIndex: '0'}),
+                $$(UIButton, {label: this.getLabel('next')})
+                    .ref('im-tm_find_next')
+                    .addClass('np-ui-secondary')
+                    .on('click', (evt) => {
                         this.findNext()
-                    }),
-                $$(UIButton, { label: this.getLabel('Replace') }).ref('im-tm_replace')
-                    .on('click', () => {
-                        this.replace(true)
+                        evt.target.focus()
                     })
+                    .attr({tabIndex: '0'}),
+                $$(UIButton, {
+                    label: this.getLabel('Replace')
+                })
+                    .addClass(this.state.matches.length === 0 ? 'np-ui-secondary disabled' : 'np-ui-secondary')
+                    .ref('im-tm_replace')
+                    .on('click', (evt) => {
+                        if (this.state.matches.length > 0) {
+                            this.replace()
+                        }
+                        setTimeout(() => {
+                            evt.target.focus()
+                        }, 500)
+                    }).attr({tabIndex: '0'}),
+                $$(UIButton, {
+                    label: this.getLabel('Replace all')
+                })
+                    .ref('im-tm_replace_all')
+                    .addClass('np-ui-secondary')
+                    .on('click', (evt) => {
+                        this.replaceAll()
+                        evt.target.focus()
+                    }).attr({tabIndex: '0'})
             ])
         ])
 
@@ -82,11 +112,11 @@ class TextmanipulationComponent extends Component {
         })
     }
 
-    search() {
+    search({backwards} = {backwards: false}) {
         const str = this.refs['im-tm_str'].val()
         const to = this.refs['im-tm_to'].val()
 
-        this.state.matches.length = 0
+        this.extendState({matches: []})
 
         if (str === '') {
             return this.clear()
@@ -95,7 +125,7 @@ class TextmanipulationComponent extends Component {
         const doc = this.context.editorSession.getDocument()
         const nodes = doc.getNodes()
 
-        for (let id in nodes) {
+        for(let id in nodes) {
             // Only text nodes should have the content property
             if (!nodes[id].content) {
                 continue
@@ -109,17 +139,22 @@ class TextmanipulationComponent extends Component {
             }
 
             const re = new RegExp(matchString, `g${this.state.case ? '' : 'i'}`)
-            while ((match = re.exec(nodes[id].content)) !== null) {
-                this.state.matches.push({
+            while((match = re.exec(nodes[id].content)) !== null) {
+                const item = {
                     nodeId: id,
                     start: match.index,
                     end: match.index + len
-                })
+                }
+                if (backwards) {
+                    this.state.matches.unshift(item)
+                } else {
+                    this.state.matches.push(item)
+                }
             }
         }
 
         // Figure out selection offset
-        if (this.state.action.from !== str || !this.state.matches.length) {
+        if (this.state.action.from !== str || this.state.action.to !== to || !this.state.matches.length) {
             return this.extendState({
                 offset: this.state.matches.length ? 0 : null,
                 action: {
@@ -139,6 +174,12 @@ class TextmanipulationComponent extends Component {
         })
     }
 
+    findPrev() {
+        this.search({backwards: true})
+        this.selectNext()
+    }
+
+
     findNext() {
         this.search()
         this.selectNext()
@@ -156,25 +197,7 @@ class TextmanipulationComponent extends Component {
         const match = this.state.matches[this.state.offset]
 
         this.context.editorSession.transaction(tx => {
-            tx.update(
-                [match.nodeId, 'content'],
-                {
-                    delete: {
-                        start: match.start,
-                        end: match.end
-                    }
-                }
-            )
-
-            tx.update(
-                [match.nodeId, 'content'],
-                {
-                    insert: {
-                        offset: match.start,
-                        value: this.state.action.to
-                    }
-                }
-            )
+            this._performReplace(tx, match)
         })
 
         this.state.matches.splice(this.state.offset, 1)
@@ -185,8 +208,64 @@ class TextmanipulationComponent extends Component {
         this.findNext()
     }
 
+    /*
+    {
+        nodeId: id,
+        start: match.index,
+        end: match.index + len
+    }
+    */
+    replaceAll() {
+
+        this.search()
+
+        if (this.state.matches.length === 0) {
+            this._notifyUser(this.getLabel('No hits'))
+            return
+        }
+
+        const matches = this.state.matches.slice()
+
+        this.context.editorSession.transaction(tx => {
+            matches.reverse().forEach((searchHit) => {
+                this._performReplace(tx, searchHit)
+            })
+        })
+
+        this._notifyUser(`${this.getLabel('Replaced')} ${matches.length} ${this.getLabel('Occurrences')}`)
+    }
+
+    _performReplace(tx, searchHit) {
+
+        const sel = tx.createSelection(
+            {
+                type: 'property',
+                path: [searchHit.nodeId, 'content'],
+                startOffset: searchHit.start,
+                endOffset: searchHit.start + this.state.action.from.length
+            }
+        )
+        tx.setSelection(sel)
+
+        tx.insertText(this.state.action.to)
+
+    }
+
+    _notifyUser(message) {
+        this.context.api.ui.showNotification('textmanipulation', this.getLabel('Search and replace'), message)
+
+    }
+
     selectNext() {
         if (this.state.offset === null) {
+            if (this.state.matches.length === 0) {
+                this._notifyUser(this.getLabel('No hits'))
+                return
+            }
+
+            const editorSession = this.context.editorSession
+            editorSession.setSelection(null)
+
             return
         }
 
