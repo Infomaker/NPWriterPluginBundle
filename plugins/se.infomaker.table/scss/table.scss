@@ -7,6 +7,10 @@
         border-collapse: collapse;
         border: 1px solid #eee;
 
+        tr {
+            display: flex;
+        }
+
         caption {
             font-style: italic;
             font-weight: bold;
@@ -15,6 +19,7 @@
             margin-bottom: 0.5em;
         }
         td {
+            flex: 1;
             background-color: #fff;
         }
         th,
