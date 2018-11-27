@@ -326,14 +326,16 @@ class ImageGalleryComponent extends Component {
                         node: imageNode,
                         url: imageNode.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: false
+                        disablebylinesearch: false,
+                        focusOnRender: true
                     },
                     {
                         title: this.getLabel('Image archive information'),
                         global: true,
                         primary: this.getLabel('Save'),
                         secondary: this.getLabel('Cancel'),
-                        cssClass: 'np-image-dialog hide-overflow'
+                        cssClass: 'np-image-dialog hide-overflow',
+                        focusPrimary: false
                     }
                 )
             })

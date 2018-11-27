@@ -237,14 +237,16 @@ class ImageDisplay extends Component {
                         node: this.props.node,
                         url: this.props.node.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: !this.props.imageOptions.bylinesearch
+                        disablebylinesearch: !this.props.imageOptions.bylinesearch,
+                        focusOnRender: true
                     },
                     {
                         title: this.getLabel('Image archive information'),
                         global: true,
                         primary: this.getLabel('Save'),
                         secondary: this.getLabel('Cancel'),
-                        cssClass: 'np-image-dialog hide-overflow'
+                        cssClass: 'np-image-dialog hide-overflow',
+                        focusPrimary: false
                     }
                 )
             })
