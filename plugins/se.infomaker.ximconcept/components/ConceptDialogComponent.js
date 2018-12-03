@@ -55,8 +55,14 @@ class ConceptDialogComponent extends Component {
         }
 
         // Bind validation listeners and trigger first validation
-        Object.keys(this.refs).forEach(ref => {
+        Object.keys(this.refs).forEach((ref, index) => {
             const input = this.refs[ref]
+
+            // Set cursor focus to first input element when opening dialog
+            if(index === 0) {
+                input.getNativeElement().focus()
+            }
+
             input.el.el.removeEventListener('input', this.validateInput, true)
             input.el.el.addEventListener('input', this.validateInput, true)
             input.el.el.dispatchEvent(new Event('input'))
@@ -141,6 +147,7 @@ class ConceptDialogComponent extends Component {
                 if (fields.length) {
                     el.append(groupTitle)
                     el.append(fields)
+                    el.focus()
                 }
             })
         }
