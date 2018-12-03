@@ -209,7 +209,7 @@ class ConceptMainComponent extends Component {
                     this.getLabel('This Concept is already used'))
             }
         } else {
-            if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
+            if (this.state.pluginConfig.creatable || this.state.pluginConfig.editable) {
                 const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
                     this.state.types.length ? null : this.state.conceptType
 
