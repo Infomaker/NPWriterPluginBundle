@@ -6,10 +6,7 @@
         width: 100%;
         border-collapse: collapse;
         border: 1px solid #eee;
-
-        tr {
-            display: flex;
-        }
+        table-layout:fixed;
 
         caption {
             font-style: italic;
@@ -19,7 +16,6 @@
             margin-bottom: 0.5em;
         }
         td {
-            flex: 1;
             background-color: #fff;
         }
         th,
