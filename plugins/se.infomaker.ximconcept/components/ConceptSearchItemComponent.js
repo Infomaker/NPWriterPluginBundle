@@ -90,6 +90,13 @@ class ConceptSearchItemComponent extends Component {
             .append(conceptIcon)
             .append(itemContent)
 
+
+        if(this.props.selected) {
+            setImmediate(() => {
+                this.props.scrollIntoView(this)
+            })
+        }
+
         return el
     }
 

@@ -254,6 +254,7 @@ class ConceptMainComponent extends Component {
                     propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
                     save: (item && item.create) ? this.addConceptToArticle : this.updateArticleConcept,
+                    focusPrimary: false
                 },
                 {
                     title,
