@@ -66,9 +66,23 @@ class ContentPartComponent extends Component {
         ]).ref('container')
     }
 
+    didMount() {
+        const {contentPartType} = this.state
+
+        // Set selection to first field in configured fields
+        if(contentPartType.fields.length > 0) {
+            this.context.api.editorSession.setSelection({
+                type: 'property',
+                path: [this.props.node.id, 'fields', contentPartType.fields[0].id],
+                startOffset: 0,
+                containerId: this.props.node.id
+            })
+        }
+    }
+
     /**
      * @param {*} $$
-     * @param {ContentPartManager.Field} field
+     * @param {ContentPart.Field} field
      */
     _renderFieldsByType($$, field) {
         switch (field.type) {
