@@ -97,12 +97,12 @@ class NewsPriorityComponent extends Component {
     render($$) {
         const el = $$('div');
 
-        const prioTitle = $$('h2').text(this.getLabel('newsvalue'));
+        const prioTitle = $$('h2').append(this.getLabel('newsvalue'));
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
         if (!this.preventLifeTime()) {
-            const lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
+            const lifetimeTitle = $$('h2').append(this.getLabel('Lifetime'));
             el.append(lifetimeTitle);
             if (this.lifetimes.length > 1) {
                 el.append(this._renderLifeTime($$));
@@ -135,7 +135,7 @@ class NewsPriorityComponent extends Component {
             return $$('button')
                 .append([
                     $$(this.Tooltip, {title: score.text}).ref('tooltip-' + score.value),
-                    $$('span').addClass('label').text(scoreOption)
+                    $$('span').addClass('label').append(scoreOption)
                         .on('click', () => {
                             this.setNewsPriority(score.value);
                             this.toogleTooltip('tooltip-' + score.value, false)
@@ -166,7 +166,7 @@ class NewsPriorityComponent extends Component {
                 .addClass('btn btn-secondary sc-np-btn')
                 .append([
                     $$(this.Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
-                    $$('span').addClass('label').text(lifetime.label)
+                    $$('span').addClass('label').append(lifetime.label)
                         .on('click', () => {
                             this.setLifetime(lifetime);
                             this.toogleTooltip('tooltip-' + lifetime.label, false)
