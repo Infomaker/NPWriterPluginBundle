@@ -147,7 +147,7 @@
             }
             &.results {
                 &:focus {
-                    border-bottom: none;
+                    border-bottom: 2px solid #fff;
                 }
             }
             &:disabled {
@@ -158,7 +158,7 @@
             position: absolute;
             width: 100%;
             z-index: 5;
-            box-shadow: 4px 4px 13px -4px rgba(0, 0, 0, 0.4);
+            box-shadow: 2px 2px 7px -2px rgba(0, 0, 0, 0.4);
             background: white;
 
             .concept-search-result-component {
