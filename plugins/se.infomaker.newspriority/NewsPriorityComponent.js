@@ -195,15 +195,16 @@ class NewsPriorityComponent extends Component {
 
         let text = this.getLabel('enter-date-and-time');
 
-        const endTime = api.newsItem.getNewsPriority().data.end;
-        if (endTime !== "" && !isEmpty(endTime)) {
+        const newsPriority = api.newsItem.getNewsPriority()
+
+        const endTime = newsPriority ? newsPriority.data.end : '';
+        if (endTime !== '' && !isEmpty(endTime)) {
             text = '\u2713 ' + text;
         }
 
         const small = $$('div').append($$('small')
             .addClass('text-muted')
             .text(text)).addClass('hidden').ref('datePickerInstructionText');
-
 
         const input = $$('input')
             .attr('type', 'datetime-local')
