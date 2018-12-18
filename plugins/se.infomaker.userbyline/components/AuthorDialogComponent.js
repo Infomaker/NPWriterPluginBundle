@@ -82,7 +82,7 @@ class AuthorDialogComponent extends Component {
             ) : '',
         )
         const refreshList = $$('a', { class: 'user-author-suggestions-refresh' },
-            this.getLabel('Refresh list')
+            this.state.loading ? '' : this.getLabel('Refresh list')
         ).on('click', () => {
             this.extendState({
                 loading: true

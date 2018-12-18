@@ -30,6 +30,10 @@ export default {
             sv: 'Använd'
         })
 
+        configurator.addLabel('Later', {
+            sv: 'Senare'
+        })
+
         configurator.addLabel('Refresh list', {
             sv: 'Uppdatera listan'
         })

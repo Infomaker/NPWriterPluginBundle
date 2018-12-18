@@ -50,6 +50,8 @@ class UserBylineComponent extends Component {
     displayModal(suggestions) {
         const { propertyMap } = this.state
         if (this.state.userInfo && !this.state.authorInfo) {
+            const optional = api.getConfigValue('se.infomaker.user-byline', 'optional', false)
+
             api.ui.showDialog(AuthorDialogComponent,
                 {
                     ...this.state.userInfo,
@@ -67,7 +69,7 @@ class UserBylineComponent extends Component {
                     title: this.getLabel('Add author to byline'),
                     global: true,
                     primary: false,
-                    secondary: false,
+                    secondary: optional ? this.getLabel('Later') : false,
                     tertiary: false
                 }
             )

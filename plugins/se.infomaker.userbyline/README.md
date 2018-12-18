@@ -11,9 +11,7 @@ When an author is selected from suggestion list, it will also set IM.ID sub on c
 
 ## Dependencies
 
-> requires `writer >= IM.ID`
-
-> requires `ConceptPlugin (x-im/author) >= IM.ID`
+> requires `writer >= 5.0.0`
 
 > requires `ConceptAuthorFirstname`, `ConceptAuthorLastname`, `ConceptAuthorEmail` and `ConceptImIdSubjectId` in open content.
 
@@ -22,6 +20,7 @@ When an author is selected from suggestion list, it will also set IM.ID sub on c
 The following config is used in the plugin config:
 
 - `"supportEmail": "conceptadmin@myorg.com"` Optional email to display when user does not match any existing author concept.
+- `"optional": true` If 
 
 ```json
 {
@@ -32,7 +31,8 @@ The following config is used in the plugin config:
     "mandatory": false,
     "enabled": true,
     "data": {
-        "supportEmail": "conceptadmin@myorg.com"
+        "supportEmail": "tim.schill@infomaker.se",
+        "optional": true
     }
 }
 ```
