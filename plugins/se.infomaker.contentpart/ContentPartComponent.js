@@ -1,6 +1,6 @@
 import {Component, ContainerEditor, EmphasisCommand, FontAwesomeIcon, StrongCommand, SwitchTextCommand} from 'substance'
 import DropDownHeadline from './DropDownHeadline'
-import {api} from 'writer'
+import {api, UIFieldEditor, UIDatetimeFieldEditor} from 'writer'
 
 import ContentPartManager from './ContentPartManager'
 
@@ -101,7 +101,6 @@ class ContentPartComponent extends Component {
     }
 
     _renderTextField($$, field) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
         const editorProps = {
             node: this.props.node,
             multiLine: field.multiLine,
@@ -113,11 +112,10 @@ class ContentPartComponent extends Component {
         }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
-        return $$(FieldEditor, editorProps).ref(refName)
+        return $$(UIFieldEditor, editorProps).ref(refName)
     }
 
     _renderDateField($$, field) {
-        const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
         const editorProps = {
             node: this.props.node,
             field: ['fields', field.id],
@@ -129,7 +127,7 @@ class ContentPartComponent extends Component {
         }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
-        return $$(DatetimeFieldEditor, editorProps).ref(refName)
+        return $$(UIDatetimeFieldEditor, editorProps).ref(refName)
     }
 
     _renderContainerEditor($$) {

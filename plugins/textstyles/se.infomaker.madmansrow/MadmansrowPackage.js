@@ -17,7 +17,7 @@ export default {
         config.addNode(MadmansrowNode)
         config.addComponent(MadmansrowNode.type, MadmansrowComponent)
 
-        config.addConverter('newsml', MadmansrowConverter)
+        config.addConverter(MadmansrowConverter)
 
         const textType = {
             name: this.name,

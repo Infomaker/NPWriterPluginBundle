@@ -14,7 +14,7 @@ const paragraphPackage = {
         config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Paragraph)
         config.addComponent(Paragraph.type, ParagraphComponent)
-        config.addConverter('newsml', ParagraphConverter)
+        config.addConverter(ParagraphConverter)
         config.addTextType({
             name: 'paragraph',
             data: {type: 'paragraph'},

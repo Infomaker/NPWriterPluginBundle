@@ -15,7 +15,7 @@ export default {
     configure: function(config) {
 
         // Add tool
-        config.addConverter('newsml', YoutubeEmbedConverter)
+        config.addConverter(YoutubeEmbedConverter)
 
         // Add component
         config.addComponent('youtubeembed', YoutubeEmbedComponent)

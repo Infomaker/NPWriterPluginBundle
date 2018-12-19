@@ -32,7 +32,7 @@ export default {
         })
 
         configurator.addNode(ContentRelationsNode)
-        configurator.addConverter('newsml', ContentRelationsConverter)
+        configurator.addConverter(ContentRelationsConverter)
         configurator.addComponent(this.name, ContentRelationsComponent)
         configurator.addDropHandler(new ContentRelationsDropHandler())
         configurator.addToSidebar(

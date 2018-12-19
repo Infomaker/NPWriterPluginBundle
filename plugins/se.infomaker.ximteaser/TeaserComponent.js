@@ -1,5 +1,5 @@
 import {ContainerEditor, StrongCommand, EmphasisCommand, SwitchTextCommand, Component, FontAwesomeIcon} from 'substance'
-import {api} from 'writer'
+import {api, UIDatetimeFieldEditor, UIFieldEditor} from 'writer'
 import FileInputComponent from './FileInputComponent'
 import RelatedArticlesComponent from './RelatedArticlesComponent'
 
@@ -96,7 +96,6 @@ class TeaserComponent extends Component {
     }
 
     _renderDatetimeFieldEditor($$, field) {
-        const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
         const editorProps = {
             node: this.props.node,
             field: ['customFields', field.id],
@@ -105,14 +104,13 @@ class TeaserComponent extends Component {
         }
         if (field.icon) { editorProps.icon = field.icon }
 
-        return $$(DatetimeFieldEditor, editorProps).ref(`${field.id}FieldEditor`)
+        return $$(UIDatetimeFieldEditor, editorProps).ref(`${field.id}FieldEditor`)
     }
 
     _renderFieldEditor($$, field) {
         if(Boolean(field.multiline) && field.id === 'text') {
             return this._renderContainerEditor($$, field)
         } else {
-            const FieldEditor = this.context.api.ui.getComponent('field-editor')
             const editorProps = {
                 node: this.props.node,
                 multiLine: false,
@@ -121,7 +119,7 @@ class TeaserComponent extends Component {
             }
             if (field.icon) { editorProps.icon = field.icon }
 
-            return $$(FieldEditor, editorProps).ref(`${field.id}FieldEditor`)
+            return $$(UIFieldEditor, editorProps).ref(`${field.id}FieldEditor`)
         }
     }
 
@@ -135,7 +133,7 @@ class TeaserComponent extends Component {
     }
 
     _renderImageDisplay($$, currentType) {
-        const ImageDisplay = api.ui.getComponent('imageDisplay')
+        const ImageDisplay = api.configurator.getComponent('imageDisplay')
         // Manually disable byline for teaser image, to make sure it's not accidentally enabled through config
         const imageOptions = Object.assign(currentType.imageoptions, {
             byline: false,

@@ -18,7 +18,7 @@ export default {
         config.addNode(FactbodyNode)
         config.addComponent(FactbodyNode.type, FactbodyComponent)
 
-        config.addConverter('newsml', FactbodyConverter)
+        config.addConverter(FactbodyConverter)
 
         const textType = {
             name: this.name,

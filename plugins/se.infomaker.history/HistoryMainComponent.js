@@ -1,4 +1,4 @@
-import {Component} from 'substance'
+import {Component, ScrollPane} from 'substance'
 import HistoryItemComponent from './HistoryItemComponent'
 import {api, event} from 'writer'
 import RemoveAll from './RemoveAll'
@@ -49,8 +49,7 @@ class HistoryMainComponent extends Component {
             return el
         }
 
-        const scrollpane = api.ui.getComponent('scroll-pane')
-        const scroll = $$(scrollpane, {
+        const scroll = $$(ScrollPane, {
             scrollbarType: 'native'
         }).ref('historyScroll')
 

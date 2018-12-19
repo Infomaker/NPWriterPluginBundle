@@ -14,7 +14,7 @@ const blockquotePackage = {
 
         config.addNode(Blockquote)
         config.addComponent(Blockquote.type, BlockquoteComponent)
-        config.addConverter('newsml', BlockquoteConverter)
+        config.addConverter(BlockquoteConverter)
 
         config.addTextType({
             name: 'blockquote',

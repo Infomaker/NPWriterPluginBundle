@@ -1,9 +1,8 @@
 'use strict';
 
 import {Component} from 'substance'
-// var $$ = Component.$$;
 import {FontAwesomeIcon} from 'substance'
-import {jxon, api} from 'writer'
+import {jxon, UITooltip} from 'writer'
 
 
 class LocationItemComponent extends Component {
@@ -70,11 +69,10 @@ class LocationItemComponent extends Component {
                     });
                 }
 
-                const Tooltip = api.ui.getComponent('tooltip')
                 displayNameEl.on('click', function () {
                     this.props.openMap(this.state.loadedLocation)
                 }.bind(this))
-                    .append($$(Tooltip, {title: title, parent: this}).ref('tooltip'))
+                    .append($$(UITooltip, {title: title, parent: this}).ref('tooltip'))
 
                 displayNameEl.on('mouseenter', this.toggleTooltip)
                 displayNameEl.on('mouseout', this.hideTooltip)

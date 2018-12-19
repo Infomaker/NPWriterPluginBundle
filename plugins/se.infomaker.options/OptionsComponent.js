@@ -1,5 +1,5 @@
 import {Component} from "substance"
-import {api, event} from "writer"
+import {api, event, UISelect} from "writer"
 
 class OptionsComponent extends Component {
 
@@ -31,10 +31,8 @@ class OptionsComponent extends Component {
     }
 
     render($$) {
-        const SelectComponent = api.ui.getComponent('select')
-
         return $$('div').append(
-            $$(SelectComponent, {
+            $$(UISelect, {
                 list: this.state.list,
                 onChangeList: this.onChangeList.bind(this),
                 isSelected: this.isSelected.bind(this)
@@ -157,8 +155,9 @@ class OptionsComponent extends Component {
     /**
      * Responsible for reporting whether a specific list data element is selected or not
      *
+     * @param list
      * @param data The element to check
-     * @return True if selected, false otherwise
+     * @return {boolean} True if selected, false otherwise
      */
     isSelected(list, data) {
         const listType = (list && list.link && list.link.type) ? list.link.type : undefined

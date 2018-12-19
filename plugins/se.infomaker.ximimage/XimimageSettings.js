@@ -1,4 +1,5 @@
 import {Component} from 'substance'
+import {UIDropdown} from 'writer'
 
 class XimimageSettings extends Component {
     constructor(...args) {
@@ -20,9 +21,8 @@ class XimimageSettings extends Component {
     }
 
     renderImageModeDropdown($$) {
-        const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
         const selectedDisplayMode = this.props.properties ? this.props.properties.imageDisplayMode : 'normal'
-        return $$(DropdownComponent, {
+        return $$(UIDropdown, {
             options: this.displayModes.map(displayMode => {
                 return {
                     label: this.getLabel(`image-display-mode-${displayMode}`),

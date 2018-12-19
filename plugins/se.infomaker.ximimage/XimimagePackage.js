@@ -24,13 +24,12 @@ export default {
     configure: function (config) {
         config.addNode(Ximimage)
         config.addComponent(Ximimage.type, XimimageComponent)
-        config.addConverter('newsml', XimimageConverter)
+        config.addConverter(XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
         config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
         config.addMacro(InsertImageMacro)
         config.addComponent('imageDisplay', ImageDisplayComponent)
-        config.addConverter('newsml', XimimageConverter)
 
         // Drop handlers
         config.addDropHandler(new DropImageUUID())

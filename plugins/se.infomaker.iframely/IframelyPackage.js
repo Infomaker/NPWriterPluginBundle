@@ -19,7 +19,7 @@ const IframelyPackage = {
 
         config.addNode(IframelyNode)
         config.addComponent(IframelyNode.type, IframelyComponent)
-        config.addConverter('newsml', IframelyConverter)
+        config.addConverter(IframelyConverter)
 
         // Interactions
         config.addMacro(IframelyMacro)

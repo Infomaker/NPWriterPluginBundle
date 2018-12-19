@@ -1,5 +1,5 @@
 const {Component} = substance
-const {api, moment, idGenerator, event} = writer
+const {api, moment, idGenerator, event, UITooltip} = writer
 const {isObject, isEmpty} = writer.lodash
 const pluginId = 'se.infomaker.newspriority'
 
@@ -10,8 +10,6 @@ class NewsPriorityComponent extends Component {
 
     constructor(...args) {
         super(...args)
-
-        this.Tooltip = api.ui.getComponent('tooltip')
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
             if (e.data.key === 'contentMetadata' && e.data.value.type === 'x-im/newsvalue') {
@@ -134,7 +132,7 @@ class NewsPriorityComponent extends Component {
 
             return $$('button')
                 .append([
-                    $$(this.Tooltip, {title: score.text}).ref('tooltip-' + score.value),
+                    $$(UITooltip, {title: score.text}).ref('tooltip-' + score.value),
                     $$('span').addClass('label').append(scoreOption)
                         .on('click', () => {
                             this.setNewsPriority(score.value);
@@ -165,7 +163,7 @@ class NewsPriorityComponent extends Component {
             return $$('button')
                 .addClass('btn btn-secondary sc-np-btn')
                 .append([
-                    $$(this.Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
+                    $$(UITooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
                     $$('span').addClass('label').append(lifetime.label)
                         .on('click', () => {
                             this.setLifetime(lifetime);

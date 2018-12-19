@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api} from 'writer'
+import {UIAvatar} from 'writer'
 
 class Login extends Component {
 
@@ -10,7 +10,6 @@ class Login extends Component {
 
     render($$) {
         const el = $$('div').addClass('col-12 uatracker-login')
-        const avatar = api.ui.getComponent('avatar')
 
         const description = $$('p').append(this.getLabel('We would like you to enter email and name'))
 
@@ -24,7 +23,7 @@ class Login extends Component {
             .on('keyup', this.validateEmail)
             .on('blur', this.loadAvatar)
 
-        emailGroup.append([emailLabel, emailInput, $$(avatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar')])
+        emailGroup.append([emailLabel, emailInput, $$(UIAvatar, {avatarSource: 'gravatar', avatarId: null}).ref('avatar')])
 
         const nameGroup = $$('div').addClass('form-group')
         const label = $$('span').append(this.getLabel('Enter your name'))

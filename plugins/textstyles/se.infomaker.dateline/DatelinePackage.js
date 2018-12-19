@@ -17,7 +17,7 @@ export default {
         config.addNode(DatelineNode)
         config.addComponent(DatelineNode.type, DatelineComponent)
 
-        config.addConverter('newsml', DatelineConverter)
+        config.addConverter(DatelineConverter)
 
         const textType = {
             name: this.name,

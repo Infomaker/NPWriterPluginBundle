@@ -23,7 +23,7 @@ export default {
         // Container
         config.addNode(TeaserContainerNode)
         config.addComponent(TeaserContainerNode.type, TeaserContainerComponent)
-        config.addConverter('newsml', TeaserContainerConverter)
+        config.addConverter(TeaserContainerConverter)
         config.addContentMenuTopTool('ximteasercontainer', TeaserContainerTool)
         config.addCommand('ximteasercontainer', InsertTeaserContainerCommand, pluginConfig)
 
@@ -43,7 +43,7 @@ export default {
         })
 
         // Teaser
-        config.addConverter('newsml', TeaserConverter)
+        config.addConverter(TeaserConverter)
         config.addNode(TeaserNode)
         config.addCommand('ximteaser.insert-teaser', InsertTeaserCommand)
         config.addCommand('ximteaser.insert-image', InsertTeaserImageCommand)

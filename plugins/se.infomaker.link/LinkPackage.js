@@ -15,7 +15,7 @@ export default {
 
         config.addNode(LinkNode)
         config.addComponent('link', LinkComponent)
-        config.addConverter('newsml', LinkXMLConverter)
+        config.addConverter(LinkXMLConverter)
 
         config.addCommand('link', LinkCommand, {
             nodeType: 'link',

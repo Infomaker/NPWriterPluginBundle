@@ -1,4 +1,5 @@
 import {Component} from "substance"
+import {UIFieldEditor} from 'writer'
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 
@@ -126,8 +127,7 @@ class XimimageComponent extends Component {
     }
 
     renderTextField($$, obj) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        return $$(FieldEditor, {
+        return $$(UIFieldEditor, {
             node: this.props.node,
             field: obj.name,
             multiLine: false,

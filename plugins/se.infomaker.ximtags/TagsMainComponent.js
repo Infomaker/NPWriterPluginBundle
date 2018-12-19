@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api, event, jxon} from 'writer'
+import {api, event, jxon, UIFormSearch} from 'writer'
 import TagsList from './TagsListComponent'
 import TagEditBaseComponent from './TagEditBaseComponent'
 import TagEditPersonComponent from './TagEditPersonComponent'
@@ -53,9 +53,7 @@ class TagsMainComponent extends Component {
 
         const el = $$('div').ref('tagContainer').addClass('authors').append($$('h2').append(this.getLabel('ximtags-title')))
 
-        const SearchComponent = this.context.componentRegistry.get('form-search')
-
-        const searchComponent = $$(SearchComponent, {
+        const searchComponent = $$(UIFormSearch, {
             existingItems: this.state.existingTags,
             searchUrl: '/api/search/concepts/tags?q=',
             onSelect: this.addTag.bind(this),

@@ -1,5 +1,5 @@
 import {Component} from "substance"
-import {api} from "writer"
+import {api, UIToggle} from "writer"
 
 class ArticleOptionsComponent extends Component {
 
@@ -48,12 +48,11 @@ class ArticleOptionsComponent extends Component {
      */
     renderOptions($$) {
         const optionGroupDiv = $$('div').addClass('option-group-' + this.pluginName)
-        const Toggle = api.ui.getComponent('toggle')
 
         Object.keys(this.options).forEach((id) => {
             const option = this.options[id]
             optionGroupDiv.append(
-                $$(Toggle, {
+                $$(UIToggle, {
                     id: id,
                     label: option.label,
                     checked: option.checked,

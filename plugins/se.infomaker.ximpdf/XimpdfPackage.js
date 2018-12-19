@@ -16,7 +16,7 @@ export default {
     configure: function (config) {
         config.addNode(Ximpdf)
         config.addComponent(Ximpdf.type, XimpdfComponent)
-        config.addConverter('newsml', XimpdfConverter)
+        config.addConverter(XimpdfConverter)
         config.addContentMenuTopTool('insert-pdfs', InsertPdfsTool)
         config.addCommand('insert-pdfs', InsertPdfsCommand)
         config.addNode(XimpdfFileNode)

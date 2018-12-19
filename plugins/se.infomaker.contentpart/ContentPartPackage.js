@@ -14,7 +14,7 @@ export default {
         config.addContentMenuTopTool('insert-contentpart', InsertContentPartTool)
         config.addCommand('insert-contentpart', InserContentPartCommand)
         config.addComponent('contentpart', ContentPartComponent)
-        config.addConverter('newsml', ContentPartConverter)
+        config.addConverter(ContentPartConverter)
 
 
         if (platform.isMac) {

@@ -13,7 +13,7 @@ const headlinePackage = {
         config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Headline)
         config.addComponent(Headline.type, HeadlineComponent)
-        config.addConverter('newsml', HeadlineConverter)
+        config.addConverter(HeadlineConverter)
         config.addTextType({
             name: this.name,
             data: {type: 'headline'},

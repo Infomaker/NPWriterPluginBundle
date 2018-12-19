@@ -23,7 +23,7 @@ const ImageGalleryPackage = {
         config.addCommand(INSERT_IMAGE_GALLERY_COMMAND, InsertImageGalleryCommand)
         config.addCommand(INSERT_IMAGE_COMMAND, InsertImageCommand)
 
-        config.addConverter('newsml', ImageGalleryConverter)
+        config.addConverter(ImageGalleryConverter)
 
         config.addIcon('angle-left', {'fontawesome': 'fa-angle-left'})
         config.addIcon('angle-right', {'fontawesome': 'fa-angle-right'})

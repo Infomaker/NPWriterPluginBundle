@@ -1,15 +1,9 @@
 import { Component } from 'substance'
-import { ConceptService, api } from 'writer'
+import { ConceptService, UITooltip } from 'writer'
 import ConceptItemImageComponent from './ConceptItemImageComponent'
 import ConceptItemIcon from './ConceptItemIconComponent'
 
 class ConceptSearchItemComponent extends Component {
-
-    constructor(...args) {
-        super(...args)
-
-        this.Tooltip = api.ui.getComponent('tooltip')
-    }
 
     didMount() {
         if (this.props.selected) {
@@ -25,7 +19,7 @@ class ConceptSearchItemComponent extends Component {
         const conceptDefinitionShort = item[propertyMap.ConceptDefinitionShort] ? $$('p').append(item[propertyMap.ConceptDefinitionShort]).addClass('concept-short') : null
         const existsIcon = $$('i', { class: `fa ${this.props.itemExists ? 'fa-check' : ''} search-item-icon search-item-exists`, 'aria-hidden': 'true' })
 
-        const tooltip = broaderString.length ? $$(this.Tooltip, {
+        const tooltip = broaderString.length ? $$(UITooltip, {
             title: `${fullBroaderString}`,
             text: '',
             fixed: true,

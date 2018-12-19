@@ -13,7 +13,7 @@ const subheadlinePackage = {
         config.addCommand(command, TextstyleCommand, {textType: this.name})
         config.addNode(Subheadline)
         config.addComponent(Subheadline.type, SubheadlineComponent)
-        config.addConverter('newsml', SubheadlineConverter)
+        config.addConverter(SubheadlineConverter)
         config.addTextType({
             name: 'subheadline',
             data: {type: 'subheadline'},

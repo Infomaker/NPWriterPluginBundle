@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import { api } from 'writer'
+import { api, UIDropdown } from 'writer'
 
 class OptionsComponent extends Component {
 
@@ -11,8 +11,6 @@ class OptionsComponent extends Component {
             { label: '50', value: 50 },
             { label: '100', value: 100 }
         ]
-
-        this.dropdownComponent = api.ui.getComponent('DropdownComponent')
     }
 
     /**
@@ -21,7 +19,7 @@ class OptionsComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderSortingsDropDown($$) {
-        return $$(this.dropdownComponent, {
+        return $$(UIDropdown, {
             header: this.getLabel('Sort'),
             options: this.props.sortings.map(sorting => ({ label: sorting.name, value: `${sorting.name}:${sorting.field}`, data: {} })),
             isSelected: (options, item) => {
@@ -41,7 +39,7 @@ class OptionsComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderLimitDropDown($$) {
-        return $$(this.dropdownComponent, {
+        return $$(UIDropdown, {
             header: this.getLabel('Show'),
             options: this.limits,
             isSelected: (options, item) => item.value === this.props.limit,

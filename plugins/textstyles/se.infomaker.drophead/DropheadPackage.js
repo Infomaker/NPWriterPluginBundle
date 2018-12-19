@@ -17,7 +17,7 @@ export default {
         config.addNode(DropheadNode)
         config.addComponent(DropheadNode.type, DropheadComponent)
 
-        config.addConverter('newsml', DropheadConverter)
+        config.addConverter(DropheadConverter)
 
         const textType = {
             name: this.name,

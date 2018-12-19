@@ -1,16 +1,10 @@
 import {Component} from 'substance'
 import {OpenContentClient, QueryBuilder, QueryResponseHelper} from '@infomaker/oc-client'
-import {api, UIPagination} from 'writer'
+import {api, UIPagination, UIDropdown} from 'writer'
 import SearchResultComponent from './SearchResultComponent'
 import OptionsComponent from './OptionsComponent'
 
 class ContentSearchComponent extends Component {
-
-    constructor(...args) {
-        super(...args)
-
-        this.DropdownComponent = api.ui.getComponent('DropdownComponent')
-    }
 
     willReceiveProps(newProps) {
         const { sorting } = newProps
@@ -86,7 +80,7 @@ class ContentSearchComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderDropDownComponent($$) {
-        return $$(this.DropdownComponent, {
+        return $$(UIDropdown, {
             options: this.props.defaultQueries.map(query => ({ label: query.label, value: query.q })),
             isSelected: (options, item) => {
                 return item.label === this.state.selectedQuery.label

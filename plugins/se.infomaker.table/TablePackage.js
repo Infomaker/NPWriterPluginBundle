@@ -174,13 +174,10 @@ export default {
             format: null
         })
 
-
-
         // Converters
-        config.addConverter('newsml', XMLTableConverter)
-        config.addConverter('html', HTMLTableConverter)
-        config.addConverter('newsml', TableCellConverter)
-        config.addConverter('html', TableCellConverter)
+        config.addConverter(XMLTableConverter)
+        config.addConverter(HTMLTableConverter)
+        config.addConverter(TableCellConverter)
 
         // Annotation commands
         config.addCommand(COMMANDS.STRONG, TableAnnotationCommand, { nodeType: 'strong', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })

@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api} from 'writer'
+import {UIAvatar} from 'writer'
 
 import Popover from './Popover'
 import UserDetails from './UserDetails';
@@ -60,7 +60,6 @@ class UserItem extends Component {
 
     render($$) {
         const user = this.props.user
-        const Avatar = api.ui.getComponent('avatar')
 
         const itemClassNames = ['user-list-item']
 
@@ -70,7 +69,7 @@ class UserItem extends Component {
 
         return $$('li', { class: itemClassNames.join(' ')},
             [
-                $$(Avatar, {
+                $$(UIAvatar, {
                     avatarSource: 'gravatar',
                     avatarId: user.email,
                     avatarAlt: this.extractUserInitials(user)
