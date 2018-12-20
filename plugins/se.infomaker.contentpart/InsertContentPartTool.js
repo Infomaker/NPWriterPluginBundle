@@ -3,12 +3,16 @@ import {api} from 'writer'
 
 class InsertContentPartTool extends Tool {
     render($$) {
-        let el = $$('div');
+        let el = $$('div')
+            .attr('title', this.getLabel('Add content part'))
 
         el.append([
-            $$('button').attr('title', this.getLabel('Add content part')).addClass('se-tool').append(
-                $$('i').addClass('fa fa-bullhorn')
-            ).on('click', this.triggerInsert.bind(this))
+            $$('button')
+                .addClass('se-tool').append(
+                    $$('i')
+                        .addClass('fa fa-bullhorn')
+                )
+                .on('click', this.triggerInsert.bind(this))
         ])
 
         return el
