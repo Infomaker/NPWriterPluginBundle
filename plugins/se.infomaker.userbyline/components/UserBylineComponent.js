@@ -14,13 +14,11 @@ class UserBylineComponent extends Component {
     }
 
     async reloadList() {
-        if (this.modalReloadFunction) {
-            const { userInfo } = await this.loadUserState()
-            const { propertyMap } = this.state
-            const suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
+        const { userInfo } = await this.loadUserState()
+        const { propertyMap } = this.state
+        const suggestions = await ConceptService.search(`${propertyMap.ConceptAuthorEmail}:${userInfo.email}`)
 
-            this.modalReloadFunction(suggestions)
-        }
+        this.modalReloadFunction(suggestions)
     }
 
     async didMount() {
@@ -49,6 +47,7 @@ class UserBylineComponent extends Component {
      */
     displayModal(suggestions) {
         const { propertyMap } = this.state
+
         if (this.state.userInfo && !this.state.authorInfo) {
             const optional = api.getConfigValue('se.infomaker.user-byline', 'optional', false)
 
@@ -66,11 +65,19 @@ class UserBylineComponent extends Component {
                     addImidUserToArticleByline: this.addImidUserToArticleByline,
                 },
                 {
-                    title: this.getLabel('Add author to byline'),
+                    // title: this.getLabel('Add author to byline'),
                     global: true,
                     primary: false,
                     secondary: optional ? this.getLabel('Later') : false,
-                    tertiary: false
+                    tertiary: [
+                        {
+                            caption: this.getLabel('Refresh list'),
+                            callback: () => {
+                                this.reloadList()
+                                return false;
+                            }
+                        }
+                    ]
                 }
             )
         }

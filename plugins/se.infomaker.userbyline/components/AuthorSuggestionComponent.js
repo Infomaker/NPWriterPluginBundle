@@ -4,9 +4,10 @@ import {ConceptService} from 'writer'
 class AuthorSuggestionComponent extends Component {
 
     getTruncatedDescription(description, maxLength = 120) {
-        return description.length > maxLength ?
-            `${description.substring(0, maxLength).trim()}...` :
-            description
+        return !description.length ? `(${this.getLabel('No description available')})` :
+            description.length > maxLength ?
+                `${description.substring(0, maxLength).trim()}...` :
+                description
     }
 
     render($$) {

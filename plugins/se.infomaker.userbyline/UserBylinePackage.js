@@ -10,12 +10,8 @@ export default {
     configure(configurator) {
         configurator.addTopBarComponent('user', { align: 'right' }, UserBylineComponent)
 
-        configurator.addLabel('Add author to byline', {
-            sv: 'Lägg till författare'
-        })
-
-        configurator.addLabel('No author concepts matching logged in user was found.', {
-            sv: 'Vi hittade inte någon författare som matchade inloggad användare.'
+        configurator.addLabel('We could not find an author matching current user account', {
+            sv: 'Vi hittade inte någon författare som matchade inloggad användare'
         })
 
         configurator.addLabel('There are several authors with the same email as you. Please select the one that is you.', {
@@ -38,6 +34,10 @@ export default {
             sv: 'Uppdatera listan'
         })
 
+        configurator.addLabel('No description available', {
+            sv: 'Saknar beskrivning'
+        })
+
         configurator.addLabel('Are you one of these authors?', {
             sv: 'Är du någon av dessa författare?'
         })
@@ -52,6 +52,10 @@ export default {
 
         configurator.addLabel('Selected author will be associated with current user account. You only have to do this once.', {
             sv: 'Vald författare kommer att kopplas till din inloggade användare. Detta val behöver du därför enbart göra en gång.'
+        })
+
+        configurator.addLabel('We need this to automatically set your byline.', {
+            sv: 'Vi behöver detta för att automatiskt sätta din byline.'
         })
     }
 }

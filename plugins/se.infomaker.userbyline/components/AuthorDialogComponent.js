@@ -49,24 +49,25 @@ class AuthorDialogComponent extends Component {
     }
 
     render($$) {
-        const { suggestions, loading } = this.state
-        const { supportEmail } = this.props
+        const { suggestions } = this.state
+        const { supportEmail, loading } = this.props
         const renderedSuggestions = suggestions.map(suggestion => $$(AuthorSuggestionComponent, {
             ...this.props,
             addAuthor: this.addAuthor,
             suggestion
         }))
 
-        const loader = loading ? $$('i', { class: 'fa fa-spinner fa-spin user-author-suggestion-spinner' }, '') : ''
         const supportEmailEl = supportEmail ? $$('a', { class: 'user-author-support', href: `mailto:${supportEmail}` }, ` ${supportEmail}`) : ''
 
         const suggestionHeader = $$('h4', { class: 'user-author-suggestion-info' },
-            !renderedSuggestions.length ?
-                this.getLabel('No author concepts matching logged in user was found.') :
-                renderedSuggestions.length === 1 ?
+            !suggestions.length ?
+                this.getLabel('We could not find an author matching current user account') :
+                suggestions.length === 1 ?
                     this.getLabel('Is this you?') :
                     this.getLabel('Are you one of these authors?')
         )
+
+        const explanation = !suggestions.length ? $$('p', { class: 'user-author-sub-info' }, this.getLabel('We need this to automatically set your byline.')) : ''
 
         const severalMatchesInfo = renderedSuggestions.length > 1 ?
             $$('p', { class: 'user-author-sub-info' }, this.getLabel('There are several authors with the same email as you. Please select the one that is you.')) : ''
@@ -81,24 +82,15 @@ class AuthorDialogComponent extends Component {
                 ...renderedSuggestions
             ) : '',
         )
-        const refreshList = $$('a', { class: 'user-author-suggestions-refresh' },
-            this.state.loading ? '' : this.getLabel('Refresh list')
-        ).on('click', () => {
-            this.extendState({
-                loading: true
-            })
-            this.props.reloadList()
-        })
 
         return $$('div', { class: 'user-author-suggestions-wrapper' }, [
             suggestionHeader,
+            explanation,
             severalMatchesInfo,
             authorSubInfo,
             supportInfo,
             supportEmailEl,
-            loader,
             suggestionsWrapper,
-            refreshList,
         ]).on('keydown', this.overrideEscapeButton)
     }
 

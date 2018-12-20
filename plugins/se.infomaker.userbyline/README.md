@@ -19,8 +19,8 @@ When an author is selected from suggestion list, it will also set IM.ID sub on c
 
 The following config is used in the plugin config:
 
-- `"supportEmail": "conceptadmin@myorg.com"` Optional email to display when user does not match any existing author concept.
-- `"optional": true` If 
+- `"supportEmail": "concept-admin@your-org.com"` Optional email to display when user does not match any existing author concept.
+- `"optional": true` If the author selection should be optional or not, defaults to `false`
 
 ```json
 {
@@ -31,7 +31,7 @@ The following config is used in the plugin config:
     "mandatory": false,
     "enabled": true,
     "data": {
-        "supportEmail": "tim.schill@infomaker.se",
+        "supportEmail": "concept-admin@your-org.com",
         "optional": true
     }
 }
