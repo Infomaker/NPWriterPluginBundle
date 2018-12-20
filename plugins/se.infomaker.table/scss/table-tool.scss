@@ -1,11 +1,18 @@
 .insert-table-tool {
     position: relative;
+
     .insert-table-tool-table {
         position: absolute;
-        top: 20px;
-        left: 20px;
+        top: 5px;
+        left: 220px;
         z-index: 1;
         background-color: #fff;
+        box-shadow: 0px 3px 9px rgba(0,0,0,0.35);
+        display: block;
+        padding: 1px;
+        border-spacing: 3px;
+        border-collapse: separate;
+
         .insert-table-tool-row {
             .insert-table-tool-cell {
                 width: 20px;
@@ -13,6 +20,8 @@
                 min-width: 20px;
                 min-height: 20px;
                 border: 1px solid #ddd;
+                border-radius: 2px;
+
                 &.selected {
                     border-color: #b2d5fe;
                     background-color: #edf5fe;
