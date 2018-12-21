@@ -24,6 +24,10 @@ class IMIDTracker extends Component {
         this._onVersionChange = this._onVersionChange.bind(this)
         this._setIsActiveUser = this._setIsActiveUser.bind(this)
         this._userLogin = this._userLogin.bind(this)
+        this._onDocumentChanged = this._onDocumentChanged.bind(this)
+        this._onDocumentSaved = this._onDocumentSaved.bind(this)
+        this._handleUserChange = this._handleUserChange.bind(this)
+        this._startSessionPolling = this._startSessionPolling.bind(this)
     }
 
     /**
@@ -31,7 +35,7 @@ class IMIDTracker extends Component {
      * a new session is created with a new user sub
      * eg if a different user signs in mid. operation
      */
-    async handleUserChange(event) {
+    async _handleUserChange(event) {
         const userInfo = event.data
         userInfo.name = `${userInfo.given_name} ${userInfo.family_name}`
         userInfo.isActiveUser = true
@@ -57,6 +61,10 @@ class IMIDTracker extends Component {
         api.events.off(pluginId, event.DOCUMENT_SAVED)
         api.events.off(pluginId, event.DID_LOGIN)
         this._closeSocket()
+
+        if (this.pollInterval) {
+            clearInterval(this.pollInterval)
+        }
     }
 
     getInitialState() {
@@ -70,9 +78,10 @@ class IMIDTracker extends Component {
     }
 
     didMount() {
-        api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged.bind(this))
-        api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved.bind(this))
-        api.events.on(pluginId, event.DID_LOGIN, this.handleUserChange.bind(this))
+        api.events.on(pluginId, event.DOCUMENT_CHANGED, this._onDocumentChanged)
+        api.events.on(pluginId, event.DOCUMENT_SAVED, this._onDocumentSaved)
+        api.events.on(pluginId, event.DID_LOGIN, this._handleUserChange)
+        // api.events.on(pluginId, event.DID_LOGIN, this._startSessionPolling)
 
         const {isSaving} = this.props
 
@@ -85,6 +94,44 @@ class IMIDTracker extends Component {
                     console.error(error)
                 })
         }
+
+        this._startSessionPolling()
+    }
+
+    _startSessionPolling() {
+        // Start polling IMSG to ensure we have active session
+        console.info('--- Starting session checker')
+        const interval = api.getConfigValue('se.infomaker.imidtracker', 'sessionPollIntervalMilliseconds', 5000)
+        const pollEndpoint = api.getConfigValue('se.infomaker.imidtracker', 'sessionPollEndpoint', '/imsg-service/v1/token-is-set')
+
+        this.pollInterval = setInterval(() => {
+            api.router.get(pollEndpoint)
+                .then(async response => {
+                    if (response.ok) {
+                        const json = await response.json()
+
+                        if (json.statusCode === 404) {
+                            clearInterval(this.pollInterval)
+                            console.info(`Old version of IMSG without token-check support: ${json.message}`)
+                            console.info('--- Exiting session checker')
+                        } else {
+                            // All is well
+                        }
+
+                    } else {
+
+                        // If response is unauthorized we fetch a writer resource, this will trigger login
+                        // This is because IMSG does not have any knowledge about ORG or loginURL, only SAL does
+                        // We stop the interval awaiting completed login, then start it again
+                        if (response.status === 401) {
+                            clearInterval(this.pollInterval)
+                            api.router.get('/').then(() => this._startSessionPolling())
+                        }
+                        throw Error(`Unauthorized`)
+                    }
+                })
+                .catch(error => console.warn(`Whoops, no valid session: ${error.message}`))
+        }, interval)
     }
 
     render($$) {
