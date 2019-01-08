@@ -100,7 +100,7 @@ class ContentSearchComponent extends Component {
         const submitInput = $$('input').attr({ type: 'submit', style: 'display:none' })
         const searchInput = $$('input')
             .addClass('form-control search-input col-xs-9')
-            .attr('placeholder', this.getLabel('Enter query'))
+            .attr('placeholder', this.getLabel('Search...'))
             .on('input', this.handleInput.bind(this))
             .on('keydown', this.handleKeyDown.bind(this))
             .ref('searchInput')

@@ -18,10 +18,7 @@ export default {
             en: 'Related articles',
             sv: 'Relaterade artiklar'
         })
-        configurator.addLabel('Enter query', {
-            sv: 'Fritext'
-        })
-        configurator.addLabel('Search', {
+        configurator.addLabel('Search...', {
             sv: 'Sök'
         })
         configurator.addLabel('Show', {
@@ -29,6 +26,12 @@ export default {
         })
         configurator.addLabel('Sort', {
             sv: 'Sortera'
+        })
+        configurator.addLabel('Showing', {
+            sv: 'Visar'
+        })
+        configurator.addLabel('of', {
+            sv: 'av'
         })
 
         configurator.addNode(ContentRelationsNode)

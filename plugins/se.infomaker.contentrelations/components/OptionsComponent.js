@@ -50,10 +50,11 @@ class OptionsComponent extends Component {
         }).ref('limitDropDown')
     }
 
-    render($$){
+    render($$) {
+        const label = `${this.getLabel('Showing')} ${this.props.displaying} ${this.getLabel('of')} ${this.props.totalHits}`
         return $$('div', { class: 'content-options'}, [
             $$('div', { class: 'info-wrapper'}, [
-                $$('p', { class: 'result-description'}, `Visar ${this.props.displaying} av ${this.props.totalHits}`)
+                $$('p', { class: 'result-description'}, label)
             ]),
             this.renderSortingsDropDown($$),
             this.renderLimitDropDown($$)
