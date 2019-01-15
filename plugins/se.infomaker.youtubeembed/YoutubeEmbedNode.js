@@ -28,9 +28,9 @@ class YoutubeEmbedNode extends BlockNode {
     fetchPayload(context, cb) {
         let url = this.url
 
-        var baseUrl = "https://youtube.com/oembed?url=";
-        var apiUrl = baseUrl+this.url;
+        const apiUrl = `https://youtube.com/oembed?url=${this.url}`;
         api.router.get('/api/resourceproxy/', {url: apiUrl})
+            .then(api.router.checkForOKStatus)
             .then(response => response.json())
             .then(json => {
 
@@ -50,9 +50,19 @@ class YoutubeEmbedNode extends BlockNode {
                 )
             })
             .catch((e) => {
-                cb(e)
-            })
 
+                const document = api.editorSession.getDocument()
+                const node = document.get(this.id)
+
+                if (!node) {
+                    // Node already removed probably
+                    return
+                }
+
+                api.ui.showNotification('youtubeembed', api.getLabel('youtube-embed-failed-title'), api.getLabel('youtube-embed-could-not-load'))
+
+                api.document.deleteNode('youtubeembed', node)
+            })
     }
 
     /*
