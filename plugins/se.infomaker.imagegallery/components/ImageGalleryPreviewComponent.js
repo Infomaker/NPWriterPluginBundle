@@ -1,4 +1,5 @@
 import {Component, Button} from 'substance'
+import {UIInlineImage} from 'writer'
 
 /**
  * @class ImageGalleryPreviewComponent
@@ -16,7 +17,6 @@ import {Component, Button} from 'substance'
 class ImageGalleryPreviewComponent extends Component {
 
     render($$) {
-        const InlineImageComponent = this.context.api.ui.getComponent('InlineImageComponent')
         const galleryContainer = $$('div').addClass('image-gallery-container').ref('galleryContainer')
 
         // Sets average width depending on amount of nodes, we don't know the actual width at this point
@@ -44,7 +44,7 @@ class ImageGalleryPreviewComponent extends Component {
 
             return imageContainer
                 .append(
-                    $$(InlineImageComponent, {
+                    $$(UIInlineImage, {
                         nodeId: galleryImageNode.imageFile
                     })
                 )
