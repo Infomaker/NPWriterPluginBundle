@@ -17,7 +17,7 @@ class InsertTableTool extends Tool {
             $$('button', {class: 'se-tool'}, [
                 $$('i', {class: 'fa fa-table'}),
                 this._renderTableSizePicker($$)
-            ]).on('click', this.showTableSizePicker.bind(this))
+            ]).on('click', this.toggleTableSizePicker.bind(this))
         ])
     }
 
@@ -61,11 +61,11 @@ class InsertTableTool extends Tool {
         }
     }
 
-    showTableSizePicker(event) {
+    toggleTableSizePicker(event) {
         event.preventDefault()
         event.stopPropagation()
         this.extendState({
-            active: true
+            active: !this.state.active
         })
     }
 

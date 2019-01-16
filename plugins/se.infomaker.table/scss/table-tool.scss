@@ -30,3 +30,13 @@
         }
     }
 }
+
+// Support collapsed grid style menu mode
+.sm-target-content-top-menu-collapsed {
+    .insert-table-tool {
+        .insert-table-tool-table {
+            left: 22px;
+            top: 20px;
+        }
+    }
+}
