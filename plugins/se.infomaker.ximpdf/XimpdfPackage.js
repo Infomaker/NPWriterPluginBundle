@@ -25,9 +25,9 @@ export default {
         config.addMacro(XimpdfMacro)
         config.addFileProxy(XimpdfFileProxy)
 
-        config.addLabel('Insert PDF document', {
-            en: 'Insert PDF document',
-            sv: 'Infoga PDF dokument'
+        config.addLabel('Upload PDF document', {
+            en: 'Upload PDF document',
+            sv: 'Ladda upp PDF dokument'
         })
 
         config.addLabel('pdf-error-title', {
