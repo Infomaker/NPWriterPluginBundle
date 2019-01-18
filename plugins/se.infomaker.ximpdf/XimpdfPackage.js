@@ -27,7 +27,7 @@ export default {
 
         config.addLabel('Upload PDF document', {
             en: 'Upload PDF document',
-            sv: 'Ladda upp PDF dokument'
+            sv: 'Ladda upp PDF-dokument'
         })
 
         config.addLabel('pdf-error-title', {

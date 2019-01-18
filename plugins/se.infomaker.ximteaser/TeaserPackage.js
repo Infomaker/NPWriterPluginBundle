@@ -28,9 +28,9 @@ export default {
         config.addCommand('ximteasercontainer', InsertTeaserContainerCommand, pluginConfig)
 
         if (platform.isMac) {
-            config.addKeyboardShortcut('cmd+alt+t', { command: 'ximteasercontainer' }, false, 'Insert Teaser')
+            config.addKeyboardShortcut('cmd+alt+t', { command: 'ximteasercontainer' }, false, 'Insert teaser')
         } else {
-            config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' }, false, 'Insert Teaser')
+            config.addKeyboardShortcut('ctrl+alt+t', { command: 'ximteasercontainer' }, false, 'Insert teaser')
         }
 
         config.addPluginModule('se.infomaker.ximteaser.teasertemplate', (type) => {
@@ -49,7 +49,7 @@ export default {
         config.addCommand('ximteaser.insert-image', InsertTeaserImageCommand)
         config.addCommand('ximteaser.insert-article', InsertTeaserArticleCommand)
 
-        config.addLabel('Insert Teaser', {
+        config.addLabel('Insert teaser', {
             sv: 'Infoga puff'
         })
 
