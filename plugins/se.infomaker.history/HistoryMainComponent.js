@@ -78,10 +78,12 @@ class HistoryMainComponent extends Component {
 
     removeAll() {
         api.history.deleteAll()
+        this.rerender()
     }
 
     removeArticle(article) {
         api.history.deleteHistory(article.id)
+        this.rerender()
     }
 
     applyVersion(version, article) {
