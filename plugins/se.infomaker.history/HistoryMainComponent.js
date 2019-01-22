@@ -78,10 +78,12 @@ class HistoryMainComponent extends Component {
 
     removeAll() {
         api.history.deleteAll()
+        this.rerender()
     }
 
     removeArticle(article) {
         api.history.deleteHistory(article.id)
+        this.rerender()
     }
 
     applyVersion(version, article) {
@@ -93,8 +95,9 @@ class HistoryMainComponent extends Component {
             api.browser.setHash(article.id)
             api.newsItem.setSource(version.src, null, article.etag)
 
-            api.events.documentChanged(
+            api.events.trigger(
                 'se.infomaker.history',
+                event.DOCUMENT_CHANGED,
                 {
                     type: 'version',
                     action: 'update'
@@ -108,8 +111,9 @@ class HistoryMainComponent extends Component {
             api.browser.setHash('')
             api.newsItem.setSource(version.src, null, article.etag)
 
-            api.events.documentChanged(
+            api.events.trigger(
                 'se.infomaker.history',
+                event.DOCUMENT_CHANGED,
                 {
                     type: 'version',
                     action: 'update'

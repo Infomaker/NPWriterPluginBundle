@@ -9,9 +9,7 @@ class ExternalUpdateComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        this._validatePluginConfig()
-
-        if (!api.newsItem.hasTemporaryId()) {
+        if (this._validatePluginConfig() && !api.newsItem.hasTemporaryId()) {
 
             const messageHandler = new UpdateMessageHandler(api.article, {
                 failed: (message, e) => {
@@ -105,8 +103,13 @@ class ExternalUpdateComponent extends Component {
         }
 
         if (!token || !publisherId || !infocasterHost) {
-            throw new Error('Invalid config for se.infomaker.externalupdate')
+            setTimeout(() => {
+                this.context.api.ui.showNotification('externalupdate', 'Invalid External Update Configuration', 'Invalid config for se.infomaker.externalupdate')
+            }, 0)
+            return false
         }
+
+        return true
     }
 }
 

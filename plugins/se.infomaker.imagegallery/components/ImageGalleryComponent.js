@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {api, idGenerator} from 'writer'
+import {api, idGenerator, UIFieldEditor, UIDialogImage, UIImageCropper} from 'writer'
 import {INSERT_IMAGE_COMMAND, IMAGE_GALLERY_ICON} from '../ImageGalleryNode'
 import dragStateDataExtractor from '../../se.infomaker.ximteaser/dragStateDataExtractor'
 import ImageGalleryImageComponent from './ImageGalleryImageComponent'
@@ -60,8 +60,6 @@ class ImageGalleryComponent extends Component {
             .addClass('im-blocknode__container im-image-gallery')
             .append(this._renderHeader($$))
 
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
-
         if (this.props.node.length > 0) {
             const cropperOverlay = $$('div').addClass('cropper-overlay hidden').ref('cropperOverlay')
             const galleryPreview = $$(ImageGalleryPreviewComponent, {
@@ -94,7 +92,7 @@ class ImageGalleryComponent extends Component {
             el.append(dropzone)
         }
 
-        const generericCaptionInput = $$(FieldEditor, {
+        const generericCaptionInput = $$(UIFieldEditor, {
             id: idGenerator(),
             node: this.props.node,
             field: 'genericCaption',
@@ -271,10 +269,9 @@ class ImageGalleryComponent extends Component {
     }
 
     _openCropper($$, galleryImageNode) {
-        const ImageCropperComponent = api.ui.getComponent('ImageCropperComponent')
         galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
             .then((src) => {
-                const cropper = $$(ImageCropperComponent, {
+                const cropper = $$(UIImageCropper, {
                     parentId: galleryImageNode,
                     src,
                     configuredCrops: this._configuredCrops,
@@ -321,7 +318,7 @@ class ImageGalleryComponent extends Component {
         api.router.getNewsItem(imageNode.uuid, 'x-im/image')
             .then(response => {
                 api.ui.showDialog(
-                    this.getComponent('dialog-image'),
+                    UIDialogImage,
                     {
                         node: imageNode,
                         url: imageNode.getUrl(),

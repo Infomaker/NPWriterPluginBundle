@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api, NilUUID, jxon, idGenerator, event} from 'writer'
+import {api, NilUUID, jxon, idGenerator, event, UIFormAdd, UIFormSearch} from 'writer'
 import AuthorListComponent from './AuthorListComponent'
 import AuthorEditComponent from './AuthorEditComponent'
 import AuthorTemplate from './template/author'
@@ -49,9 +49,7 @@ class AuthorMainComponent extends Component {
 
         let searchComponent
         if (noSearch) {
-            const AuthorAddComponent = this.context.componentRegistry.get('form-add');
-
-            searchComponent = $$(AuthorAddComponent, {
+            searchComponent = $$(UIFormAdd, {
                 existingItems: this.state.existingAuthors,
                 onSelect: this.addAuthor.bind(this),
                 onCreate: this.createAuthor.bind(this),
@@ -59,9 +57,7 @@ class AuthorMainComponent extends Component {
                 placeholderText: this.getLabel('Enter author')
             }).ref('authorSearchComponent')
         } else {
-            const AuthorSearchComponent = this.context.componentRegistry.get('form-search')
-
-            searchComponent = $$(AuthorSearchComponent, {
+            searchComponent = $$(UIFormSearch, {
                 existingItems: this.state.existingAuthors,
                 searchUrl: '/api/search/concepts/authors?q=',
                 onSelect: this.addAuthor.bind(this),

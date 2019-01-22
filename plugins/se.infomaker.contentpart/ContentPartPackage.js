@@ -26,7 +26,7 @@ export default {
 
         config.addLabel('Add content part', {
             sv: 'Infoga innehållsdel',
-            en: 'Add content part'
+            en: 'Insert content part'
         })
         config.addLabel('title', {
             sv: 'Rubrik',

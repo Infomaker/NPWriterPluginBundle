@@ -1,4 +1,5 @@
 import {Tool, keys} from 'substance'
+import {UITooltip} from 'writer'
 
 /**
  * Tool to edit an existing link.
@@ -69,8 +70,6 @@ class EditLinkTool extends Tool {
 
         let urlPath = this.getUrlPath()
 
-        const Tooltip = this.getComponent('tooltip')
-
         el.append([
             $$(Input, {
                 type: 'url',
@@ -83,7 +82,7 @@ class EditLinkTool extends Tool {
                 style: this.props.style
             })
                 .addClass('edit-link-btn visit')
-                .append($$(Tooltip, {title: this.getLabel('open-link')}).ref('tooltipOpenLink'))
+                .append($$(UITooltip, {title: this.getLabel('open-link')}).ref('tooltipOpenLink'))
                 .on('click', this._openLink)
                 .on('mouseover', () => {
                     this.refs.tooltipOpenLink.extendProps({
@@ -101,7 +100,7 @@ class EditLinkTool extends Tool {
                 style: this.props.style
             })
                 .addClass('edit-link-btn')
-                .append($$(Tooltip, {title: this.getLabel('delete-link')}).ref('tooltipRemoveLink'))
+                .append($$(UITooltip, {title: this.getLabel('delete-link')}).ref('tooltipRemoveLink'))
                 .on('mouseover', () => {
                     this.refs.tooltipRemoveLink.extendProps({
                         show: true

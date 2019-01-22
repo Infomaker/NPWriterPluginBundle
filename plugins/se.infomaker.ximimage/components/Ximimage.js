@@ -1,5 +1,5 @@
 import {Component} from "substance"
-import {UIFieldEditor} from 'writer'
+import {UIFieldEditor, UIByline} from 'writer'
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 
@@ -117,8 +117,7 @@ class XimimageComponent extends Component {
 
     _renderByline($$) {
         if (this._showByline) {
-            const BylineComponent = this.context.api.ui.getComponent('BylineComponent')
-            return $$(BylineComponent, {
+            return $$(UIByline, {
                 node: this.props.node,
                 bylineSearch: this._bylineSearchEnabled,
                 isolatedNodeState: this.props.isolatedNodeState

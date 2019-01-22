@@ -50,7 +50,7 @@ const ImageGalleryPackage = {
             sv: 'Bildspel'
         })
         config.addLabel('im-imagegallery.insert-image-gallery', {
-            en: 'Insert Image gallery',
+            en: 'Insert image gallery',
             sv: 'Infoga bildspel'
         })
         config.addLabel('im-imagegallery.dropzone-label', {

@@ -30,5 +30,15 @@ export default {
         config.addDropHandler(new DropUri())
         config.addMacro(YoutubeEmbedMacro)
 
+        config.addLabel('youtube-embed-failed-title', {
+            en: 'Loading Error',
+            sv: 'Inladdningsfel'
+        })
+
+        config.addLabel('youtube-embed-could-not-load', {
+            en: 'Could not load YouTube Embed information. The creator might not allow embedding of video.',
+            sv: 'Kunde inte ladda YouTube Embed. Skaparen kanske inte tillåter inbäddning av videon.'
+        })
+
     }
 }

@@ -1,6 +1,6 @@
 import {Component} from 'substance'
 import CategoryList from './CategoryListComponent'
-import {api} from 'writer'
+import {api, UIFormSearch} from 'writer'
 
 class CategoryMainComponent extends Component {
     constructor(...args) {
@@ -29,8 +29,7 @@ class CategoryMainComponent extends Component {
                 )
             )
 
-        const SearchComponent = this.context.componentRegistry.get('form-search')
-        const searchComponent = $$(SearchComponent, {
+        const searchComponent = $$(UIFormSearch, {
             existingItems: this.state.existingItems,
             searchUrl: '/api/search/concepts/categories?q=',
             onSelect: this.addItem.bind(this),

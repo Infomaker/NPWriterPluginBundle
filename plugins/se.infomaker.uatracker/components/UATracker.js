@@ -113,11 +113,11 @@ class UATracker extends Component {
     }
 
     lockArticle() {
-        api.events.userActionLock()
+        api.events.trigger(null, event.USERACTION_LOCK)
     }
 
     unlockArticle() {
-        api.events.userActionUnlock()
+        api.events.trigger(null, event.USERACTION_UNLOCK)
     }
 
     onSocketConnectError() {
