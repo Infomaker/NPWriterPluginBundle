@@ -2,7 +2,7 @@ import {Component} from 'substance'
 import StoryList from './StoryListComponent'
 import StoryEditCompoment from './StoryEditComponent'
 import StoryTemplate from './template/concept'
-import {jxon} from 'writer'
+import {jxon, UIFormSearch} from 'writer'
 
 class StoryMainComponent extends Component {
 
@@ -26,9 +26,7 @@ class StoryMainComponent extends Component {
     render($$) {
         const el = $$('div').ref('tagContainer').addClass('stories').append($$('h2').append(this.getLabel('ximstory-story')))
 
-        const SearchComponent = this.context.componentRegistry.get('form-search')
-
-        const searchComponent = $$(SearchComponent, {
+        const searchComponent = $$(UIFormSearch, {
             existingItems: this.state.existingItems,
             searchUrl: '/api/search/concepts/stories?q=',
             onSelect: this.addStory.bind(this),
