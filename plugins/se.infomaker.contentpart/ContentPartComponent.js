@@ -1,6 +1,6 @@
 import {Component, ContainerEditor, EmphasisCommand, FontAwesomeIcon, StrongCommand, SwitchTextCommand} from 'substance'
 import DropDownHeadline from './DropDownHeadline'
-import {api} from 'writer'
+import {api, UIFieldEditor, UIDatetimeFieldEditor} from 'writer'
 
 import ContentPartManager from './ContentPartManager'
 
@@ -66,9 +66,23 @@ class ContentPartComponent extends Component {
         ]).ref('container')
     }
 
+    didMount() {
+        const {contentPartType} = this.state
+
+        // Set selection to first field in configured fields
+        if(contentPartType.fields.length > 0) {
+            this.context.api.editorSession.setSelection({
+                type: 'property',
+                path: [this.props.node.id, 'fields', contentPartType.fields[0].id],
+                startOffset: 0,
+                containerId: this.props.node.id
+            })
+        }
+    }
+
     /**
      * @param {*} $$
-     * @param {ContentPartManager.Field} field
+     * @param {ContentPart.Field} field
      */
     _renderFieldsByType($$, field) {
         switch (field.type) {
@@ -87,7 +101,6 @@ class ContentPartComponent extends Component {
     }
 
     _renderTextField($$, field) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
         const editorProps = {
             node: this.props.node,
             multiLine: field.multiLine,
@@ -99,11 +112,10 @@ class ContentPartComponent extends Component {
         }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
-        return $$(FieldEditor, editorProps).ref(refName)
+        return $$(UIFieldEditor, editorProps).ref(refName)
     }
 
     _renderDateField($$, field) {
-        const DatetimeFieldEditor = this.context.api.ui.getComponent('datetime-field-editor')
         const editorProps = {
             node: this.props.node,
             field: ['fields', field.id],
@@ -115,7 +127,7 @@ class ContentPartComponent extends Component {
         }
 
         const refName = `field-${field.id}-${this.state.contentPartType.uri}`
-        return $$(DatetimeFieldEditor, editorProps).ref(refName)
+        return $$(UIDatetimeFieldEditor, editorProps).ref(refName)
     }
 
     _renderContainerEditor($$) {

@@ -23,7 +23,7 @@ const ImageGalleryPackage = {
         config.addCommand(INSERT_IMAGE_GALLERY_COMMAND, InsertImageGalleryCommand)
         config.addCommand(INSERT_IMAGE_COMMAND, InsertImageCommand)
 
-        config.addConverter('newsml', ImageGalleryConverter)
+        config.addConverter(ImageGalleryConverter)
 
         config.addIcon('angle-left', {'fontawesome': 'fa-angle-left'})
         config.addIcon('angle-right', {'fontawesome': 'fa-angle-right'})
@@ -50,7 +50,7 @@ const ImageGalleryPackage = {
             sv: 'Bildspel'
         })
         config.addLabel('im-imagegallery.insert-image-gallery', {
-            en: 'Insert Image gallery',
+            en: 'Insert image gallery',
             sv: 'Infoga bildspel'
         })
         config.addLabel('im-imagegallery.dropzone-label', {

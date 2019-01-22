@@ -1,5 +1,5 @@
 import {Button, Component, FontAwesomeIcon} from "substance";
-import {api} from "writer";
+import {api, UIImageCropper, UIDialogImage} from "writer";
 
 /*
  Intended to be used in Ximimage and Ximteaser and other content types
@@ -160,10 +160,9 @@ class ImageDisplay extends Component {
      */
     _openCropper($$) {
         const imageOptions = this._getImageOptions()
-        const ImageCropperComponent = api.ui.getComponent('ImageCropperComponent')
         this.props.node.fetchSpecifiedUrls(['service', 'original'])
             .then(src => {
-                let cropper = $$(ImageCropperComponent, {
+                let cropper = $$(UIImageCropper, {
                     parentId: this.props.parentId,
                     src: src,
                     width: this.props.node.width,
@@ -232,19 +231,21 @@ class ImageDisplay extends Component {
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
                 api.ui.showDialog(
-                    this.getComponent('dialog-image'),
+                    UIDialogImage,
                     {
                         node: this.props.node,
                         url: this.props.node.getUrl(),
                         newsItem: response,
-                        disablebylinesearch: !this.props.imageOptions.bylinesearch
+                        disablebylinesearch: !this.props.imageOptions.bylinesearch,
+                        focusOnRender: true
                     },
                     {
                         title: this.getLabel('Image archive information'),
                         global: true,
                         primary: this.getLabel('Save'),
                         secondary: this.getLabel('Cancel'),
-                        cssClass: 'np-image-dialog hide-overflow'
+                        cssClass: 'np-image-dialog hide-overflow',
+                        focusPrimary: false
                     }
                 )
             })

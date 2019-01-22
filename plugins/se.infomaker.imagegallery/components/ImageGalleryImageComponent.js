@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import { debug } from 'util';
+import {UIInlineImage, UIFieldEditor, UIByline} from 'writer'
 
 /**
  * @class ImageGalleryImageComponent
@@ -40,7 +40,6 @@ class ImageGalleryImageComponent extends Component {
 
     render($$) {
         const nodeId = this.props.node.id
-        const InlineImageComponent = this.context.api.ui.getComponent('InlineImageComponent')
         const numberDisplay = $$('div').addClass('number-display')
 
         // The wrapper (content) being dragged
@@ -55,7 +54,7 @@ class ImageGalleryImageComponent extends Component {
             .ref('itemWrapper')
 
         const imageWrapper = $$('div').addClass('image-wrapper')
-        const imageEl = $$(InlineImageComponent, {nodeId: this.props.node.imageFile}).attr('draggable', false)
+        const imageEl = $$(UIInlineImage, {nodeId: this.props.node.imageFile}).attr('draggable', false)
         const imageControls = this._renderImageControls($$)
 
         imageWrapper.append(imageEl)
@@ -234,18 +233,16 @@ class ImageGalleryImageComponent extends Component {
      * @private
      */
     _renderImageMeta($$) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        const BylineComponent = this.context.api.ui.getComponent('BylineComponent')
         const node = this.props.node
         const imageMeta = $$('div').addClass('image-meta')
 
-        const bylineInput = $$(BylineComponent, {
+        const bylineInput = $$(UIByline, {
             node: this.props.node,
             bylineSearch: true,
             isolatedNodeState: this.props.isolatedNodeState
         }).ref('byline')
 
-        const captionInput = $$(FieldEditor, {
+        const captionInput = $$(UIFieldEditor, {
             node,
             field: 'caption',
             placeholder: this.getLabel('im-imagegallery.caption-placeholder'),

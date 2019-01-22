@@ -69,7 +69,7 @@ class Popover extends Component {
 
             // Opening one popover closes others, even the sticky ones, so
             // send an internal close event to all other popovers
-            this.context.api.events.triggerEvent('__popover-' + this.props.id, 'popover:close')
+            this.context.api.events.trigger('__popover-' + this.props.id, 'popover:close')
         }
     }
 
@@ -95,7 +95,7 @@ class Popover extends Component {
 
         // Send browser resize event to enforce position recalculations
         // for all active (visible) popovers
-        this.context.api.events.triggerEvent('__popover', Event.BROWSER_RESIZE)
+        this.context.api.events.trigger('__popover', Event.BROWSER_RESIZE)
     }
 
     _positionPopover(offset) {

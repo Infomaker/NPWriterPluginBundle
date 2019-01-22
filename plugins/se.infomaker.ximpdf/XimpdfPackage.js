@@ -16,7 +16,7 @@ export default {
     configure: function (config) {
         config.addNode(Ximpdf)
         config.addComponent(Ximpdf.type, XimpdfComponent)
-        config.addConverter('newsml', XimpdfConverter)
+        config.addConverter(XimpdfConverter)
         config.addContentMenuTopTool('insert-pdfs', InsertPdfsTool)
         config.addCommand('insert-pdfs', InsertPdfsCommand)
         config.addNode(XimpdfFileNode)
@@ -25,9 +25,9 @@ export default {
         config.addMacro(XimpdfMacro)
         config.addFileProxy(XimpdfFileProxy)
 
-        config.addLabel('Insert PDF document', {
-            en: 'Insert PDF document',
-            sv: 'Infoga PDF dokument'
+        config.addLabel('Upload PDF document', {
+            en: 'Upload PDF document',
+            sv: 'Ladda upp PDF-dokument'
         })
 
         config.addLabel('pdf-error-title', {

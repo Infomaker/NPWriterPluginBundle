@@ -1,4 +1,4 @@
-import {Component} from 'substance'
+import {Component, ScrollPane} from 'substance'
 import HistoryItemComponent from './HistoryItemComponent'
 import {api, event} from 'writer'
 import RemoveAll from './RemoveAll'
@@ -22,6 +22,8 @@ class HistoryMainComponent extends Component {
         api.events.on('history', event.HISTORY_CLEARED, () => {
             this.updateHistoryState()
         })
+
+        this.historyArticles = this.context.api.history.getHistory()
     }
 
     dispose() {
@@ -31,15 +33,7 @@ class HistoryMainComponent extends Component {
     }
 
     updateHistoryState() {
-        this.extendState({
-            historyArticles: this.context.api.history.getHistory()
-        });
-    }
-
-    getInitialState() {
-        return {
-            historyArticles: this.context.api.history.getHistory()
-        }
+        this.historyArticles = this.context.api.history.getHistory()
     }
 
     render($$) {
@@ -48,24 +42,23 @@ class HistoryMainComponent extends Component {
             $$('h2').append(this.getLabel('history-popover-headline'))
         )
         el.append($$('p').append(this.getLabel('history-popover-description')))
-        if (this.state.historyArticles.length === 0) {
+        if (this.historyArticles.length === 0) {
             el.append($$('p').append(this.getLabel('history-popover-no-items-description')))
         }
-        if (this.state.historyForArticle === false) {
+        if (this.historyForArticle === false) {
             return el
         }
 
-        const scrollpane = api.ui.getComponent('scroll-pane')
-        const scroll = $$(scrollpane, {
+        const scroll = $$(ScrollPane, {
             scrollbarType: 'native'
         }).ref('historyScroll')
 
-        let versions = this.state.historyArticles.map(function (article) {
+        let versions = this.historyArticles.map(function (article) {
             return this.renderHistoryItem($$, article);
         }.bind(this));
 
         scroll.append(versions)
-        if (this.state.historyArticles.length > 0) {
+        if (this.historyArticles.length > 0) {
             scroll.append($$(RemoveAll, {removeAll: this.removeAll.bind(this)}))
         }
 
@@ -85,10 +78,12 @@ class HistoryMainComponent extends Component {
 
     removeAll() {
         api.history.deleteAll()
+        this.rerender()
     }
 
     removeArticle(article) {
         api.history.deleteHistory(article.id)
+        this.rerender()
     }
 
     applyVersion(version, article) {
@@ -100,8 +95,9 @@ class HistoryMainComponent extends Component {
             api.browser.setHash(article.id)
             api.newsItem.setSource(version.src, null, article.etag)
 
-            api.events.documentChanged(
+            api.events.trigger(
                 'se.infomaker.history',
+                event.DOCUMENT_CHANGED,
                 {
                     type: 'version',
                     action: 'update'
@@ -115,8 +111,9 @@ class HistoryMainComponent extends Component {
             api.browser.setHash('')
             api.newsItem.setSource(version.src, null, article.etag)
 
-            api.events.documentChanged(
+            api.events.trigger(
                 'se.infomaker.history',
+                event.DOCUMENT_CHANGED,
                 {
                     type: 'version',
                     action: 'update'

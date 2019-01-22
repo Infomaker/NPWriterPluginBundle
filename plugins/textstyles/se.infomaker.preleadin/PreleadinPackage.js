@@ -17,7 +17,7 @@ export default {
         config.addNode(PreleadinNode)
         config.addComponent(PreleadinNode.type, PreleadinComponent)
 
-        config.addConverter('newsml', PreleadinConverter)
+        config.addConverter(PreleadinConverter)
 
         const textType = {
             name: this.name,

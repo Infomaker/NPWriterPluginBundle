@@ -1,6 +1,6 @@
 .sc-isolated-node:not(.sm-selected):not(.sm-focused) {
   .sc-ximimage {
-    &.display-mode-minimal, &.display-mode-minimized {
+    &.display-mode-slim, &.display-mode-minimized {
       // Crops and meta are both hidden in minimal and minimized mode
       .image-crops-container, .meta-wrapper {
         display: none;

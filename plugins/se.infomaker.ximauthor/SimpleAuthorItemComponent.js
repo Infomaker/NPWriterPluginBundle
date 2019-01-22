@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
-import {NilUUID, api} from 'writer'
+import {NilUUID, UIAvatar} from 'writer'
 
 class SimpleAuthorItemComponent extends Component {
 
@@ -17,8 +17,7 @@ class SimpleAuthorItemComponent extends Component {
                 this.removeAuthor()
             }.bind(this))
 
-        const Avatar = api.ui.getComponent('avatar')
-        const avatarEl = $$(Avatar, {})
+        const avatarEl = $$(UIAvatar, {})
 
         el.append($$('div')
             .addClass('avatar__container')

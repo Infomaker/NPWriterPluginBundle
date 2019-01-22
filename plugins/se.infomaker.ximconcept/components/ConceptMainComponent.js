@@ -38,7 +38,14 @@ class ConceptMainComponent extends Component {
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
             if (eventName.length) {
-                if (e.data.action === 'delete' && (associatedWith.length && associatedWith === eventName)) {
+                if (e.data.action === 'delete' && (associatedWith === eventName)) {
+
+                    // Kinda hack, needed to rerender any associated with plugins which are supposed to be disabled when
+                    // no existing items exist
+                    if(this.state.existingItems.length === 0) {
+                        this.reloadArticleConcepts()
+                    }
+
                     const eventUUID = e.data.node.uuid
                     this.state.existingItems.forEach(existingItem => {
                         const itemAssociatedWith = existingItem[this.state.propertyMap.ConceptAssociatedWith]
@@ -50,6 +57,7 @@ class ConceptMainComponent extends Component {
 
                         // if we have multiple associated-with we need to check 'em all to look for a match
                         if (Array.isArray(itemAssociatedWith)) {
+
                             let associationExists = false
 
                             itemAssociatedWith.forEach(itemAssociatedWithUuid => {
@@ -67,7 +75,12 @@ class ConceptMainComponent extends Component {
                     ConceptService.removeAllArticleLinksOfType(this.state.conceptType)
                 } else if (eventName === this.state.name || cleanEventName === this.state.name || matchingType) {
                     const updatedConcept = (e.data && e.data.data) ? e.data.data : null
-                    this.reloadArticleConcepts(updatedConcept)
+
+                    // HACK! Needed right now to let all concepts be handled before actually reloading information
+                    // and potentially setting a new state. Without this we run into concurrency issues
+                    setImmediate(() => {
+                        this.reloadArticleConcepts(updatedConcept)
+                    })
                 } else if (associatedWith.length && associatedWith === eventName) {
                     const { pluginConfig } = this.state
                     const associatedLinks = ConceptService.getArticleConceptsByType(pluginConfig.associatedWith)
@@ -209,7 +222,7 @@ class ConceptMainComponent extends Component {
                     this.getLabel('This Concept is already used'))
             }
         } else {
-            if (this.state.pluginConfig.createable || this.state.pluginConfig.editable) {
+            if (this.state.pluginConfig.creatable || this.state.pluginConfig.editable) {
                 const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
                     this.state.types.length ? null : this.state.conceptType
 
@@ -254,6 +267,7 @@ class ConceptMainComponent extends Component {
                     propertyMap: this.state.propertyMap,
                     config: this.state.pluginConfig,
                     save: (item && item.create) ? this.addConceptToArticle : this.updateArticleConcept,
+                    focusPrimary: false
                 },
                 {
                     title,
@@ -281,6 +295,7 @@ class ConceptMainComponent extends Component {
         const header = $$('h2', { class: 'concept-header' }, [
             `${label} (${this.state.existingItems.length})`
         ])
+
         const list = $$(ConceptListComponent, {
             propertyMap,
             editItem: this.editItem,

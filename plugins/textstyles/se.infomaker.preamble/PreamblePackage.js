@@ -18,7 +18,7 @@ export default {
         config.addNode(PreambleNode)
         config.addComponent(PreambleNode.type, PreambleComponent)
 
-        config.addConverter('newsml', PreambleConverter)
+        config.addConverter(PreambleConverter)
 
         config.addTextType({
             name: this.name,

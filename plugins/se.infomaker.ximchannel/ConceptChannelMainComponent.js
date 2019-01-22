@@ -1,6 +1,6 @@
 import {Component} from 'substance'
 import ChannelItemComponent from './ChannelItemComponent'
-import {api} from 'writer'
+import {api, UIFormSearch} from 'writer'
 
 class ConceptMainComponent extends Component {
 
@@ -40,9 +40,8 @@ class ConceptMainComponent extends Component {
             )
         }
         else {
-            const SearchComponent = this.context.componentRegistry.get('form-search')
             el.append(
-                $$(SearchComponent, {
+                $$(UIFormSearch, {
                     existingItems: this.state.existingTags,
                     searchUrl: '/api/search/concepts/channels?q=',
                     onSelect: this.addChannel.bind(this),

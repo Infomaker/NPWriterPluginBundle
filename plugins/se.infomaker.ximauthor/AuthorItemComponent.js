@@ -1,5 +1,5 @@
 import {FontAwesomeIcon} from 'substance'
-import {jxon, api} from 'writer'
+import {jxon, UIAvatar} from 'writer'
 import AuthorBaseComponent from './AuthorBaseComponent'
 import AuthorInfoComponent from './AuthorInfoComponent'
 import AuthorEditComponent from './AuthorEditComponent'
@@ -69,21 +69,19 @@ class AuthorItemComponent extends AuthorBaseComponent {
                     .append(email).addClass('author__email meta'))
         }
 
-        const Avatar = api.ui.getComponent('avatar')
-
         let avatarEl
         if (links.length > 0) {
-            const twitterLink = Avatar._getLinkForType(links, 'x-im/social+twitter')
-            const twitterURL = Avatar._getTwitterUrlFromAuthorLink(twitterLink)
+            const twitterLink = UIAvatar._getLinkForType(links, 'x-im/social+twitter')
+            const twitterURL = UIAvatar._getTwitterUrlFromAuthorLink(twitterLink)
 
             if (twitterURL) {
-                const twitterHandle = Avatar._getTwitterHandleFromTwitterUrl(twitterURL)
-                avatarEl = $$(Avatar, {avatarSource: 'twitter', avatarId: twitterHandle})
+                const twitterHandle = UIAvatar._getTwitterHandleFromTwitterUrl(twitterURL)
+                avatarEl = $$(UIAvatar, {avatarSource: 'twitter', avatarId: twitterHandle})
             }
         }
 
         if (!avatarEl) {
-            avatarEl = $$(Avatar, {})
+            avatarEl = $$(UIAvatar, {})
         }
 
         const avatarContainer = $$('div').addClass('avatar__container').ref('avatarContainer')

@@ -4,7 +4,7 @@ class XimpdfsTool extends Tool {
 
     render($$) {
         var el = $$('div')
-        el.attr('title', this.getLabel('Insert PDF document'))
+        el.attr('title', this.getLabel('Upload PDF document'))
 
         el.append(
             $$('button').addClass('se-tool').append(

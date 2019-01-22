@@ -25,7 +25,7 @@ const htmlEmbedPackage = {
 
         config.addComponent(htmlEmbedPackage.name, HtmlembedComponent)
 
-        config.addConverter('newsml', HtmlembedConverter)
+        config.addConverter(HtmlembedConverter)
 
         config.addLabel('Edit embed code', {
             sv: 'Redigera embedkod'

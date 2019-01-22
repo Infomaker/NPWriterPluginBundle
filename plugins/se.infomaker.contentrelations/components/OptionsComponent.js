@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import { api } from 'writer'
+import { api, UIDropdown } from 'writer'
 
 class OptionsComponent extends Component {
 
@@ -11,8 +11,6 @@ class OptionsComponent extends Component {
             { label: '50', value: 50 },
             { label: '100', value: 100 }
         ]
-
-        this.dropdownComponent = api.ui.getComponent('DropdownComponent')
     }
 
     /**
@@ -21,7 +19,7 @@ class OptionsComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderSortingsDropDown($$) {
-        return $$(this.dropdownComponent, {
+        return $$(UIDropdown, {
             header: this.getLabel('Sort'),
             options: this.props.sortings.map(sorting => ({ label: sorting.name, value: `${sorting.name}:${sorting.field}`, data: {} })),
             isSelected: (options, item) => {
@@ -41,7 +39,7 @@ class OptionsComponent extends Component {
      * @param {object} $$ VirtualElement
      */
     renderLimitDropDown($$) {
-        return $$(this.dropdownComponent, {
+        return $$(UIDropdown, {
             header: this.getLabel('Show'),
             options: this.limits,
             isSelected: (options, item) => item.value === this.props.limit,
@@ -52,10 +50,11 @@ class OptionsComponent extends Component {
         }).ref('limitDropDown')
     }
 
-    render($$){
+    render($$) {
+        const label = `${this.getLabel('Showing')} ${this.props.displaying} ${this.getLabel('of')} ${this.props.totalHits}`
         return $$('div', { class: 'content-options'}, [
             $$('div', { class: 'info-wrapper'}, [
-                $$('p', { class: 'result-description'}, `Visar ${this.props.displaying} av ${this.props.totalHits}`)
+                $$('p', { class: 'result-description'}, label)
             ]),
             this.renderSortingsDropDown($$),
             this.renderLimitDropDown($$)

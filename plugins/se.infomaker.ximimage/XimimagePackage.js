@@ -24,13 +24,12 @@ export default {
     configure: function (config) {
         config.addNode(Ximimage)
         config.addComponent(Ximimage.type, XimimageComponent)
-        config.addConverter('newsml', XimimageConverter)
+        config.addConverter(XimimageConverter)
         config.addContentMenuTopTool('insert-images', InsertImagesTool)
         config.addCommand('insert-images', InsertImagesCommand)
         config.addCommand('ximimage-insert-image-url', InsertImageUrlCommand)
         config.addMacro(InsertImageMacro)
         config.addComponent('imageDisplay', ImageDisplayComponent)
-        config.addConverter('newsml', XimimageConverter)
 
         // Drop handlers
         config.addDropHandler(new DropImageUUID())
@@ -106,14 +105,14 @@ export default {
             sv: 'Visningsformat för bilder'
         })
 
-        config.addLabel('image-display-mode-full', {
-            en: 'Full',
-            sv: 'Full'
+        config.addLabel('image-display-mode-normal', {
+            en: 'Normal',
+            sv: 'Normal'
         })
 
-        config.addLabel('image-display-mode-minimal', {
-            en: 'Minimal',
-            sv: 'Minimal'
+        config.addLabel('image-display-mode-slim', {
+            en: 'Slim',
+            sv: 'Avskalad'
         })
 
         config.addLabel('image-display-mode-minimized', {

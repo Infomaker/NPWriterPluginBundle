@@ -132,8 +132,8 @@ class TextanalyzerComponent extends Component {
     }
 
     getCount() {
-        const nodes = api.document.getDocumentNodes()
-        let textContent = "";
+        const nodes = api.document.nodes()
+        let textContent = '';
         nodes.forEach(function (node) {
             if (node.content) {
                 textContent += node.content.trim()

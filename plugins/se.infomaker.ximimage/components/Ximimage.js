@@ -1,4 +1,5 @@
 import {Component} from "substance"
+import {UIFieldEditor, UIByline} from 'writer'
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 
@@ -116,8 +117,7 @@ class XimimageComponent extends Component {
 
     _renderByline($$) {
         if (this._showByline) {
-            const BylineComponent = this.context.api.ui.getComponent('BylineComponent')
-            return $$(BylineComponent, {
+            return $$(UIByline, {
                 node: this.props.node,
                 bylineSearch: this._bylineSearchEnabled,
                 isolatedNodeState: this.props.isolatedNodeState
@@ -126,8 +126,7 @@ class XimimageComponent extends Component {
     }
 
     renderTextField($$, obj) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
-        return $$(FieldEditor, {
+        return $$(UIFieldEditor, {
             node: this.props.node,
             field: obj.name,
             multiLine: false,

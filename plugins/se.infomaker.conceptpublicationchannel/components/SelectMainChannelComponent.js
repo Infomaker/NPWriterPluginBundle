@@ -1,13 +1,7 @@
 import { Component } from 'substance'
-import { api } from 'writer'
+import { UIDropdown } from 'writer'
 
 class SelectMainChannelComponent extends Component {
-
-    constructor(...args) {
-        super(...args)
-
-        this.dropdownComponent = api.ui.getComponent('DropdownComponent')
-    }
 
     /**
      * Create dropdown for Main channel
@@ -21,7 +15,7 @@ class SelectMainChannelComponent extends Component {
             ...this.props.channels.map(channel => ({ label: channel[this.props.propertyMap.ConceptName], value: channel.uuid }))
         ]
 
-        return $$(this.dropdownComponent, {
+        return $$(UIDropdown, {
             header: '',
             options: options,
             isSelected: (options, channel) => {

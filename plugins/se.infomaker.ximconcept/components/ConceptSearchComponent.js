@@ -28,16 +28,18 @@ class ConceptSearchComponent extends Component {
     }
 
     render($$) {
+
         let searchFormIcon, searchResultsContainer
+
         const el = $$('div')
-        const { searchedTerm } = this.state
-        const { disabled, subtypes, enableHierarchy, propertyMap, icon, types } = this.props
-        const isPolygon = (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
+        const { searchedTerm, searchResult, searching } = this.state
+        const { disabled, enableHierarchy, propertyMap, icon, types, placeholderText } = this.props
+
         const searchInput = $$('input', {
             type: 'text',
             name: 'concept-search',
-            class: `concept-search-input ${this.state.searchResult && this.state.searchResult.length ? 'results' : '   '}`,
-            placeholder: this.props.placeholderText,
+            class: `concept-search-input ${searchResult && searchResult.length ? 'results' : '   '}`,
+            placeholder: placeholderText,
             autocomplete: 'off'
         })
             .on('input', this.debounce(400, this.handleInput))
@@ -49,7 +51,7 @@ class ConceptSearchComponent extends Component {
         if (disabled) {
             searchInput.attr('disabled', true)
         } else {
-            if (this.state.searching) {
+            if (searching) {
                 searchFormIcon = $$('i', {
                     class: 'fa fa-spinner fa-spin concept-search-icon searching',
                     "aria-hidden": 'true'
@@ -68,7 +70,7 @@ class ConceptSearchComponent extends Component {
         }
 
         if (searchedTerm) {
-            let { searchResult, selected, searching } = this.state
+            let { selected } = this.state
 
             searchResultsContainer = $$(ConceptSearchResultComponent, {
                 searchedTerm,
@@ -77,7 +79,7 @@ class ConceptSearchComponent extends Component {
                 selected,
                 icon,
                 types,
-                isPolygon,
+                isPolygon: this.isPolygon,
                 enableHierarchy,
                 propertyMap,
                 creatable: this.props.creatable,
@@ -182,45 +184,56 @@ class ConceptSearchComponent extends Component {
 
     handleKeyDown(e) {
         const { keyCode } = e
+        const { selected, searchResult } = this.state
         let selectedItem
+
+        if([27,38,40, 13].includes(keyCode)) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
 
         switch (keyCode) {
             case 27: // escape
-                e.preventDefault()
-                e.stopPropagation()
-
                 this.refs.searchInput.val('')
                 this.resetState()
 
                 break
             case 38: // arrow up
-                e.preventDefault()
-                e.stopPropagation()
-
                 this.extendState({
-                    selected: (this.state.selected > 0) ? this.state.selected - 1 : 0
+                    selected: (selected > 0) ? selected - 1 : 0
                 })
 
                 break
-            // case 9: // tab
             case 40: // arrow down
-                e.preventDefault()
-                e.stopPropagation()
+                if (searchResult) {
 
-                if (this.state.searchResult) {
+                    let selectedIndex = selected + 1
+
+                    // If creation of new concept is allowed, increase the selection index range by one, to be able to select "create"-option in list
+                    if(this.props.creatable && this.state.searchedTerm !== '*' && !this.isPolygon && !this.state.searching) {
+                        selectedIndex = (selected === searchResult.length) ? selected : selected + 1
+                    }
+                    else {
+                        selectedIndex = (selected === searchResult.length - 1) ? selected : selected + 1
+                    }
+
                     this.extendState({
-                        selected: (this.state.selected === this.state.searchResult.length - 1) ? this.state.selected : this.state.selected + 1
+                        selected: selectedIndex
                     })
                 }
 
                 break
             case 13: // enter
-                if (this.state.searchResult) {
-                    selectedItem = this.state.searchResult[this.state.selected]
+                if (searchResult) {
+                    selectedItem = searchResult[this.state.selected]
+
                     if (selectedItem || this.props.creatable) {
                         this.addItem(selectedItem)
                         this.refs.searchInput.val('')
-                        this.resetState()
+
+                        if(selectedItem) {
+                            this.resetState()
+                        }
                     }
                 }
 
@@ -228,6 +241,11 @@ class ConceptSearchComponent extends Component {
             default:
                 break
         }
+    }
+
+    get isPolygon() {
+        const { subtypes } = this.props
+        return (subtypes && subtypes.length === 1 && subtypes[0] === 'polygon')
     }
 
 }

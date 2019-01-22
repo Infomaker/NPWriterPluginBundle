@@ -1,4 +1,5 @@
 import PublishFlowManager from './PublishFlowManager'
+import getExternalChange from './getExternalChange'
 import './scss/publishflow.scss'
 
 const {Component} = substance
@@ -51,13 +52,9 @@ class PublishFlowComponent extends Component {
         })
 
         api.events.on(pluginId, event.DOCUMENT_CHANGED_EXTERNAL, (event) => {
-            if (event.data.key === 'pubStatus') {
-                this.extendState({
-                    status: api.newsItem.getPubStatus(),
-                    hasPublishedVersion: api.newsItem.getHasPublishedVersion(),
-                    pubStart: api.newsItem.getPubStart(),
-                    pubStop: api.newsItem.getPubStop(),
-                })
+            const change = getExternalChange(event)
+            if (change) {
+                this.extendState(change)
                 this.renderPopover()
             }
         })
@@ -719,7 +716,11 @@ class PublishFlowComponent extends Component {
         let status = {title: stateDef.title}
 
         if (this.state.hasPublishedVersion) {
-            status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
+            if (this.state.pubStart) {
+                status.text = `${this.getLabel('Published')} ${moment(this.state.pubStart.value).fromNow()}`
+            } else {
+                status.text = this.getLabel('Missing Publication date')
+            }
         }
 
         this.props.popover.setStatusText(

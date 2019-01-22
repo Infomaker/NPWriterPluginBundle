@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {api, jxon, lodash as _} from 'writer'
+import {api, jxon, lodash as _, UITooltip} from 'writer'
 import CategoryInfo from './CategoryInfoComponent';
 
 class CategoryItemComponent extends Component {
@@ -63,12 +63,11 @@ class CategoryItemComponent extends Component {
 
             this.updateTagItemName(displayNameEl, this.state.loadedItem)
 
-            const Tooltip = api.ui.getComponent('tooltip')
             displayNameEl
                 .on('click', () => {
                     this.showInfo(displayName)
                 })
-                .append($$(Tooltip, {title: displayName, parent: this}).ref('tooltip'))
+                .append($$(UITooltip, {title: displayName, parent: this}).ref('tooltip'))
                 .on('mouseenter', this.toggleTooltip)
                 .on('mouseout', this.hideTooltip)
 

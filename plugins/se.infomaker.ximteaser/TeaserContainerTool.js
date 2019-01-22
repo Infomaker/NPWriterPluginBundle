@@ -5,7 +5,7 @@ class TeaserContainerTool extends Tool {
 
     render($$) {
         const el = $$('div')
-        el.attr('title', this.getLabel('Insert Teaser'))
+        el.attr('title', this.getLabel('Insert teaser'))
 
         el.append(
             $$('button').addClass('se-tool').append(

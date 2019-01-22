@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {api, jxon, lodash as _} from 'writer'
+import {api, jxon, lodash as _, UITooltip} from 'writer'
 import ConceptChannelInfoComponent from './ConceptChannelInfoComponent'
 
 class ChannelItemComponent extends Component {
@@ -57,9 +57,7 @@ class ChannelItemComponent extends Component {
             displayLabel = this.getShortDescription(this.state.loadedItem)
         }
 
-        const Tooltip = api.ui.getComponent('tooltip')
-
-        displayTitle.append($$(Tooltip, {title: displayLabel, parent: this}).ref('tooltip'))
+        displayTitle.append($$(UITooltip, {title: displayLabel, parent: this}).ref('tooltip'))
         displayTitle.on('mouseover', () => {
             this.refs.tooltip.extendProps({
                 show: true

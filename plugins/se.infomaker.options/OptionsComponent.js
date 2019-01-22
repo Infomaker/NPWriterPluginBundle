@@ -1,5 +1,5 @@
 import {Component} from "substance"
-import {api, event} from "writer"
+import {api, event, UISelect} from "writer"
 
 class OptionsComponent extends Component {
 
@@ -31,10 +31,8 @@ class OptionsComponent extends Component {
     }
 
     render($$) {
-        const SelectComponent = api.ui.getComponent('select')
-
         return $$('div').append(
-            $$(SelectComponent, {
+            $$(UISelect, {
                 list: this.state.list,
                 onChangeList: this.onChangeList.bind(this),
                 isSelected: this.isSelected.bind(this)
@@ -136,6 +134,11 @@ class OptionsComponent extends Component {
     }
 
     addContentMetaLink(list, option) {
+
+        if (option.uri === undefined) {
+            return
+        }
+
         this.context.api.newsItem.addContentMetaLink(this.pluginName, {
             '@rel': option.rel || list.link.rel,
             '@title': option.title,
@@ -152,8 +155,9 @@ class OptionsComponent extends Component {
     /**
      * Responsible for reporting whether a specific list data element is selected or not
      *
+     * @param list
      * @param data The element to check
-     * @return True if selected, false otherwise
+     * @return {boolean} True if selected, false otherwise
      */
     isSelected(list, data) {
         const listType = (list && list.link && list.link.type) ? list.link.type : undefined
@@ -161,7 +165,7 @@ class OptionsComponent extends Component {
         const selectedItems = this.context.api.newsItem.getContentMetaLinkByType(this.pluginName, listType || this._getLinkType())
 
         for (let i = 0; i < selectedItems.length; i++) {
-            if (selectedItems[i]["@uri"] === data.uri) {
+            if (data.uri !== undefined && selectedItems[i]["@uri"] === data.uri) {
                 return true;
             }
         }

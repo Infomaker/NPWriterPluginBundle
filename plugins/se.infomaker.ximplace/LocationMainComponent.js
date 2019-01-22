@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api, jxon} from 'writer'
+import {api, jxon, UIFormSearch} from 'writer'
 import LocationListComponent from './LocationListComponent'
 import LocationDetailComponent from './LocationDetailComponent'
 import LocationTemplate from './template/concept'
@@ -80,8 +80,7 @@ class LocationMainComponent extends Component {
             query = 'f=' + this.features + '&q=';
         }
 
-        const LocationSearchComponent = this.context.componentRegistry.get('form-search')
-        const searchComponent = $$(LocationSearchComponent, {
+        const searchComponent = $$(UIFormSearch, {
             existingItems: this.state.existingLocations,
             searchUrl: '/api/search/concepts/locations?' + query,
             onSelect: this.addLocation.bind(this),

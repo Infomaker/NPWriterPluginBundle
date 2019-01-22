@@ -1,5 +1,5 @@
 import {Component} from 'substance'
-import {api, jxon} from 'writer'
+import {api, jxon, UIFormSearch} from 'writer'
 import ContentprofileListComponent from './ContentprofileListComponent'
 import ContentprofileDetailComponent from './ContentprofileDetailComponent'
 import ContentprofileTemplate from './template/contentprofile'
@@ -29,9 +29,7 @@ class ContentprofileMainComponent extends Component {
             .append($$('h2')
                 .append(this.getLabel('Content profile tags')))
 
-        const ContentProfileSearchComponent = this.context.componentRegistry.get('form-search')
-
-        const searchComponent = $$(ContentProfileSearchComponent, {
+        const searchComponent = $$(UIFormSearch, {
             existingItems: this.state.existingContentProfiles,
             searchUrl: '/api/search/concepts/contentprofiles?q=',
             onSelect: this.addContentProfile.bind(this),

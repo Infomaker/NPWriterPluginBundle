@@ -54,7 +54,7 @@ export default({
         })
 
         config.addLabel('history-popover-description', {
-            en: 'Change history for this article.',
+            en: 'Change history for articles.',
             sv: 'Här listas dina osparade artiklar.'
         })
 

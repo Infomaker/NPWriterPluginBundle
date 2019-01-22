@@ -14,7 +14,7 @@ export default {
         config.addContentMenuTopTool('insert-contentpart', InsertContentPartTool)
         config.addCommand('insert-contentpart', InserContentPartCommand)
         config.addComponent('contentpart', ContentPartComponent)
-        config.addConverter('newsml', ContentPartConverter)
+        config.addConverter(ContentPartConverter)
 
 
         if (platform.isMac) {
@@ -26,7 +26,7 @@ export default {
 
         config.addLabel('Add content part', {
             sv: 'Infoga innehållsdel',
-            en: 'Add content part'
+            en: 'Insert content part'
         })
         config.addLabel('title', {
             sv: 'Rubrik',

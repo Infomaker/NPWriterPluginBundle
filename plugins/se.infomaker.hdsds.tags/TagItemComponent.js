@@ -1,5 +1,5 @@
 import {Component, FontAwesomeIcon as Icon} from 'substance'
-import {jxon, lodash as _, api} from 'writer'
+import {jxon, lodash as _, UITooltip} from 'writer'
 import Config from './config/Config'
 import TagInfoComponent from './TagInfoComponent'
 import TagEditCompanyComponent from './TagEditCompanyComponent'
@@ -76,7 +76,6 @@ class TagsItemComponent extends Component {
                 const title = this.updateTagItemName(displayNameEl, this.state.loadedTag)
 
                 // displayNameEl.attr('title', title);
-                const Tooltip = api.ui.getComponent('tooltip')
 
                 displayNameEl.on('click', () => {
                     // $(ev.target).tooltip('hide');
@@ -86,7 +85,7 @@ class TagsItemComponent extends Component {
                         this.showTag(displayName)
                     }
                 })
-                    .append($$(Tooltip, {title: title ? title : displayName, parent: this}).ref('tooltip'))
+                    .append($$(UITooltip, {title: title ? title : displayName, parent: this}).ref('tooltip'))
             }
 
 

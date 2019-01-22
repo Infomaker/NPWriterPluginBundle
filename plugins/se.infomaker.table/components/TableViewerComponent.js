@@ -1,5 +1,6 @@
 import '../scss/table-viewer.scss'
 import { Component } from 'substance'
+import { UIFieldEditor } from 'writer'
 import TableComponent from './TableComponent'
 
 /**
@@ -51,7 +52,6 @@ class TableViewerComponent extends Component {
     }
 
     _renderCaptionEditor($$) {
-        const FieldEditor = this.context.api.ui.getComponent('field-editor')
         const editorProps = {
             node: this.props.node,
             multiLine: false,
@@ -70,7 +70,7 @@ class TableViewerComponent extends Component {
             textEditor._handleTabKey = this._captureFieldEditorEvents.bind(this)
         }
 
-        const captionEditor = $$(FieldEditor, editorProps)
+        const captionEditor = $$(UIFieldEditor, editorProps)
             .on('click', this._onCaptionEditorClick.bind(this))
             .ref('table-caption-editor')
         return captionEditor

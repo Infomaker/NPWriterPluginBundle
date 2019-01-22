@@ -39,7 +39,7 @@ export default {
 
         config.addNode(node)
         config.addComponent(nodeType, component)
-        config.addConverter('newsml', converter)
+        config.addConverter(converter)
 
         config.addCommand(commandName, NPWriterAnnotationCommand, {
             nodeType: nodeType,

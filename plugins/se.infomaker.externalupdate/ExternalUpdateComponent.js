@@ -1,7 +1,7 @@
-import {Component} from 'substance'
-import {api, event, infocaster} from 'writer'
-import {UpdateMessageHandler} from "./UpdateMessageHandler";
-import {InfocasterIntegration} from "./InfocasterIntegration";
+import { Component } from 'substance'
+import { api } from 'writer'
+import { UpdateMessageHandler } from "./UpdateMessageHandler";
+import { InfocasterIntegration } from "./InfocasterIntegration";
 
 
 class ExternalUpdateComponent extends Component {
@@ -9,7 +9,7 @@ class ExternalUpdateComponent extends Component {
     constructor(...args) {
         super(...args)
 
-        if (!api.newsItem.hasTemporaryId()) {
+        if (this._validatePluginConfig() && !api.newsItem.hasTemporaryId()) {
 
             const messageHandler = new UpdateMessageHandler(api.article, {
                 failed: (message, e) => {
@@ -52,8 +52,9 @@ class ExternalUpdateComponent extends Component {
                 callback: (data) => {
                     messageHandler.handleMessage(data)
                 },
-                token: this.props.pluginConfigObject.pluginConfigObject.data.token,
-                publisherId: this.props.pluginConfigObject.pluginConfigObject.data.publisherId
+                token: this._getConfigValue('token'),
+                publisherId: this._getConfigValue('publisherId'),
+                infocasterHost: this._getConfigValue('infocasterHost')
             })
         }
     }
@@ -77,12 +78,39 @@ class ExternalUpdateComponent extends Component {
 
     }
 
-
     render($$) {
-
         return $$('div').ref('externalUpdateContainer')
+    }
 
+    _getConfigValue(key) {
+        return api.getConfigValue('se.infomaker.externalupdate', key)
+    }
+
+    _validatePluginConfig() {
+        const token = this._getConfigValue('token')
+        if (!token) {
+            console.error('Invalid config for se.infomaker.externalupdate. Missing token')
+        }
+
+        const publisherId = this._getConfigValue('publisherId')
+        if (!publisherId) {
+            console.error('Invalid config for se.infomaker.externalupdate. Missing publisherId')
+        }
+
+        const infocasterHost = this._getConfigValue('infocasterHost')
+        if (!infocasterHost) {
+            console.error('Invalid config for se.infomaker.externalupdate. Missing infocasterHost')
+        }
+
+        if (!token || !publisherId || !infocasterHost) {
+            setTimeout(() => {
+                this.context.api.ui.showNotification('externalupdate', 'Invalid External Update Configuration', 'Invalid config for se.infomaker.externalupdate')
+            }, 0)
+            return false
+        }
+
+        return true
     }
 }
 
-export {ExternalUpdateComponent}
+export { ExternalUpdateComponent }

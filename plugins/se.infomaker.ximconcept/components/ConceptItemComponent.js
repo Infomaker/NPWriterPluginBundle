@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import { ConceptService, api } from 'writer'
+import { ConceptService, api, UITooltip } from 'writer'
 import ConceptItemImageComponent from './ConceptItemImageComponent'
 import ConceptItemIcon from './ConceptItemIconComponent'
 
@@ -12,8 +12,6 @@ class ConceptItemComponent extends Component {
         this.onMouseLeave = this.onMouseLeave.bind(this)
         this.editItem = this.editItem.bind(this)
         this.removeItem = this.removeItem.bind(this)
-
-        this.Tooltip = api.ui.getComponent('tooltip')
     }
 
     getInitialState() {
@@ -71,7 +69,7 @@ class ConceptItemComponent extends Component {
             const broaderString = ConceptService.extractBroaderText(item)
             const tootltipString = this.getTooltipString(item, propertyMap, isDuplicate)
 
-            const tooltip = tootltipString.length ? $$(this.Tooltip, {
+            const tooltip = tootltipString.length ? $$(UITooltip, {
                 title: `${broaderString}`,
                 text: tootltipString,
                 fixed: true,

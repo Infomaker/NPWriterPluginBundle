@@ -1,5 +1,5 @@
 const {Component} = substance
-const {api, moment, idGenerator, event} = writer
+const {api, moment, idGenerator, event, UITooltip} = writer
 const {isObject, isEmpty} = writer.lodash
 const pluginId = 'se.infomaker.newspriority'
 
@@ -10,8 +10,6 @@ class NewsPriorityComponent extends Component {
 
     constructor(...args) {
         super(...args)
-
-        this.Tooltip = api.ui.getComponent('tooltip')
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED_EXTERNAL, e => {
             if (e.data.key === 'contentMetadata' && e.data.value.type === 'x-im/newsvalue') {
@@ -97,12 +95,12 @@ class NewsPriorityComponent extends Component {
     render($$) {
         const el = $$('div');
 
-        const prioTitle = $$('h2').text(this.getLabel('newsvalue'));
+        const prioTitle = $$('h2').append(this.getLabel('newsvalue'));
         el.append(prioTitle);
         el.append(this._renderPriority($$));
 
         if (!this.preventLifeTime()) {
-            const lifetimeTitle = $$('h2').text(this.getLabel('Lifetime'));
+            const lifetimeTitle = $$('h2').append(this.getLabel('Lifetime'));
             el.append(lifetimeTitle);
             if (this.lifetimes.length > 1) {
                 el.append(this._renderLifeTime($$));
@@ -134,8 +132,8 @@ class NewsPriorityComponent extends Component {
 
             return $$('button')
                 .append([
-                    $$(this.Tooltip, {title: score.text}).ref('tooltip-' + score.value),
-                    $$('span').addClass('label').text(scoreOption)
+                    $$(UITooltip, {title: score.text}).ref('tooltip-' + score.value),
+                    $$('span').addClass('label').append(scoreOption)
                         .on('click', () => {
                             this.setNewsPriority(score.value);
                             this.toogleTooltip('tooltip-' + score.value, false)
@@ -165,8 +163,8 @@ class NewsPriorityComponent extends Component {
             return $$('button')
                 .addClass('btn btn-secondary sc-np-btn')
                 .append([
-                    $$(this.Tooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
-                    $$('span').addClass('label').text(lifetime.label)
+                    $$(UITooltip, {title: lifetime.text}).ref('tooltip-' + lifetime.label),
+                    $$('span').addClass('label').append(lifetime.label)
                         .on('click', () => {
                             this.setLifetime(lifetime);
                             this.toogleTooltip('tooltip-' + lifetime.label, false)
@@ -195,15 +193,16 @@ class NewsPriorityComponent extends Component {
 
         let text = this.getLabel('enter-date-and-time');
 
-        const endTime = api.newsItem.getNewsPriority().data.end;
-        if (endTime !== "" && !isEmpty(endTime)) {
+        const newsPriority = api.newsItem.getNewsPriority()
+
+        const endTime = newsPriority ? newsPriority.data.end : '';
+        if (endTime !== '' && !isEmpty(endTime)) {
             text = '\u2713 ' + text;
         }
 
         const small = $$('div').append($$('small')
             .addClass('text-muted')
             .text(text)).addClass('hidden').ref('datePickerInstructionText');
-
 
         const input = $$('input')
             .attr('type', 'datetime-local')

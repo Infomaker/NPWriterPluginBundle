@@ -1,4 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
+import {UIDropdown} from 'writer'
 import {OpenContentClient, QueryBuilder, QueryResponseHelper} from '@infomaker/oc-client'
 
 /**
@@ -213,9 +214,8 @@ class SearchComponent extends Component {
      */
     _renderEndpointPicker($$) {
         const configuredEndpoints = this._configuredEndpoints
-        const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
 
-        return $$(DropdownComponent, {
+        return $$(UIDropdown, {
             options: configuredEndpoints.map(({name: label, name: value}) => {
                 return {
                     label,
@@ -259,10 +259,8 @@ class SearchComponent extends Component {
      * @private
      */
     _renderSearchOptions($$) {
-        const DropdownComponent = this.context.api.ui.getComponent('DropdownComponent')
-
         return [
-            $$(DropdownComponent, {
+            $$(UIDropdown, {
                 header: this.getLabel('Sort'),
                 options: this._sortingOptions,
                 isSelected: (options, item) => item.value === this.state.sort,
@@ -274,7 +272,7 @@ class SearchComponent extends Component {
                 }
             }).ref('sortOptions').addClass('sort-options'),
 
-            $$(DropdownComponent, {
+            $$(UIDropdown, {
                 header: this.getLabel('Show'),
                 options: [
                     {label: '25', value: 25},

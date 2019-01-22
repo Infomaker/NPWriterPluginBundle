@@ -1,8 +1,8 @@
-import {infocaster} from 'writer'
+import { infocaster } from 'writer'
 
 class InfocasterIntegration {
-    constructor({uuid, callback, token, publisherId}) {
-        const infoCasterClient = new infocaster.WebSocketClient('https://infocaster.lcc.infomaker.io', token, publisherId);
+    constructor({ uuid, callback, token, publisherId, infocasterHost }) {
+        const infoCasterClient = new infocaster.WebSocketClient(infocasterHost, token, publisherId);
 
         infoCasterClient.on('sessionInit', (data) => {
             this.sessionInit = data
@@ -15,4 +15,4 @@ class InfocasterIntegration {
     }
 }
 
-export {InfocasterIntegration}
+export { InfocasterIntegration }

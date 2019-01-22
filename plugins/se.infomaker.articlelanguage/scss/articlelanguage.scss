@@ -2,8 +2,16 @@
     min-width: 200px;
 
     &.context-menu {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
         li {
+            font-size: 1rem;
             line-height: 2rem;
+            color: rgba(0, 0, 0, 0.75);
+            padding: 5px 0 5px 10px;
+            cursor: pointer;
 
             &:first-child {
                 padding-top: 7px;
@@ -13,6 +21,32 @@
             &:last-child {
                 padding-bottom: 7px;
                 border-radius: 0 0 4px 4px;
+            }
+
+            &:hover {
+                background-color: darken(#fff, 5%);
+            }
+
+            &::after {
+                position: absolute;
+                right: 10px;
+                content: attr(data-combo);
+                color: #ccc;
+                font-family: "lato", monospace, sans-serif;
+                font-size: 0.9rem;
+                word-spacing: -1.8px;
+            }
+
+            &.active {
+                font-weight: 700;
+                background: #fafafa;
+
+                &:after {
+                    font-family: "FontAwesome";
+                    font-weight: 300;
+                    content: "\f00c";
+                    color: rgba(0, 0, 0, 0.75);
+                }
             }
         }
     }

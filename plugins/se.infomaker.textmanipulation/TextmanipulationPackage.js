@@ -5,33 +5,59 @@ const TextmanipulationPackage = {
     id: 'se.infomaker.textmanipulation',
     index: 5000,
     version: '{{version}}',
-    configure: function (config) {
+    configure: function (configurator) {
 
-        config.addLabel('Search for', {
+        configurator.addLabel('Search and replace', {
+            sv: 'Sök och ersätt'
+        })
+
+        configurator.addLabel('Search for', {
             sv: 'Sök efter'
         })
 
-        config.addLabel('Replace with', {
+        configurator.addLabel('Replace with', {
             sv: 'Ersätt med'
         })
 
-        config.addLabel('Find next', {
-            sv: 'Sök nästa'
+        configurator.addLabel('next', {
+            sv: 'Nästa',
+            en: 'Next'
         })
 
-        config.addLabel('Replace', {
+        configurator.addLabel('prev', {
+            sv: 'Föregående',
+            en: 'Prev'
+        })
+
+        configurator.addLabel('Replace', {
             sv: 'Ersätt'
         })
 
-        config.addLabel('Match whole words', {
+        configurator.addLabel('Replace all', {
+            sv: 'Ersätt alla'
+        })
+
+        configurator.addLabel('Match whole words', {
             sv: 'Endast hela ord'
         })
 
-        config.addLabel('Case sensitive', {
+        configurator.addLabel('Case sensitive', {
             sv: 'Matcha gemener/VERSALER'
         })
 
-        config.addPopover(
+        configurator.addLabel('No hits', {
+            sv: 'Inga träffar'
+        })
+
+        configurator.addLabel('Replaced', {
+            sv: 'Ersatte'
+        })
+
+        configurator.addLabel('Occurrences', {
+            sv: 'Förekomster'
+        })
+
+        configurator.addPopover(
             'textmanipulation',
             {
                 icon: 'fa-search',
