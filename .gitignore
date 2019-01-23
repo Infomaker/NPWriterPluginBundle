@@ -3,10 +3,10 @@ logs
 *.log.*
 dist
 node_modules
+.vscode
 .lock-wscript
 clover.xml
 coverage
 .idea/*
-.history/
+.history
 .vscode
-.history/

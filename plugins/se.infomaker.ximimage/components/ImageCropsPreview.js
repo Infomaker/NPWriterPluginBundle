@@ -112,15 +112,9 @@ class ImageCropsPreview extends Component {
         this.cropUrls = new Map();
     }
 
-    didMount() {
-        this.fetchCropUrls()
-    }
-
     fetchCropUrls() {
-        const crops = this.props.crops
-        const cropInstructions = this.props.cropInstructions
-        const node = this.props.node
-        const {fileManager} = this.context.api.editorSession
+        const { crops, cropInstructions, node } = this.props
+        const { fileManager } = this.context.api.editorSession
 
         // Ensure file for image has been uploaded before fetching its crop-urls
         fileManager.sync()
@@ -151,6 +145,9 @@ class ImageCropsPreview extends Component {
                         }
                     }
                 }
+            })
+            .catch(() => {
+                console.warn('Error fetching crop URLs')
             })
 
     }

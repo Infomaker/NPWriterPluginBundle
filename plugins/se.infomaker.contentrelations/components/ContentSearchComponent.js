@@ -6,6 +6,19 @@ import OptionsComponent from './OptionsComponent'
 
 class ContentSearchComponent extends Component {
 
+    constructor(...args) {
+        super(...args)
+
+        this.handleInput = this.handleInput.bind(this)
+        this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleSearchSubmission = this.handleSearchSubmission.bind(this)
+        this.resetState = this.resetState.bind(this)
+        this.handleSearchSubmission = this.handleSearchSubmission.bind(this)
+        this.setLimit = this.setLimit.bind(this)
+        this.setSorting = this.setSorting.bind(this)
+        this.setStart = this.setStart.bind(this)
+    }
+
     willReceiveProps(newProps) {
         const { sorting } = newProps
         if (sorting) {
@@ -14,12 +27,9 @@ class ContentSearchComponent extends Component {
     }
 
     getInitialState() {
-        const host = `${this.props.contentHost.protocol}${this.props.contentHost.hostName}:${this.props.contentHost.port}${this.props.contentHost.objectPath}`
-
         return {
-            host,
             start: 0,
-            limit: 15,
+            limit: 25,
             sorting: this.props.sorting,
             query: "",
             results: [],
@@ -95,7 +105,6 @@ class ContentSearchComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('content-relations').ref('contentRelations')
         const dropDownComponent = this.renderDropDownComponent($$)
         const submitInput = $$('input').attr({ type: 'submit', style: 'display:none' })
         const searchInput = $$('input')
@@ -106,26 +115,24 @@ class ContentSearchComponent extends Component {
             .ref('searchInput')
 
         const searchIcon = $$('i', { 'class': 'content-relations-icon fa fa-search'})
-            .on('click', this.handleSearchSubmission.bind(this))
+            .on('click', this.handleSearchSubmission)
             .ref('searchIcon')
 
         const clearSearchIcon = $$('i', { 'class': 'content-relations-icon fa fa-times-circle', 'aria-hidden': 'true'})
-            .on('click', this.resetState.bind(this))
+            .on('click', this.resetState)
             .ref('clearSearchIcon')
 
         const searchingIcon = $$('i', { 'class': 'content-relations-icon fa fa-spinner fa-spin', 'aria-hidden': 'true'})
 
-        const searchForm = $$('form')
-            .addClass('content-relations-form')
-            .append(submitInput)
-            .append(dropDownComponent)
-            .append(searchInput)
-            .append(
-                this.state.searching ? searchingIcon :
+        const searchForm = $$('form', { class: 'content-relations-form' }, [
+            submitInput,
+            dropDownComponent,
+            searchInput,
+            this.state.searching ? searchingIcon :
                 (this.state.results.length || this.state.searchTerm) ? clearSearchIcon :
-                searchIcon
-            )
-            .on('submit', this.handleSearchSubmission.bind(this))
+                    searchIcon
+        ])
+            .on('submit', this.handleSearchSubmission)
             .ref('searchForm')
 
         const optionsComponent = $$(OptionsComponent, {
@@ -134,30 +141,30 @@ class ContentSearchComponent extends Component {
             sortings: this.props.sortings,
             sorting: this.state.sorting || this.props.sorting,
             limit: this.state.limit,
-            setLimit: this.setLimit.bind(this),
-            setSorting: this.setSorting.bind(this)
+            setLimit: this.setLimit,
+            setSorting: this.setSorting
         }).ref('optionsComponent')
 
         const searchResultsComponent = $$(SearchResultComponent, {
             propertyMap: this.props.propertyMap,
             locale: this.props.locale,
             icons: this.props.icons,
-            host: this.state.host,
+            host: this.props.host,
             results: this.state.results,
         }).ref('searchResultsComponent')
 
-        let pagnationComponent = this.state.totalHits ? $$(UIPagination, {
+        let paginationComponent = this.state.totalHits ? $$(UIPagination, {
             currentPage: Math.ceil((this.state.start / this.state.limit) + 1),
             totalPages: Math.ceil(this.state.totalHits / this.state.limit),
-            onPageChange: this.setStart.bind(this)
-        }) : null
+            onPageChange: this.setStart
+        }).ref('paginationComponent') : null
 
-        el.append(searchForm)
-            .append(optionsComponent)
-            .append(searchResultsComponent)
-            .append(pagnationComponent)
-
-        return el
+        return $$('div', { class: 'content-relations' }, [
+            searchForm,
+            optionsComponent,
+            searchResultsComponent,
+            paginationComponent,
+        ]).ref('contentRelations')
     }
 
     /**
@@ -204,9 +211,9 @@ class ContentSearchComponent extends Component {
         }
 
         const queryBuilder = new QueryBuilder({ q })
-        .setStart(start)
-        .setLimit(limit)
-        .setResponseProperties(responseProperties)
+            .setStart(start)
+            .setLimit(limit)
+            .setResponseProperties(responseProperties)
 
         if (sorting && sorting.field) {
             queryBuilder.setSorting(this.state.sorting.field, this.state.sorting.ascending)

@@ -36,8 +36,8 @@ export default {
         })
 
         config.addLabel('pdf-upload-error-message', {
-            en: 'The PDF could not be uploaded for an unknown reason.',
-            sv: 'PDF-filen kunde inte laddas upp av okänd anledning.'
+            en: 'The PDF could not be uploaded.',
+            sv: 'PDF-filen kunde inte laddas upp.'
         })
     }
 }

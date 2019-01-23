@@ -4,8 +4,8 @@ import SearchResultItem from './SearchResultItemComponent'
 class SearchResultComponent extends Component {
 
     render($$) {
-        const items = this.props.results.map(item => {
-            return $$(SearchResultItem, { item, ...this.props })
+        const items = this.props.results.map((item, index) => {
+            return $$(SearchResultItem, { item, ...this.props, key: index })
                 .ref(`searchResultItem-${item.id}`)
         })
 

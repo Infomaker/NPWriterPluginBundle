@@ -13,6 +13,7 @@ class ConceptMainComponent extends Component {
 
         this.addItem = this.addItem.bind(this)
         this.editItem = this.editItem.bind(this)
+        this.reloadArticleConcepts = this.reloadArticleConcepts.bind(this)
         this.removeArticleConcept = this.removeArticleConcept.bind(this)
         this.addConceptToArticle = this.addConceptToArticle.bind(this)
         this.updateArticleConcept = this.updateArticleConcept.bind(this)
@@ -20,21 +21,30 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
-        ConceptService.on(
-            this.state.conceptType,
-            ConceptService.operations.ADD,
-            this.addItem
-        )
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.on(conceptType, operations.ADD, this.addItem)
+        ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.UPDATE, this.editItem)
+        ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.on(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.on(type, operations.ADD, this.addItem)
+                ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.UPDATE, this.editItem)
+                ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.REMOVED, this.reloadArticleConcepts)
+            })
         }
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (e) => {
-            const types = this.state.types || []
             const eventName = e.name || ''
-            const cleanEventName = eventName.replace('-', '').replace('/', '')
             const associatedWith = (this.state.pluginConfig.associatedWith || '').replace('-', '').replace('/', '')
+            const types = this.state.types || []
+            const cleanEventName = eventName.replace('-', '').replace('/', '')
             const matchingType = types.map(type => type.replace('-', '').replace('/', '')).find(type => (type === eventName || type === cleanEventName))
 
             if (eventName.length) {
@@ -101,10 +111,23 @@ class ConceptMainComponent extends Component {
 
 
     dispose() {
-        ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.off(conceptType, operations.ADD, this.addItem)
+        ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.UPDATE, this.editItem)
+        ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.off(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.off(type, operations.ADD, this.addItem)
+                ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.UPDATE, this.editItem)
+                ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
+            })
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
@@ -183,14 +206,27 @@ class ConceptMainComponent extends Component {
         this.extendState({ existingItems: decoratedItems })
     }
 
+    /**
+     * Will fetch concept XML and parse properties specified in remote concept config
+     *
+     * @param {object} item conceptItem to add
+     */
     async addConceptToArticle(item) {
-        item = await (new ConceptItemModel(item, this.state.pluginConfig, this.state.propertyMap)).extractConceptArticleData(item)
+        // This will decorate ConceptItem with data to store in the article
+        // Model will use remote configured concept instructions
+        item = await (new ConceptItemModel(
+            item,
+            this.state.pluginConfig,
+            this.state.propertyMap)
+        ).extractConceptArticleData(item)
 
         if (!item.errors) {
+            item = await ConceptService.fetchConceptItemProperties(item)
 
             if (this.state.rel) {
                 item.rel = this.state.rel
             }
+
             ConceptService.addArticleConcept(item)
         } else {
             api.ui.showNotification(
@@ -209,6 +245,12 @@ class ConceptMainComponent extends Component {
         ConceptService.removeArticleConceptItem(item)
     }
 
+    /**
+     * Add concept to the article
+     * If called with an object without uuid it will try to create the concept
+     *
+     * @param {object} item conceptItem
+     */
     async addItem(item) {
         if (item && item.uuid) {
             if (!this.itemExists(item)) {
@@ -219,16 +261,18 @@ class ConceptMainComponent extends Component {
                 api.ui.showNotification(
                     this.state.name,
                     this.getLabel('Concept item exists'),
-                    this.getLabel('This Concept is already used'))
+                    this.getLabel('This Concept is already used')
+                )
             }
         } else {
             if (this.state.pluginConfig.creatable || this.state.pluginConfig.editable) {
-                const conceptType = item[[this.state.propertyMap.ConceptImTypeFull]] ? item[this.state.propertyMap.ConceptImTypeFull] :
+                const ConceptImTypeFullPropName = this.state.propertyMap.ConceptImTypeFull
+                const conceptType = item[ConceptImTypeFullPropName] ? item[ConceptImTypeFullPropName] :
                     this.state.types.length ? null : this.state.conceptType
 
                 this.editItem({
                     ...item,
-                    [this.state.propertyMap.ConceptImTypeFull]: conceptType
+                    [ConceptImTypeFullPropName]: conceptType
                 })
             }
         }

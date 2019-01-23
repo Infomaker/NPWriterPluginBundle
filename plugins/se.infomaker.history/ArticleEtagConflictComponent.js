@@ -16,8 +16,7 @@ class ArticleEtagConflictComponent extends Component {
     onClose(action) {
 
         if (action === 'save') {
-            window.location.href = api.article.getUrl(this.props.article.id)
-            window.location.reload(true)
+            window.location = api.article.getUrl(this.props.article.id)
         }
 
         return true

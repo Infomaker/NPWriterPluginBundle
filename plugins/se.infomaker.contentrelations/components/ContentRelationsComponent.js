@@ -9,7 +9,7 @@ class ContentRelationsComponent extends Component {
                 $$('strong').append(this.getLabel('External link')).attr('contenteditable', false)
             ]),
             $$('div', { class: 'im-blocknode__content' }, [
-                $$('a', { 'href': `#${this.props.node.uuid}`, 'target': '_blank' }, this.props.node.label).on('click', function (evt) {
+                $$('a', { 'href': `${this.props.node.uuid}`, 'target': '_blank' }, this.props.node.label).on('click', function (evt) {
                     evt.stopPropagation();
                 })
             ])

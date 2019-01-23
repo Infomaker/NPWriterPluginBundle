@@ -101,7 +101,7 @@ class ConceptItemComponent extends Component {
             }).on('click', this.removeItem)
 
             const itemContent = $$('div', { class: 'concept-item-content' }, [
-                item.name || item.title || item[propertyMap.ConceptName],
+                item[propertyMap.ConceptName] || item.name || item.title,
                 tooltip
             ])
 
