@@ -22,7 +22,7 @@ class XimimageTool extends Tool {
                 .attr('id', 'x-im-image-fileupload')
                 .attr('accept', getMIMETypes().join(','))
                 .ref('x-im-image-fileupload')
-                .on('change', this.triggerFileUpload)
+                .on('change', this.triggerFileUploads)
         )
 
         return el
@@ -34,8 +34,16 @@ class XimimageTool extends Tool {
         this.refs['x-im-image-fileupload'].el.el.dispatchEvent(evt)
     }
 
-    triggerFileUpload(ev) {
-        const nodeId = this.insertImage(ev.target.files[0])
+    triggerFileUploads(ev) {
+        const length = ev.target.files.length
+
+        for (let n = 0; n < length; n++) {
+            this.triggerFileInsertion(ev.target.files[n], length - 1 === n)
+        }
+    }
+
+    triggerFileInsertion(file, lastImage) {
+        const nodeId = this.insertImage(file, lastImage)
         api.editorSession.fileManager.sync()
             .then(() => {
                 const imageNode = api.editorSession.getDocument().get(nodeId)
@@ -47,11 +55,11 @@ class XimimageTool extends Tool {
             })
     }
 
-    insertImage(file) {
+    insertImage(file, lastImage) {
         let insertRes = null
         try {
             api.editorSession.transaction(tx => {
-                insertRes = insertImage(tx, file)
+                insertRes = insertImage(tx, file, lastImage)
             })
             return insertRes
         } catch (err) {

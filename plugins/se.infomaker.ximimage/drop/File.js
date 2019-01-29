@@ -25,7 +25,8 @@ class DropImageFile extends DragAndDropHandler {
 
     insertImage(tx, file) {
         try {
-            return insertImage(tx, file)
+            const files = api.editorSession.dragManager.dragState.data.files
+            return insertImage(tx, file, files[files.length - 1] === file)
         } catch (err) {
             api.ui.showNotification('ximimage', api.getLabel('image-error-title'), api.getLabel('unsupported-image-error-message'))
             return null
