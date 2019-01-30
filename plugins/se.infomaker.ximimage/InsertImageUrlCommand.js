@@ -22,7 +22,7 @@ class InsertImageUrlCommand extends WriterCommand {
         }
 
         api.editorSession.transaction((tx) => {
-            const nodeId = insertImage(tx, params.imageUrl)
+            const nodeId = insertImage(tx, params.imageUrl, true)
 
             setTimeout(() => {
                 api.editorSession.fileManager.sync()
