@@ -99,7 +99,6 @@ class IMIDTrackerComponent extends Component {
 
     _startSessionPolling() {
         // Start polling IMSG to ensure we have active session
-        console.info('--- Starting session checker')
         const interval = api.getConfigValue('se.infomaker.imidtracker', 'sessionPollIntervalMilliseconds', 5000)
         const pollEndpoint = api.getConfigValue('se.infomaker.imidtracker', 'sessionPollEndpoint', '/imsg-service/v1/token-is-set')
 
@@ -323,19 +322,45 @@ class IMIDTrackerComponent extends Component {
     }
 
     _logout() {
-        if (api.history.isAvailable()) {
-            api.history.storage.removeItem('user')
-            this.socket.close()
+
+        const doLogout = () => {
+            if (api.history.isAvailable()) {
+                api.history.storage.removeItem('user')
+                this.socket.close()
+            }
+
+            this.extendState({
+                email: null,
+                name: null,
+                socketId: null,
+                users: []
+            })
+
+            api.user.logout()
         }
 
-        this.extendState({
-            email: null,
-            name: null,
-            socketId: null,
-            users: []
-        })
+        if(this.context.state.document.changed) {
+            api.events.trigger(null, event.DISABLE_UNLOAD_WARNING, {})
 
-        api.user.logout()
+            api.ui.showConfirmDialog(
+                this.getLabel('Are you sure you want to log out?'),
+                this.getLabel('The article contains unsaved changes, are you sure you want to log out?'),
+                {
+                    primary: {
+                        label: this.getLabel('Ja'),
+                        callback: doLogout
+                    },
+                    secondary: {
+                        label: this.getLabel('Nej'),
+                        callback: () => {
+                            api.events.trigger(null, event.ENABLE_UNLOAD_WARNING, {})
+                        }
+                    }
+                }
+            )
+        } else {
+            doLogout()
+        }
     }
 
     _initUATracker() {

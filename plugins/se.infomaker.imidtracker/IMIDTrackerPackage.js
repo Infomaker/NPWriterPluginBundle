@@ -61,6 +61,18 @@ export default {
             sv: 'Vi skulle vilja be dig att fylla i din epostadress och namn. Informationen kommer delas med de som har artiklar öppna samtidigt med dig.'
         })
 
+        // Logout confirm dialog
+        config.addLabel('The article contains unsaved changes, are you sure you want to log out?', {
+            en: 'The article contains unsaved changes, are you sure you want to log out?',
+            sv: 'Artikeln innehåller osparade förändringar, är du säker på att du vill logga ut?'
+        })
+
+        // Logout confirm dialog
+        config.addLabel('Are you sure you want to log out?', {
+            en: 'Are you sure you want to log out?',
+            sv: 'Är du säker på att du vill logga ut?'
+        })
+
         config.addLabel('Enter your email address', {
             sv: 'Ange din epost-adress'
         })
@@ -119,6 +131,16 @@ export default {
         config.addLabel('imidtracker-been-in', {
             en: 'Has been in for {{loginTime}}',
             sv: 'Har varit inne i {{loginTime}}'
+        })
+
+        config.addLabel('Yes', {
+            en: 'Yes',
+            sv: 'Ja'
+        })
+
+        config.addLabel('No', {
+            en: 'No',
+            sv: 'Nej'
         })
     }
 }
