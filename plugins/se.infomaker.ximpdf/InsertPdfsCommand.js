@@ -18,7 +18,7 @@ class XimpdfCommand extends WriterCommand {
             })
         } else {
             params.editorSession.transaction((tx) => {
-                params.files.forEach(file => {
+                [...params.files].forEach(file => {
                     nodeIds.push(insertPdfCommand(tx, file))
                 })
             })
