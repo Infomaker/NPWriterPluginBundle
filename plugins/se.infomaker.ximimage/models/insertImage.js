@@ -1,5 +1,6 @@
 import {idGenerator} from 'writer'
 import {getExtensions} from './ImageTypes'
+import {api} from 'writer'
 
 /*
     Insert an image via file or uri.
@@ -9,7 +10,7 @@ import {getExtensions} from './ImageTypes'
 */
 
 
-export default function(tx, data) {
+export default function(tx, data, lastImage = false) {
     const isFile = data instanceof File
     const nodeId = idGenerator()
 
@@ -39,7 +40,6 @@ export default function(tx, data) {
     // Create file node for the image
     let imageFile = tx.create(imageFileNode)
 
-    // Inserts image at current cursor pos
     tx.insertBlockNode({
         id: nodeId,
         type: 'ximimage',
@@ -50,6 +50,16 @@ export default function(tx, data) {
         alignment: '',
         width: 0,
         height: 0
+    })
+
+    // Set selection after inserted node, if this node is the last of
+    // files inserted, otherwise set to the inserted node.
+    // This avoids that the first image in a multi upload/insertion is deleted.
+    tx.setSelection({
+        type: 'node',
+        containerId: tx.getSelection().containerId,
+        nodeId: nodeId,
+        mode: lastImage ? 'full' : 'after'
     })
 
     return nodeId

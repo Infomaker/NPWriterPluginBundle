@@ -13,7 +13,9 @@ class DropImageUri extends DragAndDropHandler {
     }
 
     drop(tx, params) {
-        const nodeId = insertImage(tx, params.uri)
+        const uris = api.editorSession.dragManager.dragState.data.uris
+        const nodeId = insertImage(tx, params.uri, uris[uris.length - 1] === params.uri)
+
         setTimeout(() => {
             api.editorSession.fileManager.sync()
                 .then(() => {
