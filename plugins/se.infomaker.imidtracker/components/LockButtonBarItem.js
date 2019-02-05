@@ -55,6 +55,7 @@ class LockButtonBarItem extends Component {
 
     _renderPopover($$) {
         return $$(IMIDPopoverComponent, {
+            id: 'logged-in-user',
             content: $$(IMIDUnlockAlert, {
                 onUnlock: () => {
                     this.props.reserveArticle()
