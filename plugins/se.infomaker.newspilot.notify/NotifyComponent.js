@@ -27,6 +27,7 @@ class NotifyComponent extends Component {
         }
         let newsItemArticle = api.editorSession.saveHandler.getExportedDocument();
 
+
         if (!this.articlePassesFilter(this.filter)) {
             return resolve()
         }
@@ -60,8 +61,12 @@ class NotifyComponent extends Component {
 
         const queryResult = api.newsItemArticle.evaluate(filterQuery, api.newsItemArticle,
             function (prefix) {
-                if (prefix === 'ils') {
-                    return 'http://www.infomaker.se/lookupservice';
+                if (prefix === 'im') {
+                    return 'http://www.infomaker.se/newsml/1.0';
+                }else if (prefix === 'idf') {
+                    return 'http://www.infomaker.se/idf/1.0';
+                } else if (prefix === 'newsml'){
+                    return "http://iptc.org/std/nar/2006-10-01/";
                 } else {
                     return "http://iptc.org/std/nar/2006-10-01/";
                 }
@@ -73,17 +78,17 @@ class NotifyComponent extends Component {
             if (filterType === undefined || filterType === "EXISTS") {
                 return true
             } else if (filterType === "EQUALS") {
-                const value = result.value
+                const value = result.textContent
                 if (value.trim() === filterValue) {
                     return true
                 }
             } else if (filterType === "NOT_EQUALS") {
-                const value = result.value
+                const value = result.textContent
                 if (value.trim() !== filterValue) {
                     return true
                 }
             } else if (filterType === "DATE_OLDER_THAN" || filterType === "DATE_YOUNGER_THAN") {
-                const value = result.value
+                const value = result.textContent
                 const queryDate = new Date(value);
 
                 if (this.dateIsValid(queryDate)) {
