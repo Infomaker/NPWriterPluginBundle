@@ -175,9 +175,8 @@ export default {
         })
 
         // Converters
-        config.addConverter(XMLTableConverter)
-        config.addConverter(HTMLTableConverter)
         config.addConverter(TableCellConverter)
+        config.addConverter(XMLTableConverter)
 
         // Annotation commands
         config.addCommand(COMMANDS.STRONG, TableAnnotationCommand, { nodeType: 'strong', commandGroup: TABLE_ANNOTATION_COMMAND_GROUP })
