@@ -1,4 +1,5 @@
 import {Component, FontAwesomeIcon} from 'substance'
+import {getMIMETypes} from '../se.infomaker.ximimage/models/ImageTypes'
 
 /**
  * @property {{onChange: {Function}}}
@@ -12,10 +13,10 @@ class FileInputComponent extends Component {
             .on('click', this.triggerFileDialog)
             .attr('title', this.getLabel('Upload image'))
 
-
         const fileInput = $$('input')
             .attr('type', 'file')
             .attr('multiple', 'multiple')
+            .attr('accept', getMIMETypes().join(','))
             .ref('fileInput')
             .on('change', this.props.onChange)
 
