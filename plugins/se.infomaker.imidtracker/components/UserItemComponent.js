@@ -99,7 +99,7 @@ class UserItemComponent extends Component {
     _renderPopover($$, user) {
         return $$(IMIDPopoverComponent, {
             sticky: false,
-            id: user.sub,
+            id: (user.uuid || user.sub),
             content: $$(UserDetailsComponent, {user: user, logout: this.props.logout})
         }).ref('popover')
     }
