@@ -8,8 +8,10 @@ import DropImageFile from "./drop/File";
 import DropImageUri from "./drop/Uri";
 import DropImageUUID from "./drop/Uuid";
 
-import XimimageSettings from "./XimimageSettings";
+import { URIObjectDropHandler } from "./drop/URIObjectDropHandler"
+import { URIObjectDropExecutor } from "./drop/URIOBjectDropExecutor"
 
+import XimimageSettings from "./XimimageSettings";
 import XimimageFileProxy from "./XimimageFileProxy";
 
 import InsertImagesTool from "./InsertImagesTool";
@@ -32,6 +34,9 @@ export default {
         config.addComponent('imageDisplay', ImageDisplayComponent)
 
         // Drop handlers
+        config.addDropHandler(
+            new URIObjectDropHandler('x-im/image', URIObjectDropExecutor)
+        )
         config.addDropHandler(new DropImageUUID())
         config.addDropHandler(new DropImageFile())
         config.addDropHandler(new DropImageUri())

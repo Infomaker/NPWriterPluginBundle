@@ -259,10 +259,18 @@ export default {
             link.append(imageLinks)
         }
 
-        el.append(
-            $$('links').append(
-                link
-            )
-        )
+        const links = $$('links')
+        links.append(link)
+
+        if (node.source) {
+            links.append($$('link').attr({
+                rel: 'source',
+                type: node.source.type,
+                uri: node.source.uri
+            }))
+        }
+
+
+        el.append(links)
     }
 }

@@ -74,7 +74,9 @@ Ximimage.define({
     caption: {type: 'string', default: ''},
     alttext: {type: 'string', optional: true},
     credit: {type: 'string', optional: true},
-    alignment: {type: 'string', optional: true}
+    alignment: { type: 'string', optional: true },
+
+    source: {type: 'object', default: {}, optional: true}
 })
 
 export default Ximimage
