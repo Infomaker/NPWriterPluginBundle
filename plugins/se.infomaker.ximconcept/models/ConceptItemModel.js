@@ -107,8 +107,6 @@ class ConceptItemModel {
                 }
             }
 
-            item.name = this.xmlHandler.getNodeValue(this.xmlHandler.getNode(this.nameXpath))
-            item.type = item[this.propertyMap.ConceptImTypeFull]
         } else {
             item.errors = this.errors
         }

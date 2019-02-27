@@ -54,6 +54,7 @@ class ContentRelationsMainComponent extends Component {
     render($$) {
         const { sortings, sorting, pluginConfig } = this.state
         const { contentHost, propertyMap, defaultQueries, contenttype, locale, icons } = pluginConfig
+        const host = `${contentHost.protocol}${contentHost.hostName}:${contentHost.port}${contentHost.objectPath}`
 
         const header = $$('h2').append(this.getLabel('ContentRelations'))
         const searchComponent = $$(ContentSearchComponent, {
@@ -64,16 +65,14 @@ class ContentRelationsMainComponent extends Component {
             sorting,
             sortings,
             locale,
-            icons
+            icons,
+            host
         }).ref('searchComponent')
 
-        const el = $$('div')
-            .addClass('content-relations-container')
-            .append(header)
-            .append(searchComponent)
-            .ref('relationsContainer')
-
-        return el
+        return $$('div', { class: 'content-relations-container' }, [
+            header,
+            searchComponent,
+        ]).ref('relationsContainer')
     }
 }
 

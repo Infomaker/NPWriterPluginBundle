@@ -96,8 +96,8 @@ export default {
         })
 
         config.addLabel('image-upload-error-message', {
-            en: 'The image could not be uploaded. Please make sure it is a supported format.',
-            sv: 'Bilden kunde inte laddas upp. Var god och kontrollera att att bildformatet stöds.'
+            en: 'The image could not be uploaded. Please make sure it is a supported format and size does not exceed the maximum upload size.',
+            sv: 'Bilden kunde inte laddas upp. Var god och kontrollera att att bildformatet stöds och filstorleken inte överskrider maxstorleken.'
         })
 
         config.addLabel('image-display-modes', {

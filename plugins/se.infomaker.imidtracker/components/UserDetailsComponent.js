@@ -1,16 +1,16 @@
-import { Component, FontAwesomeIcon } from 'substance'
-import { moment} from 'writer'
+import {Component, FontAwesomeIcon} from 'substance'
+import {moment} from 'writer'
 
 /**
  * Renders details about a single user to be displayed in the popover
  *
- * @class UserDetails
+ * @class UserDetailsComponent
  * @extends {Component}
  * @property {Object} props
  * @property {User} props.user - User object to display
  * @property {function} [props.logout] - Callback to run when logout button pressed
  * @example
-    $$(UserDetails, {
+ $$(UserDetailsComponent, {
         user: {
             isActiveUser: false,
             name: 'Example User',
@@ -23,7 +23,7 @@ import { moment} from 'writer'
         logout: () => console.log('Logging out')
     })
  */
-class UserDetails extends Component {
+class UserDetailsComponent extends Component {
 
     render($$) {
         const user = this.props.user
@@ -33,21 +33,21 @@ class UserDetails extends Component {
 
         if (user.isActiveUser && typeof this.props.logout === 'function') {
             name += ' ' + this.getLabel('(You)')
-            logoutButton = $$('button', { class: 'btn btn-secondary logout'},
+            logoutButton = $$('button', {class: 'btn btn-secondary logout'},
                 this.getLabel('Logout')
             ).on('click', this.props.logout)
         }
 
-        return $$('div', { class: 'popover-content user-details' }, [
-            $$('div', { class: 'content' }, [
-                $$('h2', { class: 'name heading' }, name),
-                $$('div', { class: 'email message' }, user.email),
+        return $$('div', {class: 'popover-content user-details'}, [
+            $$('div', {class: 'content'}, [
+                $$('h2', {class: 'name heading'}, name),
+                $$('div', {class: 'email message'}, user.email),
                 logoutButton
             ]),
-            $$('div', { class: 'footer' }, [
+            $$('div', {class: 'footer'}, [
                 $$(FontAwesomeIcon, {icon: 'fa-clock-o'}),
-                $$('div', { class: 'login-time' },
-                    this.getLabel('uatracker-been-in')
+                $$('div', {class: 'login-time'},
+                    this.getLabel('imidtracker-been-in')
                         .replace('{{loginTime}}', loginTime)
                 )
             ])
@@ -55,4 +55,4 @@ class UserDetails extends Component {
     }
 }
 
-export default UserDetails
+export {UserDetailsComponent}

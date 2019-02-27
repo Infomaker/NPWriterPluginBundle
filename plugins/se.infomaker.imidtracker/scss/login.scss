@@ -1,0 +1,28 @@
+.imidtracker-login {
+    p {
+        margin: 15px 0;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .avatar__container {
+        float: right;
+        position: absolute;
+        right: 5px;
+        bottom: 2px;
+
+        img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .fa-user {
+            width: 24px;
+            height: 24px;
+            font-size: 24px;
+            margin-right: 0;
+        }
+    }
+}
