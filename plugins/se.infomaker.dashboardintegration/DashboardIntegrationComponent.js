@@ -3,7 +3,6 @@ import { api, event } from 'writer'
 
 const BASE_CLASS = 'se-infomaker-dashboard-integration'
 
-
 class DashboardIntegrationComponent extends Component {
 
     dispose() {
@@ -73,7 +72,13 @@ class DashboardIntegrationComponent extends Component {
 
     handleSendData(data) {
         if (window !== window.parent) {
-            window.top.postMessage(data, '*')
+            try {
+                const dataObject = JSON.parse(JSON.stringify(data))
+
+                window.top.postMessage(dataObject, '*')
+            } catch(error) {
+                console.warn('<-- DW Plugin -->', error)
+            }
         }
     }
 
