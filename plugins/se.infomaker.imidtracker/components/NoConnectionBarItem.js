@@ -31,6 +31,7 @@ class NoConnectionBarItem extends Component {
 
     _renderPopover($$) {
         return $$(IMIDPopoverComponent, {
+            id: 'no-connection',
             sticky: false,
             content: $$('div', {class: 'no-connection popover-content'}, [
                 $$('div', {class: 'content'}, [

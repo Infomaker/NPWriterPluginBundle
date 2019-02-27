@@ -13,12 +13,13 @@ class IMIDPopoverComponent extends Component {
 
     constructor(...args) {
         super(...args)
+        if (this.props.sticky === true) {
+            api.events.on(`__popover-${this.props.id}`, event.BROWSER_RESIZE, () => {
+                this._recalculateOffsets()
+            })
+        }
 
-        api.events.on('__popover-' + this.props.id, event.BROWSER_RESIZE, () => {
-            this._recalculateOffsets()
-        })
-
-        api.events.on('__popover-' + this.props.id, 'popover:close', () => {
+        api.events.on(`__popover-${this.props.id}`, 'popover:close', () => {
             this.extendState({active: false})
         })
 
@@ -67,7 +68,7 @@ class IMIDPopoverComponent extends Component {
 
             // Opening one popover closes others, even the sticky ones, so
             // send an internal close event to all other popovers
-            this.context.api.events.trigger('__popover-' + this.props.id, 'popover:close')
+            this.context.api.events.trigger(`__popover-${this.props.id}`, 'popover:close')
         }
     }
 

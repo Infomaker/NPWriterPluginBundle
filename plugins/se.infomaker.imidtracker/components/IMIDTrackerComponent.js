@@ -156,7 +156,7 @@ class IMIDTrackerComponent extends Component {
                 socketId: this.state.socketId,
                 lockedBy: this.state.lockedBy,
                 reserveArticle: this._reserveArticle.bind(this)
-            })
+            }).ref('imid-lock-button')
 
             container.append([userListElem, lockElem])
         }
@@ -301,9 +301,13 @@ class IMIDTrackerComponent extends Component {
         // user has been on new article).
         user.timestamp = moment().format('x')
 
-        this.extendState({
-            users: [user]
-        })
+        // Only set user as logged in if article is new or unsaved
+        // If the article has an id, users will be fetched by UATracker
+        if (!api.newsItem.getGuid()) {
+            this.extendState({
+                users: [user]
+            })
+        }
 
         this._login(user)
     }
@@ -322,7 +326,6 @@ class IMIDTrackerComponent extends Component {
     }
 
     _logout() {
-
         const doLogout = () => {
             if (api.history.isAvailable()) {
                 api.history.storage.removeItem('user')

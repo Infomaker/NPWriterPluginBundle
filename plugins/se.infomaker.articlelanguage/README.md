@@ -15,6 +15,14 @@ Writer's internal spellcheck and suggestion tool currently has support for the f
 * `nl_NL` - Nederlands
 * `sv_SE` - Svenska
 * `sv_FI` - Svenska (Finland)
+* `pl_PL` - Polskie
+* `de_DE` - Deutsch
+* `de_AT` - Deutsch (Österreich)
+* `de_CH` - Deutsch (Schweiz)
+* `fr_FR` - Français
+* `is_IS` - Íslensku
+* `pt_PT` - Português
+* `es_ES` - Spanish (Traditional)
 
 ### Integrating your external spellcheck API
 It's possible to write your own spellcheck/suggestion API, which the Writer will use if configured.
@@ -45,8 +53,40 @@ For more information about integrating your own API: [See this guide](https://in
             "label": "Arabic (Egypt)",
             "code": "ar_EG",
             "direction": "rtl"
+        },
+        {
+            "label": "Polskie",
+            "code": "pl_PL"
+        },
+        {
+            "label": "Deutsch",
+            "code": "de_DE"
+        },
+        {
+            "label": "Deutsch (Österreich)",
+            "code": "de_AT"
+        },
+        {
+            "label": "Deutsch (Schweiz)",
+            "code": "de_CH"
+        },
+        {
+            "label": "Français",
+            "code": "fr_FR"
+        },
+        {
+            "label": "Íslensku",
+            "code": "is_IS"
+        },
+        {
+            "label": "Português",
+            "code": "pt_PT"
+        },
+        {
+            "label": "Spanish (Traditional)",
+            "code": "es_ES"
         }
-    ]
+
   }
 }
 ```
