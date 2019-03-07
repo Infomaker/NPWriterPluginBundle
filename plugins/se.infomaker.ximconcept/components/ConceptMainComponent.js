@@ -62,7 +62,7 @@ class ConceptMainComponent extends Component {
 
                         // if no multi-value (just one associated-with) and its a match, we remove the item
                         if (itemAssociatedWith === eventUUID) {
-                            ConceptService.removeArticleConceptItem(existingItem)
+                            ConceptService.removeArticleConcept(existingItem)
                         }
 
                         // if we have multiple associated-with we need to check 'em all to look for a match
@@ -77,7 +77,7 @@ class ConceptMainComponent extends Component {
                             })
 
                             if (!associationExists) {
-                                ConceptService.removeArticleConceptItem(existingItem)
+                                ConceptService.removeArticleConcept(existingItem)
                             }
                         }
                     })
@@ -242,7 +242,7 @@ class ConceptMainComponent extends Component {
     }
 
     removeArticleConcept(item) {
-        ConceptService.removeArticleConceptItem(item)
+        ConceptService.removeArticleConcept(item)
     }
 
     /**
