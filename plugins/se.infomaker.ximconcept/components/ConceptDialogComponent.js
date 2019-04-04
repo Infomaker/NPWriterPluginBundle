@@ -93,7 +93,7 @@ class ConceptDialogComponent extends Component {
     }
 
     render($$) {
-        const el = $$('div').addClass('concept-dialog-component col-sm-12')
+        const el = $$('form', { class: 'concept-dialog-component col-sm-12', autocomplete: 'off' })
 
         if (this.state.loading) {
             const spinner = $$('i', {
@@ -168,6 +168,7 @@ class ConceptDialogComponent extends Component {
             id: field.label,
             class: `concept-form-control ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
             type: field.type,
+            autocomplete: 'off',
             value: field.value ? field.value : '',
             placeholder: field.placeholder,
             pattern: field.validation }
@@ -199,6 +200,7 @@ class ConceptDialogComponent extends Component {
             id: field.label,
             class: `concept-form-control-hidden ${this.invalidInputs.includes(field.label) ? 'invalid' : ''}`,
             type: 'text',
+            autocomplete: 'off',
             value: field.value ? field.value : '',
             pattern: field.validation
         }).ref(field.refId)
@@ -206,7 +208,7 @@ class ConceptDialogComponent extends Component {
         let searchInput, searchSpinner, errorMessage, searchResultWrapper = $$('div').addClass('location-result-wrapper'), mapsWrapper = $$('div').addClass('maps-wrapper')
 
         if (field.editable && !this.isPolygon()) {
-            searchInput = $$('input', { type: 'text', placeholder: this.getLabel('Place or location search'), class: 'location-form-control' }).ref('locationSearch')
+            searchInput = $$('input', { type: 'text', autocomplete: 'off', placeholder: this.getLabel('Place or location search'), class: 'location-form-control' }).ref('locationSearch')
 
             if (this.state.searching) {
                 searchSpinner = $$('i', {

@@ -69,6 +69,10 @@ class ConceptSearchComponent extends Component {
             }
         }
 
+        const searchForm = $$('form', { autocomplete: 'off' })
+            .append(searchInput)
+            .append(searchFormIcon)
+
         if (searchedTerm) {
             let { selected } = this.state
 
@@ -90,8 +94,8 @@ class ConceptSearchComponent extends Component {
 
 
         el.addClass('concept-search-component')
-            .append(searchInput)
-            .append(searchFormIcon)
+            .append(searchForm)
+            // .append(searchFormIcon)
             .append(searchResultsContainer)
 
         return el
