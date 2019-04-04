@@ -69,7 +69,7 @@ class ConceptSearchComponent extends Component {
             }
         }
 
-        const searchForm = $$('form', { autocomplete: 'off' })
+        const searchForm = $$('form', { autocomplete: 'user-password' })
             .append(searchInput)
             .append(searchFormIcon)
 
