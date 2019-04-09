@@ -1,4 +1,5 @@
 import TextanalyzerComponent from './TextAnalyzerComponent'
+import { labels } from './Labels'
 
 export default {
     name: 'textanalyzer',
@@ -7,28 +8,8 @@ export default {
     version: '{{version}}',
     configure: function (config) {
 
-        config.addLabel('Characters', {
-            sv: 'Antal tecken'
-        })
-
-        config.addLabel('Words', {
-            sv: 'Antal ord'
-        })
-
-        config.addLabel('Source', {
-            sv: 'Källa'
-        })
-
-        config.addLabel('No source found', {
-            sv: 'Ingen källa'
-        })
-
-        config.addLabel('Created', {
-            sv: 'Skapad'
-        })
-
-        config.addLabel('Updated', {
-            sv: 'Uppdaterad'
+        Object.keys(labels).forEach(label => {
+            config.addLabel(label, labels[label])
         })
 
         config.addPopover(

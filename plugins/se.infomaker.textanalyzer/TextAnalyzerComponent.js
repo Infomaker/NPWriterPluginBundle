@@ -24,10 +24,11 @@ class TextanalyzerComponent extends Component {
     }
 
     calculateText() {
-        let count = this.getCount()
+        let count = this.getStatistics()
         this.extendState({
             textLength: count.textLength,
-            words: count.words
+            words: count.words,
+            lix: count.lix
         })
     }
 
@@ -63,10 +64,35 @@ class TextanalyzerComponent extends Component {
         const charLabel = this.getLabel('Characters')
         this._createAndAppendRowElement($$, innerEl, 'Character count', charLabel, this.state.textLength.toString())
 
+        this._createAndAppendRowElement(
+            $$,
+            innerEl,
+            this.getLabel('Readability'),
+            this.getLabel('Readability'),
+            this._getLixDescription(this.state.lix)
+        )
+
         el.append(innerEl)
         return el
     }
 
+    _getLixDescription(lix) {
+        if (lix <= 30) {
+            return this.getLabel('Simple text, for children')
+        }
+        else if (lix <= 40) {
+            return this.getLabel('Easy to read literature')
+        }
+        else if (lix <= 50) {
+            return this.getLabel('Normal text')
+        }
+        else if (lix <= 60) {
+            return this.getLabel('Contains difficult language')
+        }
+        else {
+            return this.getLabel('Very difficult language')
+        }
+    }
     _createAndAppendRowElement($$, parent, title, label, value) {
         let infoBoxEl = $$('div').addClass('info-box').attr('title', title)
         let labelEl = $$('div').addClass('label').append(label + ':')
@@ -122,16 +148,17 @@ class TextanalyzerComponent extends Component {
         // Is this a new article? Used when rendering create/update dates
         this.isTemplate = !api.newsItem.getGuid()
 
-        const count = this.getCount()
+        const count = this.getStatistics()
         return {
             textLength: count.textLength,
             words: count.words,
+            lix: count.lix,
             createdDate: this._getCreatedDate(),
             updatedDate: this._getUpdatedDate()
         }
     }
 
-    getCount() {
+    getStatistics() {
         const nodes = api.document.nodes()
         let textContent = '';
         nodes.forEach(function (node) {
@@ -140,14 +167,39 @@ class TextanalyzerComponent extends Component {
             }
         })
 
-        const words = textContent.split(/\s+/)
-        const textLength = textContent.length
-        return {
-            words: words.length,
-            textLength: textLength
-        }
+        return this.calculateStatistics(textContent)
     }
 
+    calculateStatistics(text) {
+        const sentences = text.split(/[.!?]/)
+        const noOfSentences = sentences.length
+        let noOfWords = 0
+        let noOfLongWords = 0
+        // let totalWordLength = 0
+
+        sentences.forEach(s => {
+            const words = s.replace(/[ \\:;\n\r\t.,'\"\`<>()=+!?¿-]+/g, ' ').trim().split(' ')
+            noOfWords += words.length
+
+            words.forEach(w => {
+                // totalWordLength += w.length
+                if (w.length > 6) {
+                    noOfLongWords++
+                }
+            })
+        })
+
+        // console.log('Average: ' + totalWordLength / noOfWords)
+        const avgSentenceLength = noOfWords / noOfSentences
+        const longWordRatio = noOfLongWords / noOfWords * 100
+        const lix = avgSentenceLength + longWordRatio
+
+        return {
+            lix: Math.ceil(lix),
+            words: noOfWords,
+            textLength: text.length
+        }
+    }
 }
 
 export default TextanalyzerComponent
