@@ -46,6 +46,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
 - `"subtypes": [...]` A list of subtypes that are allowed
 - `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
+- `"searchOnFocus": true` If a search should be performed when the tag control gets the focus.
 
 #### Example Configs
 
@@ -142,6 +143,7 @@ Tags:
         "editable": true,
         "placeholderText": "Sök taggar",
         "rel": "subject",
+        "searchOnFocus": false,
         "types": {
             "x-im/person": {
                 "name": "Person",
