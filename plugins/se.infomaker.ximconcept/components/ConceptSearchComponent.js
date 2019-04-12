@@ -14,6 +14,7 @@ class ConceptSearchComponent extends Component {
     getInitialState() {
         return {
             selected: 0,
+            seq: 0
         }
     }
 
@@ -115,10 +116,11 @@ class ConceptSearchComponent extends Component {
 
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             this.extendState({
-                searching: this.state.searching + 1
+                searching: this.state.searching + 1,
+                seq: this.state.seq + 1
             })
 
-            this.search(term)
+            this.search(term, this.state.seq)
         } else if (!this.state.selected && (!term || !term.length)) {
             this.resetState()
         }
@@ -128,10 +130,11 @@ class ConceptSearchComponent extends Component {
         this.resetState()
         this.extendState({
             searching: this.state.searching + 1,
-            hasFocus: true
+            hasFocus: true,
+            seq: this.state.seq + 1
         })
 
-        this.search('*')
+        this.search('*', this.state.seq)
     }
 
     handleBlur() {
@@ -140,13 +143,21 @@ class ConceptSearchComponent extends Component {
         this.extendState({ hasFocus: false })
     }
 
-    async search(term) {
+    async search(term, inSeq) {
         const result = await ConceptService.searchForConceptSuggestions(
             this.props.conceptTypes,
             term,
             this.props.subtypes,
             this.props.associatedWith
         )
+
+        const {seq} = this.state
+        if (inSeq !== seq) {
+            this.extendState({
+                searching: this.state.searching > 0 ? this.state.searching - 1 : 0
+            })
+            return
+        }
 
         if (this.state.hasFocus) {
             this.extendState({
