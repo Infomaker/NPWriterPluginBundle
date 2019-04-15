@@ -314,7 +314,7 @@ class SearchComponent extends Component {
      * @private
      */
     get _ocClientConfig() {
-        return this.state.selectedEndpoint.host
+        return { ...this.state.selectedEndpoint.host, credentials: 'include', mode: 'cors' }
     }
 
     /**
