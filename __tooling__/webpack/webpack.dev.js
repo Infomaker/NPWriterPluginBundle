@@ -16,7 +16,7 @@ const common = require('./webpack.common.js')
 const path = require('path')
 
 console.info(` ----------------------------
-   Plugin development build 
+   Plugin development build
  ----------------------------`)
 
 module.exports = merge(common,
@@ -33,6 +33,7 @@ module.exports = merge(common,
             namedChunks: true
         },
         devServer: {
+            disableHostCheck: true,
             contentBase: path.join(__dirname, 'dist'),
             historyApiFallback: true,
             compress: false,
