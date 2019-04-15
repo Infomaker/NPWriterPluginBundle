@@ -230,7 +230,7 @@ class ContentSearchComponent extends Component {
             searching: true,
         })
 
-        const rawResult = await (new OpenContentClient({ ...contentHost, credentials: 'include', mode: 'cors' })).search(query)
+        const rawResult = await (new OpenContentClient(contentHost)).search(query)
         const jsonResult = await rawResult.json()
         const results = new QueryResponseHelper(jsonResult).getItems()
 

@@ -93,6 +93,23 @@ Host configuration used by the BA-proxy service.
 }
 ```
 
+Host configuration used to access a IMID protected ba-proxy
+`"credentials": "include",` and `"mode": "cors",` if IMID is not used by proxy, these props should be omitted
+
+```json
+{
+    "credentials": "include",
+    "mode": "cors",
+    "protocol": "http://",
+    "hostName": "localhost",
+    "port": "5555",
+    "healthPath": "/health",
+    "queryPath": "/search",
+    "objectPath": "/objects",
+    "sortingsPath": "/sortings"
+}
+```
+
 ### Standard Query Options
 Standard options used for every search call. Might be used for contenttype filtering, disabling faceting, or enabling only fetching latest version of a document.   
 See Open Content API documentation for available properties.

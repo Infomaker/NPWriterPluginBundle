@@ -13,7 +13,7 @@ class ContentRelationsMainComponent extends Component {
 
         this.extendState({ sorting: relevance, sortings: [relevance] })
 
-        new OpenContentClient({ ...contentHost, credentials: 'include', mode: 'cors'} )
+        new OpenContentClient(contentHost)
             .getSortings()
             .then(response => api.router.checkForOKStatus(response))
             .then(response => response.json())

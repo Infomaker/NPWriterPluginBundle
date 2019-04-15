@@ -29,6 +29,7 @@ The tab under which the plugin will be rendered can be specified with the:
 - `"defaultSorting": "Updated"` name of the OC sorting to be used as default sorting
 - `"npDropLinkMatcher":` On drop, If a match is found params is updated with `isNpDroplink=true`
 - `"contentHost": {... ` BA-proxy config
+- `"credentials": "include",` and `"mode": "cors",` indicates the usage of a ba-proxy using IMID, if not, those props should be omitted
 - `"contenttype": "Article",` Article contentType in OC
 - `"locale": "sv",` Locale used to print dates
 - `"defaultQueries": [ ` populate the query-dropdown with queries
@@ -46,6 +47,10 @@ The tab under which the plugin will be rendered can be specified with the:
         "defaultSorting": "Updated",
         "npDropLinkMatcher": "http://127.0.0.1:8080/opencontent[^\\s]+",
         "contentHost": {
+
+            "credentials": "include",
+            "mode": "cors",
+
             "protocol": "https://",
             "hostName": "baproxy.dev.gota.infomaker.io",
             "port": "5555",
