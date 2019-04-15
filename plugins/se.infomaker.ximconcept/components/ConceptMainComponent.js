@@ -156,6 +156,7 @@ class ConceptMainComponent extends Component {
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
+        const searchOnFocus = pluginConfig.hasOwnProperty('searchOnFocus') ? pluginConfig.searchOnFocus : true
         const articleConcepts = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
         const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
@@ -172,7 +173,8 @@ class ConceptMainComponent extends Component {
             existingItems,
             conceptType,
             propertyMap,
-            associatedLinks
+            associatedLinks,
+            searchOnFocus
         }
     }
 
@@ -334,8 +336,7 @@ class ConceptMainComponent extends Component {
         let search
         const config = this.state.pluginConfig || {}
         const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
-        const { propertyMap } = this.state
-        const { conceptType, types } = this.state || {}
+        const { propertyMap, conceptType, types, searchOnFocus } = this.state
         const header = $$('h2', { class: 'concept-header' }, [
             `${label} (${this.state.existingItems.length})`
         ])
@@ -364,6 +365,7 @@ class ConceptMainComponent extends Component {
                 addItem: this.addItem,
                 itemExists: this.itemExists,
                 associatedWith,
+                searchOnFocus,
                 icon,
                 types: config.types
             }).ref(`conceptSearchComponent-${this.state.name}`)

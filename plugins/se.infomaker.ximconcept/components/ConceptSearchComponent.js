@@ -96,7 +96,6 @@ class ConceptSearchComponent extends Component {
 
         el.addClass('concept-search-component')
             .append(searchForm)
-            // .append(searchFormIcon)
             .append(searchResultsContainer)
 
         return el
@@ -131,6 +130,8 @@ class ConceptSearchComponent extends Component {
     }
 
     handleFocus() {
+        const {searchOnFocus} = this.props
+
         this.resetState()
         this.extendState({
             searching: this.state.searching + 1,
@@ -139,8 +140,7 @@ class ConceptSearchComponent extends Component {
         })
 
         // Search on focus, unless searchOnFocus is defined and set to false.
-        const data = this.parent.props.pluginConfigObject.pluginConfigObject.data
-        if (!data || data.hasOwnProperty('searchOnFocus') === false || data.searchOnFocus !== false) {
+        if (searchOnFocus) {
             this.search('*', this.state.seq)
         }
     }
@@ -164,16 +164,8 @@ class ConceptSearchComponent extends Component {
             this.props.associatedWith
         )
 
-        // Sequence which was supplied and sequence in state might differ, if they do just return
         const {seq} = this.state
-        if (inSeq !== seq) {
-            this.extendState({
-                searching: this.state.searching > 0 ? this.state.searching - 1 : 0
-            })
-            return
-        }
-
-        if (this.state.hasFocus) {
+        if (this.state.hasFocus && inSeq === seq) {
             this.extendState({
                 searching: this.state.searching > 0 ? this.state.searching - 1: 0,
                 searchResult: result,
