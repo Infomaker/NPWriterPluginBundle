@@ -141,7 +141,7 @@ class ConceptSearchComponent extends Component {
         // Search on focus, unless searchOnFocus is defined and set to false.
         const data = this.parent.props.pluginConfigObject.pluginConfigObject.data
         if (!data || data.hasOwnProperty('searchOnFocus') === false || data.searchOnFocus !== false) {
-            this.search('*')
+            this.search('*', this.state.seq)
         }
     }
 
@@ -151,6 +151,11 @@ class ConceptSearchComponent extends Component {
         this.extendState({ hasFocus: false })
     }
 
+    /**
+     * @param term
+     * @param inSeq
+     * @returns {Promise<void>}
+     */
     async search(term, inSeq) {
         const result = await ConceptService.searchForConceptSuggestions(
             this.props.conceptTypes,
@@ -159,6 +164,7 @@ class ConceptSearchComponent extends Component {
             this.props.associatedWith
         )
 
+        // Sequence which was supplied and sequence in state might differ, if they do just return
         const {seq} = this.state
         if (inSeq !== seq) {
             this.extendState({
