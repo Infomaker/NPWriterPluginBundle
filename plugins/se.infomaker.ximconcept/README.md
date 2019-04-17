@@ -14,18 +14,6 @@ requires `ConceptAssociatedWithRelations` and `ConceptAssociatedWithMeRelations`
 
 As of now these are the supported types ([External link](https://github.com/Infomaker/writer-format/blob/master/newsml/conceptitem/im-conceptitem-spec.md))
 
-- x-im/category
-- x-im/tag
-- x-im/person
-- x-im/organisation
-- x-im/content-profile
-- x-im/place
-- x-im/event
-- x-im/author
-- x-im/story
-- x-im/channel
-- x-im/section
-
 ### Plugin config
 
 The plugin can be configured to handle one or many types, it can also be configured to handle one or many subtypes and/or owning concept type through associatedWith.
@@ -47,6 +35,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"subtypes": [...]` A list of subtypes that are allowed
 - `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
 - `"searchOnFocus": true` If a search should be performed when the input-field gets focused. If omitted defaults to `true`
+- `"allowedConceptStatuses": ["draft", "usable"]` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
 
 #### Example Configs
 
@@ -71,7 +60,9 @@ Section:
         "singleValue": true,
         "appendDataToLink": false,
         "provider": "writer",
-        "pubStatus": "imext:draft"
+        "pubStatus": "imext:draft",
+        "searchOnFocus": true,
+        "allowedConceptStatuses": ["draft", "usable"]
     }
 }
 ```
@@ -185,6 +176,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
     "searchLimit": 50,
     "sortField": "ConceptNameString",
     "titleSearchField": "ConceptNameString",
+    "allowedConceptStatuses": ["draft", "usable"],
     "propertyMap": {
         ...
     }
@@ -199,6 +191,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
 - `"searchLimit": 50,` Sets the search limit for concept searches
 - `"sortField": "ConceptNameString",` Which index field to sort by
 - `"titleSearchField": "ConceptNameString",` optional property to set OC property to use for concept title search, defaults (if omitted) to `ConceptName`
+- `"allowedConceptStatuses": ["draft", "usable"],` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
 - `"propertyMap": { ... }` See below
 
 #### BA_PROXY

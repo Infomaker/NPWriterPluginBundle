@@ -157,17 +157,21 @@ class ConceptSearchComponent extends Component {
      * @returns {Promise<void>}
      */
     async search(term, inSeq) {
+        const { conceptTypes, subtypes, associatedWith, allowedConceptStatuses } = this.props
+        console.info('SEARCH: ', allowedConceptStatuses)
+
         const result = await ConceptService.searchForConceptSuggestions(
-            this.props.conceptTypes,
+            conceptTypes,
             term,
-            this.props.subtypes,
-            this.props.associatedWith
+            subtypes,
+            associatedWith,
+            allowedConceptStatuses
         )
 
-        const {seq} = this.state
-        if (this.state.hasFocus && inSeq === seq) {
+        const { hasFocus, seq, searching } = this.state
+        if (hasFocus && inSeq === seq) {
             this.extendState({
-                searching: this.state.searching > 0 ? this.state.searching - 1: 0,
+                searching: searching > 0 ? searching - 1: 0,
                 searchResult: result,
                 selected: 0,
                 searchedTerm: term,
