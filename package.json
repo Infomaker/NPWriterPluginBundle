@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config __tooling__/webpack/webpack.prod.js",
-    "dev": "webpack-dev-server --config __tooling__/webpack/webpack.dev.js --compress",
+    "dev": "webpack-dev-server --config __tooling__/webpack/webpack.dev.js",
     "release:major": "npm version major --no-git-tag-version",
     "release:minor": "npm version minor --no-git-tag-version",
     "release:hotfix": "npm version patch --no-git-tag-version",

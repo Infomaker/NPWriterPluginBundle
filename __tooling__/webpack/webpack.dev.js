@@ -10,10 +10,9 @@
 | I'm a comment, not a cop.
 |
 */
-const webpack = require('webpack')
 const merge = require('webpack-merge')
-const common = require('./webpack.common.js')
 const path = require('path')
+const common = require('./webpack.common.js')
 
 console.info(` ----------------------------
    Plugin development build
@@ -36,12 +35,11 @@ module.exports = merge(common,
             disableHostCheck: true,
             contentBase: path.join(__dirname, 'dist'),
             historyApiFallback: true,
-            compress: false,
+            compress: true,
             progress: true,
+            inline: false,
             port: 5001
         },
-        plugins: [
-            new webpack.HotModuleReplacementPlugin()
-        ]
+        plugins: []
     }
 )
