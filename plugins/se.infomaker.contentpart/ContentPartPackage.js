@@ -1,4 +1,4 @@
-import InserContentPartCommand from './InserContentPartCommand'
+import InsertContentPartCommand from './InsertContentPartCommand'
 import ContentPartComponent from './ContentPartComponent'
 import ContentPartConverter from './ContentPartConverter'
 import ContentPartNode from './ContentPartNode'
@@ -12,7 +12,7 @@ export default {
     configure: function (config) {
         config.addNode(ContentPartNode)
         config.addContentMenuTopTool('insert-contentpart', InsertContentPartTool)
-        config.addCommand('insert-contentpart', InserContentPartCommand)
+        config.addCommand('insert-contentpart', InsertContentPartCommand)
         config.addComponent('contentpart', ContentPartComponent)
         config.addConverter(ContentPartConverter)
 

@@ -2,7 +2,7 @@ import {InsertNodeCommand} from 'substance'
 import {api, idGenerator} from 'writer'
 import uuidv4 from 'uuid/v4'
 
-class InserContentPartCommand extends InsertNodeCommand {
+class InsertContentPartCommand extends InsertNodeCommand {
 
     execute(params) {
 
@@ -63,4 +63,4 @@ class InserContentPartCommand extends InsertNodeCommand {
     }
 }
 
-export default InserContentPartCommand
+export default InsertContentPartCommand
