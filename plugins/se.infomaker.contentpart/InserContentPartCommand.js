@@ -1,10 +1,10 @@
 import {InsertNodeCommand} from 'substance'
 import {api, idGenerator} from 'writer'
+import uuidv4 from 'uuid/v4'
 
 class InserContentPartCommand extends InsertNodeCommand {
 
     execute(params) {
-        const id = idGenerator()
 
         params.editorSession.transaction((tx) => {
             const emptyParamNode = tx.create({
@@ -14,7 +14,8 @@ class InserContentPartCommand extends InsertNodeCommand {
 
             const node = {
                 type: 'contentpart',
-                id: id,
+                id: idGenerator(),
+                uuid: uuidv4(),
                 contentPartUri: this.getDefaultContentPartUri(),
                 nodes: [emptyParamNode.id]
             }
