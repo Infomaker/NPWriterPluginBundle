@@ -27,6 +27,7 @@ export default {
         const manager = new ContentPartManager(node)
 
         node.id = el.attr('id')
+        node.uuid = el.attr('uuid')
 
         if (el.find('subject')) {
             node.subject = el.find('subject').text()
@@ -100,6 +101,7 @@ export default {
 
         el.attr({
             id: node.id,
+            uuid: node.uuid,
             type: 'x-im/content-part'
         })
 
