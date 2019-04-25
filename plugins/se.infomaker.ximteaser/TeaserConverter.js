@@ -14,7 +14,10 @@ export default {
     import: function(el, node, converter) {
         const nodeId = el.attr('id')
         node.dataType = el.attr('type')
-        node.uuid = el.attr('uuid')
+
+        if (el.find('uuid')) {
+            node.uuid = el.attr('uuid')
+        }
 
         const dataEl = el.find(':scope > data')
         if (dataEl) {
@@ -246,9 +249,14 @@ export default {
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
-            uuid: node.uuid,
             type: node.dataType
         })
+
+        if(node.uuid) {
+            el.attr({
+                uuid: node.uuid
+            })
+        }
 
         // Data element
         const data = $$('data')
