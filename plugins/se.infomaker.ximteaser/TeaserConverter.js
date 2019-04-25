@@ -14,6 +14,7 @@ export default {
     import: function(el, node, converter) {
         const nodeId = el.attr('id')
         node.dataType = el.attr('type')
+        node.uuid = el.attr('uuid')
 
         const dataEl = el.find(':scope > data')
         if (dataEl) {
@@ -72,6 +73,7 @@ export default {
         const linkEl = el.find('links > link[rel="image"]')
         if (linkEl) {
             node.imageType = linkEl.attr('type')
+            node.imageUuid = linkEl.attr('imageUuid')
 
             let imageFile = {
                 id: idGenerator(),
@@ -108,7 +110,6 @@ export default {
 
             converter.createNode(imageFile)
             node.imageFile = imageFile.id
-            node.uuid = linkEl.attr('uuid')
         }
     },
 
@@ -245,6 +246,7 @@ export default {
         el.removeAttr('data-id')
         el.attr({
             id: node.id,
+            uuid: node.uuid,
             type: node.dataType
         })
 
