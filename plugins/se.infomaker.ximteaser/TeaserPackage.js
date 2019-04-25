@@ -13,6 +13,7 @@ import InsertTeaserImageCommand from './InsertTeaserImageCommand'
 import InsertTeaserArticleCommand from './InsertTeaserArticleCommand'
 
 import {idGenerator} from 'writer'
+import uuidv4 from 'uuid/v4'
 
 export default {
     name: 'ximteaser',
@@ -38,6 +39,7 @@ export default {
                 type: 'ximteaser',
                 dataType: type,
                 id: idGenerator(),
+                uuid: uuidv4(),
                 nodes: []
             }
         })
