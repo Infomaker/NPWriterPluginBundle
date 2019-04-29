@@ -93,13 +93,13 @@ Host configuration used by the BA-proxy service.
 }
 ```
 
-Host configuration used to access a IMID protected ba-proxy
-`"credentials": "include",` and `"mode": "cors",` if IMID is not used by proxy, these props should be omitted
+#### IMID protected ba-proxy, host configuration
+
+If a IMID protected proxy is used the `"credentials": "include"` property *MUST* be set, if there is no IMID it *MUST NOT* be set, or set to `omit`
 
 ```json
 {
     "credentials": "include",
-    "mode": "cors",
     "protocol": "http://",
     "hostName": "localhost",
     "port": "5555",

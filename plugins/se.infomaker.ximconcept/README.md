@@ -162,6 +162,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
 "conceptServiceConfig": {
     "conceptPath": "https://s3-eu-west-1.amazonaws.com/concepts-config-dev/writer/",
     "baProxy": {
+        "credentials": "include",
         "protocol": "http://",
         "hostName": "localhost",
         "port": "5555",
@@ -182,7 +183,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
     }
 }
 ```
-
+-  `"credentials": "include",` If a IMID protected proxy is used this property *MUST* be set, if there is no IMID it *MUST NOT* be set, or set to `omit`
 - `"conceptPath": "https://...",` A remote path from where ConceptService can load concept config and templates
 - `"contenttype": "Concept",` Concepts contentType in OC
 - `"broaderLimit": 3,` How many steps ConceptService should follow Broader links
