@@ -131,8 +131,7 @@ class ConceptSearchComponent extends Component {
 
     handleFocus() {
         const {searchOnFocus} = this.props
-        let seq = this.state.seq
-        let searching = this.state.searching
+        let {seq, searching} = this.state
 
         this.resetState()
 
