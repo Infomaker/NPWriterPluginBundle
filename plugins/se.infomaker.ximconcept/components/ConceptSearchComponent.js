@@ -164,7 +164,6 @@ class ConceptSearchComponent extends Component {
      */
     async search(term, inSeq) {
         const { conceptTypes, subtypes, associatedWith, allowedConceptStatuses } = this.props
-        console.info('SEARCH: ', allowedConceptStatuses)
 
         const result = await ConceptService.searchForConceptSuggestions(
             conceptTypes,
