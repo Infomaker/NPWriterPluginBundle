@@ -71,7 +71,7 @@ class ImageGalleryComponent extends Component {
                 initialPosition: this._storedGalleryPosition,
                 downloadEnabled: this._downloadEnabled,
                 onCropsClick: (galleryImageNode) => {
-                    this._openCropper($$, galleryImageNode)
+                    this._openCropper($$, galleryImageNode, this.refs)
                 },
                 onInfoClick: (galleryImageNode) => {
                     this._openMetaData(galleryImageNode)
@@ -191,7 +191,7 @@ class ImageGalleryComponent extends Component {
                     this._removeImage(galleryImageNodeId)
                 },
                 onCropClick: () => {
-                    this._openCropper($$, galleryImageNode)
+                    this._openCropper($$, galleryImageNode, this.refs)
                 },
                 onInfoClick: () => {
                     this._openMetaData(galleryImageNode)
@@ -268,34 +268,43 @@ class ImageGalleryComponent extends Component {
         })
     }
 
-    _openCropper($$, galleryImageNode) {
+    _openCropper($$, galleryImageNode, references) {
         galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
             .then((src) => {
-                const cropper = $$(UIImageCropper, {
-                    parentId: galleryImageNode,
-                    src,
-                    configuredCrops: this._configuredCrops,
-                    width: galleryImageNode.width,
-                    height: galleryImageNode.height,
-                    crops: galleryImageNode.crops.crops || [],
-                    disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
-                    hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
-                    abort: () => {
-                        this.refs.cropperOverlay.addClass('hidden')
-                        return true
-                    },
-                    restore: () => {
-                        galleryImageNode.setSoftcropData([])
-                        this.rerender()
-                    },
-                    save: (newCrops, disableAutomaticCrop) => {
-                        galleryImageNode.setSoftcropData(newCrops, disableAutomaticCrop)
-                        this.rerender()
-                    }
-                })
+                let imageId = 'cropper_' + galleryImageNode.id
+                let cropper = references[imageId]
 
+                if (!cropper) {
+                    // Creates cropper if none exist
+                    cropper = $$(UIImageCropper, {
+                        parentId: galleryImageNode,
+                        src,
+                        configuredCrops: this._configuredCrops,
+                        width: galleryImageNode.width,
+                        height: galleryImageNode.height,
+                        crops: galleryImageNode.crops.crops || [],
+                        disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
+                        hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
+                        abort: () => {
+                            this.refs.cropperOverlay.addClass('hidden')
+                            delete references[imageId]
+                            return true
+                        },
+                        restore: () => {
+                            galleryImageNode.setSoftcropData([])
+                            delete references[imageId]
+                            this.rerender()
+                        },
+                        save: (newCrops, disableAutomaticCrop) => {
+                            galleryImageNode.setSoftcropData(newCrops, disableAutomaticCrop)
+                            delete references[imageId]
+                            this.rerender()
+                        }
+                    })
+                    references[imageId] = cropper
+                    this.refs.cropperOverlay.append(cropper)
+                }
                 this.refs.cropperOverlay.removeClass('hidden')
-                this.refs.cropperOverlay.append(cropper)
             })
             .catch(err => {
                 console.error(err)
