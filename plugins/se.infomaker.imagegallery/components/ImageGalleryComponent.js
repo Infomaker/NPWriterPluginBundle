@@ -20,6 +20,12 @@ import ImageGalleryPreviewComponent from './ImageGalleryPreviewComponent'
  */
 class ImageGalleryComponent extends Component {
 
+    getInitialState () {
+        return { 
+            downloadButtonClicked: false
+        }
+    }
+
     /**
      * Only rerender when not focused.
      * This avoids multiple author and image rerenders
@@ -55,7 +61,22 @@ class ImageGalleryComponent extends Component {
         }
     }
 
+    /**
+     * Add delay to prevent multiple clicks on download.
+     */
+    onDownloadClick (galleryImageNode, downloadButtonClicked) {
+        const delay = 500
+        if (!downloadButtonClicked) {
+            this.extendState({downloadButtonClicked: true})
+            this._downloadImage(galleryImageNode)
+            setTimeout(() => {
+                this.extendState({downloadButtonClicked: false})
+            },delay);
+        }
+    }
+    
     render($$) {
+        const {downloadButtonClicked} = this.state
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
             .append(this._renderHeader($$))
@@ -77,7 +98,7 @@ class ImageGalleryComponent extends Component {
                     this._openMetaData(galleryImageNode)
                 },
                 onDownloadClick: (galleryImageNode) => {
-                    this._downloadImage(galleryImageNode)
+                    this.onDownloadClick(galleryImageNode, downloadButtonClicked)
                 },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
@@ -169,6 +190,7 @@ class ImageGalleryComponent extends Component {
      * @private
      */
     _renderToolbox($$) {
+        const {downloadButtonClicked} = this.state
         const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
             .append(this._renderHeader($$))
             .ref('toolBox')
@@ -197,7 +219,7 @@ class ImageGalleryComponent extends Component {
                     this._openMetaData(galleryImageNode)
                 },
                 onDownloadClick: () => {
-                    this._downloadImage(galleryImageNode)
+                    this.onDownloadClick(galleryImageNode, downloadButtonClicked)
                 }
             }).ref(galleryImageNode.id))
         })
