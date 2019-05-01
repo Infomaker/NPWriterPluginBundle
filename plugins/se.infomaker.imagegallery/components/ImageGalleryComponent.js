@@ -20,6 +20,12 @@ import ImageGalleryPreviewComponent from './ImageGalleryPreviewComponent'
  */
 class ImageGalleryComponent extends Component {
 
+    getInitialState () {
+        return { 
+            infoButtonClicked: false
+        }
+    }
+
     /**
      * Only rerender when not focused.
      * This avoids multiple author and image rerenders
@@ -55,7 +61,18 @@ class ImageGalleryComponent extends Component {
         }
     }
 
+    /**
+     * Prevent multiple clicks on get info
+     */
+    onInfoClick (galleryImageNode, infoButtonClicked) {
+        if (!infoButtonClicked) {
+            this._openMetaData(galleryImageNode)
+            this.extendState({infoButtonClicked: true})
+        }
+    }
+
     render($$) {
+        const {infoButtonClicked} = this.state
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
             .append(this._renderHeader($$))
@@ -74,7 +91,7 @@ class ImageGalleryComponent extends Component {
                     this._openCropper($$, galleryImageNode)
                 },
                 onInfoClick: (galleryImageNode) => {
-                    this._openMetaData(galleryImageNode)
+                    this.onInfoClick(galleryImageNode, infoButtonClicked)
                 },
                 onDownloadClick: (galleryImageNode) => {
                     this._downloadImage(galleryImageNode)
@@ -169,6 +186,7 @@ class ImageGalleryComponent extends Component {
      * @private
      */
     _renderToolbox($$) {
+        const {infoButtonClicked} = this.state
         const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
             .append(this._renderHeader($$))
             .ref('toolBox')
@@ -194,7 +212,7 @@ class ImageGalleryComponent extends Component {
                     this._openCropper($$, galleryImageNode)
                 },
                 onInfoClick: () => {
-                    this._openMetaData(galleryImageNode)
+                    this.onInfoClick(galleryImageNode, infoButtonClicked)
                 },
                 onDownloadClick: () => {
                     this._downloadImage(galleryImageNode)
@@ -335,6 +353,7 @@ class ImageGalleryComponent extends Component {
                         focusPrimary: false
                     }
                 )
+                this.extendState({infoButtonClicked: false})
             })
     }
 
