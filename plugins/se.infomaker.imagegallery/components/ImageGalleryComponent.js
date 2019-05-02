@@ -28,8 +28,13 @@ class ImageGalleryComponent extends Component {
      * @param newProps
      * @returns {boolean}
      */
-    shouldRerender(newProps) {
-        return newProps.isolatedNodeState !== 'focused'
+    shouldRerender(newProps, newState) {
+        return (
+            newProps.isolatedNodeState !== 'focused' ||
+            newState.openCropper !== this.state.openCropper ||
+            newState.galleryImageNode !== this.state.galleryImageNode ||
+            newState.galleryImageNodeSrc !== this.state.galleryImageNodeSrc
+        )
     }
 
     didMount() {
@@ -56,13 +61,22 @@ class ImageGalleryComponent extends Component {
     }
 
     render($$) {
+        const {openCropper} = this.state
+
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
             .append(this._renderHeader($$))
 
+        if (openCropper) {
+            el.append(
+                $$('div', { class: 'cropper-overlay' },
+                    this._renderCropper($$)
+                )
+            )
+        }
+
         if (this.props.node.length > 0) {
-            const cropperOverlay = $$('div').addClass('cropper-overlay hidden').ref('cropperOverlay')
-            const galleryPreview = $$(ImageGalleryPreviewComponent, {
+            el.append($$(ImageGalleryPreviewComponent, {
                 node: this.props.node,
                 isolatedNodeState: this.props.isolatedNodeState,
                 cropsEnabled: this._cropsEnabled,
@@ -71,7 +85,15 @@ class ImageGalleryComponent extends Component {
                 initialPosition: this._storedGalleryPosition,
                 downloadEnabled: this._downloadEnabled,
                 onCropsClick: (galleryImageNode) => {
-                    this._openCropper($$, galleryImageNode, this.refs)
+
+                    this.extendState({ openCropper: true })
+
+                    this._fetchCrops(galleryImageNode).then(src => {
+                        this.extendState({
+                            galleryImageNode,
+                            galleryImageNodeSrc: src,
+                        })
+                    })
                 },
                 onInfoClick: (galleryImageNode) => {
                     this._openMetaData(galleryImageNode)
@@ -82,9 +104,7 @@ class ImageGalleryComponent extends Component {
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
                 }
-            })
-
-            el.append([cropperOverlay, galleryPreview])
+            }))
         } else {
             const dropZoneText = $$('div').addClass('dropzone-text').append(this.getLabel('im-imagegallery.dropzone-label'))
             const dropzone = $$('div').addClass('image-gallery-dropzone').append(dropZoneText).ref('dropZone')
@@ -191,7 +211,15 @@ class ImageGalleryComponent extends Component {
                     this._removeImage(galleryImageNodeId)
                 },
                 onCropClick: () => {
-                    this._openCropper($$, galleryImageNode, this.refs)
+
+                    this.extendState({ openCropper: true })
+
+                    this._fetchCrops(galleryImageNode).then(src => {
+                        this.extendState({
+                            galleryImageNode,
+                            galleryImageNodeSrc: src,
+                        })
+                    })
                 },
                 onInfoClick: () => {
                     this._openMetaData(galleryImageNode)
@@ -268,44 +296,8 @@ class ImageGalleryComponent extends Component {
         })
     }
 
-    _openCropper($$, galleryImageNode, references) {
-        galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
-            .then((src) => {
-                let imageId = 'cropper_' + galleryImageNode.id
-                let cropper = references[imageId]
-
-                if (!cropper) {
-                    // Creates cropper if none exist
-                    cropper = $$(UIImageCropper, {
-                        parentId: galleryImageNode,
-                        src,
-                        configuredCrops: this._configuredCrops,
-                        width: galleryImageNode.width,
-                        height: galleryImageNode.height,
-                        crops: galleryImageNode.crops.crops || [],
-                        disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
-                        hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
-                        abort: () => {
-                            this.refs.cropperOverlay.addClass('hidden')
-                            delete references[imageId]
-                            return true
-                        },
-                        restore: () => {
-                            galleryImageNode.setSoftcropData([])
-                            delete references[imageId]
-                            this.rerender()
-                        },
-                        save: (newCrops, disableAutomaticCrop) => {
-                            galleryImageNode.setSoftcropData(newCrops, disableAutomaticCrop)
-                            delete references[imageId]
-                            this.rerender()
-                        }
-                    })
-                    references[imageId] = cropper
-                    this.refs.cropperOverlay.append(cropper)
-                }
-                this.refs.cropperOverlay.removeClass('hidden')
-            })
+    _fetchCrops(galleryImageNode) {
+        return galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
             .catch(err => {
                 console.error(err)
                 api.ui.showMessageDialog([{
@@ -313,6 +305,52 @@ class ImageGalleryComponent extends Component {
                     message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
                 }])
             })
+    }
+
+    _renderCropper($$) {
+        const {galleryImageNode, galleryImageNodeSrc} = this.state
+
+        if (galleryImageNode && galleryImageNodeSrc) {
+            return $$(UIImageCropper, {
+                parentId: galleryImageNode,
+                src: galleryImageNodeSrc,
+                configuredCrops: this._configuredCrops,
+                width: galleryImageNode.width,
+                height: galleryImageNode.height,
+                crops: galleryImageNode.crops.crops || [],
+                disableAutomaticCrop: galleryImageNode.disableAutomaticCrop,
+                hideDisableCropsCheckbox: this._hideDisableCropsCheckbox,
+                abort: () => {
+                    this.extendState({
+                        galleryImageNode: null,
+                        galleryImageNodeSrc: null,
+                        openCropper: false
+                    })
+                },
+                restore: () => {
+                    galleryImageNode.setSoftcropData([])
+
+                    this.extendState({
+                        galleryImageNode: null,
+                        galleryImageNodeSrc: null,
+                        openCropper: false
+                    })
+                },
+                save: (newCrops, disableAutomaticCrop) => {
+                    galleryImageNode.setSoftcropData(newCrops, disableAutomaticCrop)
+
+                    this.extendState({
+                        galleryImageNode: null,
+                        galleryImageNodeSrc: null,
+                        openCropper: false
+                    })
+                }
+            })
+        } else {
+            return $$('div', { class: 'loading-previews-spinner' },
+                $$('i', { class: 'fa fa-spinner fa-spin' })
+            )
+        }
     }
 
     /**
