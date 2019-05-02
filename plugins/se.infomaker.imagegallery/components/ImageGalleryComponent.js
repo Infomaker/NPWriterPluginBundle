@@ -31,11 +31,22 @@ class ImageGalleryComponent extends Component {
     shouldRerender(newProps, newState) {
         return (
             newProps.isolatedNodeState !== 'focused' ||
-            newState.openCropper !== this.state.openCropper ||
+            newState.showImageCrop !== this.state.showImageCrop ||
             newState.galleryImageNode !== this.state.galleryImageNode ||
-            newState.galleryImageNodeSrc !== this.state.galleryImageNodeSrc
+            newState.galleryImageNodeSrc !== this.state.galleryImageNodeSrc ||
+            newState.medataButtonClicked !== this.state.medataButtonClicked
         )
     }
+
+    getInitialState () {
+        return {
+            showImageCrop: false,
+            metadataButtonClicked: false,
+            galleryImageNode: null,
+            galleryImageNodeSrc: null,
+        }
+    }
+
 
     didMount() {
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
@@ -61,13 +72,13 @@ class ImageGalleryComponent extends Component {
     }
 
     render($$) {
-        const {openCropper} = this.state
+        const {showImageCrop, metadataButtonClicked} = this.state
 
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
             .append(this._renderHeader($$))
 
-        if (openCropper) {
+        if (showImageCrop) {
             el.append(
                 $$('div', { class: 'cropper-overlay' },
                     this._renderCropper($$)
@@ -86,17 +97,19 @@ class ImageGalleryComponent extends Component {
                 downloadEnabled: this._downloadEnabled,
                 onCropsClick: (galleryImageNode) => {
 
-                    this.extendState({ openCropper: true })
-
                     this._fetchCrops(galleryImageNode).then(src => {
                         this.extendState({
+                            showImageCrop: true,
                             galleryImageNode,
                             galleryImageNodeSrc: src,
                         })
                     })
                 },
                 onInfoClick: (galleryImageNode) => {
-                    this._openMetaData(galleryImageNode)
+                    if (!metadataButtonClicked) {
+                        this.extendState({metadataButtonClicked: true})
+                        this._openMetaData(galleryImageNode)
+                    }
                 },
                 onDownloadClick: (galleryImageNode) => {
                     this._downloadImage(galleryImageNode)
@@ -211,18 +224,19 @@ class ImageGalleryComponent extends Component {
                     this._removeImage(galleryImageNodeId)
                 },
                 onCropClick: () => {
-
-                    this.extendState({ openCropper: true })
-
                     this._fetchCrops(galleryImageNode).then(src => {
                         this.extendState({
+                            showImageCrop: true,
                             galleryImageNode,
                             galleryImageNodeSrc: src,
                         })
                     })
                 },
                 onInfoClick: () => {
-                    this._openMetaData(galleryImageNode)
+                    if (!this.state.metadataButtonClicked) {
+                        this.extendState({metadataButtonClicked: true})
+                        this._openMetaData(galleryImageNode)
+                    }
                 },
                 onDownloadClick: () => {
                     this._downloadImage(galleryImageNode)
@@ -302,7 +316,7 @@ class ImageGalleryComponent extends Component {
                 this.extendState({
                     galleryImageNode: null,
                     galleryImageNodeSrc: null,
-                    openCropper: false
+                    showImageCrop: false
                 })
 
                 console.error(err)
@@ -315,6 +329,7 @@ class ImageGalleryComponent extends Component {
 
     _renderCropper($$) {
         const {galleryImageNode, galleryImageNodeSrc} = this.state
+        const apa = false
 
         if (galleryImageNode && galleryImageNodeSrc) {
             return $$(UIImageCropper, {
@@ -330,7 +345,7 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        openCropper: false
+                        showImageCrop: false
                     })
                 },
                 restore: () => {
@@ -339,7 +354,7 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        openCropper: false
+                        showImageCrop: false
                     })
                 },
                 save: (newCrops, disableAutomaticCrop) => {
@@ -348,13 +363,13 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        openCropper: false
+                        showImageCrop: false
                     })
                 }
             })
         } else {
             return $$('div', { class: 'loading-previews-spinner' },
-                $$('i', { class: 'fa fa-spinner fa-spin' })
+                $$('i', { class: 'fa fa-cog fa-spin' })
             )
         }
     }
@@ -368,8 +383,12 @@ class ImageGalleryComponent extends Component {
      */
     _openMetaData(galleryImageNode) {
         const imageNode = this.context.api.doc.get(galleryImageNode.imageFile)
+
         api.router.getNewsItem(imageNode.uuid, 'x-im/image')
             .then(response => {
+
+                this.extendState({metadataButtonClicked: false})
+
                 api.ui.showDialog(
                     UIDialogImage,
                     {
@@ -388,6 +407,11 @@ class ImageGalleryComponent extends Component {
                         focusPrimary: false
                     }
                 )
+            })
+            .catch(() => {
+                this.extendState({
+                    openInfo: false
+                })
             })
     }
 

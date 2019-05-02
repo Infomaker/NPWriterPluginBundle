@@ -13,7 +13,7 @@ class ImageDisplay extends Component {
     }
 
     getInitialState () {
-        return { 
+        return {
             cropButtonClicked: false,
             metadataButtonClicked: false
         }
@@ -84,13 +84,12 @@ class ImageDisplay extends Component {
                 $$(Button, {
                     icon: 'image'
                 })
-                .on('click', () => {
-                    // Prevents multiple clicks
-                    if (!metadataButtonClicked) {
-                        this._openMetaData()
-                        this.extendState({metadataButtonClicked: true})
-                    }
-                })
+                    .on('click', () => {
+                        if (!metadataButtonClicked) {
+                            this._openMetaData()
+                            this.extendState({metadataButtonClicked: true})
+                        }
+                    })
 
             )
         }
@@ -219,6 +218,7 @@ class ImageDisplay extends Component {
             })
             .catch(err => {
                 console.error(err)
+                this.extendState({cropButtonClicked: false})
                 api.ui.showMessageDialog([{
                     type: 'error',
                     message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
@@ -254,7 +254,9 @@ class ImageDisplay extends Component {
     _openMetaData() {
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
-                this.extendState({medataButtonClicked: false})
+
+                this.extendState({ metadataButtonClicked: false })
+
                 api.ui.showDialog(
                     UIDialogImage,
                     {
