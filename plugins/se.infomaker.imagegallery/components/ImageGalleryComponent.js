@@ -33,6 +33,7 @@ class ImageGalleryComponent extends Component {
         return (
             newProps.isolatedNodeState !== 'focused' ||
             newState.showImageCrop !== this.state.showImageCrop ||
+            newState.cropButtonClicked !== this.state.cropButtonClicked ||
             newState.galleryImageNode !== this.state.galleryImageNode ||
             newState.galleryImageNodeSrc !== this.state.galleryImageNodeSrc ||
             newState.medataButtonClicked !== this.state.medataButtonClicked
@@ -41,7 +42,7 @@ class ImageGalleryComponent extends Component {
 
     getInitialState () {
         return {
-            showImageCrop: false,
+            cropButtonClicked: false,
             metadataButtonClicked: false,
             downloadButtonClicked: false,
             galleryImageNode: null,
@@ -85,7 +86,7 @@ class ImageGalleryComponent extends Component {
     }
 
     render($$) {
-        const {showImageCrop, metadataButtonClicked, downloadButtonClicked} = this.state
+        const {showImageCrop, cropButtonClicked, metadataButtonClicked, downloadButtonClicked} = this.state
 
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
@@ -109,14 +110,16 @@ class ImageGalleryComponent extends Component {
                 initialPosition: this._storedGalleryPosition,
                 downloadEnabled: this._downloadEnabled,
                 onCropsClick: (galleryImageNode) => {
-
-                    this._fetchCrops(galleryImageNode).then(src => {
-                        this.extendState({
-                            showImageCrop: true,
-                            galleryImageNode,
-                            galleryImageNodeSrc: src,
+                    if (!cropButtonClicked) {
+                        this.extendState({ cropButtonClicked: true })
+                        this._fetchCrops(galleryImageNode).then(src => {
+                            this.extendState({
+                                showImageCrop: true,
+                                galleryImageNode,
+                                galleryImageNodeSrc: src,
+                            })
                         })
-                    })
+                    }
                 },
                 onInfoClick: (galleryImageNode) => {
                     if (!metadataButtonClicked) {
@@ -241,13 +244,16 @@ class ImageGalleryComponent extends Component {
                     this._removeImage(galleryImageNodeId)
                 },
                 onCropClick: () => {
-                    this._fetchCrops(galleryImageNode).then(src => {
-                        this.extendState({
-                            showImageCrop: true,
-                            galleryImageNode,
-                            galleryImageNodeSrc: src,
+                    if (!this.state.cropButtonClicked) {
+                        this.extendState({ cropButtonClicked: true })
+                        this._fetchCrops(galleryImageNode).then(src => {
+                            this.extendState({
+                                showImageCrop: true,
+                                galleryImageNode,
+                                galleryImageNodeSrc: src,
+                            })
                         })
-                    })
+                    }
                 },
                 onInfoClick: () => {
                     if (!this.state.metadataButtonClicked) {
@@ -336,7 +342,8 @@ class ImageGalleryComponent extends Component {
                 this.extendState({
                     galleryImageNode: null,
                     galleryImageNodeSrc: null,
-                    showImageCrop: false
+                    showImageCrop: false,
+                    cropButtonClicked: false
                 })
 
                 console.error(err)
@@ -364,7 +371,8 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        showImageCrop: false
+                        showImageCrop: false,
+                        cropButtonClicked: false
                     })
                 },
                 restore: () => {
@@ -373,7 +381,8 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        showImageCrop: false
+                        showImageCrop: false,
+                        cropButtonClicked: false
                     })
                 },
                 save: (newCrops, disableAutomaticCrop) => {
@@ -382,7 +391,8 @@ class ImageGalleryComponent extends Component {
                     this.extendState({
                         galleryImageNode: null,
                         galleryImageNodeSrc: null,
-                        showImageCrop: false
+                        showImageCrop: false,
+                        cropButtonClicked: false
                     })
                 }
             })
