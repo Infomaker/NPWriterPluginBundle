@@ -35,6 +35,10 @@ The tab under which the plugin will be rendered can be specified with the:
 - `"defaultQueries": [ ` populate the query-dropdown with queries
 - `"icons": [... ` icons to use in results list, article.product (specified in propertyMap) will look for `icon.name`
 
+### IMID protected ba-proxy, host configuration
+
+If a IMID protected proxy is used the `"credentials": "include"` property *MUST* be set in the `contentHost` part, if there is no IMID it *MUST NOT* be set, or set to `omit`
+
 ```json
 {
     "id": "se.infomaker.contentrelations",
@@ -49,7 +53,6 @@ The tab under which the plugin will be rendered can be specified with the:
         "contentHost": {
 
             "credentials": "include",
-            "mode": "cors",
 
             "protocol": "https://",
             "hostName": "baproxy.dev.gota.infomaker.io",

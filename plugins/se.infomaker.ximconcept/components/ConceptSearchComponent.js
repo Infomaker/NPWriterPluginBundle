@@ -131,18 +131,24 @@ class ConceptSearchComponent extends Component {
 
     handleFocus() {
         const {searchOnFocus} = this.props
+        let {seq, searching} = this.state
 
         this.resetState()
-        this.extendState({
-            searching: this.state.searching + 1,
-            hasFocus: true,
-            seq: this.state.seq + 1
-        })
 
         // Search on focus, unless searchOnFocus is defined and set to false.
         if (searchOnFocus) {
-            this.search('*', this.state.seq)
+            seq = this.state.seq + 1
+            searching = this.state.searching + 1
+
+            this.search('*', seq)
         }
+
+        this.extendState({
+            searching,
+            seq,
+            hasFocus: true,
+        })
+
     }
 
     handleBlur() {
@@ -158,7 +164,6 @@ class ConceptSearchComponent extends Component {
      */
     async search(term, inSeq) {
         const { conceptTypes, subtypes, associatedWith, allowedConceptStatuses } = this.props
-        console.info('SEARCH: ', allowedConceptStatuses)
 
         const result = await ConceptService.searchForConceptSuggestions(
             conceptTypes,
