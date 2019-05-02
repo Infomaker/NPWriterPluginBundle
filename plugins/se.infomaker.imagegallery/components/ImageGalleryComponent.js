@@ -299,6 +299,12 @@ class ImageGalleryComponent extends Component {
     _fetchCrops(galleryImageNode) {
         return galleryImageNode.fetchSpecifiedUrls(['service', 'original'])
             .catch(err => {
+                this.extendState({
+                    galleryImageNode: null,
+                    galleryImageNodeSrc: null,
+                    openCropper: false
+                })
+
                 console.error(err)
                 api.ui.showMessageDialog([{
                     type: 'error',
