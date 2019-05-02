@@ -20,6 +20,7 @@ import ImageGalleryPreviewComponent from './ImageGalleryPreviewComponent'
  */
 class ImageGalleryComponent extends Component {
 
+
     /**
      * Only rerender when not focused.
      * This avoids multiple author and image rerenders
@@ -42,6 +43,7 @@ class ImageGalleryComponent extends Component {
         return {
             showImageCrop: false,
             metadataButtonClicked: false,
+            downloadButtonClicked: false,
             galleryImageNode: null,
             galleryImageNodeSrc: null,
         }
@@ -71,8 +73,19 @@ class ImageGalleryComponent extends Component {
         }
     }
 
+    /**
+     * Add delay to prevent multiple clicks on download.
+     */
+    onDownloadClick (galleryImageNode) {
+        this._downloadImage(galleryImageNode)
+
+        setTimeout(() => {
+            this.extendState({downloadButtonClicked: false})
+        }, 500)
+    }
+
     render($$) {
-        const {showImageCrop, metadataButtonClicked} = this.state
+        const {showImageCrop, metadataButtonClicked, downloadButtonClicked} = this.state
 
         const el = $$('div')
             .addClass('im-blocknode__container im-image-gallery')
@@ -112,7 +125,10 @@ class ImageGalleryComponent extends Component {
                     }
                 },
                 onDownloadClick: (galleryImageNode) => {
-                    this._downloadImage(galleryImageNode)
+                    if (!downloadButtonClicked) {
+                        this.extendState({ downloadButtonClicked: true })
+                        this.onDownloadClick(galleryImageNode)
+                    }
                 },
                 onTransitionEnd: (pos) => {
                     this._storedGalleryPosition = pos
@@ -202,6 +218,7 @@ class ImageGalleryComponent extends Component {
      * @private
      */
     _renderToolbox($$) {
+        const {downloadButtonClicked} = this.state
         const imageGalleryToolbox = $$('div').addClass('image-gallery-toolbox')
             .append(this._renderHeader($$))
             .ref('toolBox')
@@ -239,7 +256,10 @@ class ImageGalleryComponent extends Component {
                     }
                 },
                 onDownloadClick: () => {
-                    this._downloadImage(galleryImageNode)
+                    if (!downloadButtonClicked) {
+                        this.extendState({ downloadButtonClicked: true })
+                        this.onDownloadClick(galleryImageNode)
+                    }
                 }
             }).ref(galleryImageNode.id))
         })
@@ -329,7 +349,6 @@ class ImageGalleryComponent extends Component {
 
     _renderCropper($$) {
         const {galleryImageNode, galleryImageNodeSrc} = this.state
-        const apa = false
 
         if (galleryImageNode && galleryImageNodeSrc) {
             return $$(UIImageCropper, {
