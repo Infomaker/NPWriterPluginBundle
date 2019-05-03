@@ -139,6 +139,19 @@
                 margin: 0;
             }
         }
+
+        // Caption
+        .sc-text-property {
+            overflow-y: scroll;
+            max-height: 140px;
+        }
+
+        // Authors
+        .x-im-image-authors {
+            overflow-y: scroll;
+            max-height: 40px;
+        }
+    
     }
 
     .image-controls {
