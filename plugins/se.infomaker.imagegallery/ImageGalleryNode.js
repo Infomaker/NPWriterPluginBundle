@@ -42,7 +42,8 @@ class ImageGalleryNode extends Container {
 ImageGalleryNode.define({
     type: 'imagegallery',
     dataType: {type: 'string'},
-    genericCaption: {type: 'string', optional: true, default: ''}
+    genericCaption: {type: 'string', optional: true, default: ''},
+    uuid: {type: 'string', optional: true}
 })
 
 export default ImageGalleryNode
