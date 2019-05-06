@@ -28,6 +28,7 @@ class ConceptMainComponent extends Component {
         ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
         ConceptService.on(conceptType, operations.UPDATE, this.editItem)
         ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.REMOVE, this.removeArticleConcept)
         ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
@@ -36,6 +37,7 @@ class ConceptMainComponent extends Component {
                 ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
                 ConceptService.on(type, operations.UPDATE, this.editItem)
                 ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.REMOVE, this.removeArticleConcept)
                 ConceptService.on(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
@@ -118,6 +120,7 @@ class ConceptMainComponent extends Component {
         ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
         ConceptService.off(conceptType, operations.UPDATE, this.editItem)
         ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.REMOVE, this.removeArticleConcept)
         ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
@@ -126,6 +129,7 @@ class ConceptMainComponent extends Component {
                 ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
                 ConceptService.off(type, operations.UPDATE, this.editItem)
                 ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.REMOVE, this.removeArticleConcept)
                 ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
