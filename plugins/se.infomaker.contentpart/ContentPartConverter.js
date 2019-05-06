@@ -28,7 +28,7 @@ export default {
 
         node.id = el.attr('id')
 
-        if (el.find('uuid')) {
+        if (el.getAttribute('uuid')) {
             node.uuid = el.attr('uuid')
         }
 
