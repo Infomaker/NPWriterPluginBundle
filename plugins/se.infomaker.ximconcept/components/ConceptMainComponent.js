@@ -13,6 +13,7 @@ class ConceptMainComponent extends Component {
 
         this.addItem = this.addItem.bind(this)
         this.editItem = this.editItem.bind(this)
+        this.reloadArticleConcepts = this.reloadArticleConcepts.bind(this)
         this.removeArticleConcept = this.removeArticleConcept.bind(this)
         this.addConceptToArticle = this.addConceptToArticle.bind(this)
         this.updateArticleConcept = this.updateArticleConcept.bind(this)
@@ -20,14 +21,25 @@ class ConceptMainComponent extends Component {
     }
 
     didMount() {
-        ConceptService.on(
-            this.state.conceptType,
-            ConceptService.operations.ADD,
-            this.addItem
-        )
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.on(conceptType, operations.ADD, this.addItem)
+        ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.UPDATE, this.editItem)
+        ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.REMOVE, this.removeArticleConcept)
+        ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.on(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.on(type, operations.ADD, this.addItem)
+                ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.UPDATE, this.editItem)
+                ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.REMOVE, this.removeArticleConcept)
+                ConceptService.on(type, operations.REMOVED, this.reloadArticleConcepts)
+            })
         }
 
         api.events.on(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED, async (e) => {
@@ -101,10 +113,25 @@ class ConceptMainComponent extends Component {
 
 
     dispose() {
-        ConceptService.off(this.state.conceptType, ConceptService.operations.ADD, this.addItem)
+        const { conceptType } = this.state
+        const { operations } = ConceptService
+
+        ConceptService.off(conceptType, operations.ADD, this.addItem)
+        ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.UPDATE, this.editItem)
+        ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.REMOVE, this.removeArticleConcept)
+        ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
-            this.state.types.forEach(type => ConceptService.off(type, ConceptService.operations.ADD, this.addItem))
+            this.state.types.forEach(type => {
+                ConceptService.off(type, operations.ADD, this.addItem)
+                ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.UPDATE, this.editItem)
+                ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.REMOVE, this.removeArticleConcept)
+                ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
+            })
         }
 
         api.events.off(this.props.pluginConfigObject.id, event.DOCUMENT_CHANGED)
@@ -149,7 +176,7 @@ class ConceptMainComponent extends Component {
             existingItems,
             conceptType,
             propertyMap,
-            associatedLinks
+            associatedLinks,
         }
     }
 
@@ -289,7 +316,7 @@ class ConceptMainComponent extends Component {
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon, customQuery } = config
         const { propertyMap } = this.state
         const { conceptType, types } = this.state || {}
         const header = $$('h2', { class: 'concept-header' }, [
@@ -321,7 +348,8 @@ class ConceptMainComponent extends Component {
                 itemExists: this.itemExists,
                 associatedWith,
                 icon,
-                types: config.types
+                customQuery,
+                types: config.types,
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
 

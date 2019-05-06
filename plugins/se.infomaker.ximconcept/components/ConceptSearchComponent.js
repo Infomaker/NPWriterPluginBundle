@@ -148,7 +148,9 @@ class ConceptSearchComponent extends Component {
             this.props.conceptTypes,
             term,
             this.props.subtypes,
-            this.props.associatedWith
+            this.props.associatedWith,
+            null,
+            this.props.customQuery
         )
 
         const {seq} = this.state
