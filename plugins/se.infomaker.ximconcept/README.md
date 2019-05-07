@@ -36,6 +36,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
 - `"searchOnFocus": true` If a search should be performed when the input-field gets focused. If omitted defaults to `true`
 - `"allowedConceptStatuses": ["draft", "usable"]` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
+- `"customQuery": "Active:true"` Define a custom query to be included in all searches
 
 #### Example Configs
 

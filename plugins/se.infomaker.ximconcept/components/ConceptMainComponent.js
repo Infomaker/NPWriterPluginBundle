@@ -341,7 +341,7 @@ class ConceptMainComponent extends Component {
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon, customQuery } = config
         const { propertyMap, conceptType, types, searchOnFocus, allowedConceptStatuses } = this.state
         const header = $$('h2', { class: 'concept-header' }, [
             `${label} (${this.state.existingItems.length})`
@@ -374,6 +374,7 @@ class ConceptMainComponent extends Component {
                 searchOnFocus,
                 allowedConceptStatuses,
                 icon,
+                customQuery,
                 types: config.types
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }
