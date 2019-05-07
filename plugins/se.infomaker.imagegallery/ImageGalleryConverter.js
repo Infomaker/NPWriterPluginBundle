@@ -23,6 +23,11 @@ const ImageGalleryConverter = {
         const nodeId = el.attr('id')
 
         node.dataType = el.attr('type')
+
+        if(el.getAttribute('uuid')) {
+            node.uuid = el.attr('uuid')
+        }
+
         node.id = nodeId
 
         if (galleryDataEl) {
@@ -148,6 +153,12 @@ const ImageGalleryConverter = {
             'type': node.dataType,
         })
 
+        if(node.uuid) {
+            el.attr({
+                'uuid': node.uuid
+            })
+        }
+        
         if (node.genericCaption && node.genericCaption.length) {
             data.append($$('text').append(
                 converter.annotatedText([node.id, 'genericCaption'])
