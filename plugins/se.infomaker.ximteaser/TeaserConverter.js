@@ -15,7 +15,7 @@ export default {
         const nodeId = el.attr('id')
         node.dataType = el.attr('type')
 
-        if (el.find('uuid')) {
+        if (el.getAttribute('uuid')) {
             node.uuid = el.attr('uuid')
         }
 
