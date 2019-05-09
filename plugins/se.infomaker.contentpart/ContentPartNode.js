@@ -7,6 +7,7 @@ ContentPartNode.isResource = false
 ContentPartNode.defineSchema({
     type: 'contentpart',
     id: {type: 'string', optional: true},
+    uuid: {type: 'string', optional: true},
     fields: {type: 'object', default: {}},
     contentPartUri: {type: 'string', optional: true}
 })

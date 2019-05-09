@@ -28,6 +28,10 @@ export default {
 
         node.id = el.attr('id')
 
+        if (el.getAttribute('uuid')) {
+            node.uuid = el.attr('uuid')
+        }
+
         if (el.find('subject')) {
             node.subject = el.find('subject').text()
         }
@@ -102,6 +106,12 @@ export default {
             id: node.id,
             type: 'x-im/content-part'
         })
+
+        if(node.uuid) {
+            el.attr({
+                uuid: node.uuid
+            })
+        }
 
         // Convert fields
         const fields = contentPart.fields.map(field => {

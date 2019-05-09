@@ -43,7 +43,7 @@ module.exports = {
                 loader: 'url-loader?limit=100000'
             },
             {
-                test: /\.scss$/,
+                test: /\.s?[ac]ss$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader

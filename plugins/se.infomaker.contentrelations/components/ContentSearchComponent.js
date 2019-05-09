@@ -202,6 +202,7 @@ class ContentSearchComponent extends Component {
      * Do a search against Open Content
      */
     async search() {
+        const { contentHost } = this.props
         const { searchTerm, selectedQuery, start, limit, sorting } = this.state
         const responseProperties = Object.keys(this.props.propertyMap).map(key => this.props.propertyMap[key])
         let q = `contenttype:${this.props.contenttype} AND ${selectedQuery.q} ${searchTerm}`.trim()
@@ -229,7 +230,7 @@ class ContentSearchComponent extends Component {
             searching: true,
         })
 
-        const rawResult = await (new OpenContentClient(this.props.contentHost)).search(query)
+        const rawResult = await (new OpenContentClient(contentHost)).search(query)
         const jsonResult = await rawResult.json()
         const results = new QueryResponseHelper(jsonResult).getItems()
 

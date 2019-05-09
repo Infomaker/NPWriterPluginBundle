@@ -5,26 +5,14 @@ configured to handle, but is dependent on external config and templates to enabl
 
 ## Dependencies
 
-requires `writer => 4.10.0`
-requires `open content > 2.0.1`
+requires `writer => 5.1.0`
+requires `open content > 2.2.0`
 
 requires `ConceptAssociatedWithRelations` and `ConceptAssociatedWithMeRelations` `relationextractors` in open content
 
 ## Supported types
 
 As of now these are the supported types ([External link](https://github.com/Infomaker/writer-format/blob/master/newsml/conceptitem/im-conceptitem-spec.md))
-
-- x-im/category
-- x-im/tag
-- x-im/person
-- x-im/organisation
-- x-im/content-profile
-- x-im/place
-- x-im/event
-- x-im/author
-- x-im/story
-- x-im/channel
-- x-im/section
 
 ### Plugin config
 
@@ -46,6 +34,9 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
 - `"subtypes": [...]` A list of subtypes that are allowed
 - `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
+- `"searchOnFocus": true` If a search should be performed when the input-field gets focused. If omitted defaults to `true`
+- `"allowedConceptStatuses": ["draft", "usable"]` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
+- `"customQuery": "Active:true"` Define a custom query to be included in all searches
 
 #### Example Configs
 
@@ -70,7 +61,9 @@ Section:
         "singleValue": true,
         "appendDataToLink": false,
         "provider": "writer",
-        "pubStatus": "imext:draft"
+        "pubStatus": "imext:draft",
+        "searchOnFocus": true,
+        "allowedConceptStatuses": ["draft", "usable"]
     }
 }
 ```
@@ -142,6 +135,7 @@ Tags:
         "editable": true,
         "placeholderText": "Sök taggar",
         "rel": "subject",
+        "searchOnFocus": false,
         "types": {
             "x-im/person": {
                 "name": "Person",
@@ -169,6 +163,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
 "conceptServiceConfig": {
     "conceptPath": "https://s3-eu-west-1.amazonaws.com/concepts-config-dev/writer/",
     "baProxy": {
+        "credentials": "include",
         "protocol": "http://",
         "hostName": "localhost",
         "port": "5555",
@@ -183,12 +178,13 @@ To enable Concepts you need to add configuration to `Writer` as well.
     "searchLimit": 50,
     "sortField": "ConceptNameString",
     "titleSearchField": "ConceptNameString",
+    "allowedConceptStatuses": ["draft", "usable"],
     "propertyMap": {
         ...
     }
 }
 ```
-
+-  `"credentials": "include",` If a IMID protected proxy is used this property *MUST* be set, if there is no IMID it *MUST NOT* be set, or set to `omit`
 - `"conceptPath": "https://...",` A remote path from where ConceptService can load concept config and templates
 - `"contenttype": "Concept",` Concepts contentType in OC
 - `"broaderLimit": 3,` How many steps ConceptService should follow Broader links
@@ -197,6 +193,7 @@ To enable Concepts you need to add configuration to `Writer` as well.
 - `"searchLimit": 50,` Sets the search limit for concept searches
 - `"sortField": "ConceptNameString",` Which index field to sort by
 - `"titleSearchField": "ConceptNameString",` optional property to set OC property to use for concept title search, defaults (if omitted) to `ConceptName`
+- `"allowedConceptStatuses": ["draft", "usable"],` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
 - `"propertyMap": { ... }` See below
 
 #### BA_PROXY

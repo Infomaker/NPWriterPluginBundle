@@ -12,6 +12,13 @@ class ImageDisplay extends Component {
         e.stopPropagation()
     }
 
+    getInitialState () {
+        return {
+            cropButtonClicked: false,
+            metadataButtonClicked: false
+        }
+    }
+
     displayCrop(cropUrl) {
         this.extendState({cropUrl: cropUrl});
     }
@@ -24,6 +31,8 @@ class ImageDisplay extends Component {
     }
 
     render($$) {
+        const {cropButtonClicked, metadataButtonClicked} = this.state
+
         let el = $$('div').addClass('sc-image-display')
         let cropOverlay = $$('div').addClass('crop-overlay hidden').ref('cropOverlay')
         let imgContainer = $$('div').addClass('se-image-container checkerboard').ref('imageContainer')
@@ -74,7 +83,14 @@ class ImageDisplay extends Component {
             actionsEl.append(
                 $$(Button, {
                     icon: 'image'
-                }).on('click', this._openMetaData)
+                })
+                    .on('click', () => {
+                        if (!metadataButtonClicked) {
+                            this._openMetaData()
+                            this.extendState({metadataButtonClicked: true})
+                        }
+                    })
+
             )
         }
 
@@ -110,7 +126,11 @@ class ImageDisplay extends Component {
 
             actionsEl.append($$(Button, {icon: 'crop'})
                 .on('click', () => {
-                    this._openCropper($$)
+                    // Prevents multiple clicks
+                    if (!cropButtonClicked) {
+                        this._openCropper($$)
+                        this.extendState({cropButtonClicked: true})
+                    }
                 })
                 .append($$('em').append(currentCrops).addClass(cropBadgeClass))
             )
@@ -173,6 +193,7 @@ class ImageDisplay extends Component {
                     disableAutomaticCrop: this.props.node.disableAutomaticCrop,
                     abort: () => {
                         this.refs.cropOverlay.addClass('hidden')
+                        this.extendState({cropButtonClicked: false})
                         return true;
                     },
                     restore: () => {
@@ -180,6 +201,7 @@ class ImageDisplay extends Component {
                         if (this.props.notifyCropsChanged) {
                             this.props.notifyCropsChanged()
                         }
+                        this.extendState({cropButtonClicked: false})
                         return false;
                     },
                     save: (newCrops, disableAutomaticCrop) => {
@@ -187,6 +209,7 @@ class ImageDisplay extends Component {
                         if (this.props.notifyCropsChanged) {
                             this.props.notifyCropsChanged()
                         }
+                        this.extendState({cropButtonClicked: false})
                     }
                 })
 
@@ -195,6 +218,7 @@ class ImageDisplay extends Component {
             })
             .catch(err => {
                 console.error(err)
+                this.extendState({cropButtonClicked: false})
                 api.ui.showMessageDialog([{
                     type: 'error',
                     message: `${this.getLabel('The image doesn\'t seem to be available just yet. Please wait a few seconds and try again.')}\n\n${err}`
@@ -230,6 +254,9 @@ class ImageDisplay extends Component {
     _openMetaData() {
         api.router.getNewsItem(this.props.node.uuid, 'x-im/image')
             .then(response => {
+
+                this.extendState({ metadataButtonClicked: false })
+
                 api.ui.showDialog(
                     UIDialogImage,
                     {

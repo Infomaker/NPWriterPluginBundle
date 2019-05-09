@@ -1,5 +1,6 @@
 import {WriterCommand} from 'writer'
 import ImageGalleryConverter from './ImageGalleryConverter'
+import uuidv4 from 'uuid/v4'
 
 class InsertImageGalleryCommand extends WriterCommand {
 
@@ -10,6 +11,7 @@ class InsertImageGalleryCommand extends WriterCommand {
         const imageGalleryNode = {
             type: type,
             dataType: dataType,
+            uuid: uuidv4()
         }
 
         editorSession.transaction((tx) => {

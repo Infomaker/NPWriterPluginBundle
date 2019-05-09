@@ -28,6 +28,7 @@ class ConceptMainComponent extends Component {
         ConceptService.on(conceptType, operations.ADDED, this.reloadArticleConcepts)
         ConceptService.on(conceptType, operations.UPDATE, this.editItem)
         ConceptService.on(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.on(conceptType, operations.REMOVE, this.removeArticleConcept)
         ConceptService.on(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
@@ -36,6 +37,7 @@ class ConceptMainComponent extends Component {
                 ConceptService.on(type, operations.ADDED, this.reloadArticleConcepts)
                 ConceptService.on(type, operations.UPDATE, this.editItem)
                 ConceptService.on(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.on(type, operations.REMOVE, this.removeArticleConcept)
                 ConceptService.on(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
@@ -62,7 +64,7 @@ class ConceptMainComponent extends Component {
 
                         // if no multi-value (just one associated-with) and its a match, we remove the item
                         if (itemAssociatedWith === eventUUID) {
-                            ConceptService.removeArticleConceptItem(existingItem)
+                            ConceptService.removeArticleConcept(existingItem)
                         }
 
                         // if we have multiple associated-with we need to check 'em all to look for a match
@@ -77,7 +79,7 @@ class ConceptMainComponent extends Component {
                             })
 
                             if (!associationExists) {
-                                ConceptService.removeArticleConceptItem(existingItem)
+                                ConceptService.removeArticleConcept(existingItem)
                             }
                         }
                     })
@@ -118,6 +120,7 @@ class ConceptMainComponent extends Component {
         ConceptService.off(conceptType, operations.ADDED, this.reloadArticleConcepts)
         ConceptService.off(conceptType, operations.UPDATE, this.editItem)
         ConceptService.off(conceptType, operations.UPDATED, this.reloadArticleConcepts)
+        ConceptService.off(conceptType, operations.REMOVE, this.removeArticleConcept)
         ConceptService.off(conceptType, operations.REMOVED, this.reloadArticleConcepts)
 
         if (this.state.types) {
@@ -126,6 +129,7 @@ class ConceptMainComponent extends Component {
                 ConceptService.off(type, operations.ADDED, this.reloadArticleConcepts)
                 ConceptService.off(type, operations.UPDATE, this.editItem)
                 ConceptService.off(type, operations.UPDATED, this.reloadArticleConcepts)
+                ConceptService.off(type, operations.REMOVE, this.removeArticleConcept)
                 ConceptService.off(type, operations.REMOVED, this.reloadArticleConcepts)
             })
         }
@@ -156,6 +160,8 @@ class ConceptMainComponent extends Component {
         const name = conceptType.replace('-', '').replace('/', '')
         const types = Object.keys(pluginConfig.types || {})
         const subtypes = pluginConfig.subtypes
+        const searchOnFocus = pluginConfig.hasOwnProperty('searchOnFocus') ? pluginConfig.searchOnFocus : true
+        const allowedConceptStatuses = pluginConfig.allowedConceptStatuses
         const articleConcepts = ConceptService.getArticleConceptsByType(conceptType, types, subtypes)
         const propertyMap = ConceptService.getPropertyMap()
         const associatedLinks = pluginConfig.associatedWith ? ConceptService.getArticleConceptsByType(pluginConfig.associatedWith) : false
@@ -172,7 +178,9 @@ class ConceptMainComponent extends Component {
             existingItems,
             conceptType,
             propertyMap,
-            associatedLinks
+            associatedLinks,
+            searchOnFocus,
+            allowedConceptStatuses
         }
     }
 
@@ -242,7 +250,7 @@ class ConceptMainComponent extends Component {
     }
 
     removeArticleConcept(item) {
-        ConceptService.removeArticleConceptItem(item)
+        ConceptService.removeArticleConcept(item)
     }
 
     /**
@@ -333,9 +341,8 @@ class ConceptMainComponent extends Component {
     render($$) {
         let search
         const config = this.state.pluginConfig || {}
-        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon } = config
-        const { propertyMap } = this.state
-        const { conceptType, types } = this.state || {}
+        const { label, enableHierarchy, placeholderText, singleValue, creatable, editable, subtypes, associatedWith, icon, customQuery } = config
+        const { propertyMap, conceptType, types, searchOnFocus, allowedConceptStatuses } = this.state
         const header = $$('h2', { class: 'concept-header' }, [
             `${label} (${this.state.existingItems.length})`
         ])
@@ -364,7 +371,10 @@ class ConceptMainComponent extends Component {
                 addItem: this.addItem,
                 itemExists: this.itemExists,
                 associatedWith,
+                searchOnFocus,
+                allowedConceptStatuses,
                 icon,
+                customQuery,
                 types: config.types
             }).ref(`conceptSearchComponent-${this.state.name}`)
         }

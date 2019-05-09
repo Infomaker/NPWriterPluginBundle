@@ -93,6 +93,23 @@ Host configuration used by the BA-proxy service.
 }
 ```
 
+#### IMID protected ba-proxy, host configuration
+
+If a IMID protected proxy is used the `"credentials": "include"` property *MUST* be set, if there is no IMID it *MUST NOT* be set, or set to `omit`
+
+```json
+{
+    "credentials": "include",
+    "protocol": "http://",
+    "hostName": "localhost",
+    "port": "5555",
+    "healthPath": "/health",
+    "queryPath": "/search",
+    "objectPath": "/objects",
+    "sortingsPath": "/sortings"
+}
+```
+
 ### Standard Query Options
 Standard options used for every search call. Might be used for contenttype filtering, disabling faceting, or enabling only fetching latest version of a document.   
 See Open Content API documentation for available properties.

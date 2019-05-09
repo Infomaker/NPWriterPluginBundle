@@ -11,6 +11,15 @@
         padding: 0 0 10px 0;
     }
 
+    .loading-previews-spinner {
+        display: flex;
+
+        i {
+            font-size: 30px;
+            margin: 150px auto;
+        }
+    }
+
     .image-gallery-dropzone {
         height: 103px;
         border: 1px dashed #ddd;

@@ -1,7 +1,7 @@
 class ArticleModel {
 
     /**
-     * Will mapp OC props to article object
+     * Will map OC props to article object
      *
      * @param {object} item OpenCOntent hit
      * @param {object} propertyMap object with key => value pairs of propeties (plugin => oc)

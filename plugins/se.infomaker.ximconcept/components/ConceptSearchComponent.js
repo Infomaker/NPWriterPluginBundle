@@ -14,6 +14,7 @@ class ConceptSearchComponent extends Component {
     getInitialState() {
         return {
             selected: 0,
+            seq: 0
         }
     }
 
@@ -69,6 +70,10 @@ class ConceptSearchComponent extends Component {
             }
         }
 
+        const searchForm = $$('form', { autocomplete: 'user-password' })
+            .append(searchInput)
+            .append(searchFormIcon)
+
         if (searchedTerm) {
             let { selected } = this.state
 
@@ -90,8 +95,7 @@ class ConceptSearchComponent extends Component {
 
 
         el.addClass('concept-search-component')
-            .append(searchInput)
-            .append(searchFormIcon)
+            .append(searchForm)
             .append(searchResultsContainer)
 
         return el
@@ -115,23 +119,36 @@ class ConceptSearchComponent extends Component {
 
         if (term !== this.state.searchedTerm && (term.length > 1 || term === '*')) {
             this.extendState({
-                searching: this.state.searching + 1
+                searching: this.state.searching + 1,
+                seq: this.state.seq + 1
             })
 
-            this.search(term)
+            this.search(term, this.state.seq)
         } else if (!this.state.selected && (!term || !term.length)) {
             this.resetState()
         }
     }
 
     handleFocus() {
+        const {searchOnFocus} = this.props
+        let {seq, searching} = this.state
+
         this.resetState()
+
+        // Search on focus, unless searchOnFocus is defined and set to false.
+        if (searchOnFocus) {
+            seq = this.state.seq + 1
+            searching = this.state.searching + 1
+
+            this.search('*', seq)
+        }
+
         this.extendState({
-            searching: this.state.searching + 1,
-            hasFocus: true
+            searching,
+            seq,
+            hasFocus: true,
         })
 
-        this.search('*')
     }
 
     handleBlur() {
@@ -140,17 +157,27 @@ class ConceptSearchComponent extends Component {
         this.extendState({ hasFocus: false })
     }
 
-    async search(term) {
+    /**
+     * @param term
+     * @param inSeq
+     * @returns {Promise<void>}
+     */
+    async search(term, inSeq) {
+        const { conceptTypes, subtypes, associatedWith, allowedConceptStatuses, customQuery } = this.props
+
         const result = await ConceptService.searchForConceptSuggestions(
-            this.props.conceptTypes,
+            conceptTypes,
             term,
-            this.props.subtypes,
-            this.props.associatedWith
+            subtypes,
+            associatedWith,
+            allowedConceptStatuses,
+            customQuery
         )
 
-        if (this.state.hasFocus) {
+        const { hasFocus, seq, searching } = this.state
+        if (hasFocus && inSeq === seq) {
             this.extendState({
-                searching: this.state.searching > 0 ? this.state.searching - 1: 0,
+                searching: searching > 0 ? searching - 1: 0,
                 searchResult: result,
                 selected: 0,
                 searchedTerm: term,

@@ -16,7 +16,7 @@ class TeaserNode extends withTraits(Container, imageNodeTrait, imageCropTrait) {
             return fetchImageMeta(imageFile.uuid)
                 .then((node) => {
                     api.editorSession.transaction((tx) => {
-                        tx.set([this.id, 'uuid'], node.uuid)
+                        tx.set([this.id, 'imageUuid'], node.uuid)
                         tx.set([this.id, 'uri'], node.uri)
                         tx.set([this.id, 'width'], node.width)
                         tx.set([this.id, 'height'], node.height)
@@ -83,6 +83,7 @@ TeaserNode.define({
     dataType: {type: 'string', optional: false},
     imageFile: {type: 'file', optional: true},
     uuid: {type: 'string', optional: true},
+    imageUuid: {type: 'string', optional: true},
     uri: {type: 'string', optional: true},
 
     title: {type: 'text', optional: false, default: ''},
