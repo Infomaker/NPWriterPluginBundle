@@ -95,7 +95,7 @@ class DashboardIntegrationComponent extends Component {
     }
 
     getArticleTitle() {
-        const documentNodes = api.document.getDocumentNodes()
+        const documentNodes = api.document.nodes()
         const nodeTypeToUseForTitle = [
             'headline',
             'preamble',
