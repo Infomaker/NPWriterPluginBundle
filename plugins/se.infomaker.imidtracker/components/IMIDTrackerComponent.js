@@ -235,7 +235,7 @@ class IMIDTrackerComponent extends Component {
     _onLockStatusChange({lockedBy}) {
         const lockedByActiveUser = this.state.lockedBy === this.state.socketId
 
-        if (lockedByActiveUser && lockedBy !== this.state.socketId) {
+        if (lockedBy && lockedByActiveUser && lockedBy !== this.state.socketId) {
             const user = this.state.users.find(u => u.socketId === lockedBy)
             this._showLockTakenOverDialog(user)
         }
