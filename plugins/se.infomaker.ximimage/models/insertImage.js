@@ -44,6 +44,7 @@ export default function(tx, data, lastImage = false) {
         id: nodeId,
         type: 'ximimage',
         imageFile: imageFile.id,
+        uri: `im://temp/${name}`,
         caption: '',
         alttext: '',
         credit: '',

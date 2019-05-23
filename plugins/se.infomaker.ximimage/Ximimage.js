@@ -61,7 +61,7 @@ function isUnset(field) {
 Ximimage.define({
     type: 'ximimage',
     uuid: {type: 'string', optional: true},
-    uri: {type: 'string', optional: true},
+    uri: {type: 'string', optional: true, default: 'im://temp'},
     imageFile: {type: 'file'},
     width: {type: 'number', optional: true},
     height: {type: 'number', optional: true},
