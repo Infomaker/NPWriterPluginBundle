@@ -27,6 +27,9 @@ class IMIDTrackerComponent extends Component {
         this._onDocumentSaved = this._onDocumentSaved.bind(this)
         this._handleUserChange = this._handleUserChange.bind(this)
         this._startSessionPolling = this._startSessionPolling.bind(this)
+
+        this._onDocumentCreated = this._onDocumentCreated.bind(this)
+        this._reconnectSocket = this._reconnectSocket.bind(this)
     }
 
     /**
@@ -40,14 +43,9 @@ class IMIDTrackerComponent extends Component {
         userInfo.isActiveUser = true
 
         if (userInfo.sub !== this.state.sub) {
-            const shouldLockArticle = (this.state.lockedBy && this.socket && this.state.lockedBy === this.socket.id) ? true : false
-            this._closeSocket()
+            const shouldLockArticle = this.state.lockedBy && this.socket && this.state.lockedBy === this.socket.id
 
-            await this.setState(
-                this.getInitialState()
-            )
-
-            await this._userLogin(userInfo)
+            await this._reconnectSocket(userInfo)
 
             if (shouldLockArticle) {
                 this._lockArticle()
@@ -82,6 +80,13 @@ class IMIDTrackerComponent extends Component {
         api.events.on(pluginId, event.DID_LOGIN, this._handleUserChange)
         // api.events.on(pluginId, event.DID_LOGIN, this._startSessionPolling)
 
+        api.events.on(pluginId, event.DOCUMENT_CREATED, this._onDocumentCreated)
+
+        // Listen to Document copied event and re-render application components
+        api.events.on(pluginId, event.DOCUMENT_COPIED, async () => {
+            await this._reconnectSocket()
+        })
+
         const {isSaving} = this.props
 
         if (!isSaving) {
@@ -95,6 +100,40 @@ class IMIDTrackerComponent extends Component {
         }
 
         this._startSessionPolling()
+    }
+
+    /**
+     * Close socket connection and reconnect with supplied userInfo
+     * or logged in user
+     *
+     * @param userInfo
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _reconnectSocket(userInfo = null) {
+        this._closeSocket()
+
+        if(!userInfo) {
+            userInfo = await this._getAuthUser()
+        }
+
+        await this.setState(
+            this.getInitialState()
+        )
+
+        await this._userLogin(userInfo)
+    }
+
+    /**
+     * Reinitialize UA-tracker socket connection
+     * when article is saved for the first time
+     *
+     * @private
+     */
+    _onDocumentCreated() {
+        if (this._useUATracker()) {
+            this._initUATracker()
+        }
     }
 
     _startSessionPolling() {
@@ -229,7 +268,6 @@ class IMIDTrackerComponent extends Component {
             users: users,
             socketId: this.socket.id // TODO: Maybe move this to _onConnect
         })
-
     }
 
     _onLockStatusChange({lockedBy}) {
