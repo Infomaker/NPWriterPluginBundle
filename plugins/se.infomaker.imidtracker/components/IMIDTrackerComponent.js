@@ -331,9 +331,13 @@ class IMIDTrackerComponent extends Component {
     }
 
     _userLogin(user) {
-        if (api.history.isAvailable()) {
-            api.history.storage.setItem('user', JSON.stringify(user))
-        }
+
+        const {appStorage} = this.context
+
+        appStorage.set('imid', 'user', JSON.stringify(user))
+
+
+        console.log(appStorage.get('imid', 'user'))
 
         // Add timestamp to user (in order to render for how long
         // user has been on new article).
@@ -365,17 +369,13 @@ class IMIDTrackerComponent extends Component {
 
     _logout() {
         const doLogout = () => {
-            if (api.history.isAvailable()) {
-                api.history.storage.removeItem('user')
-                this.socket.close()
-            }
 
-            this.extendState({
-                email: null,
-                name: null,
-                socketId: null,
-                users: []
-            })
+            this.context.appStorage.delete('imid', 'user')
+            this.socket.close()
+
+            this.extendState(
+                this.getInitialState()
+            )
 
             api.user.logout()
         }
