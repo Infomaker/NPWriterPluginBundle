@@ -336,9 +336,6 @@ class IMIDTrackerComponent extends Component {
 
         appStorage.set('imid', 'user', JSON.stringify(user))
 
-
-        console.log(appStorage.get('imid', 'user'))
-
         // Add timestamp to user (in order to render for how long
         // user has been on new article).
         user.timestamp = moment().format('x')
