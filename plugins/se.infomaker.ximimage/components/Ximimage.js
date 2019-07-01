@@ -1,5 +1,5 @@
 import {Component} from "substance"
-import {UIFieldEditor, UIByline} from 'writer'
+import {UIFieldEditor, UIByline, UIToggle} from 'writer'
 import ImageDisplay from "./ImageDisplay"
 import ImageCropsPreview from "./ImageCropsPreview"
 
@@ -59,6 +59,7 @@ class XimimageComponent extends Component {
         let cropsEnabled = api.getConfigValue('se.infomaker.ximimage', 'softcrop')
         let crops = api.getConfigValue('se.infomaker.ximimage', 'crops')
         let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
+        let externalFlags = api.getConfigValue('se.infomaker.ximimage', 'externalFlags') || []
 
         // TODO: extract from full config when we can get that
         const imageOptions = ['byline', 'imageinfo', 'softcrop', 'crops', 'bylinesearch', 'hideDisableCropsCheckbox'].reduce((optionsObject, field) => {
@@ -102,6 +103,16 @@ class XimimageComponent extends Component {
             }
         })
 
+        if (externalFlags.length) {
+            let flagWrapper = $$('div')
+                .attr('contenteditable', false)
+                .addClass('x-im-image-dynamic x-im-image-flags')
+            externalFlags.forEach(obj => {
+                flagWrapper.append(this.renderFlags($$, obj))
+            })
+            metaWrapper.append(flagWrapper)
+        }
+
         el.append(metaWrapper)
 
         return el
@@ -137,6 +148,24 @@ class XimimageComponent extends Component {
             .ref(obj.name)
             .attr('title', obj.label)
             .addClass('x-im-image-dynamic')
+    }
+
+    renderFlags($$, flag) {
+        let isChecked = this.props.node.externalFlags.includes(flag.name) ? true : false
+        return $$(UIToggle, {
+            id: this.props.node.id + '_flag_' + flag.name,
+            label: this.getLabel(flag.label),
+            checked: isChecked,
+            enabled: !this.props.disabled,
+            onToggle: (checked) => {
+                if (checked) {
+                    this.props.node.externalFlags.push(flag.name)
+                } else {
+                    this.props.node.externalFlags = this.props.node.externalFlags.filter(extFlag => extFlag !== flag.name)
+                }
+                this.props.node.setExternalFlags(this.props.node.externalFlags)
+            }
+        })
     }
 
     _getFieldIcon(name) {

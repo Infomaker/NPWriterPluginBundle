@@ -14,6 +14,24 @@ div.x-im-image-dynamic {
         padding-bottom: 12px;
     }
 
+    &.x-im-image-flags {
+        pointer-events: none;
+        margin-top: 10px;
+        &::before {
+            font-family: FontAwesome;
+            opacity: 0.5;
+            float: left;
+            content: "\F024";
+            width: 31px;
+            left: 50px;
+            top: 2px;
+        }
+        .np-toggle {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    }
+
     &.x-im-image-alignment {
         margin-top: 10px;
         padding-left: 28px;
@@ -50,11 +68,13 @@ div.x-im-image-dynamic {
     }
 }
 
-
 .sc-isolated-node.sm-selected {
     .sc-ximimage {
         div.x-im-image-dynamic:last-child {
             border-bottom: none;
+        }
+        .x-im-image-flags {
+            pointer-events: all;
         }
     }
 }

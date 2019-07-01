@@ -39,6 +39,12 @@ class Ximimage extends withTraits(BlockNode, imageNodeTrait, imageCropTrait, aut
             tx.set([this.id, 'alignment'], alignment)
         })
     }
+
+    setExternalFlags(flags) {
+        api.editorSession.transaction((tx) => {
+            tx.set([this.id, 'externalFlags'], flags)
+        })
+    }
 }
 
 function isUnset(field) {
@@ -74,7 +80,8 @@ Ximimage.define({
     caption: {type: 'string', default: ''},
     alttext: {type: 'string', optional: true},
     credit: {type: 'string', optional: true},
-    alignment: {type: 'string', optional: true}
+    alignment: {type: 'string', optional: true},
+    externalFlags: {type: 'array', default: [], optional: true}
 })
 
 export default Ximimage

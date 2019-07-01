@@ -61,6 +61,7 @@ export default {
         node.credit = ''
         node.alignment = ''
         node.disableAutomaticCrop = false
+        node.externalFlags = []
 
         if (dataEl) {
             dataEl.children.forEach(function (child) {
@@ -98,6 +99,8 @@ export default {
                 flagsEl.children.forEach(childEl => {
                     if (childEl.text() === 'disableAutomaticCrop') {
                         node.disableAutomaticCrop = true
+                    } else {
+                        node.externalFlags.push(childEl.text());
                     }
                 })
             }
@@ -188,12 +191,23 @@ export default {
             $$('height').append(String(node.height)),
         ])
 
+        let flags = $$('flags');
+        let appendFlags = false;
+
         if (node.disableAutomaticCrop) {
-            data.append(
-                $$('flags').append(
-                    $$('flag').append('disableAutomaticCrop')
-                )
+            appendFlags = true;
+            flags.append(
+                $$('flag').append('disableAutomaticCrop')
             )
+        }
+
+        if (node.externalFlags.length) {
+            appendFlags = true;
+            node.externalFlags.forEach(extFlag => flags.append($$('flag').append(extFlag)))
+        }
+
+        if (appendFlags) {
+            data.append(flags);
         }
 
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields') || []

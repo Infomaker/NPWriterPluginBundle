@@ -25,6 +25,7 @@ The image plugin configuration must have several things defined to work correctl
         "hideDisableCropsCheckbox": true, // Default false
         "crops": { ... },
         "fields": [ ... ],
+        "externalFlags": [ ... ],
         "cropInstructions": { ... },
         "propertyMap": { ... }
     }
@@ -168,6 +169,24 @@ by default when a new image is added to the article.
             }
         ],
         "defaultValue": "left"
+    }
+]
+```
+
+#### External flags
+*Optional* The Image plugin can handle external flags not included by default. You can now toggle the external flags defined
+in the config. Flags not listed in the config will be respected and left as is. Each flag represents an object with the `name`
+as the actual flag and the `label` as a readable representation.  
+
+```json
+"externalFlags": [
+    {
+        "name": "bwFilter",
+        "label": "Black and White" 
+    },
+    {
+        "name": "blurFilter",
+        "label": "Blur faces"
     }
 ]
 ```
