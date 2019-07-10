@@ -131,9 +131,18 @@ class ConceptItemComponent extends Component {
     }
 
     editItem() {
+        const error = this.props.item.error
+        const errorMessage = error.message ? error.message : error
+
         if (this.props.editable) {
             if (!this.hasValidUUid()) {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid UUID'), this.getLabel('Invalid Concept-UUID'))
+            } else if (error && (errorMessage.includes(401) || errorMessage.includes(403))) {
+                this.context.api.ui.showNotification(
+                    'conceptItemEdit',
+                    this.getLabel('imid-no-access-header'),
+                    this.getLabel('imid-no-access-text')
+                )
             } else if (this.props.item.error) {
                 api.ui.showNotification('conceptItemEdit', this.getLabel('Invalid Concept Item'), this.getLabel('Unable to fetch the concept item'))
             } else {
