@@ -4,7 +4,7 @@ import fetchWriterIframe from './fetchWriterIframe'
 export default function fetchOembed(fetchUrl) {
     const baseUrl = 'http://iframe.ly/api/oembed'
     const apiKey = api.getConfigValue('se.infomaker.iframely', 'apiKey')
-    const omitScript = api.getConfigValue('se.infomaker.omitScript', 'apiKey', false)
+    const omitScript = api.getConfigValue('se.infomaker.iframely', 'omitScript', false)
     let url = `${baseUrl}/?url=${encodeURIComponent(fetchUrl)}&api_key=${apiKey}`
 
     if (omitScript) {
