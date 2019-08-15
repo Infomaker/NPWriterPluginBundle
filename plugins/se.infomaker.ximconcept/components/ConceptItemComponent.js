@@ -132,7 +132,7 @@ class ConceptItemComponent extends Component {
 
     editItem() {
         const error = this.props.item.error
-        const errorMessage = error.message ? error.message : error
+        const errorMessage = error && error.message ? error.message : error
 
         if (this.props.editable) {
             if (!this.hasValidUUid()) {
