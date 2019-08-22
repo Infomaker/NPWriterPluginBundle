@@ -12,7 +12,7 @@ requires `ConceptAssociatedWithRelations` and `ConceptAssociatedWithMeRelations`
 
 ## Supported types
 
-As of now these are the supported types ([External link](https://github.com/Infomaker/writer-format/blob/master/newsml/conceptitem/im-conceptitem-spec.md))
+As of now these are the supported types ([External link](https://docs.writer.infomaker.io/format/imnml-conceptitem.html))
 
 ### Plugin config
 
@@ -33,7 +33,7 @@ The plugin can be configured to handle one or many types, it can also be configu
 - `"googleMapAPIKey": "XXX"` API-key used to populate maps when plugin is used with type x-im/place
 - `"types": [... ]` A list of types that will be used by the plugin, if this is set, name wont be used
 - `"subtypes": [...]` A list of subtypes that are allowed
-- `"rel": "subject"` Set a value to be used as rel on the link tag. Mostly used in combination with types, see "Tags" example below
+- `"rel": "subject"` Optional. Set rel to `subject` when using plugin as a "Tags" plugin and either of the types `channel` or `author` is included in the types-object (as they otherwise defaults to re=channel or rel=author). See "Tags" example below
 - `"searchOnFocus": true` If a search should be performed when the input-field gets focused. If omitted defaults to `true`
 - `"allowedConceptStatuses": ["draft", "usable"]` Optional array with statuses to look for when searching for concepts. If omitted all statuses will be included. Supported statuses are: `draft`, `usable`, `done`, `withheld` and `canceled`
 - `"customQuery": "Active:true"` Define a custom query to be included in all searches
@@ -148,6 +148,10 @@ Tags:
             },
             "x-im/category": {
                 "name": "Category",
+                "editable": false
+            },
+            "x-im/channel": {
+                "name": "Channel",
                 "editable": false
             }
         }

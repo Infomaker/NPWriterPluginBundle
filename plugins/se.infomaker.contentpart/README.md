@@ -14,20 +14,23 @@
         "disableUseOfAnnotationTools": false,
         "disableTitleAttribute": false,
         "enableTextTypes": false,
-        "types": [
-            {
+        "types": [{
                 "name": "Fakta",
                 "uri": "im:/content-part/fact",
                 "default": true,
-                "fields": [
-                    { "id": "title" },
-                    { "id": "subject" },
-                    { "id": "text" },
+                "fields": [{
+                        "id": "title"
+                    },
+                    {
+                        "id": "subject"
+                    },
+                    {
+                        "id": "text"
+                    },
                     {
                         "id": "alignment",
                         "type": "option",
-                        "options": [
-                            {
+                        "options": [{
                                 "name": "auto",
                                 "label": "Automatic",
                                 "icon": "fa-align-center"
@@ -47,18 +50,39 @@
                 ]
             },
             {
+                "name": "Recension",
+                "uri": "im:/content-part/review",
+                "default": false,
+                "fields": [{
+                        "id": "title",
+                        "label": "Betyg 0-5",
+                        "icon": "fa-heart"
+                    },
+                    {
+                        "id": "subject",
+                        "label": "Recensionstyp",
+                        "icon": "fa-flag"
+                    },
+                    {
+                        "id": "text"
+                    }
+                ]
+            },
+            {
                 "name": "Sammanfattning",
                 "uri": "im:/content-part/summary",
-                "fields": [
-                    { "id": "title" },
-                    { "id": "subject" }
+                "fields": [{
+                        "id": "title"
+                    },
+                    {
+                        "id": "subject"
+                    }
                 ]
             },
             {
                 "name": "Bakgrund",
                 "uri": "im:/content-part/background",
-                "fields": [
-                    {
+                "fields": [{
                         "id": "title",
                         "icon": "fa-custom-icon"
                     },
@@ -75,7 +99,9 @@
                         "id": "customFieldTwo",
                         "label": "My Second Custom Field"
                     },
-                    { "id": "text" }
+                    {
+                        "id": "text"
+                    }
                 ]
             }
         ]
@@ -128,7 +154,7 @@
     {
         "id": "customFieldTwo",
         "label": "My Second Custom Field"
-    },    
+    },
     {
         "id": "alignment",
         "type": "option",
