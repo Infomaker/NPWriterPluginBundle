@@ -11,10 +11,10 @@
         border: 1px solid orange;
     }
     .dialog-spinner {
-            margin: 20px auto;
-            text-align: center;
-            width: 100%;
-            font-size: 2rem;
+        margin: 20px auto;
+        text-align: center;
+        width: 100%;
+        font-size: 2rem;
     }
     .concept-form-title {
         color: #878787;
@@ -45,7 +45,6 @@
             padding: 6px 10px;
             &::placeholder {
                 color: #b1b1b1;
-                font-family: 'Lato';
             }
             &:focus {
                 border-bottom: 2px solid #288dc0;
@@ -115,7 +114,6 @@
                 overflow-x: hidden;
                 box-shadow: 4px 4px 13px -4px rgba(0, 0, 0, 0.4);
 
-
                 .result-item {
                     width: 100%;
                     padding: 6px 10px;
@@ -128,7 +126,6 @@
                         cursor: pointer;
                     }
                 }
-
             }
             .concept-map-component {
                 height: 370px;
@@ -140,7 +137,6 @@
             }
         }
     }
-
 }
 .concept-select-type-component {
     display: flex;

@@ -3,14 +3,14 @@
     letter-spacing: -0.5px;
     font-size: 32px;
     line-height: 35px;
-    font-family: LatoWebBold;
+    font-weight: 700;
     font-variant-ligatures: no-common-ligatures;
     -moz-font-feature-settings: "liga" 0, "clig" 0;
     -webkit-font-feature-settings: "liga" 0, "clig" 0;
     font-feature-settings: "liga" 0, "clig" 0;
 
     strong {
-        font-family: 'LatoWebBlack', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        font-weight: 900;
     }
 }
 
