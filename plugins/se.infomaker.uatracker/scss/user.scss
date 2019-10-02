@@ -2,9 +2,15 @@ $avatar-width: 27px;
 $avatar-height: 27px;
 
 @keyframes bounce {
-    0%   { bottom: -15px; }
-    90%  { bottom: 3px; }
-    100% { bottom: 0px; }
+    0% {
+        bottom: -15px;
+    }
+    90% {
+        bottom: 3px;
+    }
+    100% {
+        bottom: 0px;
+    }
 }
 
 .uatracker {
@@ -71,7 +77,8 @@ $avatar-height: 27px;
                 height: $avatar-height;
                 position: relative;
 
-                img.avatar, i.avatar--simple {
+                img.avatar,
+                i.avatar--simple {
                     height: $avatar-height;
                     width: $avatar-width;
                     display: block;
@@ -83,7 +90,7 @@ $avatar-height: 27px;
                     // Show colored background instead of broken image
                     // or if simple-avatar is shown as fallback
                     &:before {
-                        content: '';
+                        content: "";
                         width: 100%;
                         height: 100%;
                         position: absolute;
@@ -95,7 +102,6 @@ $avatar-height: 27px;
                     // Show user initials if image does not exist
                     // or if simple-avatar is shown as fallback
                     &:after {
-                        font-family: 'Lato';
                         content: attr(alt);
                         text-transform: lowercase;
                         width: $avatar-width;
@@ -132,7 +138,7 @@ $avatar-height: 27px;
                     color: rgba(255, 255, 255, 0.75);
 
                     &:after {
-                        content: '•••'
+                        content: "•••";
                     }
                 }
 
