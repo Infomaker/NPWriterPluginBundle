@@ -33,7 +33,7 @@ The tab under which the plugin will be rendered can be specified with the:
 - `"contenttype": "Article",` Article contentType in OC
 - `"locale": "sv",` Locale used to print dates
 - `"defaultQueries": [ ` populate the query-dropdown with queries
-- `"icons": [... ` icons to use in results list, article.product (specified in propertyMap) will look for `icon.name`
+- `"icons": [... ` icons to use in results list, `name`-property for single channel in `article.channels` (specified in propertyMap) will map to `icon.name`
 
 ### IMID protected ba-proxy, host configuration
 
@@ -51,9 +51,7 @@ If a IMID protected proxy is used the `"credentials": "include"` property *MUST*
         "defaultSorting": "Updated",
         "npDropLinkMatcher": "http://127.0.0.1:8080/opencontent[^\\s]+",
         "contentHost": {
-
             "credentials": "include",
-
             "protocol": "https://",
             "hostName": "baproxy.dev.gota.infomaker.io",
             "port": "5555",
