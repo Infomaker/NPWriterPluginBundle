@@ -1,26 +1,30 @@
-import {Component} from "substance"
+import {Component} from 'substance'
 import {UIFieldEditor, UIByline} from 'writer'
-import ImageDisplay from "./ImageDisplay"
-import ImageCropsPreview from "./ImageCropsPreview"
-
-const {api} = writer
+import ImageCropsPreview from './ImageCropsPreview'
 
 class XimimageComponent extends Component {
 
-
     constructor(...args) {
         super(...args)
-        const alignment = api.getConfigValue('se.infomaker.ximimage', 'fields').find(field => field.name === "alignment");
+        const alignment = this.context.api.getConfigValue('se.infomaker.ximimage', 'fields').find(field => field.name === 'alignment')
         if (alignment && alignment.defaultValue) {
-            if (!this.props.node.alignment && api.newsItem.hasTemporaryId()) {
+            if (!this.props.node.alignment && this.context.api.newsItem.hasTemporaryId()) {
                 this.props.node.alignment = alignment.defaultValue
             }
+        }
+    }
+
+    getInitialState() {
+        return {
+            fields: this.context.api.getConfigValue('se.infomaker.ximimage', 'fields'),
+            allCropsLoaded: false
         }
     }
 
     didMount() {
         this.props.node.fetchAuthorsConcept()
         this.context.editorSession.onRender('document', this._onDocumentChange, this)
+        this.refs.cropsPreview.fetchCropUrls()
     }
 
     dispose() {
@@ -28,9 +32,8 @@ class XimimageComponent extends Component {
     }
 
     _onDocumentChange(change) {
-        if (change.isAffected(this.props.node.id) ||
-            change.isAffected(this.props.node.imageFile)) {
-            if (this.refs.cropsPreview) {
+        if (change.isAffected(this.props.node.id) || change.isAffected(this.props.node.imageFile)) {
+            if (this.refs.cropsPreview && !this.state.allCropsLoaded) {
                 this.refs.cropsPreview.fetchCropUrls()
             }
             this.rerender()
@@ -51,11 +54,14 @@ class XimimageComponent extends Component {
 
     render($$) {
         let node = this.props.node
+        const {api, configurator} = this.context
         const imageDisplayMode = api.settings.get('se.infomaker.ximimage.settings', 'imageDisplayMode') || 'full'
-        let el = $$('div').addClass(`sc-ximimage im-blocknode__container display-mode-${imageDisplayMode}`).ref('isolatedNodeContainer')
+
+        let el = $$('div')
+            .addClass(`dw-ximimage im-blocknode__container im-blocknode__container--no-padding display-mode-${imageDisplayMode}`)
+            .ref('isolatedNodeContainer')
 
         let fields = api.getConfigValue('se.infomaker.ximimage', 'fields')
-        let metaWrapper = $$('div').addClass('meta-wrapper').ref('metaWrapper')
         let cropsEnabled = api.getConfigValue('se.infomaker.ximimage', 'softcrop')
         let crops = api.getConfigValue('se.infomaker.ximimage', 'crops')
         let cropInstructions = api.getConfigValue('se.infomaker.ximimage', 'cropInstructions')
@@ -65,6 +71,8 @@ class XimimageComponent extends Component {
             optionsObject[field] = api.getConfigValue('se.infomaker.ximimage', field)
             return optionsObject
         }, {})
+
+        const ImageDisplay = configurator.getComponent('imageDisplay')
 
         el.append(
             $$(ImageDisplay, {
@@ -85,9 +93,15 @@ class XimimageComponent extends Component {
                     crops,
                     cropInstructions,
                     isolatedNodeState: this.props.isolatedNodeState,
+                    onCropsLoaded: () => {
+                        this.extendState({
+                            allCropsLoaded: true
+                        })
+                    }
                 }).ref('cropsPreview')
             )
         }
+        const metaWrapper = $$('div').addClass('dw-image-meta-wrapper').ref('metaWrapper')
 
         metaWrapper.append(
             this._renderByline($$)
@@ -108,7 +122,7 @@ class XimimageComponent extends Component {
     }
 
     get _showByline() {
-        return api.getConfigValue('se.infomaker.ximimage', 'byline', true)
+        return this.context.api.getConfigValue('se.infomaker.ximimage', 'byline', true)
     }
 
     get _bylineSearchEnabled() {
@@ -169,8 +183,8 @@ class XimimageComponent extends Component {
                         }
                         return false
                     })
-            );
-        });
+            )
+        })
 
         return $$('div')
             .addClass('x-im-image-dynamic x-im-image-alignment')

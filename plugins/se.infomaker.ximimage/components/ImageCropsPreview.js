@@ -1,8 +1,8 @@
-import {Component, FontAwesomeIcon} from "substance";
+import {Component, FontAwesomeIcon} from "substance"
 
 function executeTemplate(template, context) {
 
-    let result = template;
+    let result = template
 
     for (let key in context) {
         if (context.hasOwnProperty(key)) {
@@ -97,7 +97,7 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
         context = {
             w: Math.floor(w),
             h: Math.floor(h),
-            uuid:uuid
+            uuid: uuid
         }
 
     }
@@ -105,16 +105,41 @@ function constructParams(instructions, key, crop, cropDefinedInNode, imageWidth,
     return executeTemplate(template, context)
 }
 
+/**
+ * @typedef ImageCropsPreview.props
+ * @property {Node} node - The substance node
+ * @property {Object} crops - Crops value to be handle
+ * @property {Object} cropInstructions - Instructions for crops
+ * @property {string} isolatedNodeState - The isolatedNodeState property from the parent Component
+ * @property {function} onCropsLoaded - Callback function when all thumbnails loaded
+ */
 class ImageCropsPreview extends Component {
 
     constructor(...args) {
         super(...args)
-        this.cropUrls = new Map();
+        this.cropUrls = new Map()
+    }
+
+    getInitialState() {
+        return {
+            loadedCrops: [],
+            allCropsLoaded: false
+        }
+    }
+
+    shouldRerender(newState, newProps) {
+        // Don't rerender all the time if everything is loaded
+        return Object.keys(newState.crops).length === newProps.loadedCrops.length && this.state.allCropsLoaded ? false : true
     }
 
     fetchCropUrls() {
-        const { crops, cropInstructions, node } = this.props
-        const { fileManager } = this.context.api.editorSession
+        this.extendState({
+            loadedCrops: [],
+            allCropsLoaded: false
+        })
+
+        const {crops, cropInstructions, node} = this.props
+        const {fileManager} = this.context.api.editorSession
 
         // Ensure file for image has been uploaded before fetching its crop-urls
         fileManager.sync()
@@ -128,7 +153,7 @@ class ImageCropsPreview extends Component {
 
                         const width = node.width
                         const height = node.height
-                        const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid);
+                        const params = constructParams(cropInstructions, key, crops[key], cropDefinedInNode, width, height, this.props.node.uuid)
 
                         if (this.props.node.uuid && this.props.node.getServiceUrl) {
                             this.props.node.getServiceUrl(params)
@@ -153,9 +178,13 @@ class ImageCropsPreview extends Component {
     }
 
     updateSrc(key, url) {
-        if (this.refs['img-' + key]) {
-            this.refs['img-' + key].setAttribute('src', url)
+        if (this.refs[`img-${key}`]) {
+            this.refs[`img-${key}`].setAttribute('src', url)
         }
+    }
+
+    uniqueLoadedCrops(cropName) {
+        return [...new Set([...this.state.loadedCrops, cropName])]
     }
 
     render($$) {
@@ -168,9 +197,20 @@ class ImageCropsPreview extends Component {
                 const url = this.cropUrls.get(key)
                 const cropDiv = $$('div')
                     .addClass('image-crops-item')
+                    .ref(`imgContainer-${key}`)
+
+                const cropContainer = $$('div')
+                    .addClass('image-crops-item-container')
+                    .ref(`imgCropContainer-${key}`)
 
                 const img = $$('img')
-                    .setAttribute('src', url).ref('img-' + key)
+                    .setAttribute('src', url)
+                    .on('load', () => {
+                        this.extendState({
+                            loadedCrops: this.uniqueLoadedCrops(`imgContainer-${key}`)
+                        })
+                    })
+                    .ref(`img-${key}`)
 
                 cropDiv.append(
                     [
@@ -182,14 +222,34 @@ class ImageCropsPreview extends Component {
                 // Add marker to crop that it is user defined
                 if (this.props.node.crops && this.props.node.crops.crops) {
                     const userDefinedCrops = this.props.node.crops.crops
-                    for (let i = 0; i < userDefinedCrops.length; i++) {
+                    for (let i = 0;i < userDefinedCrops.length;i++) {
                         if (userDefinedCrops[i].name === key) {
-                            cropDiv.append(
+                            cropContainer.append(
                                 $$(FontAwesomeIcon, {icon: 'fa-crop'}).addClass('image-crops-user-defined image-crops-overlay')
                             )
                         }
                     }
                 }
+
+                setImmediate(() => {
+                    if (this.state.loadedCrops.length > 0) {
+
+                        this.state.loadedCrops.forEach((item) => {
+                            this.refs[item].addClass('loaded')
+                        })
+
+                        if (Object.keys(this.props.crops).length === this.state.loadedCrops.length && this.state.allCropsLoaded === false) {
+                            this.extendState({
+                                allCropsLoaded: true
+                            })
+
+                            if (this.props.onCropsLoaded) {
+                                this.props.onCropsLoaded()
+                            }
+                        }
+                    }
+                })
+
 
                 el.append(cropDiv)
             }
