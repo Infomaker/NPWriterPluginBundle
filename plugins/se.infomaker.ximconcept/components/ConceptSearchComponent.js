@@ -180,18 +180,6 @@ class ConceptSearchComponent extends Component {
 
         this.resetState()
 
-        /**
-         * Concepts of type x-im/place needs some special attention
-         * since writer/newsitem implementation allows adding but not fetching concepts without geometry
-         */
-        if (item[propertyMap.ConceptImTypeFull] === 'x-im/place'){
-            const geometry = item[propertyMap.ConceptGeometry]
-
-            if (!geometry || (!geometry.includes('POINT') && !geometry.includes('POLYGON'))) {
-                return api.ui.showNotification('conceptItemAdd', this.getLabel('Invalid Concept item'), this.getLabel('Invalid or missing Concept geometry'))
-            }
-        }
-
         this.props.addItem(item)
     }
 
